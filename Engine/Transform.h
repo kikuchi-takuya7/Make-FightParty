@@ -41,6 +41,10 @@ public:
 	}
 };
 
+inline float Length(XMVECTOR v) {
+	XMVECTOR lenVec = XMVector3Length(v);
+	return XMVectorGetX(lenVec);
+}
 
 inline XMFLOAT3 operator += (XMFLOAT3& p, const XMVECTOR& v) {
 

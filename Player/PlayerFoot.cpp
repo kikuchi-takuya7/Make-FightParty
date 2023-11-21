@@ -1,5 +1,6 @@
 #include "PlayerFoot.h"
 #include "../Engine/Model.h"
+#include <cmath>
 
 //コンストラクタ
 PlayerFoot::PlayerFoot(GameObject* parent)
@@ -30,8 +31,24 @@ void PlayerFoot::Initialize()
 //更新
 void PlayerFoot::Update()
 {
+    //目標地点（向くべき方向）
+    XMVECTOR goal = { -5,0,0,0 };
+    
+    //モデルの長さ
+    float xLen = 4.0f;
 
+    //ゴールのベクトルの長さ
+    float yLength = Length(goal);
 
+    //モデルと目標地点をつなぐ斜面（三平方の定理）
+    float slope = std::hypot(xLen, yLength);
+
+    //目標位置をローカル座標に( 多分いらない)
+     
+    
+    //ローカル座標から三角比を用いて色々計算する
+
+    float cosZ = std::cos(xLen);
 
 
 }
