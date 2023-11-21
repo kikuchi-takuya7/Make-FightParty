@@ -1,14 +1,23 @@
 #pragma once
 #include "../GameObject.h"
+#include <stack>
 #include <vector>
 
+class SaveManager;
 
 //新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
 enum FBXPATTERN {
+	//SCHOOL,
 	ROOM_1,
 	TESTFLOOR,
 	TESTWALL,
 	PATTERN_END
+};
+
+struct BACKUPDATA {
+	std::string objectName;
+	int objectId;
+	Transform objectTrans;
 };
 
 //■■シーンを管理するクラス
@@ -50,12 +59,17 @@ public:
 	//createObjectの中にdeleteされたオブジェクトがあるか
 	void CheckDeleteObject();
 
+	void AllDeleteCreateObject();
+
 	//オブジェクトの位置（CreateList）を上に上げる
 	void ChengeUp(GameObject* pTarget);
 	void ChengeDown(GameObject* pTarget);
 
 	//ロードしたすべてのIDを調べて最大値を知っておく
 	int MaxObjectId();
+
+	//オブジェクトが動かされた時にバックアップをとる関数
+	void BackUpSave();
 
 private:
 
@@ -70,11 +84,29 @@ private:
 	//作成したオブジェクトリスト
 	std::list<GameObject*> createObjectList_;
 
+	//std::pair<>
+
+	//std::stack<BACKUPDATA> objectBackUp_;
+
+	SaveManager* pSaveManager_;
+
 	//セーブするかのフラグ
 	bool isSave_;
 
+	bool isLoad_;
+
+	bool isNewSave_;
+
 	int nextObjectId_;
 
-
+	//インスタンスを作成してobjectListに入れるテンプレート
+	template <class T>
+	T* CreateInstance()
+	{
+		T* pObject = Instantiate<T>(this);
+		AddCreateObject(pObject);
+		pObject->SetObjectID(nextObjectId_); //作ったオブジェクト順に識別するためのIDを付ける
+		return pObject;
+	}
 
 };

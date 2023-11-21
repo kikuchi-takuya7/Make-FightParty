@@ -39,6 +39,12 @@
     <Filter Include="01Engine\MapEditor\MapSousce">
       <UniqueIdentifier>{580cdb55-80a4-45c0-a8f9-9fa78690d815}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{df3b82cb-7412-4076-8529-45243bd7bdc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{43fe54d2-ee69-4ac9-9e0d-8f0b6645a1b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -95,7 +101,6 @@
     <ClCompile Include="Engine\Transform.cpp">
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Engine\Audio.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
@@ -138,9 +143,6 @@
     <ClCompile Include="Engine\MapEditor\MapData.cpp">
       <Filter>01Engine\MapEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapEditorScene.cpp">
-      <Filter>01Engine\MapEditor</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\SaveManager\SaveManager.cpp">
       <Filter>01Engine\SaveManager</Filter>
     </ClCompile>
@@ -152,6 +154,24 @@
     </ClCompile>
     <ClCompile Include="Engine\MapEditor\MapSource\TestWall.cpp">
       <Filter>01Engine\MapEditor\MapSousce</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerFoot.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerHand.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\InverseKinematics.cpp">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\MapEditorScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\IKEditorScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\DevelopSelectScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +229,6 @@
     <ClInclude Include="Engine\Transform.h">
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Engine\Audio.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
@@ -258,9 +277,6 @@
     <ClInclude Include="Engine\MapEditor\MapData.h">
       <Filter>01Engine\MapEditor</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapEditorScene.h">
-      <Filter>01Engine\MapEditor</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\SaveManager\SaveManager.h">
       <Filter>01Engine\SaveManager</Filter>
     </ClInclude>
@@ -272,6 +288,24 @@
     </ClInclude>
     <ClInclude Include="Engine\MapEditor\MapSource\TestWall.h">
       <Filter>01Engine\MapEditor\MapSousce</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\PlayerFoot.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\PlayerHand.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\InverseKinematics.h">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\MapEditorScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\IKEditorScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\DevelopSelectScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

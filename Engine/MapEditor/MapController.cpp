@@ -18,9 +18,6 @@ MapController::~MapController()
 //èâä˙âª
 void MapController::Initialize()
 {
-    transform_.position_.x = 7.0f;
-    transform_.position_.z = 7.0f;
-
     transform_.rotate_.x = 45.0f;
 }
 
@@ -28,10 +25,10 @@ void MapController::Initialize()
 void MapController::Update()
 {
 
-    if (Input::IsKey(DIK_SPACE) && transform_.position_.y <= 10.0f) {
+    if (Input::IsKey(DIK_LSHIFT) && transform_.position_.y <= 10.0f) {
         transform_.position_.y += 0.2f;
     }
-    if (Input::IsKey(DIK_LSHIFT) && transform_.position_.y >= 0.0f || Input::IsKey(DIK_LSHIFT) && transform_.position_.y >= 0.0f) {
+    if (Input::IsKey(DIK_LCONTROL) && transform_.position_.y >= 0.0f) {
         transform_.position_.y -= 0.2f;
     }
 

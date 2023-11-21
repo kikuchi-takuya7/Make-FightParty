@@ -5,7 +5,9 @@
 //ÉQÅ[ÉÄÇ…ìoèÍÇ∑ÇÈÉVÅ[Éì
 enum SCENE_ID
 {
-	SCENE_ID_MAPEDITOR = 0,
+	SCENE_ID_DEVELOP_SELECT = 0,
+	SCENE_ID_MAPEDITOR,
+	SCENE_ID_IKEDITOR,
 
 };
 
