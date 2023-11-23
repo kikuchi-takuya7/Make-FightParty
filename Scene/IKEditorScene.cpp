@@ -1,6 +1,7 @@
 #include "IKEditorScene.h"
 #include "../Player/PlayerFoot.h"
 #include "../Player/PlayerHand.h"
+#include "../Engine/MapEditor/MapController.h"
 
 //コンストラクタ
 IKEditorScene::IKEditorScene(GameObject* parent)
@@ -12,7 +13,9 @@ IKEditorScene::IKEditorScene(GameObject* parent)
 void IKEditorScene::Initialize()
 {
 	Instantiate<PlayerFoot>(this);
-	Instantiate<PlayerHand>(this);
+	Instantiate<MapController>(this);
+
+	//Instantiate<PlayerHand>(this);
 }
 
 //更新

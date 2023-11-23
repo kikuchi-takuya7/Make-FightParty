@@ -36,4 +36,6 @@ private:
     };
 
     int hModel_[NUM];
+    Transform footTrans_;
+
 };
