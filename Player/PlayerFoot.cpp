@@ -62,6 +62,8 @@ void PlayerFoot::Update()
     //ローカル座標から三角比を用いて色々計算する
     //x軸に回転させてからy軸に回転させようの巻き（セガのサイト通りに書いてるからx軸っぽいけど違う説もある）
 
+
+    //ベクトルが足りない説。終点しか指定してないから始点も指定するべき？一つの座標だけでベクトルってのもおかしな話な気がしてきた
     XMVECTOR goalN = XMVector3Normalize(goal);
     XMVECTOR nowPosN = XMVector3Normalize(nowPos);
     XMVECTOR dot = XMVector3Dot(goalN, nowPosN); //内積を求める
