@@ -32,3 +32,11 @@ void IKEditorScene::Draw()
 void IKEditorScene::Release()
 {
 }
+
+void IKEditorScene::Imgui_Window()
+{
+
+	ImGui::Begin("DataWindow");
+
+	ImGui::End();
+}

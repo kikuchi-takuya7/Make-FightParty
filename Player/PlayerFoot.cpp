@@ -19,7 +19,7 @@ void PlayerFoot::Initialize()
 {
     //モデルデータのロード
     std::string fileName[NUM] = {
-        "PlayerFbx/FootLegs.fbx",
+        "PlayerFbx/HandArms.fbx",
         "PlayerFbx/ThighLegs.fbx"
     };
     for (int i = 0; i < NUM; i++) {
@@ -28,7 +28,7 @@ void PlayerFoot::Initialize()
     }
     
     footTrans_ = transform_;
-
+    //footTrans_.rotate_.x = 90.0f;
 }
 
 //更新
@@ -41,10 +41,21 @@ void PlayerFoot::Update()
     }
 
     //目標地点（向くべき方向）
-    XMVECTOR goal = { 3,5,5,0 };
+    XMVECTOR goal = { 5,5,5,0 };
 
-    //モデルの中心を先端にしてるからとりあえずこれで。
+
+    //①まずy軸で回転させて横軸を合わせる
+    //②次にz軸を使って縦を合わせる
+    //③最後にx軸で回転させる？モデルを横向きにしてx軸に合うように学校で治すってか腕はそう作ってるから足も全部腕でいいんじゃね
+
+    //rotateで回転させてもそれはあくまでposition軸に回転させてて、positionは指定した位置から変わってないからrotateで回転させたとしても結局positionが変わってないからその次が無い。
+
+    //
+    footTrans_.position_.x = 10.0f;
+    footTrans_.position_.y = 1.0f;
+    footTrans_.position_.z = 5.0f;
     XMFLOAT3 f = footTrans_.position_;
+    f.y = 0;
     XMVECTOR nowPos = XMLoadFloat3(&f);
 
     //モデルの長さ
@@ -62,27 +73,32 @@ void PlayerFoot::Update()
     //ローカル座標から三角比を用いて色々計算する
     //x軸に回転させてからy軸に回転させようの巻き（セガのサイト通りに書いてるからx軸っぽいけど違う説もある）
 
+    //Y軸回転させるための変数
+    XMVECTOR goalY = goal;
+    goalY = XMVectorSetY(goal, 0);
 
-    //ベクトルが足りない説。終点しか指定してないから始点も指定するべき？一つの座標だけでベクトルってのもおかしな話な気がしてきた
-    XMVECTOR goalN = XMVector3Normalize(goal);
+    XMVECTOR goalN = XMVector3Normalize(goalY);
     XMVECTOR nowPosN = XMVector3Normalize(nowPos);
     XMVECTOR dot = XMVector3Dot(goalN, nowPosN); //内積を求める
     float dotLen = XMVectorGetX(dot);
+
+    //サイトと同じようにやってみる
+    //XMVECTOR cosSZ = nowPos / (nowPos * nowPos) + (goal * goal);
 
     //これでx軸回転の角度
     float cosZ = acos(dotLen);
     
     XMMATRIX rotX = XMMatrixIdentity();
 
-    //rotX = XMMatrixRotationX(cosZ);   //X軸で回転行列
+    rotX = XMMatrixRotationX(cosZ);   //X軸で回転行列
 
-    rotX = XMMatrixRotationX(XMConvertToRadians(45));
+    //rotX = XMMatrixRotationX(XMConvertToRadians(45));
 
-    footTrans_.rotate_.x = XMConvertToDegrees(cosZ);
+    //footTrans_.rotate_.x = XMConvertToDegrees(cosZ);
 
     //X軸回転行列を適用
-    /*nowPos = XMVector3TransformCoord(nowPos, rotX);
-    XMStoreFloat3(&footTrans_.position_, nowPos);*/
+    nowPos = XMVector3TransformCoord(nowPos, rotX);
+    XMStoreFloat3(&footTrans_.position_, nowPos);
 
 }
 
@@ -96,4 +112,20 @@ void PlayerFoot::Draw()
 //開放
 void PlayerFoot::Release()
 {
+}
+
+void PlayerFoot::Imgui_Window()
+{
+    ImGui::Begin("DataWindow");
+    if (ImGui::CollapsingHeader("MapEditor"))
+    {
+    }
+
+    if (ImGui::TreeNode("Object")) {//Objectのツリーをクリックすると
+
+
+        ImGui::TreePop();
+    }
+
+    ImGui::End();
 }
