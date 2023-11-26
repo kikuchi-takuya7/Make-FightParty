@@ -39,5 +39,6 @@ private:
 
     int hModel_[NUM];
     Transform footTrans_;
+    Transform footRoot_;
 
 };
