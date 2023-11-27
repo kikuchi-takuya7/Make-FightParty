@@ -3,6 +3,9 @@
 #include "../Engine/Input.h"
 #include <cmath>
 
+//モデルの長さ
+const float MODELLENGTH = 4.0f;
+
 //コンストラクタ
 PlayerFoot::PlayerFoot(GameObject* parent)
     :GameObject(parent, "PlayerFoot"), hModel_{-1,-1}
@@ -27,22 +30,22 @@ void PlayerFoot::Initialize()
         assert(hModel_[i] >= 0);
     }
     
-    //腕の長さ分余分に横に移動させようね。これが自由に動かせる先端の位置
     /*transform_.position_.x = 4.0f;
     transform_.position_.y = 1.0f;
     transform_.position_.z = 5.0f;*/
 
     footTrans_ = transform_;
 
-    //腕の長さ分余分に横に移動させようね。これが自由に動かせる先端の位置
-    footTrans_.position_.x = 4.0f;
-    footTrans_.position_.y = 1.0f;
-    footTrans_.position_.z = 5.0f;
+    //これが自由に動かせるモデル先端の位置
+    footTrans_.position_.x += 0.0f;
+    footTrans_.position_.y += 0.0f;
+    footTrans_.position_.z += 1.0f;
 
     //モデルの根元のposition
     footRoot_ = footTrans_;
     
-    footRoot_.position_.x += -4.0f;
+    //モデルの長さを4にしてるから
+    footRoot_.position_.x -= MODELLENGTH;
 
     
 }
@@ -58,8 +61,8 @@ void PlayerFoot::Update()
     //モデル.positionでモデルの回転する根本を指して、それにx（横幅の長さ）を足した数を先端positionとする。（平行移動行列で横移動させてから角度の回転行列をかければいいかな）
     //角度が出来たらモデル.rotateで回転させて、
 
-    //目標地点（向くべき方向）
-    XMVECTOR goal = { 5,5,5,0 };
+    //目標地点(向くべき方向で、最終的な先端の位置)
+    XMVECTOR goal = { 1,1,1,0 };
 
     //現在のベクトル
     XMFLOAT3 tmpFloat = footTrans_.position_;
@@ -86,21 +89,12 @@ void PlayerFoot::Update()
 
     //これでy軸回転の角度
     float cos = acos(dotLen);
-    
-    XMMATRIX rotX = XMMatrixIdentity();
 
-    rotX = XMMatrixRotationX(cos);   //X軸で回転行列
-
-    //rotX = XMMatrixRotationX(XMConvertToRadians(45));
-
+    //根本から回すから根元を回転させる
     footRoot_.rotate_.y = XMConvertToDegrees(cos);
 
-    //X軸回転行列を適用
-    /*nowPos = XMVector3TransformCoord(nowPos, rotX);
-    XMStoreFloat3(&f, nowPos);*/
-
-
     ///////////////こっから縦軸回転////////////
+    //y軸回転させてからz軸回転
 
     tmpFloat = footTrans_.position_;
     tmpFloat.z = 0;
@@ -119,9 +113,10 @@ void PlayerFoot::Update()
     //これでz軸回転の角度
     cos = acos(dotLen);
 
+    //根本から回すから根元を回転させる
     footRoot_.rotate_.z = XMConvertToDegrees(cos);
 
-    //これでfootRootのrotateはゴールの向きに向いたっていう想定。無理だろうけど
+    //これでfootRootのrotateはゴールの向きに向いたっていう想定。
     //footRoot.rotate分の回転行列をかけたあとに平行移動行列
 
     //footRoot.rotateの分だけ回転
@@ -132,17 +127,20 @@ void PlayerFoot::Update()
     XMMATRIX rotMatrix = rotY * rotZ;
 
      //腕の長さ分だけ平行移動させる
-    XMMATRIX moveLen = XMMatrixTranslation(4, 0, 0);
+    XMMATRIX moveLen = XMMatrixTranslation(MODELLENGTH, 0, 0);
 
-    //ベクトルにして行列を適用させる。モデルの長さ分動かしてるからモデルの根元のpositionをベクトルに
+    //ベクトルにして行列を適用させる。モデルの根元のpositionをベクトルに
     tmpFloat = footRoot_.position_;
 
     nowPos = XMLoadFloat3(&tmpFloat);
     nowPos = XMVector3TransformCoord(nowPos, rotMatrix * moveLen);
 
-    //行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず
+    //行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
     XMStoreFloat3(&footTrans_.position_, nowPos);
 
+    //先端のTransformをモデルと会うように回転させる
+    footTrans_.rotate_.y = footRoot_.rotate_.y;
+    footTrans_.rotate_.z = footRoot_.rotate_.z;
 }
 
 //描画
