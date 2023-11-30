@@ -34,18 +34,18 @@ void PlayerFoot::Initialize()
     transform_.position_.y = 1.0f;
     transform_.position_.z = 5.0f;*/
 
-    footTrans_ = transform_;
+    footRoot_ = transform_;
 
-    //これが自由に動かせるモデル先端の位置
-    footTrans_.position_.x += 0.0f;
-    footTrans_.position_.y += 0.0f;
-    footTrans_.position_.z += 1.0f;
+    //モデル根本の位置
+    footRoot_.position_.x += 0.0f;
+    footRoot_.position_.y += 0.0f;
+    footRoot_.position_.z += 0.0f;
 
-    //モデルの根元のposition
-    footRoot_ = footTrans_;
+    //モデルの先端のposition
+    footTrans_ = footRoot_;
     
     //モデルの長さを4にしてるから
-    footRoot_.position_.x -= MODELLENGTH;
+    footTrans_.position_.x += MODELLENGTH;
 
     
 }
@@ -62,9 +62,9 @@ void PlayerFoot::Update()
     //角度が出来たらモデル.rotateで回転させて、
 
     //目標地点(向くべき方向で、最終的な先端の位置)
-    XMVECTOR goal = { 1,1,1,0 };
+    XMVECTOR goal = { 4,4,4,0 };
 
-    //現在のベクトル
+    //現在のベクトル（先端）
     XMFLOAT3 tmpFloat = footTrans_.position_;
     tmpFloat.y = 0;
     
@@ -130,23 +130,24 @@ void PlayerFoot::Update()
     XMMATRIX moveLen = XMMatrixTranslation(MODELLENGTH, 0, 0);
 
     //ベクトルにして行列を適用させる。モデルの根元のpositionをベクトルに
+    //平行移動させる必要ないならまだ行列いらない？
     tmpFloat = footRoot_.position_;
 
     nowPos = XMLoadFloat3(&tmpFloat);
-    nowPos = XMVector3TransformCoord(nowPos, rotMatrix * moveLen);
+    nowPos = XMVector3TransformCoord(nowPos, rotMatrix);
 
     //行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
-    XMStoreFloat3(&footTrans_.position_, nowPos);
+    XMStoreFloat3(&footRoot_.position_, nowPos);
 
     //先端のTransformをモデルと会うように回転させる
-    footTrans_.rotate_.y = footRoot_.rotate_.y;
-    footTrans_.rotate_.z = footRoot_.rotate_.z;
+    /*footRoot_.rotate_.y = footTrans_.rotate_.y;
+    footRoot_.rotate_.z = footTrans_.rotate_.z;*/
 }
 
 //描画
 void PlayerFoot::Draw()
 {
-    Model::SetTransform(hModel_[0], footTrans_);
+    Model::SetTransform(hModel_[0], footRoot_);
     Model::Draw(hModel_[0]);
 }
 

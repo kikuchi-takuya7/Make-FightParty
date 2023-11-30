@@ -6,7 +6,7 @@
 
 //コンストラクタ
 MapController::MapController(GameObject* parent)
-    :GameObject(parent, "MapController")
+    :GameObject(parent, "MapController"), hModel_(-1)
 {
 }
 
@@ -19,6 +19,8 @@ MapController::~MapController()
 void MapController::Initialize()
 {
     transform_.rotate_.x = 45.0f;
+    hModel_ = Model::Load("memory.fbx");
+    assert(hModel_ >= 0);
 }
 
 //更新
@@ -108,6 +110,9 @@ void MapController::Update()
 //描画
 void MapController::Draw()
 {
+    Transform t;
+    Model::SetTransform(hModel_, t);
+    Model::Draw(hModel_);
 }
 
 //開放

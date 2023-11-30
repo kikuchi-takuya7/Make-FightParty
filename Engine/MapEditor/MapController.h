@@ -4,7 +4,7 @@
 //◆◆◆を管理するクラス
 class MapController : public GameObject
 {
-
+    int hModel_;
 public:
     //コンストラクタ
     MapController(GameObject* parent);
