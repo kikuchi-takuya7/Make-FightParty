@@ -62,7 +62,7 @@ void PlayerFoot::Update()
     //角度が出来たらモデル.rotateで回転させて、
 
     //目標地点(向くべき方向で、最終的な先端の位置)
-    XMVECTOR goal = { 4,4,4,0 };
+    XMVECTOR goal = { -4,-4,-4,0 };
 
     //現在のベクトル（先端）
     XMFLOAT3 tmpFloat = footTrans_.position_;
@@ -161,6 +161,9 @@ void PlayerFoot::Imgui_Window()
     ImGui::Begin("DataWindow");
     if (ImGui::CollapsingHeader("MapEditor"))
     {
+        if (ImGui::Button("stop")) {
+            int n = 0;
+        }
     }
 
     if (ImGui::TreeNode("Object")) {//Objectのツリーをクリックすると
