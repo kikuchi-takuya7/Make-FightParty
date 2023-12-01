@@ -19,7 +19,7 @@ MapController::~MapController()
 void MapController::Initialize()
 {
     transform_.rotate_.x = 45.0f;
-    hModel_ = Model::Load("memory.fbx");
+    hModel_ = Model::Load("EditorUIFbx/memory.fbx");
     assert(hModel_ >= 0);
 }
 

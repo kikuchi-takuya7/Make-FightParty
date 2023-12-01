@@ -414,6 +414,27 @@ void GameObject::Setting_Transform(Transform& _transform, float posmin, float po
 
 }
 
+void GameObject::Setting_Float3(XMFLOAT3& _float3, float posmin, float posmax, std::string str)
+{
+	float* p[] = { &_float3.x ,&_float3.y, &_float3.z };
+
+	std::string tmpString = str;
+	tmpString = str + "sPosition.x";
+	char* c = new char[tmpString.size() + 1];
+	strcpy_s(c, tmpString.size() + 1, tmpString.c_str());
+	ImGui::SliderFloat(c, p[0], posmin, posmax);
+
+	tmpString = str + "sPosition.y";
+	strcpy_s(c, tmpString.size() + 1, tmpString.c_str());
+	ImGui::SliderFloat(c, p[1], posmin, posmax);
+
+	tmpString = str + "sPosition.z";
+	strcpy_s(c, tmpString.size() + 1, tmpString.c_str());
+	ImGui::SliderFloat(c, p[2], posmin, posmax);
+
+	delete[] c;
+}
+
 void GameObject::Save_Transform_File(Transform _transform, HANDLE hFile, LPCSTR fileName)
 {
 	hFile = CreateFile(

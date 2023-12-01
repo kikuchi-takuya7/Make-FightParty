@@ -38,7 +38,8 @@ private:
     };
 
     int hModel_[NUM];
+    int hBallModel_;
     Transform footTrans_;
     Transform footRoot_;
-
+    XMFLOAT3 goalValue_;
 };

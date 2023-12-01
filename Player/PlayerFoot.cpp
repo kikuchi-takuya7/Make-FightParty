@@ -8,7 +8,7 @@ const float MODELLENGTH = 4.0f;
 
 //コンストラクタ
 PlayerFoot::PlayerFoot(GameObject* parent)
-    :GameObject(parent, "PlayerFoot"), hModel_{-1,-1}
+    :GameObject(parent, "PlayerFoot"), hModel_{-1,-1},hBallModel_(-1)
 {
 }
 
@@ -25,10 +25,14 @@ void PlayerFoot::Initialize()
         "PlayerFbx/HandArms.fbx",
         "PlayerFbx/ThighLegs.fbx"
     };
+
     for (int i = 0; i < NUM; i++) {
         hModel_[i] = Model::Load(fileName[i]);
         assert(hModel_[i] >= 0);
     }
+
+    hBallModel_ = Model::Load("EditorUIFbx/Ball.fbx");
+    assert(hBallModel_ >= 0);
     
     /*transform_.position_.x = 4.0f;
     transform_.position_.y = 1.0f;
@@ -47,6 +51,7 @@ void PlayerFoot::Initialize()
     //モデルの長さを4にしてるから
     footTrans_.position_.x += MODELLENGTH;
 
+    goalValue_ = { 1,1,1 };
     
 }
 
@@ -61,8 +66,9 @@ void PlayerFoot::Update()
     //モデル.positionでモデルの回転する根本を指して、それにx（横幅の長さ）を足した数を先端positionとする。（平行移動行列で横移動させてから角度の回転行列をかければいいかな）
     //角度が出来たらモデル.rotateで回転させて、
 
+
     //目標地点(向くべき方向で、最終的な先端の位置)
-    XMVECTOR goal = { -4,-4,-4,0 };
+    XMVECTOR goal = XMLoadFloat3(&goalValue_);
 
     //現在のベクトル（先端）
     XMFLOAT3 tmpFloat = footTrans_.position_;
@@ -91,7 +97,12 @@ void PlayerFoot::Update()
     float cos = acos(dotLen);
 
     //根本から回すから根元を回転させる
-    footRoot_.rotate_.y = XMConvertToDegrees(cos);
+    float tmp = -XMConvertToDegrees(cos);////////////////////////なぜかy軸が逆だったからここマイナスにしてる。何かあったときに後から忘れないように注意
+    if (tmp >= 0) {
+        tmp = -tmp;
+    }
+    footRoot_.rotate_.y = tmp;
+    
 
     ///////////////こっから縦軸回転////////////
     //y軸回転させてからz軸回転
@@ -149,6 +160,11 @@ void PlayerFoot::Draw()
 {
     Model::SetTransform(hModel_[0], footRoot_);
     Model::Draw(hModel_[0]);
+
+    Transform ballTrans;
+    ballTrans.position_ = goalValue_;
+    Model::SetTransform(hBallModel_, ballTrans);
+    Model::Draw(hBallModel_);
 }
 
 //開放
@@ -164,6 +180,17 @@ void PlayerFoot::Imgui_Window()
         if (ImGui::Button("stop")) {
             int n = 0;
         }
+
+        Setting_Float3(goalValue_, -10, 10, "goal");
+        
+        std::string str = std::to_string(footRoot_.rotate_.x);
+        ImGui::Text(str.c_str());
+
+        str = std::to_string(footRoot_.rotate_.y);
+        ImGui::Text(str.c_str());
+
+        str = std::to_string(footRoot_.rotate_.z);
+        ImGui::Text(str.c_str());
     }
 
     if (ImGui::TreeNode("Object")) {//Objectのツリーをクリックすると

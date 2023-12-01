@@ -73,6 +73,8 @@ public:
 	/// <param name="s">表示する名前（Player,positionみたいな）</param>
 	void Setting_Transform(Transform& _transform, float posmin, float posmax, float rot, float scl, std::string s);
 
+	//SettingTransformのXMFLOAT3だけバージョン（position想定）
+	void Setting_Float3(XMFLOAT3& _float3, float posmin, float posmax, std::string s);
 
 	/// <summary>
 	/// 呼び出されたオブジェクトのtransformを保存する関数
