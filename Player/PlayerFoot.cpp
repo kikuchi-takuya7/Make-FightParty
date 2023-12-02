@@ -51,7 +51,7 @@ void PlayerFoot::Initialize()
     //モデルの長さを4にしてるから
     footTrans_.position_.x += MODELLENGTH;
 
-    goalValue_ = { 1,1,1 };
+    goalValue_ = { 0,0,0 };
     
 }
 
@@ -67,8 +67,18 @@ void PlayerFoot::Update()
     //角度が出来たらモデル.rotateで回転させて、
 
 
+    //ローカル座標から三角比を用いて色々計算する
+    //x軸に回転させてからy軸に回転させようの巻き（セガのサイト通りに書いてるからx軸っぽいけど違う説もある）
+
+
+    //本当はx座標を移動させてもy軸しか動かないはずなのにz軸も動いてる。なぜ
+
     //目標地点(向くべき方向で、最終的な先端の位置)
     XMVECTOR goal = XMLoadFloat3(&goalValue_);
+
+    //回転が-にも行くようにする
+    XMFLOAT3 checkGoal;
+    XMStoreFloat3(&checkGoal, goal);
 
     //現在のベクトル（先端）
     XMFLOAT3 tmpFloat = footTrans_.position_;
@@ -77,12 +87,8 @@ void PlayerFoot::Update()
     //先端の位置のベクトル
     XMVECTOR nowPos = XMLoadFloat3(&tmpFloat);
 
-
-    //目標位置をローカル座標に( 多分いらない？)
-     
     
-    //ローカル座標から三角比を用いて色々計算する
-    //x軸に回転させてからy軸に回転させようの巻き（セガのサイト通りに書いてるからx軸っぽいけど違う説もある）
+    
 
     //Y軸回転させるための変数
     XMVECTOR goalTmp = goal;
@@ -97,14 +103,17 @@ void PlayerFoot::Update()
     float cos = acos(dotLen);
 
     //根本から回すから根元を回転させる
-    float tmp = -XMConvertToDegrees(cos);////////////////////////なぜかy軸が逆だったからここマイナスにしてる。何かあったときに後から忘れないように注意
-    if (tmp >= 0) {
-        tmp = -tmp;
+    cos = -XMConvertToDegrees(cos);////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分cosの仕様？
+
+    //cosがマイナスになるように
+    if (checkGoal.z <= 0) {
+        cos *= -1;
     }
-    footRoot_.rotate_.y = tmp;
+
+    footRoot_.rotate_.y = cos;
     
 
-    ///////////////こっから縦軸回転////////////
+    ///////////////こっから縦軸回転///////////////////////
     //y軸回転させてからz軸回転
 
     tmpFloat = footTrans_.position_;
@@ -124,35 +133,42 @@ void PlayerFoot::Update()
     //これでz軸回転の角度
     cos = acos(dotLen);
 
+    cos = XMConvertToDegrees(cos);
+
+    if (checkGoal.y <= 0) {
+        cos *= -1;
+    }
+
     //根本から回すから根元を回転させる
-    footRoot_.rotate_.z = XMConvertToDegrees(cos);
+    footRoot_.rotate_.z = cos;
 
     //これでfootRootのrotateはゴールの向きに向いたっていう想定。
     //footRoot.rotate分の回転行列をかけたあとに平行移動行列
 
-    //footRoot.rotateの分だけ回転
-    XMMATRIX rotZ,rotY;
-    rotY = XMMatrixRotationY(XMConvertToRadians(footRoot_.rotate_.y));
-    rotZ = XMMatrixRotationZ(XMConvertToRadians(footRoot_.rotate_.z));
+    //角度確認のテスト用
+    //footRoot_.rotate_.z = 0;
 
-    XMMATRIX rotMatrix = rotY * rotZ;
 
-     //腕の長さ分だけ平行移動させる
-    XMMATRIX moveLen = XMMatrixTranslation(MODELLENGTH, 0, 0);
 
-    //ベクトルにして行列を適用させる。モデルの根元のpositionをベクトルに
-    //平行移動させる必要ないならまだ行列いらない？
-    tmpFloat = footRoot_.position_;
+    ////腕の長さ分だけ平行移動させる
+    //XMMATRIX moveLen = XMMatrixTranslation(MODELLENGTH, 0, 0);
 
-    nowPos = XMLoadFloat3(&tmpFloat);
-    nowPos = XMVector3TransformCoord(nowPos, rotMatrix);
+    ////ベクトルにして行列を適用させる。モデルの根元のpositionをベクトルに
+    ////平行移動させる必要ないならまだ行列いらない？
+    //tmpFloat = footRoot_.position_;
 
-    //行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
-    XMStoreFloat3(&footRoot_.position_, nowPos);
+    ////footRoot.rotateの分だけ回転
+    //XMMATRIX rotZ,rotY;
+    //rotY = XMMatrixRotationY(XMConvertToRadians(footRoot_.rotate_.y));
+    //rotZ = XMMatrixRotationZ(XMConvertToRadians(footRoot_.rotate_.z));
 
-    //先端のTransformをモデルと会うように回転させる
-    /*footRoot_.rotate_.y = footTrans_.rotate_.y;
-    footRoot_.rotate_.z = footTrans_.rotate_.z;*/
+    //XMMATRIX rotMatrix = rotY * rotZ;
+
+    //nowPos = XMLoadFloat3(&tmpFloat);
+    //nowPos = XMVector3TransformCoord(nowPos, rotMatrix);
+    
+    ////行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
+    //XMStoreFloat3(&footRoot_.position_, nowPos);
 }
 
 //描画
@@ -174,14 +190,22 @@ void PlayerFoot::Release()
 
 void PlayerFoot::Imgui_Window()
 {
+
+    ImGui::SetNextWindowPos(ImVec2(875, 400), ImGuiCond_Once);//, ImGuiCond_FirstUseEverこれを付けると初めて実行したときだけこの大きさに設定されて。それ以降はimgui.iniに保存される
+    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Once);//ImGuiCond_Onceを付けると呼び出すときだけこの大きさになる
+
     ImGui::Begin("DataWindow");
     if (ImGui::CollapsingHeader("MapEditor"))
     {
-        if (ImGui::Button("stop")) {
-            int n = 0;
+        if (ImGui::Button("reset")) {
+            goalValue_.x = 0;
+            goalValue_.y = 0;
+            goalValue_.z = 0;
+            goalValue_.x = 0;
         }
 
         Setting_Float3(goalValue_, -10, 10, "goal");
+        ImGui::SliderFloat("rotate_x", &footRoot_.rotate_.x, 0, 360);
         
         std::string str = std::to_string(footRoot_.rotate_.x);
         ImGui::Text(str.c_str());
@@ -193,11 +217,11 @@ void PlayerFoot::Imgui_Window()
         ImGui::Text(str.c_str());
     }
 
-    if (ImGui::TreeNode("Object")) {//Objectのツリーをクリックすると
+    //if (ImGui::TreeNode("Object")) {//Objectのツリーをクリックすると
 
 
-        ImGui::TreePop();
-    }
+    //    ImGui::TreePop();
+    //}
 
     ImGui::End();
 }
