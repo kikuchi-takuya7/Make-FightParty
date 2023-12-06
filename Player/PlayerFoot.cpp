@@ -76,7 +76,7 @@ void PlayerFoot::Update()
 
 
     //この中はヨー回転とか実験中だったから中途半端
-#if 0
+#if 1
 
     //回転が-にも行くようにする
     XMFLOAT3 checkGoal;
@@ -113,7 +113,7 @@ void PlayerFoot::Update()
 
     
 
-    //footRoot_.rotate_.y = cos;
+    footRoot_.rotate_.y = cos;
     
 
     ///////////////こっから縦軸回転///////////////////////
@@ -147,7 +147,7 @@ void PlayerFoot::Update()
     
 
     //根本から回すから根元を回転させる
-    //footRoot_.rotate_.z = cos;
+    footRoot_.rotate_.z = cos;
 
 
     //こんな行列があったけどまだ使う必要はなさそう。
@@ -168,18 +168,66 @@ void PlayerFoot::Update()
     //現在のベクトル（先端）
     XMFLOAT3 tmpFloat = footTrans_.position_;
     tmpFloat.y = 0;
-
-    //先端の位置のベクトル
-    XMVECTOR nowPos = XMLoadFloat3(&tmpFloat);
+    XMVECTOR nowPosXZ = XMLoadFloat3(&tmpFloat);
 
     //Yの値を無くしてxz座標と考えた変数
     XMVECTOR goalTmp = goal;
     goalTmp = XMVectorSetY(goal, 0);
 
     //z（サイトではy）の長さを求める
-    XMVECTOR zLengthTmp = goalTmp - nowPos;
-    float zLength = Length(zLengthTmp);
-    float cosY = MODELLENGTH / 
+    XMVECTOR LengthTmp = goalTmp - nowPosXZ;
+    float zLength = Length(LengthTmp);
+
+    tmpFloat = footTrans_.position_;
+    tmpFloat.z = 0;
+    XMVECTOR nowPosXY = XMLoadFloat3(&tmpFloat);
+
+    //Zの値を無くしてxy座標と考えた変数
+    goalTmp = goal;
+    goalTmp = XMVectorSetZ(goal, 0);
+
+    //y（サイトではz）の長さを求める
+    LengthTmp = goalTmp - nowPosXY;
+    float yLength = Length(LengthTmp);
+
+    //xz座標から見た時の目標地点までの斜辺(高さ)
+    float hypotZ = sqrt(pow(MODELLENGTH, 2) + pow(zLength, 2));
+
+    //xy座標から見た時の斜辺(高さ)
+    float hypotY = sqrt(pow(MODELLENGTH, 2) + pow(zLength, 2) + pow(yLength, 2));
+
+    //コサインθy（サイトではz）
+    float cosY = MODELLENGTH / hypotZ;
+    float sinY = zLength / hypotZ;
+    //コサインθz（サイトではy）
+    float cosZ = hypotZ / hypotY;
+    float sinZ = yLength / hypotY;
+
+    ////xz平面で回転する回転行列を作る
+
+    //XMMATRIX rotY = { cosY, -sinY,   0,0,
+    //                  sinY,  cosY,   0,0,
+    //                  0,     0,      0,0,
+    //                  0,     0,      0,0 };
+
+
+    XMVECTOR nowPos = XMLoadFloat3(&tmpFloat);
+
+    //y軸で回転する回転行列を作る
+
+    XMMATRIX rotY = { cosY,  0,   -sinY, 0,
+                      0,     1,    0,    0,
+                      sinY,  0,    cosY, 0,
+                      0,     0,    0,    1 };
+
+    //ベクトルに回転行列かけてもそのベクトルが回転するだけで根元の回転数はわからない。でも2ボーンIKの時に絶対必要になるから大事
+    nowPos = XMVector3Transform(nowPos, rotY);
+
+    XMMATRIX rotY = { cosY,  0,   -sinY, 0,
+                      0,     1,    0,    0,
+                      sinY,  0,    cosY, 0,
+                      0,     0,    0,    1 };
+
 
 
 #endif
