@@ -53,6 +53,9 @@ void PlayerFoot::Initialize()
 
     goalValue_ = { 0,0,0 };
     prevFootTipPos_ = { 0,0,0 };
+
+    prevCosY_ = 0;
+    prevCosZ_ = 0;
     
 }
 
@@ -75,9 +78,9 @@ void PlayerFoot::Update()
     //目標地点(向くべき方向で、最終的な先端の位置)
     XMVECTOR goal = XMLoadFloat3(&goalValue_);
 
-    if (goalValue_ == prevFootTipPos_) {
+    /*if (goalValue_ == prevFootTipPos_) {
         return;
-    }
+    }*/
 
 #if 1
 
@@ -86,7 +89,7 @@ void PlayerFoot::Update()
     XMStoreFloat3(&checkGoal, goal);
 
     //現在のベクトル（先端）
-    XMFLOAT3 tmpFloat = prevFootTipPos_;
+    XMFLOAT3 tmpFloat = footTipTrans_.position_;
     tmpFloat.y = 0;
     
     //先端の位置のベクトル
@@ -104,7 +107,7 @@ void PlayerFoot::Update()
     //これでy軸回転の角度
     float cos = acos(dotLen);
 
-    float yaw = -cos;
+    float yaw = cos;
 
     //根本から回すから根元を回転させる
     cos = -XMConvertToDegrees(cos);////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分cosの仕様？
@@ -114,6 +117,7 @@ void PlayerFoot::Update()
         cos *= -1;
     }
 
+    prevCosY_ += cos;
     
 
     footRootTrans_.rotate_.y = cos;
@@ -122,7 +126,7 @@ void PlayerFoot::Update()
     ///////////////こっから縦軸回転///////////////////////
     //y軸回転させてからz軸回転
 
-    tmpFloat = prevFootTipPos_;
+    tmpFloat = footTipTrans_.position_;
     tmpFloat.z = 0;
 
     nowFootTipPos = XMLoadFloat3(&tmpFloat);
@@ -130,6 +134,7 @@ void PlayerFoot::Update()
     //z軸回転させるための変数
     goalTmp = goal;
     goalTmp = XMVectorSetZ(goal, 0);
+    //goalTmp = XMVectorSetX(goal, 0);
 
     goalN = XMVector3Normalize(goalTmp);
     nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
@@ -146,6 +151,8 @@ void PlayerFoot::Update()
     if (checkGoal.y <= 0) {
         cos *= -1;
     }
+
+    prevCosZ_ += cos;
 
     //根本から回すから根元を回転させる
     footRootTrans_.rotate_.z = cos;
@@ -232,8 +239,8 @@ void PlayerFoot::Update()
 //描画
 void PlayerFoot::Draw()
 {
-    Model::SetTransform(hModel_[0], footRootTrans_);
-    Model::Draw(hModel_[0]);
+    Model::SetTransform(hModel_[TIP], footRootTrans_);
+    Model::Draw(hModel_[TIP]);
 
     Transform ballTrans;
     ballTrans.position_ = goalValue_;

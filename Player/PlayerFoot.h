@@ -32,8 +32,8 @@ private:
 
     enum PLAYERFOOT {
 
-        FOOT,
-        LEG,
+        TIP,
+        ROOT,
         NUM
     };
 
