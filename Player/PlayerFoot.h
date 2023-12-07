@@ -39,7 +39,12 @@ private:
 
     int hModel_[NUM];
     int hBallModel_;
-    Transform footTrans_;
-    Transform footRoot_;
+    
+    Transform footTipTrans_;//–_‚Ìæ’[‚ÌTransform
+    Transform footRootTrans_;//–_‚Ìª–{
     XMFLOAT3 goalValue_;
+
+    XMFLOAT3 prevFootTipPos_;
+    float prevCosY_;//Y²‰ñ“]‚ÌŠp“xcos
+    float prevCosZ_;//Z²‰ñ“]‚ÌŠp“xcos
 };

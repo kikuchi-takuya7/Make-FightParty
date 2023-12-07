@@ -38,20 +38,21 @@ void PlayerFoot::Initialize()
     transform_.position_.y = 1.0f;
     transform_.position_.z = 5.0f;*/
 
-    footRoot_ = transform_;
+    footRootTrans_ = transform_;
 
     //モデル根本の位置
-    footRoot_.position_.x += 0.0f;
-    footRoot_.position_.y += 0.0f;
-    footRoot_.position_.z += 0.0f;
+    footRootTrans_.position_.x += 0.0f;
+    footRootTrans_.position_.y += 0.0f;
+    footRootTrans_.position_.z += 0.0f;
 
     //モデルの先端のposition
-    footTrans_ = footRoot_;
+    footTipTrans_ = footRootTrans_;
     
     //モデルの長さを4にしてるから
-    footTrans_.position_.x += MODELLENGTH;
+    footTipTrans_.position_.x += MODELLENGTH;
 
     goalValue_ = { 0,0,0 };
+    prevFootTipPos_ = { 0,0,0 };
     
 }
 
@@ -74,8 +75,10 @@ void PlayerFoot::Update()
     //目標地点(向くべき方向で、最終的な先端の位置)
     XMVECTOR goal = XMLoadFloat3(&goalValue_);
 
+    if (goalValue_ == prevFootTipPos_) {
+        return;
+    }
 
-    //この中はヨー回転とか実験中だったから中途半端
 #if 1
 
     //回転が-にも行くようにする
@@ -83,19 +86,19 @@ void PlayerFoot::Update()
     XMStoreFloat3(&checkGoal, goal);
 
     //現在のベクトル（先端）
-    XMFLOAT3 tmpFloat = footTrans_.position_;
+    XMFLOAT3 tmpFloat = prevFootTipPos_;
     tmpFloat.y = 0;
     
     //先端の位置のベクトル
-    XMVECTOR nowPos = XMLoadFloat3(&tmpFloat);
+    XMVECTOR nowFootTipPos = XMLoadFloat3(&tmpFloat);
 
     //Y軸回転させるための変数
     XMVECTOR goalTmp = goal;
     goalTmp = XMVectorSetY(goal, 0);
 
     XMVECTOR goalN = XMVector3Normalize(goalTmp);
-    XMVECTOR nowPosN = XMVector3Normalize(nowPos);
-    XMVECTOR dot = XMVector3Dot(goalN, nowPosN); //内積を求める
+    XMVECTOR nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
+    XMVECTOR dot = XMVector3Dot(goalN, nowFootTipPosN); //内積を求める
     float dotLen = XMVectorGetX(dot);
 
     //これでy軸回転の角度
@@ -113,24 +116,24 @@ void PlayerFoot::Update()
 
     
 
-    footRoot_.rotate_.y = cos;
+    footRootTrans_.rotate_.y = cos;
     
 
     ///////////////こっから縦軸回転///////////////////////
     //y軸回転させてからz軸回転
 
-    tmpFloat = footTrans_.position_;
+    tmpFloat = prevFootTipPos_;
     tmpFloat.z = 0;
 
-    nowPos = XMLoadFloat3(&tmpFloat);
+    nowFootTipPos = XMLoadFloat3(&tmpFloat);
 
     //z軸回転させるための変数
     goalTmp = goal;
     goalTmp = XMVectorSetZ(goal, 0);
 
     goalN = XMVector3Normalize(goalTmp);
-    nowPosN = XMVector3Normalize(nowPos);
-    dot = XMVector3Dot(goalN, nowPosN); //内積を求める
+    nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
+    dot = XMVector3Dot(goalN, nowFootTipPosN); //内積を求める
     dotLen = XMVectorGetX(dot);
 
     //これでz軸回転の角度
@@ -144,20 +147,20 @@ void PlayerFoot::Update()
         cos *= -1;
     }
 
-    
-
     //根本から回すから根元を回転させる
-    footRoot_.rotate_.z = cos;
+    footRootTrans_.rotate_.z = cos;
 
 
-    //こんな行列があったけどまだ使う必要はなさそう。
-    XMMATRIX rotMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, 0);
+    ////こんな行列があったけどまだ使う必要はなさそう。
+    //XMMATRIX rotMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, 0);
 
-    nowPos = XMLoadFloat3(&footRoot_.position_);
-    nowPos = XMVector3Transform(nowPos, rotMatrix);
-    
-    //行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
-    XMStoreFloat3(&footRoot_.position_, nowPos);
+    //nowFootTipPos = XMLoadFloat3(&footTipTrans_.position_);
+    //nowFootTipPos = XMVector3Transform(nowFootTipPos, rotMatrix);
+    //
+    ////行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
+    //XMStoreFloat3(&footTipTrans_.position_, nowFootTipPos);
+
+    prevFootTipPos_ = goalValue_;
 
 #else
 
@@ -166,7 +169,7 @@ void PlayerFoot::Update()
     XMStoreFloat3(&checkGoal, goal);
 
     //現在のベクトル（先端）
-    XMFLOAT3 tmpFloat = footTrans_.position_;
+    XMFLOAT3 tmpFloat = footTipTrans_.position_;
     tmpFloat.y = 0;
     XMVECTOR nowPosXZ = XMLoadFloat3(&tmpFloat);
 
@@ -178,7 +181,7 @@ void PlayerFoot::Update()
     XMVECTOR LengthTmp = goalTmp - nowPosXZ;
     float zLength = Length(LengthTmp);
 
-    tmpFloat = footTrans_.position_;
+    tmpFloat = footTipTrans_.position_;
     tmpFloat.z = 0;
     XMVECTOR nowPosXY = XMLoadFloat3(&tmpFloat);
 
@@ -203,15 +206,7 @@ void PlayerFoot::Update()
     float cosZ = hypotZ / hypotY;
     float sinZ = yLength / hypotY;
 
-    ////xz平面で回転する回転行列を作る
-
-    //XMMATRIX rotY = { cosY, -sinY,   0,0,
-    //                  sinY,  cosY,   0,0,
-    //                  0,     0,      0,0,
-    //                  0,     0,      0,0 };
-
-
-    XMVECTOR nowPos = XMLoadFloat3(&tmpFloat);
+    XMVECTOR nowFootTipPos = XMLoadFloat3(&tmpFloat);
 
     //y軸で回転する回転行列を作る
 
@@ -220,8 +215,8 @@ void PlayerFoot::Update()
                       sinY,  0,    cosY, 0,
                       0,     0,    0,    1 };
 
-    //ベクトルに回転行列かけてもそのベクトルが回転するだけで根元の回転数はわからない。でも2ボーンIKの時に絶対必要になるから大事
-    nowPos = XMVector3Transform(nowPos, rotY);
+    //ベクトルに回転行列かけてもそのベクトルが回転するだけで根元の回転数はわからない。でも2ボーンIKの時に多分必要になるから大事
+    nowFootTipPos = XMVector3Transform(nowFootTipPos, rotY);
 
     XMMATRIX rotY = { cosY,  0,   -sinY, 0,
                       0,     1,    0,    0,
@@ -237,7 +232,7 @@ void PlayerFoot::Update()
 //描画
 void PlayerFoot::Draw()
 {
-    Model::SetTransform(hModel_[0], footRoot_);
+    Model::SetTransform(hModel_[0], footRootTrans_);
     Model::Draw(hModel_[0]);
 
     Transform ballTrans;
@@ -268,15 +263,15 @@ void PlayerFoot::Imgui_Window()
         }
 
         Setting_Float3(goalValue_, -10, 10, "goal");
-        ImGui::SliderFloat("rotate_x", &footRoot_.rotate_.x, 0, 360);
+        ImGui::SliderFloat("rotate_x", &footRootTrans_.rotate_.x, 0, 360);
         
-        std::string str = std::to_string(footRoot_.rotate_.x);
+        std::string str = std::to_string(footRootTrans_.rotate_.x);
         ImGui::Text(str.c_str());
 
-        str = std::to_string(footRoot_.rotate_.y);
+        str = std::to_string(footRootTrans_.rotate_.y);
         ImGui::Text(str.c_str());
 
-        str = std::to_string(footRoot_.rotate_.z);
+        str = std::to_string(footRootTrans_.rotate_.z);
         ImGui::Text(str.c_str());
     }
 
