@@ -51,7 +51,7 @@ void PlayerFoot::Initialize()
     //ƒ‚ƒfƒ‹‚Ì’·‚³‚ð4‚É‚µ‚Ä‚é‚©‚ç
     footTipTrans_.position_.x += MODELLENGTH;
 
-    goalValue_ = { 0,0,0 };
+    goalValue_ = { 1,0,0 };
     prevFootTipPos_ = { 0,0,0 };
 
     prevCosY_ = 0;
