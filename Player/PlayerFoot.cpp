@@ -78,9 +78,9 @@ void PlayerFoot::Update()
     //目標地点(向くべき方向で、最終的な先端の位置)
     XMVECTOR goal = XMLoadFloat3(&goalValue_);
 
-    if (goalValue_ == prevFootTipPos_) {
+    /*if (goalValue_ == prevFootTipPos_) {
         return;
-    }
+    }*/
 
 #if 1
 
@@ -116,7 +116,7 @@ void PlayerFoot::Update()
     prevCosY_ += cos;
     
 
-    footRootTrans_.rotate_.y = prevCosY_;
+    footRootTrans_.rotate_.y = cos;
     
 
     ///////////////こっから縦軸回転///////////////////////
@@ -151,7 +151,7 @@ void PlayerFoot::Update()
     prevCosZ_ += cos;
 
     //根本から回すから根元を回転させる
-    footRootTrans_.rotate_.z = prevCosZ_;
+    footRootTrans_.rotate_.z = cos;
 
 
     ////こんな行列があったけどまだ使う必要はなさそう。
@@ -163,8 +163,8 @@ void PlayerFoot::Update()
     ////行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
     //XMStoreFloat3(&footTipTrans_.position_, nowFootTipPos);
 
-    prevFootTipPos_ = goalValue_;
-    footTipTrans_.position_ = goalValue_;
+    //prevFootTipPos_ = goalValue_;
+    //footTipTrans_.position_ = goalValue_;
 
 #else
 
