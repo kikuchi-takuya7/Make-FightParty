@@ -36,7 +36,7 @@ void Transform::Calclation()
 XMMATRIX Transform::GetWorldMatrix() 
 {
 	Calclation();
-	if (pParent_)
+	if (pParent_)//ƒ[ƒJƒ‹‹óŠÔ‚É‚ ‚é‚È‚ç?‘½•ª
 	{
 		return  matScale_ * matRotate_ * matTranslate_ * pParent_->GetWorldMatrix();
 	}

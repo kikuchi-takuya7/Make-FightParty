@@ -28,6 +28,9 @@ public:
 
     void Imgui_Window() override;
 
+    //戻り値はラジアン
+    float DotCos(XMVECTOR vec1, XMVECTOR vec2);
+
 private:
 
     enum PLAYERFOOT {
@@ -42,9 +45,10 @@ private:
     
     Transform footTipTrans_;//棒の先端のTransform
     Transform footRootTrans_;//棒の根本
+    Transform ballTrans_;//ボールのtransform
     XMFLOAT3 goalValue_;
 
-    XMFLOAT3 prevFootTipPos_;
+    XMFLOAT3 prevBallRot_;
     float prevCosY_;//Y軸回転の角度cos
     float prevCosZ_;//Z軸回転の角度cos
 };
