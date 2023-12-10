@@ -6,3 +6,7 @@ std::sin():上と同じで角度を入れるとsinの長さ（単位円）を求
 std::tan():
 
 std::acos():引数にcosの長さ（0～1の範囲）を入れることでその単位円の中の三角形の角度を計算してくれる。
+
+XMMatrixTranslation():戻り値で平行移動行列を作ってくれる
+
+XMStoreFloat3():ベクトルをXMFLOAT3にしてくれる。
