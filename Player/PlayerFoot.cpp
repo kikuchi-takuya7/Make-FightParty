@@ -183,78 +183,40 @@ void PlayerFoot::Update()
     //footTipTrans_.position_ = goalValue_;
 
 #else
-
-    ////現在のベクトル（先端）
-    //XMFLOAT3 tmpFloat = footTipTrans_.position_;
-    //tmpFloat.y = 0;
-    //XMVECTOR nowPosXZ = XMLoadFloat3(&tmpFloat);
-
-    ////Yの値を無くしてxz座標と考えた変数
-    //XMVECTOR goalTmp = goal;
-    //goalTmp = XMVectorSetY(goal, 0);
-
-    ////z（サイトではy）の長さを求める
-    //XMVECTOR LengthTmp = goalTmp - nowPosXZ;
-    //float zLength = Length(LengthTmp);
-
- 
-    //////////////////////ここからyの長さを求める///////////////////////
-    //
-    //tmpFloat = footTipTrans_.position_;
-    //tmpFloat.z = 0;
-    //XMVECTOR nowPosXY = XMLoadFloat3(&tmpFloat);
-
-    ////Zの値を無くしてxy座標と考えた変数
-    //goalTmp = goal;
-    //goalTmp = XMVectorSetZ(goal, 0);
-
-    ////y（サイトではz）の長さを求める
-    //LengthTmp = goalTmp - nowPosXY;
-    //float yLength = Length(LengthTmp);
-
-
-    ///////////////////////ここから斜辺とか求める////////////////////////////////////
-
-
-    ////xz座標から見た時の目標地点までの斜辺(高さ)
-    //float hypotZ = sqrt(pow(MODELLENGTH, 2) + pow(zLength, 2));
-
-    ////xy座標から見た時の斜辺(高さ)
-    //float hypotY = sqrt(pow(MODELLENGTH, 2) + pow(zLength, 2) + pow(yLength, 2));
-
-    ////コサインθy（サイトではz）
-    //float cosY = MODELLENGTH / hypotZ;
-    //float sinY = zLength / hypotZ;
-    ////コサインθz（サイトではy）
-    //float cosZ = hypotZ / hypotY;
-    //float sinZ = yLength / hypotY;
-
-
     
+    //変更前の先端の座標を覚えておく
+    XMFLOAT3 prevBallPos = ballTrans_.position_;
 
-    ////y軸で回転する回転行列を作る
-    //XMMATRIX rotY = { cosY,  0,   -sinY, 0,
-    //                  0,     1,    0,    0,
-    //                  sinY,  0,    cosY, 0,
-    //                  0,     0,    0,    1 };
+    XMVECTOR nowFootTipPos = XMLoadFloat3(&ballTrans_.position_);
 
-    ////ベクトルに回転行列かけてもそのベクトルが回転するだけで根元の回転数はわからない。でも2ボーンIKの時に多分必要になるから大事
-    //nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotY);
+    //回転した差分だけ回転させる
+    XMFLOAT3 tmp = Transform::Float3Sub(goalValue_, prevBallRot_);
 
-    ////DirectXの座標系だとこれrotXになっちゃってる可能性。http://marupeke296.com/DXG_No39_WorldMatrixInformation.html
-    //XMMATRIX rotZ = { 0,     0,       0,      0,
-    //                  0,     1,       0,      0,
-    //                  0,     cosZ,   -sinY,   0,
-    //                  0,     sinY,    cosY,   1 };
+    XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(tmp.x));
+    XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(tmp.y));
+    XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(tmp.z));
 
+    //ワールド逆行列でローカル返還座標にする
+    XMMATRIX worldMat = GetWorldMatrix();
+    worldMat = XMMatrixInverse(nullptr, worldMat);
 
-    //nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotZ);
+    XMMATRIX parentMat = transform_.matScale_ * transform_.matRotate_ * transform_.matTranslate_;
+    parentMat = XMMatrixInverse(nullptr, parentMat);
 
+    XMMATRIX rotMatrix = rotY * rotZ * rotX;//ロールピッチヨー回転の順番にしてみる
 
+    //2軸で回転させるとワールド座標の軸で回転してしまうためローカル座標に変換してるつもりなんだけどなぁ
+    nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotMatrix * worldMat);
 
+    XMStoreFloat3(&ballTrans_.position_, nowFootTipPos);
+
+    //prevを更新
+    prevBallRot_ = goalValue_;
+
+    ///////////////こっから根元回転/////////////
 
     ////現在のベクトル（先端）
-    //XMFLOAT3 tmpFloat = prevBallRot_;
+    //XMFLOAT3 tmpFloat = prevBallPos;
     //tmpFloat.y = 0;
 
     ////先端の位置のベクトル
@@ -265,22 +227,25 @@ void PlayerFoot::Update()
     //goalTmp = XMVectorSetY(goal, 0);
 
     ////これでy軸回転の角度
-    //float cos = DotCos(nowBallPos,goalTmp);
+    //float acosY = DotCos(nowBallPos, goalTmp);
 
     ////根本から回すから根元を回転させる
-    //cos = -cos;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分cosの仕様？
+    //acosY = -acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
 
-    ////cosがマイナスになるように
-    ///*if (goalValue_.z <= 0) {
-    //    cos *= -1;
-    //}*/
+    ////acosYがマイナスになるように
+    //if (footTipTrans_.position_.z <= 0) {
+    //    acosY *= -1;
+    //}
 
-    //XMMATRIX rotY = XMMatrixRotationY(cos);
+    //prevCosY_ = acosY - prevCosY_;
+
+    ////根本から回すから根元を回転させる
+    //footRootTrans_.rotate_.y = prevCosY_;
 
     /////////////////こっから縦軸回転///////////////////////
+    //
     ////y軸回転させてからz軸回転
-
-    //tmpFloat = prevBallRot_;
+    //tmpFloat = prevBallPos;
     //tmpFloat.z = 0;
 
     //nowBallPos = XMLoadFloat3(&tmpFloat);
@@ -291,37 +256,16 @@ void PlayerFoot::Update()
     ////goalTmp = XMVectorSetY(goal, tmpFloat.y);
 
     ////これでz軸回転の角度
-    //cos = DotCos(nowBallPos, goalTmp);
+    //float acosZ = DotCos(nowBallPos, goalTmp);
 
-    ///*if (goalValue_.y <= 0) {
-    //    cos *= -1;
-    //}*/
+    //if (footTipTrans_.position_.y <= 0) {
+    //    acosZ *= -1;
+    //}
 
-    //XMMATRIX rotZ = XMMatrixRotationZ(cos);
+    //prevCosZ_ = acosZ - prevCosZ_;
 
-
-
-    XMVECTOR nowFootTipPos = XMLoadFloat3(&ballTrans_.position_);
-
-    float te = XMConvertToRadians(goalValue_.y);
-
-    XMFLOAT3 tmp = Transform::Float3Sub(goalValue_, prevBallRot_);
-
-    XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(tmp.x));
-    XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(tmp.y));
-    XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(tmp.z));
-
-    XMMATRIX rocalMat = GetWorldMatrix();
-
-    rocalMat = XMMatrixInverse(nullptr, rocalMat);
-
-    XMMATRIX rotMatrix = rotZ * rotX * rotY;//ロールピッチヨー回転の順番
-
-    nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotMatrix * rocalMat);
-
-    XMStoreFloat3(&ballTrans_.position_, nowFootTipPos);
-
-    prevBallRot_ = goalValue_;
+    ////根本から回すから根元を回転させる
+    //footRootTrans_.rotate_.z = prevCosZ_;
 
 #endif
 
