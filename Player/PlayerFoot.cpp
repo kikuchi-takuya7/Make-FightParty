@@ -52,24 +52,22 @@ void PlayerFoot::Initialize()
     footTipTrans_.position_.x += MODELLENGTH;
 
     goalValue_ = { 0,0,0 };
-    ballTrans_.position_ = { 0,0,0 };
+    ballVec_ = { 1,0,0 };
     prevBallRot_ = { 0,0,0 };
 
     prevCosY_ = 0;
     prevCosZ_ = 0;
 
-    XMVECTOR nowFootTipPos = XMLoadFloat3(&ballTrans_.position_);
+    XMVECTOR nowFootTipPos = ballVec_;
 
     //腕の長さ分だけ平行移動させる(今回はボールだから単位円の中)
     XMMATRIX moveLen = XMMatrixTranslation(1, 0, 0);
 
-    XMMATRIX rotMatrix = moveLen;
+    XMMATRIX moveMatrix = moveLen;
 
-    nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotMatrix);
+    nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, moveMatrix);
 
-    XMStoreFloat3(&ballTrans_.position_, nowFootTipPos);
-
-    prevBallRot_ = ballTrans_.position_;
+    nowFootTipPos = ballVec_;
     
 }
 
@@ -90,9 +88,9 @@ void PlayerFoot::Update()
   
 
     //目標地点(向くべき方向で、最終的な先端の位置)
-    XMVECTOR goal = XMLoadFloat3(&ballTrans_.position_);
+    XMVECTOR goal = ballVec_;
 
-    //ballTrans_.rotate_ = goalValue_;
+    //ballVec_.rotate_ = goalValue_;
 
     if (goalValue_ == prevBallRot_) {
         return;
@@ -185,9 +183,7 @@ void PlayerFoot::Update()
 #else
     
     //変更前の先端の座標を覚えておく
-    XMFLOAT3 prevBallPos = ballTrans_.position_;
-
-    XMVECTOR nowFootTipPos = XMLoadFloat3(&ballTrans_.position_);
+    XMVECTOR nowFootTipPos = ballVec_;
 
     //回転した差分だけ回転させる
     XMFLOAT3 tmp = Transform::Float3Sub(goalValue_, prevBallRot_);
@@ -208,7 +204,7 @@ void PlayerFoot::Update()
     //2軸で回転させるとワールド座標の軸で回転してしまうためローカル座標に変換してるつもりなんだけどなぁ
     nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotMatrix * worldMat);
 
-    XMStoreFloat3(&ballTrans_.position_, nowFootTipPos);
+    ballVec_ = nowFootTipPos;
 
     //prevを更新
     prevBallRot_ = goalValue_;
@@ -277,7 +273,9 @@ void PlayerFoot::Draw()
     Model::SetTransform(hModel_[TIP], footRootTrans_);
     Model::Draw(hModel_[TIP]);
 
-    
+    Transform ballTrans_;
+
+    XMStoreFloat3(&ballTrans_.position_, ballVec_);
     
     Model::SetTransform(hBallModel_, ballTrans_);
     Model::Draw(hBallModel_);
@@ -316,15 +314,7 @@ void PlayerFoot::Imgui_Window()
         str = std::to_string(footRootTrans_.rotate_.z);
         ImGui::Text(str.c_str());
 
-        ImGui::Text("ballTrans.rotate");
-        str = std::to_string(ballTrans_.rotate_.x);
-        ImGui::Text(str.c_str());
 
-        str = std::to_string(footRootTrans_.rotate_.y);
-        ImGui::Text(str.c_str());
-
-        str = std::to_string(footRootTrans_.rotate_.z);
-        ImGui::Text(str.c_str());
     }
 
     //if (ImGui::TreeNode("Object")) {//Objectのツリーをクリックすると

@@ -45,7 +45,8 @@ private:
     
     Transform footTipTrans_;//棒の先端のTransform
     Transform footRootTrans_;//棒の根本
-    Transform ballTrans_;//ボールのtransform
+    Transform ballTrans_;
+    XMVECTOR ballVec_;//ボールのtransform
     XMFLOAT3 goalValue_;
 
     XMFLOAT3 prevBallRot_;
