@@ -52,22 +52,21 @@ void PlayerFoot::Initialize()
     footTipTrans_.position_.x += MODELLENGTH;
 
     goalValue_ = { 0,0,0 };
-    ballVec_ = { 1,0,0 };
-    prevBallRot_ = { 0,0,0 };
+    prevBallRot_ = goalValue_;
 
     prevCosY_ = 0;
     prevCosZ_ = 0;
 
-    XMVECTOR nowFootTipPos = ballVec_;
+    
 
     //腕の長さ分だけ平行移動させる(今回はボールだから単位円の中)
     XMMATRIX moveLen = XMMatrixTranslation(1, 0, 0);
 
     XMMATRIX moveMatrix = moveLen;
 
-    nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, moveMatrix);
+    ballVec_ = XMVector3TransformCoord(ballVec_, moveMatrix);
 
-    nowFootTipPos = ballVec_;
+    XMStoreFloat3(&ballTrans_.position_, ballVec_);
     
 }
 
@@ -88,9 +87,7 @@ void PlayerFoot::Update()
   
 
     //目標地点(向くべき方向で、最終的な先端の位置)
-    XMVECTOR goal = ballVec_;
-
-    //ballVec_.rotate_ = goalValue_;
+    XMVECTOR prevBallVec = ballVec_;
 
     if (goalValue_ == prevBallRot_) {
         return;
@@ -106,8 +103,8 @@ void PlayerFoot::Update()
     XMVECTOR nowFootTipPos = XMLoadFloat3(&tmpFloat);
 
     //Y軸回転させるための変数
-    XMVECTOR goalTmp = goal;
-    goalTmp = XMVectorSetY(goal, 0);
+    XMVECTOR goalTmp = prevBallVec;
+    goalTmp = XMVectorSetY(prevBallVec, 0);
 
     XMVECTOR goalN = XMVector3Normalize(goalTmp);
     XMVECTOR nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
@@ -142,9 +139,9 @@ void PlayerFoot::Update()
     nowFootTipPos = XMLoadFloat3(&tmpFloat);
 
     //z軸回転させるための変数
-    goalTmp = goal;
-    goalTmp = XMVectorSetZ(goal, 0);
-    //goalTmp = XMVectorSetY(goal, tmpFloat.y);
+    goalTmp = prevBallVec;
+    goalTmp = XMVectorSetZ(prevBallVec, 0);
+    //goalTmp = XMVectorSetY(prevBallVec, tmpFloat.y);
 
     goalN = XMVector3Normalize(goalTmp);
     nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
@@ -181,9 +178,6 @@ void PlayerFoot::Update()
     //footTipTrans_.position_ = goalValue_;
 
 #else
-    
-    //変更前の先端の座標を覚えておく
-    XMVECTOR nowFootTipPos = ballVec_;
 
     //回転した差分だけ回転させる
     XMFLOAT3 tmp = Transform::Float3Sub(goalValue_, prevBallRot_);
@@ -202,66 +196,69 @@ void PlayerFoot::Update()
     XMMATRIX rotMatrix = rotY * rotZ * rotX;//ロールピッチヨー回転の順番にしてみる
 
     //2軸で回転させるとワールド座標の軸で回転してしまうためローカル座標に変換してるつもりなんだけどなぁ
-    nowFootTipPos = XMVector3TransformCoord(nowFootTipPos, rotMatrix * worldMat);
-
-    ballVec_ = nowFootTipPos;
+    ballVec_ = XMVector3TransformCoord(ballVec_, rotMatrix * worldMat);
 
     //prevを更新
     prevBallRot_ = goalValue_;
 
-    ///////////////こっから根元回転/////////////
+    //半径１からずれないように
+    ballVec_ = XMVector3Normalize(ballVec_);
 
-    ////現在のベクトル（先端）
-    //XMFLOAT3 tmpFloat = prevBallPos;
-    //tmpFloat.y = 0;
+    //ボールの表示用トランスフォームに入れる
+    XMStoreFloat3(&ballTrans_.position_, ballVec_);
 
-    ////先端の位置のベクトル
-    //XMVECTOR nowBallPos = XMLoadFloat3(&tmpFloat);
+    ///////////////ボール（目標位置）を回転させてから根元回転/////////////
 
-    ////Y軸回転させるための変数
-    //XMVECTOR goalTmp = goal;
-    //goalTmp = XMVectorSetY(goal, 0);
+    //現在のベクトル（先端）
+    //先端の位置のベクトル
+    XMVECTOR nowBallPosXZ = prevBallVec;
+    nowBallPosXZ = XMVectorSetY(nowBallPosXZ, 0);
+    
+    //Y軸回転させるための変数
+    XMVECTOR goalTmpXZ = ballVec_;
+    goalTmpXZ = XMVectorSetY(goalTmpXZ, 0);
 
-    ////これでy軸回転の角度
-    //float acosY = DotCos(nowBallPos, goalTmp);
+    //これでy軸回転の角度
+    float acosY = DotCos(nowBallPosXZ, goalTmpXZ);
 
-    ////根本から回すから根元を回転させる
-    //acosY = -acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
+    //根本から回すから根元を回転させる
+    acosY = -acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
 
-    ////acosYがマイナスになるように
-    //if (footTipTrans_.position_.z <= 0) {
-    //    acosY *= -1;
-    //}
+    //acosYがマイナスになるように
+    if (ballTrans_.position_.z <= 0) {
+        acosY *= -1;
+    }
 
-    //prevCosY_ = acosY - prevCosY_;
+    //根本から回すから根元を回転させる
+    footRootTrans_.rotate_.y += prevCosY_ - acosY;
 
-    ////根本から回すから根元を回転させる
-    //footRootTrans_.rotate_.y = prevCosY_;
+    prevCosY_ = acosY;
 
-    /////////////////こっから縦軸回転///////////////////////
-    //
+    ///////////////こっから縦軸回転///////////////////////
+    
     ////y軸回転させてからz軸回転
-    //tmpFloat = prevBallPos;
-    //tmpFloat.z = 0;
-
-    //nowBallPos = XMLoadFloat3(&tmpFloat);
+    //XMVECTOR nowBallPosXY = ballVec_;
+    //nowBallPosXY = XMVectorSetZ(nowBallPosXY, 0);
 
     ////z軸回転させるための変数
-    //goalTmp = goal;
-    //goalTmp = XMVectorSetZ(goal, 0);
-    ////goalTmp = XMVectorSetY(goal, tmpFloat.y);
+    //XMVECTOR goalTmpXY = prevBallVec;
+    //goalTmpXY = XMVectorSetZ(goalTmpXY, 0);
+    ////goalTmpXY = XMVectorSetY(prevBallVec, tmpFloat.y);
 
     ////これでz軸回転の角度
-    //float acosZ = DotCos(nowBallPos, goalTmp);
+    //float acosZ = DotCos(nowBallPosXY, goalTmpXY);
 
-    //if (footTipTrans_.position_.y <= 0) {
+    //if (ballTrans_.position_.y <= 0) {
     //    acosZ *= -1;
     //}
 
-    //prevCosZ_ = acosZ - prevCosZ_;
+    //prevCosZ_ += acosZ;
 
     ////根本から回すから根元を回転させる
-    //footRootTrans_.rotate_.z = prevCosZ_;
+    //footRootTrans_.rotate_.z += acosZ;
+
+    ////ボールの位置に足の先端の座標を回転出来たら更新と思ったけど足の先端は長さ4の位置にないとだから意味ないね
+    //footTipTrans_.position_ = ballTrans_.position_;
 
 #endif
 
@@ -272,10 +269,6 @@ void PlayerFoot::Draw()
 {
     Model::SetTransform(hModel_[TIP], footRootTrans_);
     Model::Draw(hModel_[TIP]);
-
-    Transform ballTrans_;
-
-    XMStoreFloat3(&ballTrans_.position_, ballVec_);
     
     Model::SetTransform(hBallModel_, ballTrans_);
     Model::Draw(hBallModel_);
@@ -301,7 +294,7 @@ void PlayerFoot::Imgui_Window()
             goalValue_.z = 0;
         }
 
-        Setting_Float3(goalValue_, 0, 360, "goal");
+        Setting_Float3(goalValue_, 0, 360, "prevBallVec");
         //ImGui::SliderFloat("rotate_x", &footRootTrans_.rotate_.x, 0, 360);
         
         ImGui::Text("footRootTrans.rotate");
@@ -312,6 +305,16 @@ void PlayerFoot::Imgui_Window()
         ImGui::Text(str.c_str());
 
         str = std::to_string(footRootTrans_.rotate_.z);
+        ImGui::Text(str.c_str());
+
+        ImGui::Text("ballTrans.pos");
+        str = std::to_string(ballTrans_.position_.x);
+        ImGui::Text(str.c_str());
+
+        str = std::to_string(ballTrans_.position_.y);
+        ImGui::Text(str.c_str());
+
+        str = std::to_string(ballTrans_.position_.z);
         ImGui::Text(str.c_str());
 
 
