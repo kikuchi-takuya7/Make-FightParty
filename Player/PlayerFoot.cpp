@@ -93,92 +93,6 @@ void PlayerFoot::Update()
         return;
     }
 
-#if 0
-
-    //現在のベクトル（先端）
-    XMFLOAT3 tmpFloat = footTipTrans_.position_;
-    tmpFloat.y = 0;
-    
-    //先端の位置のベクトル
-    XMVECTOR nowFootTipPos = XMLoadFloat3(&tmpFloat);
-
-    //Y軸回転させるための変数
-    XMVECTOR goalTmp = prevBallVec;
-    goalTmp = XMVectorSetY(prevBallVec, 0);
-
-    XMVECTOR goalN = XMVector3Normalize(goalTmp);
-    XMVECTOR nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
-    XMVECTOR dot = XMVector3Dot(goalN, nowFootTipPosN); //内積を求める
-    float dotLen = XMVectorGetX(dot);
-
-    //これでy軸回転の角度
-    float cos = acos(dotLen);
-
-    float yaw = cos;
-
-    //根本から回すから根元を回転させる
-    cos = -XMConvertToDegrees(cos);////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分cosの仕様？
-
-    //cosがマイナスになるように
-    if (goalValue_.z <= 0) {
-        cos *= -1;
-    }
-
-    prevCosY_ += cos;
-    
-
-    footRootTrans_.rotate_.y = cos;
-    
-
-    ///////////////こっから縦軸回転///////////////////////
-    //y軸回転させてからz軸回転
-
-    tmpFloat = footTipTrans_.position_;
-    tmpFloat.z = 0;
-
-    nowFootTipPos = XMLoadFloat3(&tmpFloat);
-
-    //z軸回転させるための変数
-    goalTmp = prevBallVec;
-    goalTmp = XMVectorSetZ(prevBallVec, 0);
-    //goalTmp = XMVectorSetY(prevBallVec, tmpFloat.y);
-
-    goalN = XMVector3Normalize(goalTmp);
-    nowFootTipPosN = XMVector3Normalize(nowFootTipPos);
-    dot = XMVector3Dot(goalN, nowFootTipPosN); //内積を求める
-    dotLen = XMVectorGetX(dot);
-
-    //これでz軸回転の角度
-    cos = acos(dotLen);
-
-    float pitch = cos;
-
-    cos = XMConvertToDegrees(cos);
-
-    if (goalValue_.y <= 0) {
-        cos *= -1;
-    }
-
-    prevCosZ_ += cos;
-
-    //根本から回すから根元を回転させる
-    footRootTrans_.rotate_.z = cos;
-
-
-    ////こんな行列があったけどまだ使う必要はなさそう。
-    //XMMATRIX rotMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, 0);
-
-    //nowFootTipPos = XMLoadFloat3(&footTipTrans_.position_);
-    //nowFootTipPos = XMVector3Transform(nowFootTipPos, rotMatrix);
-    //
-    ////行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
-    //XMStoreFloat3(&footTipTrans_.position_, nowFootTipPos);
-
-    //prevBallRot_ = goalValue_;
-    //footTipTrans_.position_ = goalValue_;
-
-#else
-
     //回転した差分だけ回転させる
     XMFLOAT3 tmp = Transform::Float3Sub(goalValue_, prevBallRot_);
 
@@ -211,7 +125,7 @@ void PlayerFoot::Update()
 
     //現在のベクトル（先端）
     //先端の位置のベクトル
-    XMVECTOR nowBallPosXZ = prevBallVec;
+    XMVECTOR nowBallPosXZ = {1,0,0,0};
     nowBallPosXZ = XMVectorSetY(nowBallPosXZ, 0);
     
     //Y軸回転させるための変数
@@ -222,45 +136,46 @@ void PlayerFoot::Update()
     float acosY = DotCos(nowBallPosXZ, goalTmpXZ);
 
     //根本から回すから根元を回転させる
-    acosY = acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
+    acosY = XMConvertToDegrees(acosY);////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
 
     //acosYがマイナスになるように
-    /*if (ballTrans_.position_.z <= 0) {
-        acosY *= -1;
-    }*/
+    if (ballTrans_.position_.z <= 0) {
+        //acosY *= -1;
+    }
 
     //根本から回すから根元を回転させる
-    footRootTrans_.rotate_.y += XMConvertToDegrees(acosY);
+    footRootTrans_.rotate_.y = acosY;
 
     prevCosY_ = acosY;
 
     ///////////////こっから縦軸回転///////////////////////
     
-    ////y軸回転させてからz軸回転
-    //XMVECTOR nowBallPosXY = ballVec_;
-    //nowBallPosXY = XMVectorSetZ(nowBallPosXY, 0);
+    //y軸回転させてからz軸回転
+    XMVECTOR nowBallPosXY = { 1,0,0,0 };
+    nowBallPosXY = XMVectorSetZ(nowBallPosXY, 0);
 
-    ////z軸回転させるための変数
-    //XMVECTOR goalTmpXY = prevBallVec;
-    //goalTmpXY = XMVectorSetZ(goalTmpXY, 0);
-    ////goalTmpXY = XMVectorSetY(prevBallVec, tmpFloat.y);
+    //z軸回転させるための変数
+    XMVECTOR goalTmpXY = prevBallVec;
+    goalTmpXY = XMVectorSetZ(goalTmpXY, 0);
+    //goalTmpXY = XMVectorSetY(prevBallVec, tmpFloat.y);
 
-    ////これでz軸回転の角度
-    //float acosZ = DotCos(nowBallPosXY, goalTmpXY);
+    //これでz軸回転の角度
+    float acosZ = DotCos(nowBallPosXY, goalTmpXY);
 
-    //if (ballTrans_.position_.y <= 0) {
-    //    acosZ *= -1;
-    //}
+    acosZ = XMConvertToDegrees(acosZ);
 
-    //prevCosZ_ += acosZ;
+    if (ballTrans_.position_.y <= 0) {
+        //acosZ *= -1;
+    }
 
-    ////根本から回すから根元を回転させる
-    //footRootTrans_.rotate_.z += acosZ;
+    prevCosZ_ += acosZ;
 
-    ////ボールの位置に足の先端の座標を回転出来たら更新と思ったけど足の先端は長さ4の位置にないとだから意味ないね
-    //footTipTrans_.position_ = ballTrans_.position_;
+    //根本から回すから根元を回転させる
+    footRootTrans_.rotate_.z = acosZ;
 
-#endif
+    //ボールの位置に足の先端の座標を回転出来たら更新と思ったけど足の先端は長さ4の位置にないとだから意味ないね
+    footTipTrans_.position_ = ballTrans_.position_;
+
 
 }
 
