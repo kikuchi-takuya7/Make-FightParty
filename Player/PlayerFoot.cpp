@@ -222,15 +222,15 @@ void PlayerFoot::Update()
     float acosY = DotCos(nowBallPosXZ, goalTmpXZ);
 
     //根本から回すから根元を回転させる
-    acosY = -acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
+    acosY = acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
 
     //acosYがマイナスになるように
-    if (ballTrans_.position_.z <= 0) {
+    /*if (ballTrans_.position_.z <= 0) {
         acosY *= -1;
-    }
+    }*/
 
     //根本から回すから根元を回転させる
-    footRootTrans_.rotate_.y += prevCosY_ - acosY;
+    footRootTrans_.rotate_.y += XMConvertToDegrees(acosY);
 
     prevCosY_ = acosY;
 
@@ -329,6 +329,7 @@ void PlayerFoot::Imgui_Window()
     ImGui::End();
 }
 
+//二つのベクトルを正規化して内積からacos角度を求める。戻り値はラジアン
 float PlayerFoot::DotCos(XMVECTOR vec1, XMVECTOR vec2)
 {
 
