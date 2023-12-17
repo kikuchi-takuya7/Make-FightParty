@@ -222,7 +222,7 @@ void PlayerFoot::Update()
     float acosY = DotCos(nowBallPosXZ, goalTmpXZ);
 
     //根本から回すから根元を回転させる
-    acosY = acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
+    acosY = -acosY;////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分acosYの仕様？
 
     //acosYがマイナスになるように
     /*if (ballTrans_.position_.z <= 0) {
