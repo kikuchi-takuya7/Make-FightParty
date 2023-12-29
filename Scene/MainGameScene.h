@@ -1,14 +1,14 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "../Engine/GameObject.h"
 
 
 //■■シーンを管理するクラス
-class IKEditorScene : public GameObject
+class MainGameScene : public GameObject
 {
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	IKEditorScene(GameObject* parent);
+	MainGameScene(GameObject* parent);
 
 	//初期化
 	void Initialize() override;

@@ -1,8 +1,8 @@
 #include "sceneManager.h"
 
 #include "../Scene/MapEditorScene.h"
-#include "../Scene/IKEditorScene.h"
 #include "../Scene/DevelopSelectScene.h"
+#include "../Scene/MainGameScene.h"
 #include "Model.h"
 #include "Image.h"
 #include "Audio.h"
@@ -18,9 +18,9 @@ SceneManager::SceneManager(GameObject* parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_IKEDITOR;
+	currentSceneID_ = SCENE_ID_MAINGAME;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<IKEditorScene>(this);
+	Instantiate<MainGameScene>(this);
 }
 
 //更新
@@ -42,7 +42,7 @@ void SceneManager::Update()
 		{
 		case SCENE_ID_DEVELOP_SELECT: Instantiate<DevelopSelectScene>(this); break;
 		case SCENE_ID_MAPEDITOR: Instantiate<MapEditorScene>(this); break;
-		case SCENE_ID_IKEDITOR: Instantiate<IKEditorScene>(this); break;
+		case SCENE_ID_MAINGAME: Instantiate<MainGameScene>(this); break;
 		}
 		Audio::Initialize();
 		currentSceneID_ = nextSceneID_;

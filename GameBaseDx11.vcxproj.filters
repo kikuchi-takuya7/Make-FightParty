@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="01Engine">
       <UniqueIdentifier>{e5fccdcb-f299-4448-bdb6-01fa28039576}</UniqueIdentifier>
     </Filter>
@@ -44,6 +40,13 @@
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{43fe54d2-ee69-4ac9-9e0d-8f0b6645a1b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{a91a1ea1-9aa8-484a-a9ae-54ce81d4a38f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -155,23 +158,20 @@
     <ClCompile Include="Engine\MapEditor\MapSource\TestWall.cpp">
       <Filter>01Engine\MapEditor\MapSousce</Filter>
     </ClCompile>
-    <ClCompile Include="Player\PlayerFoot.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Player\PlayerHand.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\InverseKinematics.cpp">
-      <Filter>01Engine\ResourceManager</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\MapEditorScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\IKEditorScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene\DevelopSelectScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\MainGameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,23 +289,20 @@
     <ClInclude Include="Engine\MapEditor\MapSource\TestWall.h">
       <Filter>01Engine\MapEditor\MapSousce</Filter>
     </ClInclude>
-    <ClInclude Include="Player\PlayerFoot.h">
-      <Filter>Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Player\PlayerHand.h">
-      <Filter>Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\InverseKinematics.h">
-      <Filter>01Engine\ResourceManager</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\MapEditorScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\IKEditorScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\DevelopSelectScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\MainGameScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerState.h">
+      <Filter>State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,9 +25,9 @@ void DevelopSelectScene::Update()
 		pSceneManager->ChangeScene(SCENE_ID_MAPEDITOR);
 		break;
 	}
-	case SCENE_ID_IKEDITOR: {
+	case SCENE_ID_MAINGAME: {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_IKEDITOR);
+		pSceneManager->ChangeScene(SCENE_ID_MAINGAME);
 		break;
 	}
 
@@ -58,7 +58,7 @@ void DevelopSelectScene::Imgui_Window()
 			scene_ = SCENE_ID_MAPEDITOR;
 
 		if (ImGui::Button("IKEditor"))
-			scene_ = SCENE_ID_IKEDITOR;
+			scene_ = SCENE_ID_MAINGAME;
 
 	}
 	ImGui::End();

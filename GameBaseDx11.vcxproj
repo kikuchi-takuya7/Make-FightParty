@@ -149,7 +149,6 @@
     <ClCompile Include="Engine\Imgui\imgui_tables.cpp" />
     <ClCompile Include="Engine\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
-    <ClCompile Include="Engine\InverseKinematics.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\MapEditor\MapController.cpp" />
     <ClCompile Include="Engine\MapEditor\MapData.cpp" />
@@ -166,10 +165,10 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="Player\PlayerFoot.cpp" />
-    <ClCompile Include="Player\PlayerHand.cpp" />
+    <ClCompile Include="PlayerState.cpp" />
+    <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Scene\DevelopSelectScene.cpp" />
-    <ClCompile Include="Scene\IKEditorScene.cpp" />
+    <ClCompile Include="Scene\MainGameScene.cpp" />
     <ClCompile Include="Scene\MapEditorScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +194,6 @@
     <ClInclude Include="Engine\Imgui\imstb_textedit.h" />
     <ClInclude Include="Engine\Imgui\imstb_truetype.h" />
     <ClInclude Include="Engine\Input.h" />
-    <ClInclude Include="Engine\InverseKinematics.h" />
     <ClInclude Include="Engine\json-develop\include\nlohmann\json.hpp" />
     <ClInclude Include="Engine\MapEditor\MapController.h" />
     <ClInclude Include="Engine\MapEditor\MapData.h" />
@@ -212,11 +210,11 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
-    <ClInclude Include="Player\PlayerFoot.h" />
-    <ClInclude Include="Player\PlayerHand.h" />
+    <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Scene\DevelopSelectScene.h" />
-    <ClInclude Include="Scene\IKEditorScene.h" />
+    <ClInclude Include="Scene\MainGameScene.h" />
     <ClInclude Include="Scene\MapEditorScene.h" />
+    <ClInclude Include="State\PlayerState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

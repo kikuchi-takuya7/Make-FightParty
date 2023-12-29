@@ -2,15 +2,15 @@
 #include "../Engine/GameObject.h"
 
 //◆◆◆を管理するクラス
-class PlayerHand : public GameObject
+class Player : public GameObject
 {
 
 public:
     //コンストラクタ
-    PlayerHand(GameObject* parent);
+    Player(GameObject* parent);
 
     //デストラクタ
-    ~PlayerHand();
+    ~Player();
 
     //初期化
     void Initialize() override;
@@ -23,4 +23,7 @@ public:
 
     //開放
     void Release() override;
+    
+private:
+    int hModel_;
 };
