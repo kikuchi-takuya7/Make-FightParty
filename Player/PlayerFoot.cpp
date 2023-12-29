@@ -94,6 +94,8 @@ void PlayerFoot::Update()
     XMMATRIX rot = XMMatrixRotationAxis(rotCross, dotLen);
 
     footVec_ = XMVector3TransformCoord(goalVec_, rot);
+
+
     
 }
 
