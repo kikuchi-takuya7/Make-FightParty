@@ -41,5 +41,7 @@ private:
     int hBallModel_;
     Transform footTrans_;
     Transform footRoot_;
+    XMVECTOR goalVec_;//目標地点までのベクトル
+    XMVECTOR footVec_;//棒のベクトル
     XMFLOAT3 goalValue_;
 };

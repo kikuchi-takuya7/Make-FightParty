@@ -52,6 +52,8 @@ void PlayerFoot::Initialize()
     footTrans_.position_.x += MODELLENGTH;
 
     goalValue_ = { 0,0,0 };
+
+    footVec_ = XMVectorSetX(footVec_, 1);
     
 }
 
@@ -80,95 +82,19 @@ void PlayerFoot::Update()
     XMFLOAT3 checkGoal;
     XMStoreFloat3(&checkGoal, goal);
 
-    //現在のベクトル（先端）
-    XMFLOAT3 tmpFloat = footTrans_.position_;
-    tmpFloat.y = 0;
-    
-    //先端の位置のベクトル
-    XMVECTOR nowPos = XMLoadFloat3(&tmpFloat);
-
-    
+    XMVECTOR rotCross = XMVector3Cross(footVec_, goal);
     
 
-    //Y軸回転させるための変数
-    XMVECTOR goalTmp = goal;
-    goalTmp = XMVectorSetY(goal, 0);
 
-    XMVECTOR goalN = XMVector3Normalize(goalTmp);
-    XMVECTOR nowPosN = XMVector3Normalize(nowPos);
-    XMVECTOR dot = XMVector3Dot(goalN, nowPosN); //内積を求める
+    XMVECTOR goalN = XMVector3Normalize(goal);
+    XMVECTOR footVecN = XMVector3Normalize(footVec_);
+    XMVECTOR dot = XMVector3Dot(footVecN, goal); //内積を求める
     float dotLen = XMVectorGetX(dot);
 
-    //これでy軸回転の角度
-    float cos = acos(dotLen);
+    XMMATRIX rot = XMMatrixRotationAxis(rotCross, dotLen);
 
-    //根本から回すから根元を回転させる
-    cos = -XMConvertToDegrees(cos);////////////////////////なぜかy軸の回転が逆だったからここマイナスにしてる。多分cosの仕様？
-
-    //cosがマイナスになるように
-    if (checkGoal.z <= 0) {
-        cos *= -1;
-    }
-
-    footRoot_.rotate_.y = cos;
+    footVec_ = XMVector3TransformCoord(goalVec_, rot);
     
-
-    ///////////////こっから縦軸回転///////////////////////
-    //y軸回転させてからz軸回転
-
-    tmpFloat = footTrans_.position_;
-    tmpFloat.z = 0;
-
-    nowPos = XMLoadFloat3(&tmpFloat);
-
-    //z軸回転させるための変数
-    goalTmp = goal;
-    goalTmp = XMVectorSetZ(goal, 0);
-
-    goalN = XMVector3Normalize(goalTmp);
-    nowPosN = XMVector3Normalize(nowPos);
-    dot = XMVector3Dot(goalN, nowPosN); //内積を求める
-    dotLen = XMVectorGetX(dot);
-
-    //これでz軸回転の角度
-    cos = acos(dotLen);
-
-    cos = XMConvertToDegrees(cos);
-
-    if (checkGoal.y <= 0) {
-        cos *= -1;
-    }
-
-    //根本から回すから根元を回転させる
-    footRoot_.rotate_.z = cos;
-
-    //これでfootRootのrotateはゴールの向きに向いたっていう想定。
-    //footRoot.rotate分の回転行列をかけたあとに平行移動行列
-
-    //角度確認のテスト用
-    //footRoot_.rotate_.z = 0;
-
-
-
-    ////腕の長さ分だけ平行移動させる
-    //XMMATRIX moveLen = XMMatrixTranslation(MODELLENGTH, 0, 0);
-
-    ////ベクトルにして行列を適用させる。モデルの根元のpositionをベクトルに
-    ////平行移動させる必要ないならまだ行列いらない？
-    //tmpFloat = footRoot_.position_;
-
-    ////footRoot.rotateの分だけ回転
-    //XMMATRIX rotZ,rotY;
-    //rotY = XMMatrixRotationY(XMConvertToRadians(footRoot_.rotate_.y));
-    //rotZ = XMMatrixRotationZ(XMConvertToRadians(footRoot_.rotate_.z));
-
-    //XMMATRIX rotMatrix = rotY * rotZ;
-
-    //nowPos = XMLoadFloat3(&tmpFloat);
-    //nowPos = XMVector3TransformCoord(nowPos, rotMatrix);
-    
-    ////行列を適用したベクトルをfootTransに入れる。footRootの位置からモデルの長さ分角度をつけて伸ばした位置にあるはず。そしてそれがゴールの位置のはず
-    //XMStoreFloat3(&footRoot_.position_, nowPos);
 }
 
 //描画
