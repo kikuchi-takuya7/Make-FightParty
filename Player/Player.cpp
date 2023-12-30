@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "../Engine/Model.h"
+#include "../Engine/Input.h"
 
 //コンストラクタ
 Player::Player(GameObject* parent)
@@ -23,6 +24,9 @@ void Player::Initialize()
 //更新
 void Player::Update()
 {
+    pState_->Update(this);
+    
+
 }
 
 //描画
@@ -34,5 +38,10 @@ void Player::Draw()
 
 //開放
 void Player::Release()
+{
+}
+
+//状態を変更
+void Player::ChangeState(PlayerState nextState)
 {
 }

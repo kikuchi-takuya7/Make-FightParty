@@ -1,6 +1,7 @@
 #pragma once
-
-class Player;
+#include "../Engine/GameObject.h"
+#include "../Engine/Global.h"
+#include "../Player/Player.h"
 
 class PlayerState
 {
@@ -26,10 +27,9 @@ public:
 	virtual void Enter(Player* player) {};
 
 	/// <summary>
-	/// ó‘Ô•ÏX
+	/// ó‘Ô‚ğ•ÏX‚·‚é
 	/// </summary>
-	/// <param name="nowState">Œ»İ‚Ìó‘Ô</param>
-	/// <param name="state">•Ï‰»‚µ‚½‚¢ó‘Ô</param>
-	//void ChangeState(PlayerState* nowState, PlayerState* state);
+	/// <param name="nextState">Ÿ‚Ìó‘Ô</param>
+	void ChangeState(PlayerState nextState);
 };
 

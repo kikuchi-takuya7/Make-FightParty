@@ -170,7 +170,25 @@
     <ClCompile Include="Scene\MainGameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
+    <ClCompile Include="State\PlayerState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerJumpState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerIdleState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerRunningState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerAttackState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerDieState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerStateManager.cpp">
       <Filter>State</Filter>
     </ClCompile>
   </ItemGroup>
@@ -302,6 +320,24 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="State\PlayerState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerJumpState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerIdleState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerRunningState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerAttackState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerDieState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerStateManager.h">
       <Filter>State</Filter>
     </ClInclude>
   </ItemGroup>

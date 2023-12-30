@@ -165,11 +165,17 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Scene\DevelopSelectScene.cpp" />
     <ClCompile Include="Scene\MainGameScene.cpp" />
     <ClCompile Include="Scene\MapEditorScene.cpp" />
+    <ClCompile Include="State\PlayerAttackState.cpp" />
+    <ClCompile Include="State\PlayerDieState.cpp" />
+    <ClCompile Include="State\PlayerIdleState.cpp" />
+    <ClCompile Include="State\PlayerJumpState.cpp" />
+    <ClCompile Include="State\PlayerRunningState.cpp" />
+    <ClCompile Include="State\PlayerState.cpp" />
+    <ClCompile Include="State\PlayerStateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Audio.h" />
@@ -214,7 +220,13 @@
     <ClInclude Include="Scene\DevelopSelectScene.h" />
     <ClInclude Include="Scene\MainGameScene.h" />
     <ClInclude Include="Scene\MapEditorScene.h" />
+    <ClInclude Include="State\PlayerAttackState.h" />
+    <ClInclude Include="State\PlayerDieState.h" />
+    <ClInclude Include="State\PlayerIdleState.h" />
+    <ClInclude Include="State\PlayerJumpState.h" />
+    <ClInclude Include="State\PlayerRunningState.h" />
     <ClInclude Include="State\PlayerState.h" />
+    <ClInclude Include="State\PlayerStateManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
