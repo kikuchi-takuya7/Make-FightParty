@@ -1,13 +1,13 @@
 #include "PlayerJumpState.h"
 
-void PlayerJumpStatee::Update(Player* player)
+void PlayerJumpState::Update(Player* player)
 {
 }
 
-void PlayerJumpStatee::HandleInput(Player* player)
+void PlayerJumpState::HandleInput(Player* player)
 {
 }
 
-void PlayerJumpStatee::Enter(Player* player)
+void PlayerJumpState::Enter(Player* player)
 {
 }

@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Model.h"
 #include "Transform.h"
+#include "Global.h"
 
 //コンストラクタ
 Collider::Collider():
@@ -22,8 +23,8 @@ Collider::~Collider()
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
 
-	XMFLOAT3 boxPosA = Transform::Float3Add(boxA->pGameObject_->GetWorldPosition(), boxA->center_);
-	XMFLOAT3 boxPosB = Transform::Float3Add(boxB->pGameObject_->GetWorldPosition(), boxB->center_);
+	XMFLOAT3 boxPosA = Float3Add(boxA->pGameObject_->GetWorldPosition(), boxA->center_);
+	XMFLOAT3 boxPosB = Float3Add(boxB->pGameObject_->GetWorldPosition(), boxB->center_);
 
 
 	if ((boxPosA.x + boxA->size_.x / 2) > (boxPosB.x - boxB->size_.x / 2) &&
@@ -44,8 +45,8 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 //戻値：接触していればtrue
 bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 {
-	XMFLOAT3 circlePos = Transform::Float3Add(sphere->pGameObject_->GetWorldPosition(), sphere->center_);
-	XMFLOAT3 boxPos = Transform::Float3Add(box->pGameObject_->GetWorldPosition(), box->center_);
+	XMFLOAT3 circlePos = Float3Add(sphere->pGameObject_->GetWorldPosition(), sphere->center_);
+	XMFLOAT3 boxPos = Float3Add(box->pGameObject_->GetWorldPosition(), box->center_);
 
 
 

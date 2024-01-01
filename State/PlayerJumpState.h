@@ -1,8 +1,10 @@
 #pragma once
 #include "../State/PlayerState.h"
 
-
-class PlayerJumpStatee : public PlayerState
+/// <summary>
+/// ƒWƒƒƒ“ƒv‚µ‚Ä‚éó‘Ô
+/// </summary>
+class PlayerJumpState : public PlayerState
 {
 
 	/// <summary>

@@ -1,7 +1,9 @@
 #pragma once
 #include "../State/PlayerState.h"
 
-
+/// <summary>
+/// UŒ‚‚µ‚½ó‘Ô
+/// </summary>
 class PlayerAttackState : public PlayerState
 {
 

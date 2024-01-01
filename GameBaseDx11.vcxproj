@@ -173,7 +173,7 @@
     <ClCompile Include="State\PlayerDieState.cpp" />
     <ClCompile Include="State\PlayerIdleState.cpp" />
     <ClCompile Include="State\PlayerJumpState.cpp" />
-    <ClCompile Include="State\PlayerRunningState.cpp" />
+    <ClCompile Include="State\PlayerRunState.cpp" />
     <ClCompile Include="State\PlayerState.cpp" />
     <ClCompile Include="State\PlayerStateManager.cpp" />
   </ItemGroup>
@@ -224,7 +224,7 @@
     <ClInclude Include="State\PlayerDieState.h" />
     <ClInclude Include="State\PlayerIdleState.h" />
     <ClInclude Include="State\PlayerJumpState.h" />
-    <ClInclude Include="State\PlayerRunningState.h" />
+    <ClInclude Include="State\PlayerRunState.h" />
     <ClInclude Include="State\PlayerState.h" />
     <ClInclude Include="State\PlayerStateManager.h" />
   </ItemGroup>
