@@ -4,7 +4,7 @@
 #include "../State/PlayerStateManager.h"
 
 
-class PlayerState;
+class PlayerStateManager;
 
 //◆◆◆を管理するクラス
 class Player : public GameObject
@@ -28,12 +28,6 @@ public:
 
     //開放
     void Release() override;
-
-    /// <summary>
-    /// 状態を変更する
-    /// </summary>
-    /// <param name="nextState">次の状態</param>
-    void ChangeState(PlayerStateManager* nextState);
 
     /// <summary>
     /// プレイヤーの移動処理

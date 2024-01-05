@@ -7,7 +7,7 @@
 Player::Player(GameObject* parent)
     :GameObject(parent, "Player"),hModel_(-1)
 {
-	//pState_ = new PlayerIdleState;
+	pState_ = new PlayerStateManager;
 }
 
 //デストラクタ
@@ -44,16 +44,7 @@ void Player::Draw()
 //開放
 void Player::Release()
 {
-}
-
-//状態を変更
-void Player::ChangeState(PlayerStateManager* nextState)
-{
-	//こんな感じ？
-	delete pState_;
-	pState_ = nextState;
-	pState_->Enter(this);
-
+	SAFE_DELETE(pState_);
 }
 
 void Player::MovePlayer()

@@ -1,5 +1,4 @@
 #pragma once
-#include "../Player/Player.h"
 #include "PlayerAttackState.h"
 #include "PlayerDieState.h"
 #include "PlayerIdleState.h"
@@ -17,19 +16,28 @@ class PlayerStateManager : public PlayerState
 
 public:
 
-	PlayerState playerState_;
+	static PlayerState* playerState_;
 	
 	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になる
-	PlayerAttackState* playerAttackState_;
-	PlayerDieState* playerDieState_;
-	PlayerIdleState* playerIdleState_;
-	PlayerJumpState* playerJumpState_;
-	PlayerRunState* playerRunState_;
+	static PlayerAttackState* playerAttackState_;
+	static PlayerDieState* playerDieState_;
+	static PlayerIdleState* playerIdleState_;
+	static PlayerJumpState* playerJumpState_;
+	static PlayerRunState* playerRunState_;
+
+	PlayerStateManager();
 
 	virtual void Update(Player* player) override;
 
 	virtual void HandleInput(Player* player) override;
 
 	virtual void Enter(Player* player) override;
+
+	/// <summary>
+	/// 状態を変更する
+	/// </summary>
+	/// <param name="change">変更後の状態</param>
+	/// <param name="player">変更するプレイヤーのポインタ</param>
+	void ChangeState(PlayerState* nextState, Player* player);
 };
 
