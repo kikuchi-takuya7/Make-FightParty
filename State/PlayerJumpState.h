@@ -26,5 +26,9 @@ class PlayerJumpState : public PlayerState
 	/// <param name="player">Player‚Ìƒ|ƒCƒ“ƒ^</param>
 	void Enter(Player* player) override;
 
+private:
+
+	float velocity_;
+
 };
 

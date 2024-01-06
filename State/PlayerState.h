@@ -3,6 +3,7 @@
 #include "../Engine/Global.h"
 #include "../Engine/Input.h"
 
+//‘O•ûéŒ¾
 class Player;
 
 /// <summary>
