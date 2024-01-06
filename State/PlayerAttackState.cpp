@@ -2,6 +2,8 @@
 
 void PlayerAttackState::Update(Player* player)
 {
+
+	HandleInput(player);
 }
 
 void PlayerAttackState::HandleInput(Player* player)

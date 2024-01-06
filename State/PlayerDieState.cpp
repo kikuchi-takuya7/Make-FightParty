@@ -2,6 +2,8 @@
 
 void PlayerDieState::Update(Player* player)
 {
+
+	HandleInput(player);
 }
 
 void PlayerDieState::HandleInput(Player* player)

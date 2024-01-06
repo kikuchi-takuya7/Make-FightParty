@@ -1,7 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 #include "../Engine/Global.h"
-//#include "../Player/Player.h"
+#include "../Engine/Input.h"
 
 class Player;
 
@@ -31,10 +31,6 @@ public:
 	/// <param name="player">Playerのポインタ</param>
 	virtual void Enter(Player* player) {};
 
-	/// <summary>
-	/// 状態を変更する
-	/// </summary>
-	/// <param name="nextState">次の状態</param>
-	void ChangeState(PlayerState nextState);
 };
 
+//純粋仮想関数にするとmanagerで実態を持てないからダメ

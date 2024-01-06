@@ -1,16 +1,20 @@
 #include "PlayerIdleState.h"
-#include "../Engine/Input.h"
 #include "PlayerStateManager.h"
 
 void PlayerIdleState::Update(Player* player)
 {
+
+
+	HandleInput(player);
 }
+
 
 void PlayerIdleState::HandleInput(Player* player)
 {
 	
-	if (Input::IsKeyDown(DIK_Q)) {
-
+	if (Input::IsKeyDown(DIK_SPACE)) {
+		PlayerStateManager::playerState_ = PlayerStateManager::playerJumpState_;
+		PlayerStateManager::playerState_->Enter(player);
 	}
 
 }

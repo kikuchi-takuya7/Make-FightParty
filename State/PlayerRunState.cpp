@@ -3,7 +3,8 @@
 
 void PlayerRunState::Update(Player* player)
 {
-	
+
+	HandleInput(player);
 }
 
 void PlayerRunState::HandleInput(Player* player)

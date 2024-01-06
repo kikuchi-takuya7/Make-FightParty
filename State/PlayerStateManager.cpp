@@ -1,21 +1,23 @@
 #include "PlayerStateManager.h"
 
+//各static変数を初期化する。staticだからグローバルな位置で最初に初期化しないとダメ
+PlayerAttackState* PlayerStateManager::playerAttackState_ = new PlayerAttackState;
+PlayerDieState* PlayerStateManager::playerDieState_ = new PlayerDieState;
+PlayerIdleState* PlayerStateManager::playerIdleState_ = new PlayerIdleState;
+PlayerJumpState* PlayerStateManager::playerJumpState_ = new PlayerJumpState;
+PlayerRunState* PlayerStateManager::playerRunState_ = new PlayerRunState;
 
+PlayerState* PlayerStateManager::playerState_ = playerIdleState_;
 
 PlayerStateManager::PlayerStateManager()
 {
 
-	playerAttackState_ = new PlayerAttackState;
-	playerDieState_ = new PlayerDieState;
-	playerIdleState_ = new PlayerIdleState;
-	playerJumpState_ = new PlayerJumpState;
-	playerRunState_ = new PlayerRunState;
-
-	playerState_ = playerIdleState_;
+	
 }
 
 void PlayerStateManager::Update(Player* player)
 {
+	playerState_->Update(player);
 }
 
 void PlayerStateManager::HandleInput(Player* player)
