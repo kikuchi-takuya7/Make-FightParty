@@ -19,8 +19,6 @@ MapController::~MapController()
 void MapController::Initialize()
 {
     transform_.rotate_.x = 45.0f;
-    hModel_ = Model::Load("EditorUIFbx/memory.fbx");
-    assert(hModel_ >= 0);
 }
 
 //XV
@@ -110,9 +108,6 @@ void MapController::Update()
 //•`‰æ
 void MapController::Draw()
 {
-    Transform t;
-    Model::SetTransform(hModel_, t);
-    Model::Draw(hModel_);
 }
 
 //ŠJ•ú
