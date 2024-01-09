@@ -1,9 +1,7 @@
 #pragma once
-#include "../GameObject.h"
+#include "../Engine/GameObject.h"
 #include <stack>
 #include <vector>
-
-class SaveManager;
 
 //新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
 enum FBXPATTERN {
@@ -82,12 +80,6 @@ private:
 
 	//作成したオブジェクトリスト
 	std::list<GameObject*> createObjectList_;
-
-	//std::pair<>
-
-	//std::stack<BACKUPDATA> objectBackUp_;
-
-	SaveManager* pSaveManager_;
 
 	//セーブするかのフラグ
 	bool isSave_;

@@ -1,6 +1,6 @@
 #include "MapEditorScene.h"
-#include "../Engine/MapEditor/MapController.h"
-#include "../Engine/MapEditor/MapData.h"
+#include "../MapEditor/MapController.h"
+#include "../MapEditor/MapEditor.h"
 
 //コンストラクタ
 MapEditorScene::MapEditorScene(GameObject* parent)
@@ -12,7 +12,7 @@ MapEditorScene::MapEditorScene(GameObject* parent)
 void MapEditorScene::Initialize()
 {
 	Instantiate<MapController>(this);
-	Instantiate<MapData>(this);
+	Instantiate<MapEditor>(this);
 }
 
 //更新

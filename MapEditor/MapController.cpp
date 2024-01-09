@@ -1,8 +1,8 @@
 #include "MapController.h"
 #include "MapEditor.h"
-#include "../Input.h"
-#include "../Camera.h"
-#include "../Model.h"
+#include "../Engine/Input.h"
+#include "../Engine/Camera.h"
+#include "../Engine/Model.h"
 
 //コンストラクタ
 MapController::MapController(GameObject* parent)

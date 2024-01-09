@@ -1,5 +1,5 @@
 #pragma once
-#include "../GameObject.h"
+#include "../Engine/GameObject.h"
 
 //ŸŸŸ‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class MapController : public GameObject

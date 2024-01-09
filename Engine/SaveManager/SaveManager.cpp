@@ -1,9 +1,9 @@
 #include "SaveManager.h"
 #include <iostream>
 #include "../json-develop/include/nlohmann/json.hpp"
-#include "../MapEditor/MapSource/TestWall.h"
-#include "../MapEditor/MapSource/TestFloor.h"
-#include "../MapEditor/MapEditor.h"
+#include "../../MapEditor/MapSource/TestWall.h"
+#include "../../MapEditor/MapSource/TestFloor.h"
+#include "../../MapEditor/MapEditor.h"
 #include <fstream>
 
 using json = nlohmann::json;

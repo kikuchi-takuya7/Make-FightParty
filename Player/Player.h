@@ -6,7 +6,9 @@
 
 class PlayerStateManager;
 
-//◆◆◆を管理するクラス
+/// <summary>
+/// 操作するプレイヤーのクラス
+/// </summary>
 class Player : public GameObject
 {
 
