@@ -3,7 +3,7 @@
 #include "../json-develop/include/nlohmann/json.hpp"
 #include "../MapEditor/MapSource/TestWall.h"
 #include "../MapEditor/MapSource/TestFloor.h"
-#include "../MapEditor/MapData.h"
+#include "../MapEditor/MapEditor.h"
 #include <fstream>
 
 using json = nlohmann::json;
@@ -131,7 +131,7 @@ void SaveManager::Load()
 
 GameObject* SaveManager::CreateObj(std::string className)
 {
-    //ロードしたobjectNameに対応するオブジェクトを作成し、SaveManagerを呼び出したのがMapDataならcreateObjectに入れる
+    //ロードしたobjectNameに対応するオブジェクトを作成し、SaveManagerを呼び出したのがMapEditorならcreateObjectに入れる
     if (className == "TestWall") {
         TestWall* object = CreateObject<TestWall>();
         return object;

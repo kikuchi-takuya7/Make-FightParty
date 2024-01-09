@@ -151,7 +151,7 @@
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\MapEditor\MapController.cpp" />
-    <ClCompile Include="Engine\MapEditor\MapData.cpp" />
+    <ClCompile Include="Engine\MapEditor\MapEditor.cpp" />
     <ClCompile Include="Engine\MapEditor\MapSource\Room1.cpp" />
     <ClCompile Include="Engine\MapEditor\MapSource\TestFloor.cpp" />
     <ClCompile Include="Engine\MapEditor\MapSource\TestWall.cpp" />
@@ -203,7 +203,7 @@
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\json-develop\include\nlohmann\json.hpp" />
     <ClInclude Include="Engine\MapEditor\MapController.h" />
-    <ClInclude Include="Engine\MapEditor\MapData.h" />
+    <ClInclude Include="Engine\MapEditor\MapEditor.h" />
     <ClInclude Include="Engine\MapEditor\MapSource\Room1.h" />
     <ClInclude Include="Engine\MapEditor\MapSource\TestFloor.h" />
     <ClInclude Include="Engine\MapEditor\MapSource\TestWall.h" />

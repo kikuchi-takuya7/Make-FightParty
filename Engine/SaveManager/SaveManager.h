@@ -1,6 +1,6 @@
 #pragma once
 #include "../GameObject.h"
-#include "../MapEditor/MapData.h"
+#include "../MapEditor/MapEditor.h"
 
 
 //ŸŸŸ‚ğŠÇ—‚·‚éƒNƒ‰ƒX
@@ -38,8 +38,8 @@ private:
     {
         T* object = Instantiate<T>(this->GetParent());
 
-        if (this->GetParent()->GetObjectName() == "MapData")
-            ((MapData*)this->GetParent())->AddCreateObject(object);
+        if (this->GetParent()->GetObjectName() == "MapEditor")
+            ((MapEditor*)this->GetParent())->AddCreateObject(object);
 
         return object;
     }

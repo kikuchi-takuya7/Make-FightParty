@@ -146,7 +146,7 @@
     <ClCompile Include="Engine\MapEditor\MapController.cpp">
       <Filter>01Engine\MapEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapData.cpp">
+    <ClCompile Include="Engine\MapEditor\MapEditor.cpp">
       <Filter>01Engine\MapEditor</Filter>
     </ClCompile>
     <ClCompile Include="Engine\SaveManager\SaveManager.cpp">
@@ -298,7 +298,7 @@
     <ClInclude Include="Engine\MapEditor\MapController.h">
       <Filter>01Engine\MapEditor</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapData.h">
+    <ClInclude Include="Engine\MapEditor\MapEditor.h">
       <Filter>01Engine\MapEditor</Filter>
     </ClInclude>
     <ClInclude Include="Engine\SaveManager\SaveManager.h">

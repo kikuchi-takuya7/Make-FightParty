@@ -1,5 +1,5 @@
 #include "MapController.h"
-#include "MapData.h"
+#include "MapEditor.h"
 #include "../Input.h"
 #include "../Camera.h"
 #include "../Model.h"

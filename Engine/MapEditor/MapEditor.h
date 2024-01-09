@@ -20,12 +20,12 @@ struct BACKUPDATA {
 };
 
 //■■シーンを管理するクラス
-class MapData : public GameObject
+class MapEditor : public GameObject
 {
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	MapData(GameObject* parent);
+	MapEditor(GameObject* parent);
 
 	//初期化
 	void Initialize() override;

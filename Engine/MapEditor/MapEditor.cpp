@@ -1,4 +1,4 @@
-#include "MapData.h"
+#include "MapEditor.h"
 #include "../Model.h"
 #include "../Input.h"
 #include "../Camera.h"
@@ -12,15 +12,15 @@
 
 
 //コンストラクタ
-MapData::MapData(GameObject* parent)
-	: GameObject(parent, "MapData"),selecting_object(PATTERN_END),isSave_(false),nextObjectId_(0),isNewSave_(false),isLoad_(false)
+MapEditor::MapEditor(GameObject* parent)
+	: GameObject(parent, "MapEditor"),selecting_object(PATTERN_END),isSave_(false),nextObjectId_(0),isNewSave_(false),isLoad_(false)
 {
 
     
 }
 
 //初期化
-void MapData::Initialize()
+void MapEditor::Initialize()
 {
     //ファイルの中に入ってるすべてのfbxファイルの名前の取得
     fileName_ = get_file_path_in_dir("./Map/", "fbx");
@@ -45,7 +45,7 @@ void MapData::Initialize()
 }
 
 //更新
-void MapData::Update()
+void MapEditor::Update()
 {
     //毎回チェックしないとデリートしたタイミングでエラー出る。多分RootObjectのUpdateで消されたかどうか確認してるから
     CheckDeleteObject();
@@ -118,7 +118,7 @@ void MapData::Update()
 }
 
 //描画
-void MapData::Draw()
+void MapEditor::Draw()
 {
 
     if (selecting_object == PATTERN_END)
@@ -131,12 +131,12 @@ void MapData::Draw()
 }
 
 //開放
-void MapData::Release()
+void MapEditor::Release()
 {
     SAFE_DELETE(pSaveManager_);
 }
 
-void MapData::Imgui_Window()
+void MapEditor::Imgui_Window()
 {
     ImGui::Begin("DataWindow");
     if (ImGui::CollapsingHeader("MapEditor"))
@@ -235,7 +235,7 @@ void MapData::Imgui_Window()
     ImGui::End();
 }
 
-GameObject* MapData::CreateObject()
+GameObject* MapEditor::CreateObject()
 {
 
     //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
@@ -264,14 +264,14 @@ GameObject* MapData::CreateObject()
     return NULL;   // 指定のクラスが無い
 }
 
-void MapData::AddCreateObject(GameObject* object)
+void MapEditor::AddCreateObject(GameObject* object)
 {
     //CheckDeleteObject();
     createObjectList_.push_back(object);
     nextObjectId_++;
 }
 
-std::vector<std::string> MapData::get_file_path_in_dir(const std::string& dir_name, const std::string& extension) noexcept(false)
+std::vector<std::string> MapEditor::get_file_path_in_dir(const std::string& dir_name, const std::string& extension) noexcept(false)
 {
     HANDLE hFind;
     WIN32_FIND_DATA win32fd;//defined at Windwos.h
@@ -301,7 +301,7 @@ std::vector<std::string> MapData::get_file_path_in_dir(const std::string& dir_na
     return file_names;
 }
 
-void MapData::CheckDeleteObject()
+void MapEditor::CheckDeleteObject()
 {
 
     for (auto itr = createObjectList_.begin(); itr != createObjectList_.end();) {
@@ -315,7 +315,7 @@ void MapData::CheckDeleteObject()
 
 }
 
-void MapData::AllDeleteCreateObject()
+void MapEditor::AllDeleteCreateObject()
 {
     for (auto itr = createObjectList_.begin(); itr != createObjectList_.end();itr++) {
         (*itr)->KillMe();
@@ -324,7 +324,7 @@ void MapData::AllDeleteCreateObject()
     createObjectList_.clear();
 }
 
-void MapData::ChengeUp(GameObject* pTarget)
+void MapEditor::ChengeUp(GameObject* pTarget)
 {
 
     auto itr = createObjectList_.begin();
@@ -353,7 +353,7 @@ void MapData::ChengeUp(GameObject* pTarget)
     //bool型変数を作ってtrueならこっちのUpDate中に上の処理をする奴も考えたけどファイルのロードが上手くできてなかった。プロジェクト実行中はファイル書き換えても実行中には新しいデータをロードできない？
 }
 
-void MapData::ChengeDown(GameObject* pTarget)
+void MapEditor::ChengeDown(GameObject* pTarget)
 {
 
     auto itr = createObjectList_.end();
@@ -375,7 +375,7 @@ void MapData::ChengeDown(GameObject* pTarget)
 
 }
 
-int MapData::MaxObjectId()
+int MapEditor::MaxObjectId()
 {
     int ID = 0;
     for (auto itr = createObjectList_.begin(); itr != createObjectList_.end(); itr++) {
@@ -388,7 +388,7 @@ int MapData::MaxObjectId()
     return ID;
 }
 
-void MapData::BackUpSave()
+void MapEditor::BackUpSave()
 {
 
 }
