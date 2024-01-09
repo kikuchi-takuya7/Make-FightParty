@@ -169,6 +169,7 @@
     <ClCompile Include="Scene\DevelopSelectScene.cpp" />
     <ClCompile Include="Scene\MainGameScene.cpp" />
     <ClCompile Include="Scene\MapEditorScene.cpp" />
+    <ClCompile Include="Stage\Stage.cpp" />
     <ClCompile Include="State\PlayerAttackState.cpp" />
     <ClCompile Include="State\PlayerDieState.cpp" />
     <ClCompile Include="State\PlayerIdleState.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Scene\DevelopSelectScene.h" />
     <ClInclude Include="Scene\MainGameScene.h" />
     <ClInclude Include="Scene\MapEditorScene.h" />
+    <ClInclude Include="Stage\Stage.h" />
     <ClInclude Include="State\PlayerAttackState.h" />
     <ClInclude Include="State\PlayerDieState.h" />
     <ClInclude Include="State\PlayerIdleState.h" />

@@ -9,7 +9,6 @@
 #include "../Global.h"
 #include "MapSource/TestWall.h"
 #include "MapSource/TestFloor.h"
-#include "MapSource/Room1.h"
 
 
 //コンストラクタ
@@ -35,7 +34,8 @@ void MapData::Initialize()
         assert(hModel_.at(i) >= 0);
     }
     
-    pSaveManager_ = Instantiate<SaveManager>(this);
+    //セーブマネージャ作成
+    pSaveManager_ = new SaveManager;
     pSaveManager_->OpenFile();
     pSaveManager_->Load();
 
@@ -133,6 +133,7 @@ void MapData::Draw()
 //開放
 void MapData::Release()
 {
+    SAFE_DELETE(pSaveManager_);
 }
 
 void MapData::Imgui_Window()
@@ -243,18 +244,6 @@ GameObject* MapData::CreateObject()
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
     switch (selecting_object)
     {
-    //case SCHOOL: {
-    //    School* pSchool = Instantiate<School>(this);
-    //    AddCreateObject(pSchool);
-    //    pSchool->SetObjectID(nextObjectId_); //作ったオブジェクト順に識別するためのIDを付ける
-    //    return pSchool;
-    //    break;
-    //}
-    case ROOM_1: {
-        Room1* pObject = CreateInstance<Room1>();
-        return pObject;
-        break;
-    }
     case TESTFLOOR: {
         TestFloor* pObject = CreateInstance<TestFloor>();
         return pObject;

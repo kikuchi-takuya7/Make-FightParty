@@ -3,45 +3,21 @@
 #include "../json-develop/include/nlohmann/json.hpp"
 #include "../MapEditor/MapSource/TestWall.h"
 #include "../MapEditor/MapSource/TestFloor.h"
-#include "../MapEditor/MapSource/Room1.h"
 #include "../MapEditor/MapData.h"
 #include <fstream>
 
 using json = nlohmann::json;
 using string = std::string;
 
-
 //コンストラクタ
-SaveManager::SaveManager(GameObject* parent)
-    :GameObject(parent, "SaveManager"),fileName_{"新規ファイル.json"}
+SaveManager::SaveManager()
+    :fileName_{"新規ファイル.json"}
 {
 }
 
 //デストラクタ
 SaveManager::~SaveManager()
 {
-}
-
-//初期化
-void SaveManager::Initialize()
-{
-    
-}
-
-//更新
-void SaveManager::Update()
-{
-
-}
-
-void SaveManager::Draw()
-{
-}
-
-//開放
-void SaveManager::Release()
-{
-    //m_SaveObjctList_.clear();
 }
 
 void SaveManager::Save(std::list<GameObject*> list)
@@ -162,10 +138,6 @@ GameObject* SaveManager::CreateObj(std::string className)
     }
     else if (className == "TestFloor") {
         TestFloor* object = CreateObject<TestFloor>();
-        return object;
-    }
-    else if (className == "Room1") {
-        Room1* object = CreateObject<Room1>();
         return object;
     }
 

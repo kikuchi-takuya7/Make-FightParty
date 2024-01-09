@@ -4,27 +4,16 @@
 
 
 //◆◆◆を管理するクラス
-class SaveManager : public GameObject
+class SaveManager
 {
 
 public:
+
     //コンストラクタ
-    SaveManager(GameObject* parent);
+    SaveManager();
 
     //デストラクタ
     ~SaveManager();
-
-    //初期化
-    void Initialize() override;
-
-    //更新
-    void Update() override;
-
-    //描画
-    void Draw() override;
-
-    //開放
-    void Release() override;
 
     void Save(std::list<GameObject*> list);
 

@@ -48,6 +48,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Stage">
+      <UniqueIdentifier>{db894dd7-305b-4827-859d-887bf5a33510}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="State\PlayerStateManager.cpp">
       <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\Stage.cpp">
+      <Filter>Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +345,9 @@
     </ClInclude>
     <ClInclude Include="Player\Player.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\Stage.h">
+      <Filter>Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
