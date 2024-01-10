@@ -162,7 +162,6 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="MapEditor\MapController.cpp" />
     <ClCompile Include="MapEditor\MapEditor.cpp" />
-    <ClCompile Include="MapEditor\MapSource\Room1.cpp" />
     <ClCompile Include="MapEditor\MapSource\TestFloor.cpp" />
     <ClCompile Include="MapEditor\MapSource\TestWall.cpp" />
     <ClCompile Include="Player\Player.cpp" />
@@ -214,7 +213,6 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="MapEditor\MapController.h" />
     <ClInclude Include="MapEditor\MapEditor.h" />
-    <ClInclude Include="MapEditor\MapSource\Room1.h" />
     <ClInclude Include="MapEditor\MapSource\TestFloor.h" />
     <ClInclude Include="MapEditor\MapSource\TestWall.h" />
     <ClInclude Include="Player\Player.h" />

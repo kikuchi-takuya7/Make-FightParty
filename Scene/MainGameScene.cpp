@@ -1,5 +1,7 @@
 #include "MainGameScene.h"
 #include "../Player/Player.h"
+#include "../Stage/Stage.h"
+#include "../MapEditor/MapEditor.h"
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
@@ -10,7 +12,9 @@ MainGameScene::MainGameScene(GameObject* parent)
 //初期化
 void MainGameScene::Initialize()
 {
-	Instantiate<Player>(this);
+	//Instantiate<Player>(this);
+	//Instantiate<Stage>(this);
+	Instantiate<MapEditor>(this);
 }
 
 //更新

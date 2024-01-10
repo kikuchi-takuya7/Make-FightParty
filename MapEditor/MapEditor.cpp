@@ -95,10 +95,10 @@ void MapEditor::Update()
 
     Model::RayCast(hModel_[0], &data);
 
-    if (data.hit) {
+    /*if (data.hit) {
         data.hit = false;
 
-    }
+    }*/
 
     Transform objPos;
     objPos.position_.y = 1.0f;
@@ -119,7 +119,7 @@ void MapEditor::Draw()
         return;
 
     Transform objPos;
-    //objPos.position_.y = 1.0f;
+    
     Model::SetTransform(hModel_.at(selecting_object), objPos);
     Model::Draw(hModel_.at(selecting_object));
 }

@@ -33,17 +33,24 @@ private:
 
     char fileName_[MAX_PATH];
 
+    /// <summary>
+    ///　オブジェクトを作る。親がMapEditorだった場合はmapEditorの中のlistに入れる
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="pParent">呼び出したクラスの親クラス</param>
+    /// <returns>作ったオブジェクト</returns>
     template <class T>
-    T* CreateObject()
+    T* CreateObject(GameObject* pParent)
     {
-        /*T* object = Instantiate<T>(this->GetParent());
+        /*T* object = Instantiate<T>(pParent);
 
-        if (this->GetParent()->GetObjectName() == "MapEditor")
-            ((MapEditor*)this->GetParent())->AddCreateObject(object);*/
+        if (pParent->GetObjectName() == "MapEditor")
+            ((MapEditor*)pParent->GetParent())->AddCreateObject(object);
 
-        //return object;
-        return nullptr;
+        return object;*/
+        return nullptr
     }
+    //セーブマネージャー色々変えてるときに必要ないって結論に至った
     
 };
 

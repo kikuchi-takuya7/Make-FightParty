@@ -18,9 +18,9 @@ SceneManager::SceneManager(GameObject* parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_MAPEDITOR;
+	currentSceneID_ = SCENE_ID_MAINGAME;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<MapEditorScene>(this);
+	Instantiate<MainGameScene>(this);
 }
 
 //更新

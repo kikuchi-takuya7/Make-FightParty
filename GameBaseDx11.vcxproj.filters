@@ -29,12 +29,6 @@
     <Filter Include="01Engine\Json">
       <UniqueIdentifier>{5669ef0e-6428-43a4-8468-727d952518cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01Engine\MapEditor">
-      <UniqueIdentifier>{7153ab81-a580-440c-8f32-e5972a104885}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01Engine\MapEditor\MapSousce">
-      <UniqueIdentifier>{580cdb55-80a4-45c0-a8f9-9fa78690d815}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{df3b82cb-7412-4076-8529-45243bd7bdc9}</UniqueIdentifier>
     </Filter>
@@ -50,6 +44,12 @@
     </Filter>
     <Filter Include="Stage">
       <UniqueIdentifier>{db894dd7-305b-4827-859d-887bf5a33510}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapEditor">
+      <UniqueIdentifier>{5196636c-f92e-4351-8ca0-2bd7dcc299a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapEditor\StageSource">
+      <UniqueIdentifier>{3ac7620f-c5bf-4d2e-939b-9d42cf3cfced}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -143,23 +143,8 @@
     <ClCompile Include="Engine\Imgui\imgui_widgets.cpp">
       <Filter>01Engine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapController.cpp">
-      <Filter>01Engine\MapEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapEditor.cpp">
-      <Filter>01Engine\MapEditor</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\SaveManager\SaveManager.cpp">
       <Filter>01Engine\SaveManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapSource\Room1.cpp">
-      <Filter>01Engine\MapEditor\MapSousce</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapSource\TestFloor.cpp">
-      <Filter>01Engine\MapEditor\MapSousce</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\MapEditor\MapSource\TestWall.cpp">
-      <Filter>01Engine\MapEditor\MapSousce</Filter>
     </ClCompile>
     <ClCompile Include="Scene\MapEditorScene.cpp">
       <Filter>Scene</Filter>
@@ -196,6 +181,18 @@
     </ClCompile>
     <ClCompile Include="Stage\Stage.cpp">
       <Filter>Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor\MapController.cpp">
+      <Filter>MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor\MapEditor.cpp">
+      <Filter>MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor\MapSource\TestFloor.cpp">
+      <Filter>MapEditor\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor\MapSource\TestWall.cpp">
+      <Filter>MapEditor\StageSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,23 +292,8 @@
     <ClInclude Include="Engine\Imgui\imstb_truetype.h">
       <Filter>01Engine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapController.h">
-      <Filter>01Engine\MapEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapEditor.h">
-      <Filter>01Engine\MapEditor</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\SaveManager\SaveManager.h">
       <Filter>01Engine\SaveManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapSource\Room1.h">
-      <Filter>01Engine\MapEditor\MapSousce</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapSource\TestFloor.h">
-      <Filter>01Engine\MapEditor\MapSousce</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\MapEditor\MapSource\TestWall.h">
-      <Filter>01Engine\MapEditor\MapSousce</Filter>
     </ClInclude>
     <ClInclude Include="Scene\MapEditorScene.h">
       <Filter>Scene</Filter>
@@ -348,6 +330,18 @@
     </ClInclude>
     <ClInclude Include="Stage\Stage.h">
       <Filter>Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor\MapController.h">
+      <Filter>MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor\MapEditor.h">
+      <Filter>MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor\MapSource\TestFloor.h">
+      <Filter>MapEditor\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor\MapSource\TestWall.h">
+      <Filter>MapEditor\StageSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
