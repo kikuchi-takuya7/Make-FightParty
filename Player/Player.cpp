@@ -19,14 +19,14 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("PlayerFbx/Body.fbx");
+    hModel_ = Model::Load("PlayerFbx/player.fbx");
     assert(hModel_ >= 0);
 }
 
 //更新
 void Player::Update()
 {
-
+	
 	MovePlayer();
 
     pState_->Update(this);
