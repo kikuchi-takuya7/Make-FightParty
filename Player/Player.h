@@ -56,11 +56,14 @@ private:
 
     int hModel_;
 
+    //HP等のステータス
     Status status_;
 
+    //当たり判定
     BoxCollider* pBodyCollision_;
-
     BoxCollider* pAttackCollision_;
+    XMFLOAT3 attackCollisionPos_;//AttackCollisionの攻撃判定の向き
+    XMFLOAT3 attackCollisionSize_;//攻撃判定の大きさ
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す
 

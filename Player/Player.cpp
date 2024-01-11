@@ -12,7 +12,7 @@ namespace {
 
 //コンストラクタ
 Player::Player(GameObject* parent)
-    :GameObject(parent, "Player"),hModel_(-1)
+	:GameObject(parent, "Player"), hModel_(-1), attackCollisionPos_(ZERO, 1, 1), attackCollisionSize_(1, 0.5, 2)
 {
 	pState_ = new PlayerStateManager;
 }
@@ -25,23 +25,29 @@ Player::~Player()
 //初期化
 void Player::Initialize()
 {
-    //モデルデータのロード
-    hModel_ = Model::Load("PlayerFbx/player.fbx");
-    assert(hModel_ >= 0);
 
-	pBodyCollision_ = new BoxCollider(XMFLOAT3(0, 0, 0), XMFLOAT3(1, 2, 1));
+
+	//addcolliderしたら勝手に開放されるからね
+	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1));
 	AddCollider(pBodyCollision_);
 
-	pAttackCollision_ = new BoxCollider(XMFLOAT3(0, 0, 0), XMFLOAT3(1, 2, 1));
+	pAttackCollision_ = new BoxCollider(attackCollisionPos_, attackCollisionSize_);
+	//AddCollider(pAttackCollision_);
 
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
 
+	//モデルデータのロード
+	hModel_ = Model::Load("PlayerFbx/player.fbx");
+	assert(hModel_ >= 0);
 }
 
 //更新
 void Player::Update()
 {
 	
+	ClearCollider();
+	AddCollider(pBodyCollision_);
+	AddCollider(pAttackCollision_);
 	MovePlayer();
 
     pState_->Update(this);
@@ -62,8 +68,7 @@ void Player::Draw()
 void Player::Release()
 {
 	SAFE_DELETE(pState_);
-	SAFE_DELETE(pBodyCollision_);
-	SAFE_DELETE(pAttackCollision_);
+
 }
 
 //何か当たった時の処理
@@ -81,27 +86,28 @@ void Player::OnCollision(GameObject* pTarget)
 void Player::MovePlayer()
 {
 
-	XMFLOAT3 fMove = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 fMove = XMFLOAT3(ZERO, ZERO, ZERO);
 
 	////ここの引数でプレイヤー数を指定する
 	//fMove.x = Input::GetPadStickL(0).x;
 	//fMove.z = Input::GetPadStickL(0).y;
 
+	//結局後で正規化してるからここの値は大きくても意味なし
 	if (Input::IsKey(DIK_A))
 	{
-		fMove.x = -0.1f;
+		fMove.x = -0.01f;
 	}
 	if (Input::IsKey(DIK_D))
 	{
-		fMove.x = 0.1f;
+		fMove.x = 0.01f;
 	}
 	if (Input::IsKey(DIK_W))
 	{
-		fMove.z = 0.1f;
+		fMove.z = 0.01f;
 	}
 	if (Input::IsKey(DIK_S))
 	{
-		fMove.z = -0.1f;
+		fMove.z = -0.01f;
 	}
 
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
@@ -111,13 +117,17 @@ void Player::MovePlayer()
 
 	fMove = VectorToFloat3(vMove);
 
+	//速度調整
+	fMove.x *= 0.5;
+	fMove.z *= 0.5;
+
 	transform_.position_.x += fMove.x;
 	transform_.position_.z += fMove.z;
 
 	float length = Length(vMove);
 
 	//動いているなら角度を求めて回転する
-	if (length != 0) {
+	if (length != ZERO) {
 
 		XMVECTOR vFront = { 0,0,1,0 };
 		vMove = XMVector3Normalize(vMove);
@@ -129,12 +139,27 @@ void Player::MovePlayer()
 
 		//外積が-になる角度なら
 		XMVECTOR vCross = XMVector3Cross(vFront, vMove);
-		if (XMVectorGetY(vCross) < 0) {
+		if (XMVectorGetY(vCross) < ZERO) {
 
 			angle *= -1;
 		}
 
-		transform_.rotate_.y = XMConvertToDegrees(angle);
+		float degree = XMConvertToDegrees(angle);
+
+		transform_.rotate_.y = degree;
+
+		//攻撃時の当たり判定を回転させる
+		XMVECTOR collisionPos = XMLoadFloat3(&attackCollisionPos_);
+		XMVECTOR collisionSize = XMLoadFloat3(&attackCollisionSize_);
+		
+		XMMATRIX rotY = XMMatrixRotationY(degree);
+
+		XMVector3TransformCoord(collisionPos, rotY);
+		XMVector3TransformCoord(collisionSize, rotY);
+
+		attackCollisionPos_ = VectorToFloat3(collisionPos);
+		attackCollisionSize_ = VectorToFloat3(collisionSize);
+		
 	}
 
 }

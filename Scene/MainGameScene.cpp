@@ -13,11 +13,11 @@ MainGameScene::MainGameScene(GameObject* parent)
 //‰Šú‰»
 void MainGameScene::Initialize()
 {
-	//Instantiate<Player>(this);
+	Instantiate<Player>(this);
 	//Instantiate<Stage>(this);
-	Instantiate<MapEditor>(this);
+	//Instantiate<MapEditor>(this);
 
-	Camera::SetPosition(XMFLOAT3(0, -5, 0));
+	Camera::SetPosition(XMFLOAT3(0, 10, -20));
 	Camera::SetTarget(XMFLOAT3(0, 0, 0));
 
 }
