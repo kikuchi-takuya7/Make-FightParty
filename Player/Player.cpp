@@ -3,6 +3,13 @@
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
 
+//定数
+namespace {
+	const int PLAYER_HP = 100;
+	const int PLAYER_ATTACK_POWER = 20;
+
+}
+
 //コンストラクタ
 Player::Player(GameObject* parent)
     :GameObject(parent, "Player"),hModel_(-1)
@@ -21,6 +28,14 @@ void Player::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("PlayerFbx/player.fbx");
     assert(hModel_ >= 0);
+
+	pBodyCollision_ = new BoxCollider(XMFLOAT3(0, 0, 0), XMFLOAT3(1, 2, 1));
+	AddCollider(pBodyCollision_);
+
+	pAttackCollision_ = new BoxCollider(XMFLOAT3(0, 0, 0), XMFLOAT3(1, 2, 1));
+
+	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
+
 }
 
 //更新
@@ -39,12 +54,28 @@ void Player::Draw()
 {
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
+
+	CollisionDraw();
 }
 
 //開放
 void Player::Release()
 {
 	SAFE_DELETE(pState_);
+	SAFE_DELETE(pBodyCollision_);
+	SAFE_DELETE(pAttackCollision_);
+}
+
+//何か当たった時の処理
+void Player::OnCollision(GameObject* pTarget)
+{
+
+	//当たったときの処理
+	if (pTarget->GetObjectName() == "PlayerAttack")
+	{
+		KillMe();
+	}
+
 }
 
 void Player::MovePlayer()

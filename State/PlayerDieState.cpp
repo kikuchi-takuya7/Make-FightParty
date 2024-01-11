@@ -1,8 +1,12 @@
 #include "PlayerDieState.h"
+#include "../Player/Player.h"
 
 void PlayerDieState::Update(Player* player)
 {
 
+	player->ClearCollider();
+	
+	
 	HandleInput(player);
 }
 

@@ -1,5 +1,6 @@
 #include "PlayerIdleState.h"
 #include "PlayerStateManager.h"
+#include "../Player/Player.h"
 
 void PlayerIdleState::Update(Player* player)
 {

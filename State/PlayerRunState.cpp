@@ -1,5 +1,6 @@
 #include "PlayerRunState.h"
 #include "../Engine/Input.h"
+#include "../Player/Player.h"
 
 void PlayerRunState::Update(Player* player)
 {
