@@ -68,8 +68,12 @@ public:
 	//引数：position	オブジェクトの位置
 	void Draw(XMFLOAT3 position);
 
-	//セッター
+	//////////アクセス関数////////////
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
+	void SetCenter(XMFLOAT3 center) { center_ = center; }
+	void SetSize(XMFLOAT3 size) { size_ = size; }
+	XMFLOAT3 GetCenter() { return center_; }
+	XMFLOAT3 GetSize() { return size_; }
 
 };
 

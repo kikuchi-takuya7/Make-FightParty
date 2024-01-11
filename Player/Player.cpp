@@ -12,7 +12,7 @@ namespace {
 
 //コンストラクタ
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hModel_(-1), attackCollisionPos_(ZERO, 1, 1), attackCollisionSize_(1, 0.5, 2)
+	:GameObject(parent, "Player"), hModel_(-1), attackCollisionCenter_(ZERO, 1, 1), attackCollisionSize_(1, 0.5, 2)
 {
 	pState_ = new PlayerStateManager;
 }
@@ -31,8 +31,8 @@ void Player::Initialize()
 	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1));
 	AddCollider(pBodyCollision_);
 
-	pAttackCollision_ = new BoxCollider(attackCollisionPos_, attackCollisionSize_);
-	//AddCollider(pAttackCollision_);
+	pAttackCollision_ = new BoxCollider(attackCollisionCenter_, attackCollisionSize_);
+	AddCollider(pAttackCollision_);
 
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
 
@@ -44,14 +44,11 @@ void Player::Initialize()
 //更新
 void Player::Update()
 {
-	
-	ClearCollider();
-	AddCollider(pBodyCollision_);
-	AddCollider(pAttackCollision_);
+
+
 	MovePlayer();
 
     pState_->Update(this);
-    
 
 }
 
@@ -149,17 +146,16 @@ void Player::MovePlayer()
 		transform_.rotate_.y = degree;
 
 		//攻撃時の当たり判定を回転させる
-		XMVECTOR collisionPos = XMLoadFloat3(&attackCollisionPos_);
-		XMVECTOR collisionSize = XMLoadFloat3(&attackCollisionSize_);
+		XMVECTOR collisionVec = XMLoadFloat3(&attackCollisionCenter_);
 		
 		XMMATRIX rotY = XMMatrixRotationY(degree);
 
-		XMVector3TransformCoord(collisionPos, rotY);
-		XMVector3TransformCoord(collisionSize, rotY);
+		XMVector3TransformCoord(collisionVec, rotY);
 
-		attackCollisionPos_ = VectorToFloat3(collisionPos);
-		attackCollisionSize_ = VectorToFloat3(collisionSize);
+		attackCollisionCenter_ = VectorToFloat3(collisionVec);
 		
+		pAttackCollision_->SetCenter(attackCollisionCenter_);
+
 	}
 
 }

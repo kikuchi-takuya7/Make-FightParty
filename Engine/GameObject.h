@@ -42,12 +42,14 @@ public:
 	virtual void Update(void) {}
 	virtual void Draw() {}
 	virtual void Release(void) {}
+	
+	//ImGuiで変更したい数値がある時に作る関数
 	virtual void Imgui_Window() {}
 
 	/// <summary>
 	/// Imguiで使うセーブデータとか用のやつ
 	/// </summary>
-	virtual void Imgui_Data_Edit() {}
+	//virtual void Imgui_Data_Edit() {}
 
 	//自分の該当関数を読んだ後、子供の関数も呼ぶ
 	void UpdateSub();
@@ -55,10 +57,10 @@ public:
 	void ReleaseSub();
 	void Imgui_WindowSub();
 
-
+	//memo 使ってないからこれで正しいか不明
 	////ローカル行列の取得（このオブジェクトの行列）
 	////戻値：ローカル行列
-	//XMMATRIX GetLocalMatrix();
+	XMMATRIX GetLocalMatrix();
 
 	//ワールド行列の取得（親の影響を受けた最終的な行列）
 	//戻値：ワールド行列
@@ -67,11 +69,11 @@ public:
 	/// <summary>
 	/// 呼び出されたオブジェクトのtransformを変更できるスライダーを表示
 	/// </summary>
-	/// <param name="posmin">posの最小値</param>
-	/// <param name="posmax">posの最大値</param>
-	/// <param name="rot">rotの最大値</param>
-	/// <param name="scl">sclの最大値</param>
-	/// <param name="s">表示する名前（Player,positionみたいな）</param>
+	/// <param name="posmin">positionの最小値</param>
+	/// <param name="posmax">positionの最大値</param>
+	/// <param name="rot">rotateの最大値</param>
+	/// <param name="scl">scaleの最大値</param>
+	/// <param name="s">表示する名前</param>
 	void Setting_Transform(Transform& _transform, float posmin, float posmax, float rot, float scl, std::string s);
 
 	//SettingTransformのXMFLOAT3だけバージョン（position想定）

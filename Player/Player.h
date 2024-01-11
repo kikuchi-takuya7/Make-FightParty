@@ -24,6 +24,8 @@ public:
     //デストラクタ
     ~Player();
 
+    /////////////オーバーライドした関数/////////////////
+
     //初期化
     void Initialize() override;
 
@@ -42,12 +44,15 @@ public:
     /// <param name="pTarget">当たった相手</param>
     void OnCollision(GameObject* pTarget) override;
 
+
+    /////////////////////メンバ関数/////////////////////////////////////
+
     /// <summary>
     /// プレイヤーの移動処理
     /// </summary>
     void MovePlayer();
 
-    /////////アクセス関数////////
+    ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
     void SetDead() { status_.isDead = true; }
 
@@ -62,7 +67,7 @@ private:
     //当たり判定
     BoxCollider* pBodyCollision_;
     BoxCollider* pAttackCollision_;
-    XMFLOAT3 attackCollisionPos_;//AttackCollisionの攻撃判定の向き
+    XMFLOAT3 attackCollisionCenter_;//AttackCollisionの攻撃判定の向き
     XMFLOAT3 attackCollisionSize_;//攻撃判定の大きさ
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す

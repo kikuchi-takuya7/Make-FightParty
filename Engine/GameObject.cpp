@@ -365,10 +365,10 @@ void GameObject::Imgui_WindowSub()
 
 
 ////ローカル行列の取得（このオブジェクトの行列）
-//XMMATRIX GameObject::GetLocalMatrix(void)
-//{
-//	return transform_.GetWorldMatrix();
-//}
+XMMATRIX GameObject::GetLocalMatrix(void)
+{
+	return transform_.matScale_ * transform_.matRotate_ * transform_.matTranslate_;
+}
 
 //ワールド行列の取得（親の影響を受けた最終的な行列）
 XMMATRIX GameObject::GetWorldMatrix(void)
