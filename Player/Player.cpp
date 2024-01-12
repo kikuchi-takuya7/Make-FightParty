@@ -28,10 +28,10 @@ void Player::Initialize()
 
 
 	//addcollider‚µ‚½‚çŸŽè‚ÉŠJ•ú‚³‚ê‚é‚©‚ç‚Ë
-	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1));
+	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), XMFLOAT3(ZERO, ZERO, ZERO));
 	AddCollider(pBodyCollision_);
 
-	pAttackCollision_ = new BoxCollider(attackCollisionCenter_, attackCollisionSize_);
+	pAttackCollision_ = new BoxCollider(attackCollisionCenter_, attackCollisionSize_, XMFLOAT3(ZERO, ZERO, ZERO));
 	AddCollider(pAttackCollision_);
 
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
@@ -148,24 +148,7 @@ void Player::MovePlayer()
 
 		transform_.rotate_.y = degree;
 
-		//UŒ‚Žž‚Ì“–‚½‚è”»’è‚ð‰ñ“]‚³‚¹‚é
-		XMVECTOR collisionVec = XMLoadFloat3(&attackCollisionCenter_);
-		
-		//‚Ð‚Æ‚Ü‚¸yŽ²‰ñ“]‚È‚Ì‚Å’l‚ð0‚É‚·‚é
-		collisionVec = XMVectorSetY(collisionVec, ZERO);
-
-		//‰ñ“]s—ñ‚ðì‚é
-		XMMATRIX rotY = XMMatrixRotationY(angle);
-
-		//ƒxƒNƒgƒ‹‚ð‰ñ“]‚³‚¹‚é
-		XMVector3TransformCoord(collisionVec, rotY);
-
-		//XMFLOAT‚É–ß‚µ‚Äy‚à–ß‚µ‚ÄƒZƒbƒg‚·‚é
-		attackCollisionCenter_ = VectorToFloat3(collisionVec);
-		attackCollisionCenter_.y = 1;
-		pAttackCollision_->SetCenter(attackCollisionCenter_);
-
-		
+		pAttackCollision_->SetRotate(XMFLOAT3(ZERO, degree, ZERO));
 
 	}
 

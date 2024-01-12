@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <../../Global.h>
 
 
 using namespace DirectX;
@@ -32,6 +33,7 @@ protected:
 	ColliderType	type_;			//種類
 	XMFLOAT3		center_;		//中心位置（ゲームオブジェクトの原点から見た位置）
 	XMFLOAT3		size_;			//判定サイズ（幅、高さ、奥行き）
+	XMFLOAT3		rotate_;		//centerから回転させる角度。と思ったけど結局その四角形の形のまま動くからちゃんと回転してるわけではない。
 	int				hDebugModel_;	//デバッグ表示用のモデルのID
 
 public:
@@ -64,6 +66,18 @@ public:
 	//戻値：接触していればtrue
 	bool IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB);
 
+	/// <summary>
+	/// 回転した後のposを計算する
+	/// </summary>
+	/// <returns>回転後のcenter</returns>
+	XMFLOAT3 CalclationCenter();
+
+	/// <summary>
+	/// 回転した後のSizeを計算する（実際には回転してる訳では無くそれっぽく移動してるだけかも怪しいかもしれない）
+	/// </summary>
+	/// <returns>回転後のSize</returns>
+	XMFLOAT3 CalclationSize();
+
 	//テスト表示用の枠を描画
 	//引数：position	オブジェクトの位置
 	void Draw(XMFLOAT3 position);
@@ -72,8 +86,10 @@ public:
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
 	void SetCenter(XMFLOAT3 center) { center_ = center; }
 	void SetSize(XMFLOAT3 size) { size_ = size; }
+	void SetRotate(XMFLOAT3 rotate) { rotate_ = rotate; }
 	XMFLOAT3 GetCenter() { return center_; }
 	XMFLOAT3 GetSize() { return size_; }
+	XMFLOAT3 GetRotate() { return rotate_; }
 
 };
 

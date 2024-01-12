@@ -6,10 +6,11 @@
 //コンストラクタ（当たり判定の作成）
 //引数：basePos	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
 //引数：size	当たり判定のサイズ
-BoxCollider::BoxCollider(XMFLOAT3 basePos, XMFLOAT3 size)
+BoxCollider::BoxCollider(XMFLOAT3 basePos, XMFLOAT3 size, XMFLOAT3 rotate)
 {
 	center_ = basePos;
 	size_ = size;
+	rotate_ = rotate;
 	type_ = COLLIDER_BOX;
 
 	//リリース時は判定枠は表示しない
