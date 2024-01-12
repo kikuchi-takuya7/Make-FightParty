@@ -45,6 +45,9 @@ void Player::Initialize()
 void Player::Update()
 {
 
+	/*if (Input::IsKey(DIK_L)) {
+		attackCollisionCenter_.z += 1;
+	}*/
 
 	MovePlayer();
 
@@ -148,13 +151,21 @@ void Player::MovePlayer()
 		//UŒ‚Žž‚Ì“–‚½‚è”»’è‚ð‰ñ“]‚³‚¹‚é
 		XMVECTOR collisionVec = XMLoadFloat3(&attackCollisionCenter_);
 		
-		XMMATRIX rotY = XMMatrixRotationY(degree);
+		//‚Ð‚Æ‚Ü‚¸yŽ²‰ñ“]‚È‚Ì‚Å’l‚ð0‚É‚·‚é
+		collisionVec = XMVectorSetY(collisionVec, ZERO);
 
+		//‰ñ“]s—ñ‚ðì‚é
+		XMMATRIX rotY = XMMatrixRotationY(angle);
+
+		//ƒxƒNƒgƒ‹‚ð‰ñ“]‚³‚¹‚é
 		XMVector3TransformCoord(collisionVec, rotY);
 
+		//XMFLOAT‚É–ß‚µ‚Äy‚à–ß‚µ‚ÄƒZƒbƒg‚·‚é
 		attackCollisionCenter_ = VectorToFloat3(collisionVec);
-		
+		attackCollisionCenter_.y = 1;
 		pAttackCollision_->SetCenter(attackCollisionCenter_);
+
+		
 
 	}
 

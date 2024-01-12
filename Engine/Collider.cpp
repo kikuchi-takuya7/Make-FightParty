@@ -23,6 +23,7 @@ Collider::~Collider()
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
 
+	//ワールド座標から見た座標で当たり判定する。ローカル座標でやっちゃだめよ
 	XMFLOAT3 boxPosA = Float3Add(boxA->pGameObject_->GetWorldPosition(), boxA->center_);
 	XMFLOAT3 boxPosB = Float3Add(boxB->pGameObject_->GetWorldPosition(), boxB->center_);
 

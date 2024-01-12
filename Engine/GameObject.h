@@ -49,7 +49,7 @@ public:
 	/// <summary>
 	/// Imguiで使うセーブデータとか用のやつ
 	/// </summary>
-	//virtual void Imgui_Data_Edit() {}
+	virtual void Imgui_Data_Edit() {}
 
 	//自分の該当関数を読んだ後、子供の関数も呼ぶ
 	void UpdateSub();
