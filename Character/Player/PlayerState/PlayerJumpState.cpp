@@ -1,6 +1,6 @@
 #include "PlayerJumpState.h"
 #include "PlayerStateManager.h"
-#include "../Player/Player.h"
+#include "../Player.h"
 
 namespace {
 	const float JUMP_VELOCITY = 1.0f;

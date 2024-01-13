@@ -1,6 +1,6 @@
 #include "PlayerAttackState.h"
-#include "../Engine/BoxCollider.h"
-#include "../Player/Player.h"
+#include "../../Engine/BoxCollider.h"
+#include "../Player.h"
 
 void PlayerAttackState::Update(Player* player)
 {

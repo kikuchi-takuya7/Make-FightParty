@@ -1,5 +1,5 @@
 #include "PlayerDieState.h"
-#include "../Player/Player.h"
+#include "../Player.h"
 
 void PlayerDieState::Update(Player* player)
 {

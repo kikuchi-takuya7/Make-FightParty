@@ -1,10 +1,10 @@
 #pragma once
-#include "../State/PlayerState.h"
+#include "PlayerState.h"
 
 /// <summary>
-/// ジャンプしてる状態
+/// 動いてない状態
 /// </summary>
-class PlayerJumpState : public PlayerState
+class PlayerIdleState : public PlayerState
 {
 
 	/// <summary>
@@ -25,10 +25,6 @@ class PlayerJumpState : public PlayerState
 	/// </summary>
 	/// <param name="player">Playerのポインタ</param>
 	void Enter(Player* player) override;
-
-private:
-
-	float velocity_;
 
 };
 

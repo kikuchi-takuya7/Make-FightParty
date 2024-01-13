@@ -1,12 +1,12 @@
 #pragma once
-#include "../State/PlayerState.h"
+#include "PlayerState.h"
 
 /// <summary>
-/// 死んだ状態
+/// プレイヤーが走っている状態
 /// </summary>
-class PlayerDieState : public PlayerState
+class PlayerRunState : public PlayerState
 {
-
+	
 	/// <summary>
 	/// 更新
 	/// </summary>

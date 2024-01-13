@@ -1,10 +1,10 @@
 #pragma once
-#include "../State/PlayerState.h"
+#include "PlayerState.h"
 
 /// <summary>
-/// UŒ‚‚µ‚½ó‘Ô
+/// ƒWƒƒƒ“ƒv‚µ‚Ä‚éó‘Ô
 /// </summary>
-class PlayerAttackState : public PlayerState
+class PlayerJumpState : public PlayerState
 {
 
 	/// <summary>
@@ -28,6 +28,7 @@ class PlayerAttackState : public PlayerState
 
 private:
 
+	float velocity_;
 
 };
 

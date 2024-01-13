@@ -16,7 +16,7 @@ class PlayerStateManager
 
 public:
 	
-	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になる
+	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になるっていう予想
 	static PlayerAttackState* playerAttackState_;
 	static PlayerDieState* playerDieState_;
 	static PlayerIdleState* playerIdleState_;

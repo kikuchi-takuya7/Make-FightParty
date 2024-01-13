@@ -9,11 +9,10 @@
 
 
 //0の定数
-#define ZERO 0.0f
+const float ZERO = 0.0f;
+const XMFLOAT3 ZERO_FLOAT3 = XMFLOAT3(ZERO, ZERO, ZERO);
 
-
-
-////////関数///////////
+//////////////////////////関数///////////////////////
 
 //staticにしないとエラー。global.hが何度も呼び出されるから多重定義になっちゃう的な？
 
@@ -43,6 +42,10 @@ static XMFLOAT3 VectorToFloat3(XMVECTOR v)
 
 	return a;
 }
+
+
+////////////////オペレーター////////////////////////////
+
 
 static XMFLOAT3 operator + (const XMFLOAT3& v1, const XMVECTOR& v2) {
 

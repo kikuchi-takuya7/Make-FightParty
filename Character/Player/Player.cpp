@@ -1,18 +1,21 @@
 #include "Player.h"
-#include "../Engine/Model.h"
-#include "../Engine/Input.h"
-#include "../Engine/Global.h"
+#include "../../Engine/Model.h"
+#include "../../Engine/Input.h"
+#include "../../Engine/Global.h"
 
 //定数
 namespace {
 	const int PLAYER_HP = 100;
 	const int PLAYER_ATTACK_POWER = 20;
-
+	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
+	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
+	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
+	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 1);
 }
 
 //コンストラクタ
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hModel_(-1), attackCollisionCenter_(ZERO, 1, 1), attackCollisionSize_(1, 0.5, 2)
+	:GameObject(parent, "Player"), hModel_(-1)
 {
 	pState_ = new PlayerStateManager;
 }
@@ -28,10 +31,10 @@ void Player::Initialize()
 
 
 	//addcolliderしたら勝手に開放されるからね
-	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), XMFLOAT3(ZERO, ZERO, ZERO));
+	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_);
 
-	pAttackCollision_ = new BoxCollider(attackCollisionCenter_, attackCollisionSize_, XMFLOAT3(ZERO, ZERO, ZERO));
+	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pAttackCollision_);
 
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };

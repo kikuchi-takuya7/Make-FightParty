@@ -1,5 +1,5 @@
 #include "MainGameScene.h"
-#include "../Player/Player.h"
+#include "../Character/Player/Player.h"
 #include "../Stage/Stage.h"
 #include "../MapEditor/MapEditor.h"
 #include "../Engine/Camera.h"

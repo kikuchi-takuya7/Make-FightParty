@@ -1,10 +1,10 @@
 #pragma once
-#include "../State/PlayerState.h"
+#include "PlayerState.h"
 
 /// <summary>
-/// “®‚¢‚Ä‚È‚¢ó‘Ô
+/// UŒ‚‚µ‚½ó‘Ô
 /// </summary>
-class PlayerIdleState : public PlayerState
+class PlayerAttackState : public PlayerState
 {
 
 	/// <summary>
@@ -25,6 +25,9 @@ class PlayerIdleState : public PlayerState
 	/// </summary>
 	/// <param name="player">Player‚Ìƒ|ƒCƒ“ƒ^</param>
 	void Enter(Player* player) override;
+
+private:
+
 
 };
 
