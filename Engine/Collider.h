@@ -11,12 +11,20 @@ class GameObject;
 class BoxCollider;
 class SphereCollider;
 
-
 //あたり判定のタイプ
 enum ColliderType
 {
 	COLLIDER_BOX,		//箱型
 	COLLIDER_CIRCLE		//球体
+};
+
+//どこの当たり判定か(体か攻撃判定か)
+enum ColliderAttackType 
+{
+	COLLIDER_BODY,		//体
+	COLLIDER_ATTACK,	//体での攻撃(殴るとか)
+	COLLIDER_WEAPON		//武器での攻撃
+
 };
 
 //-----------------------------------------------------------
@@ -31,9 +39,11 @@ class Collider
 protected:
 	GameObject*		pGameObject_;	//この判定をつけたゲームオブジェクト
 	ColliderType	type_;			//種類
+	ColliderAttackType attackType_;	//どこの当たり判定だったか
 	XMFLOAT3		center_;		//中心位置（ゲームオブジェクトの原点から見た位置）
 	XMFLOAT3		size_;			//判定サイズ（幅、高さ、奥行き）
 	XMFLOAT3		rotate_;		//centerから回転させる角度。と思ったけど結局その四角形の形のまま動くからちゃんと回転してるわけではない。
+	//std::string		colliderName_;	//コライダー毎の名前。判定をコライダー毎に変える用
 	int				hDebugModel_;	//デバッグ表示用のモデルのID
 
 public:
@@ -84,9 +94,13 @@ public:
 
 	//////////アクセス関数////////////
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
+	//void SetName(std::string name) { colliderName_ = name; }
+	void SetAttackType(ColliderAttackType type) { attackType_ = type; }
 	void SetCenter(XMFLOAT3 center) { center_ = center; }
 	void SetSize(XMFLOAT3 size) { size_ = size; }
 	void SetRotate(XMFLOAT3 rotate) { rotate_ = rotate; }
+	//std::string GetName() { return colliderName_; }
+	ColliderAttackType GetAttackType() { return attackType_; }
 	XMFLOAT3 GetCenter() { return center_; }
 	XMFLOAT3 GetSize() { return size_; }
 	XMFLOAT3 GetRotate() { return rotate_; }

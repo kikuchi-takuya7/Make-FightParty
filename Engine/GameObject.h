@@ -201,14 +201,20 @@ public:
 	//子オブジェクトを全て削除
 	void KillAllChildren();
 
-
-
-	//コライダー（衝突判定）を追加する
-	void AddCollider(Collider* collider);
-
-	//何かと衝突した場合に呼ばれる（オーバーライド用）
-	//引数：pTarget	衝突した相手
-	virtual void OnCollision(GameObject* pTarget) {};
+	/// <summary>
+	/// コライダー（衝突判定）を追加する
+	/// </summary>
+	/// <param name="collider">追加するCollider</param>
+	/// <param name="type">追加するColliderのattackType</param>
+	void AddCollider(Collider* collider, ColliderAttackType type);
+	
+	/// <summary>
+	/// 何かと衝突した場合に呼ばれる（オーバーライド用）
+	/// </summary>
+	/// <param name="pTarget">衝突した相手</param>
+	/// <param name="myType">当たったcolliderの自分のattackType</param>
+	/// <param name="targetType">当たったcolliderの相手のattackType</param>
+	virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
 
 	//コライダー（衝突判定）を削除
 	void ClearCollider();
@@ -246,6 +252,7 @@ public:
 	void SetObjectID(int ID) { objectID_ = ID; }
 	int GetObjectID() { return objectID_; }
 
+	
 
 private:
 

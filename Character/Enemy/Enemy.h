@@ -2,20 +2,14 @@
 #include "../../Engine/GameObject.h"
 #include "EnemyState/EnemyStateManager.h"
 #include "EnemyState/EnemyState.h"
-
-
-struct Status {
-    int hp;
-    int attackPower;
-    bool isDead;
-};
+#include "../Character.h"
 
 class PlayerStateManager;
 
 /// <summary>
-/// 操作するプレイヤーのクラス
+/// CPUで管理する敵のクラス
 /// </summary>
-class Enemy : public GameObject
+class Enemy : public Character
 {
 
 public:
@@ -31,7 +25,7 @@ public:
     void Initialize() override;
 
     //更新
-    void Update() override;
+    void ChildUpdate() override;
 
     //描画
     void Draw() override;
@@ -43,7 +37,7 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    void OnCollision(GameObject* pTarget) override;
+    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee) override;
 
     /////////////////////メンバ関数/////////////////////////////////////
 
@@ -62,11 +56,11 @@ private:
     int hModel_;
 
     //HP等のステータス
-    Status status_;
+    //Status status_;
 
     EnemyStateManager* pState_; //敵の状態を表す
 
     //当たり判定
-    BoxCollider* pBodyCollision_;
+    //BoxCollider* pBodyCollision_;
 
 };

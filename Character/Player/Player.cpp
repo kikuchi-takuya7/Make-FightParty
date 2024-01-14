@@ -10,12 +10,12 @@ namespace {
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 1);
+	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 }
 
 //コンストラクタ
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hModel_(-1)
+	:Character(parent, "Player")
 {
 	pState_ = new PlayerStateManager;
 }
@@ -32,10 +32,10 @@ void Player::Initialize()
 
 	//addcolliderしたら勝手に開放されるからね
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
-	AddCollider(pBodyCollision_);
+	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
-	AddCollider(pAttackCollision_);
+	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
 
@@ -45,7 +45,7 @@ void Player::Initialize()
 }
 
 //更新
-void Player::Update()
+void Player::ChildUpdate()
 {
 
 	/*if (Input::IsKey(DIK_L)) {
@@ -75,7 +75,7 @@ void Player::Release()
 }
 
 //何か当たった時の処理
-void Player::OnCollision(GameObject* pTarget)
+void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee)
 {
 
 	//当たったときの処理

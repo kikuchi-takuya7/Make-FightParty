@@ -210,9 +210,10 @@ void GameObject::KillObjectSub(GameObject* obj)
 
 
 //コライダー（衝突判定）を追加する
-void GameObject::AddCollider(Collider* collider)
+void GameObject::AddCollider(Collider* collider, ColliderAttackType type)
 {
 	collider->SetGameObject(this);
+	collider->SetAttackType(type);
 	colliderList_.push_back(collider);
 }
 
@@ -244,7 +245,8 @@ void GameObject::Collision(GameObject* pTarget)
 			if ((*i)->IsHit(*j))
 			{
 				//当たった
-				this->OnCollision(pTarget);
+				this->OnCollision(pTarget,(*i)->GetAttackType(), (*j)->GetAttackType());
+
 			}
 		}
 	}
