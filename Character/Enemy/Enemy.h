@@ -7,7 +7,7 @@
 class PlayerStateManager;
 
 /// <summary>
-/// CPUで管理する敵のクラス
+/// CPUで動かす敵のクラス
 /// </summary>
 class Enemy : public Character
 {

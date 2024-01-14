@@ -29,11 +29,21 @@ Enemy::~Enemy()
 void Enemy::Initialize()
 {
 
-	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), XMFLOAT3(ZERO, ZERO, ZERO));
+	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
+	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
 	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
+
+	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER,false };
+
+	//モデルデータのロード
+	hModel_ = Model::Load("PlayerFbx/player.fbx");
+	assert(hModel_ >= 0);
+
+	transform_.position_.z += 0;
+	transform_.position_.x += 2;
+
 
 }
 
@@ -50,7 +60,10 @@ void Enemy::ChildUpdate()
 //描画
 void Enemy::Draw()
 {
+	Model::SetTransform(hModel_, transform_);
+	Model::Draw(hModel_);
 
+	CollisionDraw();
 }
 
 //開放

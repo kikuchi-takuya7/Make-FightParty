@@ -75,11 +75,11 @@ void Player::Release()
 }
 
 //‰½‚©“–‚½‚Á‚½Žž‚Ìˆ—
-void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee)
+void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 
 	//“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
-	if (pTarget->GetObjectName() == "PlayerAttack")
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		KillMe();
 	}

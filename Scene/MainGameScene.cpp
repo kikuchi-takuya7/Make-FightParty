@@ -3,6 +3,7 @@
 #include "../Stage/Stage.h"
 #include "../MapEditor/MapEditor.h"
 #include "../Engine/Camera.h"
+#include "../Character/Enemy/Enemy.h"
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
@@ -14,6 +15,7 @@ MainGameScene::MainGameScene(GameObject* parent)
 void MainGameScene::Initialize()
 {
 	Instantiate<Player>(this);
+	Instantiate<Enemy>(this);
 	//Instantiate<Stage>(this);
 	//Instantiate<MapEditor>(this);
 
