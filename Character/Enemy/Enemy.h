@@ -61,6 +61,8 @@ private:
 
     EnemyStateManager* pState_; //“G‚Ìó‘Ô‚ğ•\‚·
 
+    CharacterAI AI_;//F‚ñ‚È”»’f‚ğ‚µ‚Ä‚­‚ê‚éAI‚Ì‚Â‚à‚è
+
     //“–‚½‚è”»’è
     //BoxCollider* pBodyCollision_;
 
