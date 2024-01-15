@@ -54,14 +54,14 @@
     <Filter Include="Character\Enemy\EnemyState">
       <UniqueIdentifier>{6c3eee5c-b536-46b2-8e1a-ec77a9bed26e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\MapEditor">
-      <UniqueIdentifier>{5196636c-f92e-4351-8ca0-2bd7dcc299a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Character\MapEditor\StageSource">
-      <UniqueIdentifier>{3ac7620f-c5bf-4d2e-939b-9d42cf3cfced}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI">
       <UniqueIdentifier>{eebec4c1-ebf4-40ea-85af-3436dc556568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapEditor">
+      <UniqueIdentifier>{5196636c-f92e-4351-8ca0-2bd7dcc299a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapEditor\StageSource">
+      <UniqueIdentifier>{3ac7620f-c5bf-4d2e-939b-9d42cf3cfced}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -171,16 +171,16 @@
       <Filter>Stage</Filter>
     </ClCompile>
     <ClCompile Include="MapEditor\MapController.cpp">
-      <Filter>Character\MapEditor</Filter>
+      <Filter>MapEditor</Filter>
     </ClCompile>
     <ClCompile Include="MapEditor\MapEditor.cpp">
-      <Filter>Character\MapEditor</Filter>
+      <Filter>MapEditor</Filter>
     </ClCompile>
     <ClCompile Include="MapEditor\MapSource\TestFloor.cpp">
-      <Filter>Character\MapEditor\StageSource</Filter>
+      <Filter>MapEditor\StageSource</Filter>
     </ClCompile>
     <ClCompile Include="MapEditor\MapSource\TestWall.cpp">
-      <Filter>Character\MapEditor\StageSource</Filter>
+      <Filter>MapEditor\StageSource</Filter>
     </ClCompile>
     <ClCompile Include="Character\Enemy\Enemy.cpp">
       <Filter>Character\Enemy</Filter>
@@ -359,16 +359,16 @@
       <Filter>Stage</Filter>
     </ClInclude>
     <ClInclude Include="MapEditor\MapController.h">
-      <Filter>Character\MapEditor</Filter>
+      <Filter>MapEditor</Filter>
     </ClInclude>
     <ClInclude Include="MapEditor\MapEditor.h">
-      <Filter>Character\MapEditor</Filter>
+      <Filter>MapEditor</Filter>
     </ClInclude>
     <ClInclude Include="MapEditor\MapSource\TestFloor.h">
-      <Filter>Character\MapEditor\StageSource</Filter>
+      <Filter>MapEditor\StageSource</Filter>
     </ClInclude>
     <ClInclude Include="MapEditor\MapSource\TestWall.h">
-      <Filter>Character\MapEditor\StageSource</Filter>
+      <Filter>MapEditor\StageSource</Filter>
     </ClInclude>
     <ClInclude Include="Character\Enemy\Enemy.h">
       <Filter>Character\Enemy</Filter>
