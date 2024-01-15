@@ -3,11 +3,12 @@
 #include "EnemyState/EnemyStateManager.h"
 #include "EnemyState/EnemyState.h"
 #include "../Character.h"
+#include "../../AI/CharacterAI.h"
 
 class PlayerStateManager;
 
 /// <summary>
-/// CPUで動かす敵のクラス
+/// キャラクターAIで動かす敵のクラス
 /// </summary>
 class Enemy : public Character
 {

@@ -1,5 +1,13 @@
 #pragma once
-class CharacterAI
+#include "AI.h"
+
+
+/// <summary>
+/// 敵キャラクターを動かすAI
+/// </summary>
+class CharacterAI : public AI
 {
+
+
 };
 

@@ -1,7 +1,7 @@
 #include "Character.h"
-#include "../../Engine/Model.h"
-#include "../../Engine/Input.h"
-#include "../../Engine/Global.h"
+#include "../Engine/Model.h"
+#include "../Engine/Input.h"
+#include "../Engine/Global.h"
 
 
 //コンストラクタ

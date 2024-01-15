@@ -16,7 +16,7 @@ void MainGameScene::Initialize()
 {
 	Instantiate<Player>(this);
 	Instantiate<Enemy>(this);
-	//Instantiate<Stage>(this);
+	Instantiate<Stage>(this);
 	//Instantiate<MapEditor>(this);
 
 	Camera::SetPosition(XMFLOAT3(0, 10, -20));

@@ -131,6 +131,8 @@
   <ItemGroup>
     <ClCompile Include="AI\AI.cpp" />
     <ClCompile Include="AI\CharacterAI.cpp" />
+    <ClCompile Include="AI\MetaAI.cpp" />
+    <ClCompile Include="AI\NavigationAI.cpp" />
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Character\Enemy\EnemyState\EnemyAttackState.cpp" />
@@ -191,6 +193,8 @@
   <ItemGroup>
     <ClInclude Include="AI\AI.h" />
     <ClInclude Include="AI\CharacterAI.h" />
+    <ClInclude Include="AI\MetaAI.h" />
+    <ClInclude Include="AI\NavigationAI.h" />
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="Character\Enemy\Enemy.h" />
     <ClInclude Include="Character\Enemy\EnemyState\EnemyAttackState.h" />
