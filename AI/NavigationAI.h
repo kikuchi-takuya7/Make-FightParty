@@ -25,6 +25,8 @@ using PqPP = std::priority_queue<PP, vector<PP>, std::greater<PP>>; //昇順で要素
 /// </summary>
 class NavigationAI : AI
 {
+	//
+
 	//コンストラクタ
 	NavigationAI();
 
