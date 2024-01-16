@@ -7,8 +7,7 @@ namespace {
 	//const int moveZ[8] = { ZERO, ZERO,    1,	 -1, 1 ,1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
 	//const int moveX[8] = {	1,	 -1, ZERO, ZERO, 1,-1 ,1,-1 };
 
-	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-	const int moveX[4] = {	  1,  -1,ZERO,ZERO };
+	
 }
 
 namespace Astar {
@@ -17,6 +16,7 @@ namespace Astar {
 
 NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
+	playerPos_ = { 0,0,0 };
 }
 
 NavigationAI::~NavigationAI()
@@ -44,11 +44,6 @@ void NavigationAI::Initialize()
 			rest_[i][f] = Pair(i, f); 
 		}
 	}
-
-	
-	
-	
-
 }
 
 void NavigationAI::Release()
@@ -79,9 +74,15 @@ void NavigationAI::InitAstar()
 
 XMFLOAT3 NavigationAI::Astar()
 {
+
+
+	//上下左右に移動（探索）するための配列
+	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
+	const int moveX[4] = { 1,  -1,ZERO,ZERO };
 	
 	InitAstar();
 
+	//targetまでの最短距離を求める
 	while (!que_.empty())
 	{
 		PP now = que_.top();//今いる場所を確保
@@ -121,7 +122,7 @@ XMFLOAT3 NavigationAI::Astar()
 		}
 	}
 
-	rest_.clear();
+	
 	dist_.clear();
 	
 	while (!que_.empty())
@@ -131,8 +132,13 @@ XMFLOAT3 NavigationAI::Astar()
 
 }
 
+//てかこれもいらなくね？？て思ったけど近くの4マスだけ見ても意味ないから結局最後まで探索するのは必須で、経路探索は一マス分で十分
 XMFLOAT3 NavigationAI::Path_Search()
 {
+
+	//上下左右に移動（探索）するための配列
+	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
+	const int moveX[4] = { 1,  -1,ZERO,ZERO };
 
 	//今いる地点から
 	int i = start_.first;
@@ -140,19 +146,28 @@ XMFLOAT3 NavigationAI::Path_Search()
 
 	XMFLOAT3 nextPos;
 
-	//一回だけのループにした
+	//どの道をたどってきたか思い出す
 	for (int n = ZERO; n < 4; n++) {
+		
 		int z = i;
 		int x = f;
-		z += moveZ[n]; //上下探索
+
+		//上下探索
+		z += moveZ[n];
 		x += moveX[n];
-		if (z < ZERO || z >= height_ || x < ZERO || x >= width_) {// 画面外なら
+
+		// 画面外なら
+		if (z < ZERO || z >= height_ || x < ZERO || x >= width_) {
 			continue;
 		}
-		if (rest_.at(i).at(f) != Pair(z, x)) {//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じならansに入れる
+
+		//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じじゃないなら
+		if (rest_.at(i).at(f) != Pair(z, x)) {
 			continue;
 		}
-		nextPos = { (float)z,0,(float)x }; //通ってきた座標を入れる
+
+		//通ってきた座標を入れる
+		nextPos = { (float)z,0,(float)x }; 
 	}
 
 	//正規化して、速度を調整する
@@ -160,6 +175,8 @@ XMFLOAT3 NavigationAI::Path_Search()
 	tmp = XMVector3Normalize(tmp);
 	nextPos = VectorToFloat3(tmp);
 	nextPos = nextPos / 2;
+
+	rest_.clear();
 
 	return nextPos;
 

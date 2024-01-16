@@ -21,6 +21,9 @@ void CharacterAI::Initialize()
 
 void CharacterAI::Release()
 {
+
+	pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());
+
 }
 
 //“®‚©‚·

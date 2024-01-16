@@ -4,6 +4,8 @@
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
 
+class MetaAI;
+
 /// <summary>
 /// 敵キャラクターを動かすAI
 /// </summary>

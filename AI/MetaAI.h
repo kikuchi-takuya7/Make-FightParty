@@ -32,11 +32,11 @@ private:
 	
 	/////////各種インスタンス///////////
 
-	NavigationAI* pNavigationAI_;
-	CharacterAI* pCharacterAI_;
+	//NavigationAI* pNavigationAI_;
+	//CharacterAI* pCharacterAI_;
 	
-	Enemy* pEnemy_;
-	Player* pPlayer_;
+	//Enemy* pEnemy_;
+	//Player* pPlayer_;
 
 };
 
