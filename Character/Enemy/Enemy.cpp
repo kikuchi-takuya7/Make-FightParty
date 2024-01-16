@@ -15,9 +15,9 @@ namespace {
 
 //コンストラクタ
 Enemy::Enemy(GameObject* parent)
-	:Character(parent, "Enemy"), hModel_(-1)
+	:Character(parent, "Enemy"), hModel_(-1),pState_(new EnemyStateManager), CharacterAI_(new CharacterAI(this))
+
 {
-	pState_ = new EnemyStateManager;
 }
 
 //デストラクタ
@@ -44,6 +44,8 @@ void Enemy::Initialize()
 	transform_.position_.z += 0;
 	transform_.position_.x += 2;
 
+	CharacterAI_->Initialize();
+
 
 }
 
@@ -51,9 +53,9 @@ void Enemy::Initialize()
 void Enemy::ChildUpdate()
 {
 
+	CharacterAI_->MoveEnemy();
 
-
-	pState_->Update(this);
+	//pState_->Update(this);
 
 }
 
@@ -69,8 +71,8 @@ void Enemy::Draw()
 //開放
 void Enemy::Release()
 {
+	SAFE_DELETE(CharacterAI_);
 	SAFE_DELETE(pState_);
-
 }
 
 //何か当たった時の処理

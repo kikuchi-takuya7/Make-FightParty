@@ -72,6 +72,16 @@ static XMVECTOR operator -(const XMFLOAT3& p1, const XMVECTOR& p2) {
 	return p1v - p2;
 }
 
+static XMFLOAT3 operator /(const XMFLOAT3& f1, const float& f2) {
+	
+	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
+}
+
+//static XMFLOAT3 operator /=(const XMFLOAT3& f1, const float& f2) {
+//
+//	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
+//}
+
 static bool operator ==(const XMFLOAT3& f1, const XMFLOAT3& f2) {
 
 	bool ans = false;

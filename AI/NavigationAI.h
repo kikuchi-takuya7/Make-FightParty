@@ -4,21 +4,15 @@
 #include <vector>
 #include <functional>
 #include <queue>
-#include <stack>
 
-//const int moveZ[8] = { 0, 0, 1,-1, 1 ,1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-//const int moveX[8] = { 1,-1, 0, 0, 1,-1 ,1,-1 };
-
-const int moveZ[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-const int moveX[4] = { 1,-1,0,0 };
 
 //pairじゃなくてstructにした方がいいか？
 using std::vector;
 using std::pair;
-using Pair = pair<int, int>; // { z,x }
+using Pair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列上のグラフ
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
-using PqPP = std::priority_queue<PP, vector<PP>, std::greater<PP>>; //昇順で要素を入れておく.昇順って小さい順って意味だからな
+//using PqPP = std::priority_queue<PP, vector<PP>, std::greater<PP>>; //昇順で要素を入れておく.昇順って小さい順って意味だからな
 
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
@@ -26,6 +20,7 @@ using PqPP = std::priority_queue<PP, vector<PP>, std::greater<PP>>; //昇順で要素
 class NavigationAI : AI
 {
 	//
+public:
 
 	//コンストラクタ
 	NavigationAI();
@@ -43,12 +38,19 @@ class NavigationAI : AI
 
 	//////////メンバ関数///////////////
 
-	void Astar();
+	void InitAstar();
 
-	void Path_Search();
+	XMFLOAT3 Astar();
+
+	XMFLOAT3 Path_Search();
 
 	int Heuristic(int _x, int _y);
 
+	/// <summary>
+	/// 次に行くべき座標を教える
+	/// </summary>
+	/// <returns>次の座標</returns>
+	XMFLOAT3 TeachNextPos();
 
 	//////////////アクセス関数//////////////
 	
@@ -66,29 +68,37 @@ class NavigationAI : AI
 	/// <param name="x">目標の位置のx座標</param>
 	void SetTargetPos(float z, float x);
 	
-	
-
+	void SetEnemyPos(float z, float x) { enemyPos_ = { x,0,z }; }
+	void SetEnemyPos(XMFLOAT3 pos) { enemyPos_ = { pos.x,0,pos.z }; }
+	void SetPlayerPos(float z, float x) { playerPos_ = { x,0,z }; }
+	void SetPlayerPos(XMFLOAT3 pos) { playerPos_ = { pos.x,0,pos.z }; }
 
 private:
 
-	int h_, w_; //縦幅と横幅
+	int height_, width_; //ステージの縦幅と横幅
 	
 	//スタートとゴールはfloatにしたほうがいい？検討中
 	Pair start_;
 	Pair target_;
 
-	Graph map_;    //マップのコストを入れる。
-	Graph dist_; //マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
-	vector<vector<Pair>> rest_; //経路復元に使用するため、この中には一個前にいたxy座標を入れておく
+	//マップのコストを入れる。
+	Graph map_;    
 
-	PqPP que_; //探索済みの場所を記憶しておく。一度行った場所だけを座標で横並びで覚えておけばいい
-	//newメモ ヒューリスティックで探した合計が一番近いやつってこれでいいんじゃね
-	//その位置までのヒューリスティックとコストを合わせたりなんなりするところ
+	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
+	Graph dist_;
+	
+	//経路復元に使用するため、この中には一個前にいたxy座標を入れておく
+	vector<vector<Pair>> rest_; 
 
-	Pair nextPos_;//前はstackでtargetまでの位置を全部保存してたけど１マスずつ探索した方が良いかも
+	//探索済みの場所を記憶しておく。一度行った場所だけを座標だけ横並びで覚えておけばいい
+	std::priority_queue<PP, vector<PP>, std::greater<PP>> que_; 
 
-	GameObject* pEnemy_;
-	GameObject* pPlayer_;
+	//前はstackでtargetまでの位置を全部保存してたけど１マスずつ探索した方が良いかも
+	pair<float, float> nextPos_;
+
+	//自分が担当するenemyとプレイヤーの位置を覚えておく
+	XMFLOAT3 enemyPos_;
+	XMFLOAT3 playerPos_;
 	
 };
 

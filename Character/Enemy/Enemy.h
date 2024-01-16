@@ -4,8 +4,10 @@
 #include "EnemyState/EnemyState.h"
 #include "../Character.h"
 #include "../../AI/CharacterAI.h"
+#include "../../AI/AI.h"
 
-class PlayerStateManager;
+class EnemyStateManager;
+class CharacterAI;
 
 /// <summary>
 /// キャラクターAIで動かす敵のクラス
@@ -61,7 +63,7 @@ private:
 
     EnemyStateManager* pState_; //敵の状態を表す
 
-    CharacterAI AI_;//色んな判断をしてくれるAIのつもり
+    CharacterAI* CharacterAI_;//色んな判断をしてくれるAIのつもり
 
     //当たり判定
     //BoxCollider* pBodyCollision_;

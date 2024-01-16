@@ -1,6 +1,7 @@
 #pragma once
 
-
+//https://ai-kenkyujo.com/news/gameai/
+//構造の参考サイト
 
 /// <summary>
 /// AIを管理する基底クラス

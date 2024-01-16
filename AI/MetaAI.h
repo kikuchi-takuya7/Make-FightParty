@@ -1,12 +1,17 @@
 #pragma once
 #include "AI.h"
 #include "NavigationAI.h"
+#include "CharacterAI.h"
+#include "../Character/Enemy/Enemy.h"
+#include "../Character/Player/Player.h"
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
 /// </summary>
 class MetaAI : public AI
 {
+
+public:
 
 	//コンストラクタ
 	MetaAI();
@@ -24,6 +29,14 @@ class MetaAI : public AI
 
 
 private:
+	
+	/////////各種インスタンス///////////
+
 	NavigationAI* pNavigationAI_;
+	CharacterAI* pCharacterAI_;
+	
+	Enemy* pEnemy_;
+	Player* pPlayer_;
+
 };
 
