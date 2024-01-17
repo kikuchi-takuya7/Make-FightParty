@@ -26,6 +26,16 @@ NavigationAI::~NavigationAI()
 void NavigationAI::Initialize()
 {
 
+	
+}
+
+void NavigationAI::Release()
+{
+}
+
+void NavigationAI::InitAstar()
+{
+
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < height_; i++) {
 		map_.emplace_back(width_);
@@ -36,23 +46,14 @@ void NavigationAI::Initialize()
 	//ステージのコストを入れる。壁は-1
 	for (int i = ZERO; i < height_; i++) {
 		for (int f = ZERO; f < width_; f++) {
-			
+
 			int n = ZERO;
 			map_.at(i).at(f) = n;
 
 			//restにxz座標を入れる
-			rest_[i][f] = Pair(i, f); 
+			rest_[i][f] = intPair(i, f);
 		}
 	}
-}
-
-void NavigationAI::Release()
-{
-}
-
-void NavigationAI::InitAstar()
-{
-
 
 	//スタート地点と目標地点をセットする
 	SetStartPos(enemyPos_.z, enemyPos_.x);
@@ -60,8 +61,8 @@ void NavigationAI::InitAstar()
 	//もしプレイヤー3cpu1みたいな構図になるとしたらこの前に誰狙うか決めておくのがいい
 	SetTargetPos(playerPos_.z, playerPos_.x);
 
-	rest_.at(enemyPos_.z).at(enemyPos_.x) = Pair(enemyPos_.z, enemyPos_.x); //スタート地点の座標
-	que_.emplace(ZERO, Pair(enemyPos_.z, enemyPos_.x));//スタート地点から探索を始める
+	rest_.at(enemyPos_.z).at(enemyPos_.x) = intPair(enemyPos_.z, enemyPos_.x); //スタート地点の座標
+	que_.emplace(ZERO, intPair(enemyPos_.z, enemyPos_.x));//スタート地点から探索を始める
 
 	target_ = std::make_pair(playerPos_.z, playerPos_.x);
 
@@ -110,7 +111,7 @@ XMFLOAT3 NavigationAI::Astar()
 				continue; //今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 			}
 
-			rest_.at(sz).at(sx) = Pair(nz, nx); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			rest_.at(sz).at(sx) = intPair(nz, nx); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
 
 			//目的地に着いたら
 			if (sz == target_.first && sx == target_.second)
@@ -118,13 +119,14 @@ XMFLOAT3 NavigationAI::Astar()
 
 			dist_.at(sz).at(sx) = dist_.at(nz).at(nx) + map_.at(sz).at(sx) + Heuristic(sz, sx);//ヒューリスティック分も込みで最短距離の更新
 
-			que_.emplace(PP(dist_.at(sz).at(sx), Pair(sz, sx)));//次の探索候補を入れておく
+			que_.emplace(PP(dist_.at(sz).at(sx), intPair(sz, sx)));//次の探索候補を入れておく
 		}
 	}
 
 	
 	dist_.clear();
 	
+	//queの中身を空にする
 	while (!que_.empty())
 		que_.pop();
 
@@ -140,41 +142,66 @@ XMFLOAT3 NavigationAI::Path_Search()
 	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
 	const int moveX[4] = { 1,  -1,ZERO,ZERO };
 
-	//今いる地点から
-	int i = start_.first;
-	int f = start_.second;
+	//targetからスタート地点までたどりなおす
+	int nz = target_.first;
+	int nx = target_.second;
+
+	//targetから探索するからstackで最後の方に獲得した座標を使うため
+	std::stack <intPair> searchPos;
+
+	//どの道をたどってきたか思い出す
+	while (true) {
+		for (int n = ZERO; n < 4; n++) {
+
+			int z = nz;
+			int x = nx;
+
+			//上下探索
+			z += moveZ[n];
+			x += moveX[n];
+
+			// 画面外なら
+			if (z < ZERO || z >= height_ || x < ZERO || x >= width_) {
+				continue;
+			}
+
+			//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じじゃないなら
+			if (rest_.at(nz).at(nx) != intPair(z, x)) {
+				continue;
+			}
+
+			//通ってきた座標を入れる
+			searchPos.push(rest_.at(nz).at(nx));
+
+			//次はその前にいた座標の上下左右を探索するため更新
+			nz = z;  
+			nx = x;
+		}
+
+		//次に探索する場所が初期位置に戻ったら止める。
+		if (nz == start_.first && nx == start_.second) {
+			break;
+		}
+
+	}
 
 	XMFLOAT3 nextPos;
 
-	//どの道をたどってきたか思い出す
-	for (int n = ZERO; n < 4; n++) {
-		
-		int z = i;
-		int x = f;
+	//空ならやめる
+	if (searchPos.empty())
+		return nextPos;
 
-		//上下探索
-		z += moveZ[n];
-		x += moveX[n];
+	nextPos = XMFLOAT3((FLOAT)searchPos.top().second ,ZERO,(FLOAT)searchPos.top().first);
 
-		// 画面外なら
-		if (z < ZERO || z >= height_ || x < ZERO || x >= width_) {
-			continue;
-		}
-
-		//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じじゃないなら
-		if (rest_.at(i).at(f) != Pair(z, x)) {
-			continue;
-		}
-
-		//通ってきた座標を入れる
-		nextPos = { (float)z,0,(float)x }; 
-	}
-
+	nextPos.x = (FLOAT)searchPos.top().second;
+	nextPos.y = 0.0f;
+	nextPos.z = (FLOAT)searchPos.top().first;
+	
 	//正規化して、速度を調整する
 	XMVECTOR tmp = XMLoadFloat3(&nextPos);
 	tmp = XMVector3Normalize(tmp);
 	nextPos = VectorToFloat3(tmp);
-	nextPos = nextPos / 2;
+	nextPos = nextPos / 10;
 
 	rest_.clear();
 
@@ -190,11 +217,11 @@ int NavigationAI::Heuristic(int _x, int _z)
 	return abs(x + z);
 }
 
-XMFLOAT3 NavigationAI::TeachNextPos()
-{
-	XMFLOAT3 nextPos = { nextPos_.second, ZERO, nextPos_.first };
-	return nextPos;
-}
+//XMFLOAT3 NavigationAI::TeachNextPos()
+//{
+//	XMFLOAT3 nextPos = { (float)teachPath_.second, ZERO, nextPos_.first };
+//
+//}
 
 void NavigationAI::SetStartPos(float z, float x)
 {

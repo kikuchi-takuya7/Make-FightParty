@@ -4,15 +4,14 @@
 #include <vector>
 #include <functional>
 #include <queue>
+#include <stack>
 
-
-//pairじゃなくてstructにした方がいいか？
+//z,xの位置関係がパッと見やすいからpairにしたけど、structにした方がいい？
 using std::vector;
 using std::pair;
-using Pair = pair<int, int>; // 座標を示す{ z,x }
-using Graph = vector<vector<long>>; //二次元配列上のグラフ
+using intPair = pair<int, int>; // 座標を示す{ z,x }
+using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
-//using PqPP = std::priority_queue<PP, vector<PP>, std::greater<PP>>; //昇順で要素を入れておく.昇順って小さい順って意味だからな
 
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
@@ -50,7 +49,7 @@ public:
 	/// 次に行くべき座標を教える
 	/// </summary>
 	/// <returns>次の座標</returns>
-	XMFLOAT3 TeachNextPos();
+	//XMFLOAT3 TeachNextPos();
 
 	//////////////アクセス関数//////////////
 	
@@ -75,11 +74,14 @@ public:
 
 private:
 
-	int height_, width_; //ステージの縦幅と横幅
+	/////////////////Astarアルゴリズムで使う///////////
+
+	//ステージの縦幅と横幅
+	int height_, width_; 
 	
 	//スタートとゴールはfloatにしたほうがいい？検討中
-	Pair start_;
-	Pair target_;
+	intPair start_;
+	intPair target_;
 
 	//マップのコストを入れる。
 	Graph map_;    
@@ -88,13 +90,14 @@ private:
 	Graph dist_;
 	
 	//経路復元に使用するため、この中には一個前にいたxy座標を入れておく
-	vector<vector<Pair>> rest_; 
+	vector<vector<intPair>> rest_; 
 
-	//探索済みの場所を記憶しておく。一度行った場所だけを座標だけ横並びで覚えておけばいい
+	//探索済みの場所を昇順で記憶しておく
 	std::priority_queue<PP, vector<PP>, std::greater<PP>> que_; 
 
-	//前はstackでtargetまでの位置を全部保存してたけど１マスずつ探索した方が良いかも
-	pair<float, float> nextPos_;
+	
+
+	/////////////////////////////位置情報////////////////////////
 
 	//自分が担当するenemyとプレイヤーの位置を覚えておく
 	XMFLOAT3 enemyPos_;
