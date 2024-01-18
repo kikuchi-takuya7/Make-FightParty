@@ -30,5 +30,6 @@ void CharacterAI::MoveEnemy()
 
 	//•‚“®¬”“_•ª‚à‚µ‚Á‚©‚èl‚¦‚Ä‚¨‚±‚¤
 	pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());
-	pEnemy_->SetPosition(pNavigationAI_->Astar());
+	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), pNavigationAI_->Astar()));
+
 }

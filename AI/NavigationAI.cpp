@@ -36,11 +36,44 @@ void NavigationAI::Release()
 void NavigationAI::InitAstar()
 {
 
+	
+}
+
+XMFLOAT3 NavigationAI::Astar()
+{
+
+	
+
+	//上下左右に移動（探索）するための配列
+	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
+	const int moveX[4] = { 1,  -1,ZERO,ZERO };
+
+	//探索を始める場所と目標地点
+	intPair start;
+	intPair target;
+
+	//スタート地点と目標地点をセットする
+	start = FloatToIntPair(enemyPos_.z, enemyPos_.x);
+	target = FloatToIntPair(playerPos_.z, playerPos_.x);
+
+	//既に目標地点にいるならば移動しない
+	if (start == target)
+		return ZERO_FLOAT3;
+
+	//マップのコストを入れる。
+	Graph map;
+
+	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
+	Graph dist;
+
+	//経路復元に使用するため、この中には一個前にいたxy座標を入れておく
+	vector<vector<intPair>> rest;
+	
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < height_; i++) {
-		map_.emplace_back(width_);
-		dist_.emplace_back(width_);
-		rest_.emplace_back(width_);
+		map.emplace_back(width_);
+		dist.emplace_back(width_);
+		rest.emplace_back(width_);
 	}
 
 	//ステージのコストを入れる。壁は-1
@@ -48,48 +81,36 @@ void NavigationAI::InitAstar()
 		for (int f = ZERO; f < width_; f++) {
 
 			int n = ZERO;
-			map_.at(i).at(f) = n;
+			map.at(i).at(f) = n;
 
 			//restにxz座標を入れる
-			rest_[i][f] = intPair(i, f);
+			rest[i][f] = intPair(i, f);
 		}
 	}
 
-	//スタート地点と目標地点をセットする
-	SetStartPos(enemyPos_.z, enemyPos_.x);
-
-	//もしプレイヤー3cpu1みたいな構図になるとしたらこの前に誰狙うか決めておくのがいい
-	SetTargetPos(playerPos_.z, playerPos_.x);
-
-	rest_.at(enemyPos_.z).at(enemyPos_.x) = intPair(enemyPos_.z, enemyPos_.x); //スタート地点の座標
-	que_.emplace(ZERO, intPair(enemyPos_.z, enemyPos_.x));//スタート地点から探索を始める
-
-	target_ = std::make_pair(playerPos_.z, playerPos_.x);
-
-	//まだ探索していない状態の情報
-	const int Inf = 9999999;
-	dist_.assign(height_, vector<long>(width_, Inf));//初期化
-
-	dist_.at(enemyPos_.z).at(enemyPos_.x) = map_.at(enemyPos_.z).at(enemyPos_.x); //スタート地点のコストを入れる
-}
-
-XMFLOAT3 NavigationAI::Astar()
-{
-
-	if (playerPos_ == enemyPos_)
-		return enemyPos_;
-
-	//上下左右に移動（探索）するための配列
-	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
-	const int moveX[4] = { 1,  -1,ZERO,ZERO };
+	//スタート地点の座標
+	rest.at(enemyPos_.z).at(enemyPos_.x) = intPair(enemyPos_.z, enemyPos_.x); 
 	
-	InitAstar();
+	//探索済みの場所を昇順で記憶しておく
+	std::priority_queue<PP, vector<PP>, std::greater<PP>> que;
+
+	//スタート地点から探索を始める
+	que.emplace(ZERO, intPair(enemyPos_.z, enemyPos_.x));
+
+	//ありえない値の情報で初期化
+	const int Inf = 9999999;
+	dist.assign(height_, vector<long>(width_, Inf));
+
+	//スタート地点のコストを入れる
+	dist.at(enemyPos_.z).at(enemyPos_.x) = map.at(enemyPos_.z).at(enemyPos_.x); 
 
 	//targetまでの最短距離を求める
-	while (!que_.empty())
+	while (!que.empty())
 	{
-		PP now = que_.top();//今いる場所を確保
-		que_.pop();
+		PP now = que.top();//今いる場所を確保
+		que.pop();
+
+		bool isBreak = false;
 
 		for (int i = ZERO; i < 4; i++) {
 
@@ -104,40 +125,50 @@ XMFLOAT3 NavigationAI::Astar()
 			}
 
 			//壁なら
-			if (map_.at(sz).at(sx) == -1) {
+			if (map.at(sz).at(sx) == -1) {
 				continue;
 			}
 
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
-			if (dist_.at(sz).at(sx) <= dist_.at(nz).at(nx) + map_.at(sz).at(sx) + Heuristic(sz, sx)) {
-				continue; //今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
+			if (dist.at(sz).at(sx) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + Heuristic(sz, sx, target)) {
+				//今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
+				continue; 
 			}
 
-			rest_.at(sz).at(sx) = intPair(nz, nx); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			//最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			rest.at(sz).at(sx) = intPair(nz, nx); 
 
 			//目的地に着いたら
-			if (sz == target_.first && sx == target_.second)
+			if (sz == target.first && sx == target.second) {
+
+				isBreak = true;
 				break;
+			}
 
-			dist_.at(sz).at(sx) = dist_.at(nz).at(nx) + map_.at(sz).at(sx) + Heuristic(sz, sx);//ヒューリスティック分も込みで最短距離の更新
+			//ヒューリスティック分も込みで最短距離の更新
+			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + Heuristic(sz, sx, target);
 
-			que_.emplace(PP(dist_.at(sz).at(sx), intPair(sz, sx)));//次の探索候補を入れておく
+			//次の探索候補を入れておく
+			que.emplace(PP(dist.at(sz).at(sx), intPair(sz, sx)));
 		}
+
+		if (isBreak)
+			break;
+
 	}
 
-	
-	dist_.clear();
-	
-	//queの中身を空にする
-	while (!que_.empty())
-		que_.pop();
+	XMFLOAT3 nextPos = Path_Search(rest, start,target);
 
-	return Path_Search();
+	//A*アルゴリズムを整数のグリッド形式で読み込んでいるため小数以下の値を足しなおす
+	nextPos.z += enemyPos_.z - (int)enemyPos_.z;
+	nextPos.x += enemyPos_.x - (int)enemyPos_.x;
+
+	return nextPos;
 
 }
 
-//てかこれもいらなくね？？て思ったけど近くの4マスだけ見ても意味ないから結局最後まで探索するのは必須で、経路探索は一マス分で十分
-XMFLOAT3 NavigationAI::Path_Search()
+//経路復元
+XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, intPair target)
 {
 
 	//上下左右に移動（探索）するための配列
@@ -145,8 +176,8 @@ XMFLOAT3 NavigationAI::Path_Search()
 	const int moveX[4] = { 1,  -1,ZERO,ZERO };
 
 	//targetからスタート地点までたどりなおす
-	int nz = target_.first;
-	int nx = target_.second;
+	int nz = target.first;
+	int nx = target.second;
 
 	//targetから探索するからstackで最後の方に獲得した座標を使うため
 	std::stack <intPair> searchPos;
@@ -168,12 +199,12 @@ XMFLOAT3 NavigationAI::Path_Search()
 			}
 
 			//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じじゃないなら
-			if (rest_.at(nz).at(nx) != intPair(z, x)) {
+			if (rest.at(nz).at(nx) != intPair(z, x)) {
 				continue;
 			}
 
 			//通ってきた座標を入れる
-			searchPos.push(rest_.at(nz).at(nx));
+			searchPos.push(rest.at(nz).at(nx));
 
 			//次はその前にいた座標の上下左右を探索するため更新
 			nz = z;  
@@ -181,58 +212,69 @@ XMFLOAT3 NavigationAI::Path_Search()
 		}
 
 		//次に探索する場所が初期位置に戻ったら止める。
-		if (nz == start_.first && nx == start_.second) {
+		if (nz == start.first && nx == start.second) {
 			break;
 		}
 
 	}
 
-	XMFLOAT3 nextPos = ZERO_FLOAT3;
+	XMFLOAT3 fMove = ZERO_FLOAT3;
+
+	fMove.x = 0.0f;
+	fMove.y = 0.0f;
+	fMove.z = 0.0f;
 
 	//空ならやめる
 	if (searchPos.empty())
-		return nextPos;
+		return fMove;
 
+	//一番上には開始位置が入ってるからそれを取り除く
 	searchPos.pop();
 
-	nextPos = XMFLOAT3((FLOAT)searchPos.top().second ,ZERO,(FLOAT)searchPos.top().first);
-
-	nextPos.x = (FLOAT)searchPos.top().second;
-	nextPos.y = 0.0f;
-	nextPos.z = (FLOAT)searchPos.top().first;
-	
-
 	//ここ向かうべきベクトル調べてその方向に進むだけだからここで値いじっちゃだめやん
+	int checkVecX = start.first - searchPos.top().first;
+	int checkVecZ = start.second - searchPos.top().second;
+
+	//斜め移動はここの値を複数変えれるようにすればいいだけだから大丈夫
+	if (checkVecX == 1) {
+		
+		fMove.x = 1.0f;
+	}
+	if (checkVecX == -1) {
+		
+		fMove.x = -1.0f;
+	}
+	if (checkVecZ == 1) {
+		
+		fMove.z = 1.0f;
+	}
+	if (checkVecZ == -1) {
+
+		fMove.z = -1.0f;
+	}
 	
+
 	//向かう方向ベクトルを確認
-	XMVECTOR tmp = XMLoadFloat3(&nextPos);
+	XMVECTOR tmp = XMLoadFloat3(&fMove);
 	tmp = XMVector3Normalize(tmp);
-	nextPos = VectorToFloat3(tmp);
-	nextPos = nextPos / 10;
+	fMove = VectorToFloat3(tmp);
+	fMove = fMove / 10;	
 
-	rest_.clear();
-
-	//小数以下の値を足しなおす
-	nextPos.z += decimal_.second;
-	nextPos.x += decimal_.first;
-
-	
-
-	return Float3Sub(enemyPos_,nextPos);
+	return fMove;
 
 }
 
-int NavigationAI::Heuristic(int _x, int _z)
+int NavigationAI::Heuristic(int x, int z, intPair target)
 {
-	int x = _x - target_.second;
-	int z = _z - target_.first;
+	int tmpX = x - target.second;
+	int tmpZ = z - target.first;
 
-	return abs(x + z);
+	return abs(tmpX + tmpZ);
 }
 
 //XMFLOAT3 NavigationAI::TeachNextPos()
 //{
-//	XMFLOAT3 nextPos = { (float)teachPath_.second, ZERO, nextPos_.first };
+//	XMFLOAT3 fMove = { (float)teachPath_.second, ZERO, nextPos_.first };
 //
 //}
 
@@ -247,23 +289,13 @@ bool NavigationAI::IsSomePos(XMFLOAT3 pos1, XMFLOAT3 pos2)
 	return false;
 }
 
-void NavigationAI::SetStartPos(float z, float x)
+intPair NavigationAI::FloatToIntPair(float z, float x)
 {
 
-	//小数以下の値を保存する
-	decimal_ = std::make_pair(z - (int)z, x - (int)x);
+	
 	int zPos = (int)z;
 	int xPos = (int)x;
-	start_ = std::make_pair(zPos, xPos);
+	intPair pair = std::make_pair(zPos, xPos);
 
-
-}
-
-void NavigationAI::SetTargetPos(float z, float x)
-{
-
-	int zPos = (int)z;
-	int xPos = (int)x;
-	target_ = std::make_pair(zPos, xPos);
-
+	return pair;
 }

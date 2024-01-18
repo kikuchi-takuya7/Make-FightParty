@@ -89,7 +89,7 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 void Player::MovePlayer()
 {
 
-	XMFLOAT3 fMove = XMFLOAT3(ZERO, ZERO, ZERO);
+	XMFLOAT3 fMove = ZERO_FLOAT3;
 
 	////ここの引数でプレイヤー数を指定する
 	//fMove.x = Input::GetPadStickL(0).x;

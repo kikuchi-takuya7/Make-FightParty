@@ -41,9 +41,9 @@ public:
 
 	XMFLOAT3 Astar();
 
-	XMFLOAT3 Path_Search();
+	XMFLOAT3 Path_Search(vector<vector<intPair>> rest, intPair start, intPair target);
 
-	int Heuristic(int _x, int _y);
+	int Heuristic(int x, int y, intPair target);
 
 	/// <summary>
 	/// 次に行くべき座標を教える
@@ -61,20 +61,9 @@ public:
 
 	//////////////アクセス関数//////////////
 	
-	/// <summary>
-	/// 探索を始める位置
-	/// </summary>
-	/// <param name="z">始める位置のz座標</param>
-	/// <param name="x">始める位置のx座標</param>
-	void SetStartPos(float z, float x);
 
-	/// <summary>
-	/// 目標とする位置
-	/// </summary>
-	/// <param name="z">目標の位置のz座標</param>
-	/// <param name="x">目標の位置のx座標</param>
-	void SetTargetPos(float z, float x);
-	
+	intPair FloatToIntPair(float z, float x);
+
 	void SetEnemyPos(float z, float x) { enemyPos_ = { x,0,z }; }
 	void SetEnemyPos(XMFLOAT3 pos) { enemyPos_ = { pos.x,0,pos.z }; }
 	void SetPlayerPos(float z, float x) { playerPos_ = { x,0,z }; }
@@ -87,24 +76,7 @@ private:
 	//ステージの縦幅と横幅
 	int height_, width_; 
 	
-	//スタートとゴールはfloatにしたほうがいい？検討中
-	intPair start_;
-	intPair target_;
-
-	//マップのコストを入れる。
-	Graph map_;    
-
-	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
-	Graph dist_;
 	
-	//経路復元に使用するため、この中には一個前にいたxy座標を入れておく
-	vector<vector<intPair>> rest_; 
-
-	//探索済みの場所を昇順で記憶しておく
-	std::priority_queue<PP, vector<PP>, std::greater<PP>> que_; 
-
-	//A*アルゴリズムを整数のグリッド形式で読み込んでいるため、少数以下を保存しておく
-	pair<float, float> decimal_;
 
 	/////////////////////////////位置情報////////////////////////
 
