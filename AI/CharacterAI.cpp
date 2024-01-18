@@ -22,12 +22,13 @@ void CharacterAI::Initialize()
 void CharacterAI::Release()
 {
 
-	pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());
-
 }
 
 //“®‚©‚·
 void CharacterAI::MoveEnemy()
 {
-	pEnemy_->SetPosition(pEnemy_->GetPosition() + pNavigationAI_->Astar());
+
+	//•‚“®¬”“_•ª‚à‚µ‚Á‚©‚èl‚¦‚Ä‚¨‚±‚¤
+	pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());
+	pEnemy_->SetPosition(pNavigationAI_->Astar());
 }

@@ -50,6 +50,14 @@ public:
 	/// </summary>
 	/// <returns>次の座標</returns>
 	//XMFLOAT3 TeachNextPos();
+	
+	/// <summary>
+	/// 同じブロック内にいるかどうか
+	/// </summary>
+	/// <param name="pos1">比べたい値１</param>
+	/// <param name="pos2">比べたい値２</param>
+	/// <returns>同じ場所にいるならtrueを返す</returns>
+	bool IsSomePos(XMFLOAT3 pos1, XMFLOAT3 pos2);
 
 	//////////////アクセス関数//////////////
 	
@@ -95,7 +103,8 @@ private:
 	//探索済みの場所を昇順で記憶しておく
 	std::priority_queue<PP, vector<PP>, std::greater<PP>> que_; 
 
-	
+	//A*アルゴリズムを整数のグリッド形式で読み込んでいるため、少数以下を保存しておく
+	pair<float, float> decimal_;
 
 	/////////////////////////////位置情報////////////////////////
 

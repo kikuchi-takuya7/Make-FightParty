@@ -76,6 +76,8 @@ void NavigationAI::InitAstar()
 XMFLOAT3 NavigationAI::Astar()
 {
 
+	if (playerPos_ == enemyPos_)
+		return enemyPos_;
 
 	//上下左右に移動（探索）するための配列
 	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
@@ -185,11 +187,13 @@ XMFLOAT3 NavigationAI::Path_Search()
 
 	}
 
-	XMFLOAT3 nextPos;
+	XMFLOAT3 nextPos = ZERO_FLOAT3;
 
 	//空ならやめる
 	if (searchPos.empty())
 		return nextPos;
+
+	searchPos.pop();
 
 	nextPos = XMFLOAT3((FLOAT)searchPos.top().second ,ZERO,(FLOAT)searchPos.top().first);
 
@@ -197,7 +201,10 @@ XMFLOAT3 NavigationAI::Path_Search()
 	nextPos.y = 0.0f;
 	nextPos.z = (FLOAT)searchPos.top().first;
 	
-	//正規化して、速度を調整する
+
+	//ここ向かうべきベクトル調べてその方向に進むだけだからここで値いじっちゃだめやん
+	
+	//向かう方向ベクトルを確認
 	XMVECTOR tmp = XMLoadFloat3(&nextPos);
 	tmp = XMVector3Normalize(tmp);
 	nextPos = VectorToFloat3(tmp);
@@ -205,7 +212,13 @@ XMFLOAT3 NavigationAI::Path_Search()
 
 	rest_.clear();
 
-	return nextPos;
+	//小数以下の値を足しなおす
+	nextPos.z += decimal_.second;
+	nextPos.x += decimal_.first;
+
+	
+
+	return Float3Sub(enemyPos_,nextPos);
 
 }
 
@@ -223,9 +236,22 @@ int NavigationAI::Heuristic(int _x, int _z)
 //
 //}
 
+bool NavigationAI::IsSomePos(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	pos1.x = pos1.x - (int)pos1.x;
+	pos1.x = pos1.x - (int)pos1.x;
+	pos1.x = pos1.x - (int)pos1.x;
+	pos1.x = pos1.x - (int)pos1.x;
+	pos1.x = pos1.x - (int)pos1.x;
+	pos1.x = pos1.x - (int)pos1.x;
+	return false;
+}
+
 void NavigationAI::SetStartPos(float z, float x)
 {
 
+	//小数以下の値を保存する
+	decimal_ = std::make_pair(z - (int)z, x - (int)x);
 	int zPos = (int)z;
 	int xPos = (int)x;
 	start_ = std::make_pair(zPos, xPos);
