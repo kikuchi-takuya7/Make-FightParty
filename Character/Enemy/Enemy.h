@@ -3,11 +3,14 @@
 #include "EnemyState/EnemyStateManager.h"
 #include "EnemyState/EnemyState.h"
 #include "../Character.h"
+#include "../../AI/CharacterAI.h"
+#include "../../AI/AI.h"
 
-class PlayerStateManager;
+class EnemyStateManager;
+class CharacterAI;
 
 /// <summary>
-/// CPUで動かす敵のクラス
+/// キャラクターAIで動かす敵のクラス
 /// </summary>
 class Enemy : public Character
 {
@@ -59,6 +62,8 @@ private:
     //Status status_;
 
     EnemyStateManager* pState_; //敵の状態を表す
+
+    CharacterAI* CharacterAI_;//色んな判断をしてくれるAIのつもり
 
     //当たり判定
     //BoxCollider* pBodyCollision_;
