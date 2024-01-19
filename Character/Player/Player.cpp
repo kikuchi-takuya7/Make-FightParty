@@ -64,7 +64,12 @@ void Player::Draw()
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
 
+
+#ifdef _DEBUG
 	CollisionDraw();
+#endif
+
+	
 }
 
 //ŠJ•ú
