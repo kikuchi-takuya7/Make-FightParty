@@ -1,4 +1,5 @@
 #include "NavigationAI.h"
+#include "../Engine/Input.h"
 
 namespace {
 	const int STAGE_HEIGHT = 30;
@@ -7,7 +8,9 @@ namespace {
 	//const int moveZ[8] = { ZERO, ZERO,    1,	 -1, 1 ,1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
 	//const int moveX[8] = {	1,	 -1, ZERO, ZERO, 1,-1 ,1,-1 };
 
-	
+	//上下左右に移動（探索）するための配列
+	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
+	const int moveX[4] = { 1,  -1,ZERO,ZERO };
 }
 
 namespace Astar {
@@ -16,7 +19,7 @@ namespace Astar {
 
 NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
-	playerPos_ = { 0,0,0 };
+	playerPos_ = { 15,0,15 };
 }
 
 NavigationAI::~NavigationAI()
@@ -42,11 +45,22 @@ void NavigationAI::InitAstar()
 XMFLOAT3 NavigationAI::Astar()
 {
 
-	
-
-	//上下左右に移動（探索）するための配列
-	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
-	const int moveX[4] = { 1,  -1,ZERO,ZERO };
+	if (Input::IsKeyDown(DIK_LEFT))
+	{
+		playerPos_.x += -1;
+	}
+	if (Input::IsKeyDown(DIK_RIGHT))
+	{
+		playerPos_.x += 1;
+	}
+	if (Input::IsKeyDown(DIK_UP))
+	{
+		playerPos_.z += 1;
+	}
+	if (Input::IsKeyDown(DIK_DOWN))
+	{
+		playerPos_.z += -1;
+	}
 
 	//探索を始める場所と目標地点
 	intPair start;
@@ -160,8 +174,8 @@ XMFLOAT3 NavigationAI::Astar()
 	XMFLOAT3 nextPos = Path_Search(rest, start,target);
 
 	//A*アルゴリズムを整数のグリッド形式で読み込んでいるため小数以下の値を足しなおす
-	nextPos.z += enemyPos_.z - (int)enemyPos_.z;
-	nextPos.x += enemyPos_.x - (int)enemyPos_.x;
+	/*nextPos.z += enemyPos_.z - (int)enemyPos_.z;
+	nextPos.x += enemyPos_.x - (int)enemyPos_.x;*/
 
 	return nextPos;
 
@@ -170,10 +184,6 @@ XMFLOAT3 NavigationAI::Astar()
 //経路復元
 XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, intPair target)
 {
-
-	//上下左右に移動（探索）するための配列
-	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
-	const int moveX[4] = { 1,  -1,ZERO,ZERO };
 
 	//targetからスタート地点までたどりなおす
 	int nz = target.first;
@@ -218,41 +228,37 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 
 	}
 
+	//メモリは確保されてた。
 	XMFLOAT3 fMove = ZERO_FLOAT3;
-
-	fMove.x = 0.0f;
-	fMove.y = 0.0f;
-	fMove.z = 0.0f;
-
-	//空ならやめる
-	if (searchPos.empty())
-		return fMove;
 
 	//一番上には開始位置が入ってるからそれを取り除く
 	searchPos.pop();
 
-	//ここ向かうべきベクトル調べてその方向に進むだけだからここで値いじっちゃだめやん
-	int checkVecX = start.first - searchPos.top().first;
-	int checkVecZ = start.second - searchPos.top().second;
+	//空ならやめる
+	if (searchPos.empty())
+		return fMove;	
 
-	//斜め移動はここの値を複数変えれるようにすればいいだけだから大丈夫
+	//stackのtopは一番最後の要素を取ってくる
+	int checkVecX = start.second - searchPos.top().second;
+	int checkVecZ = start.first - searchPos.top().first;
+
+	//値逆？試行錯誤中
 	if (checkVecX == 1) {
-		
-		fMove.x = 1.0f;
-	}
-	if (checkVecX == -1) {
 		
 		fMove.x = -1.0f;
 	}
+	if (checkVecX == -1) {
+		
+		fMove.x = 1.0f;
+	}
 	if (checkVecZ == 1) {
 		
-		fMove.z = 1.0f;
+		fMove.z = -1.0f;
 	}
 	if (checkVecZ == -1) {
 
-		fMove.z = -1.0f;
+		fMove.z = 1.0f;
 	}
-	
 
 	//向かう方向ベクトルを確認
 	XMVECTOR tmp = XMLoadFloat3(&fMove);

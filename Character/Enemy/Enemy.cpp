@@ -41,8 +41,8 @@ void Enemy::Initialize()
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.position_.z += 5;
-	transform_.position_.x += 5;
+	transform_.position_.z = 25.0f;
+	transform_.position_.x = 255.0f;
 
 	CharacterAI_->Initialize();
 

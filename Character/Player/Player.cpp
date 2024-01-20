@@ -42,6 +42,10 @@ void Player::Initialize()
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
+
+	transform_.position_.x = 15.0f;
+	transform_.position_.x = 15.0f;
+
 }
 
 //更新

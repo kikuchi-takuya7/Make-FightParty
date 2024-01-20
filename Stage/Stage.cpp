@@ -17,6 +17,9 @@ void Stage::Initialize()
 	hModel_ = Model::Load("Map/Stage.fbx");
 	assert(hModel_ >= 0);
 
+	transform_.position_.x = 15.0f;
+	transform_.position_.z = 15.0f;
+
 }
 
 void Stage::Update()
