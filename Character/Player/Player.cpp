@@ -43,7 +43,7 @@ void Player::Initialize()
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.position_.x = 15.0f;
+	transform_.position_.x = 16.0f;
 	transform_.position_.z = 15.0f;
 
 }
@@ -90,7 +90,7 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 	//“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
-		KillMe();
+		//KillMe();
 	}
 
 }

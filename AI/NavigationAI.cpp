@@ -7,12 +7,12 @@ namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
 
-	//const int moveZ[8] = { ZERO, ZERO,    1,	 -1, 1 ,1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-	//const int moveX[8] = {	1,	 -1, ZERO, ZERO, 1,-1 ,1,-1 };
+	const int moveZ[8] = { ZERO, ZERO,    1,   -1, 1, 1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+	const int moveX[8] = {	  1,   -1, ZERO, ZERO, 1,-1, 1,-1 };
 
 	//上下左右に移動（探索）するための配列
-	const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
-	const int moveX[4] = { 1,  -1,ZERO,ZERO };
+	/*const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
+	const int moveX[4] = { 1,  -1,ZERO,ZERO };*/
 }
 
 namespace Astar {
@@ -106,6 +106,8 @@ XMFLOAT3 NavigationAI::Astar()
 	//スタート地点のコストを入れる
 	dist.at(enemyPos.z).at(enemyPos.x) = map.at(enemyPos.z).at(enemyPos.x); 
 
+	int i = 0;
+
 	//targetまでの最短距離を求める
 	while (!que.empty())
 	{
@@ -114,7 +116,7 @@ XMFLOAT3 NavigationAI::Astar()
 
 		bool isBreak = false;
 
-		for (int i = ZERO; i < 4; i++) {
+		for (int i = ZERO; i < 8; i++) {
 
 			int nz = now.second.first;//今いる場所 NowZ
 			int nx = now.second.second;
@@ -157,6 +159,11 @@ XMFLOAT3 NavigationAI::Astar()
 		if (isBreak)
 			break;
 
+		i++;
+		if (i == 50) {
+			i = 0;
+		}
+
 	}
 
 	XMFLOAT3 nextPos = Path_Search(rest, start,target);
@@ -182,7 +189,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 
 	//どの道をたどってきたか思い出す
 	while (true) {
-		for (int n = ZERO; n < 4; n++) {
+		for (int n = ZERO; n < 8; n++) {
 
 			int z = nz;
 			int x = nx;
@@ -263,7 +270,8 @@ int NavigationAI::Heuristic(int x, int z, intPair target)
 	int tmpX = x - target.second;
 	int tmpZ = z - target.first;
 
-	return abs(tmpX + tmpZ);
+	//斜め移動なので大きいほうを返す
+	return max(tmpX, tmpZ);
 }
 
 //XMFLOAT3 NavigationAI::TeachNextPos()
