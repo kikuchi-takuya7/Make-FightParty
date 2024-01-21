@@ -1,10 +1,9 @@
 #pragma once
 #include "AI.h"
-#include "NavigationAI.h"
-#include "MetaAI.h"
-#include "../Character/Enemy/Enemy.h"
 
+class NavigationAI;
 class MetaAI;
+class Enemy;
 
 /// <summary>
 /// 敵キャラクターを動かすAI
@@ -16,7 +15,7 @@ public:
 
 	//コンストラクタ
 	CharacterAI();
-	CharacterAI(Enemy* enemy);
+	CharacterAI(Enemy* enemy, NavigationAI* naviAI);
 
 	//デストラクタ
 	~CharacterAI();
@@ -40,7 +39,7 @@ public:
 	///////////////////アクセス関数/////////////
 
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
-
+	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 
 private:
 

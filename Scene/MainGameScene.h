@@ -1,6 +1,8 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+class MetaAI;
+class NavigationAI;
 
 //■■シーンを管理するクラス
 class MainGameScene : public GameObject
@@ -22,5 +24,16 @@ public:
 	//開放
 	void Release() override;
 
+private:
 
+	//
+	NavigationAI* pNavigationAI_;
+
+	//ゲーム全体のバランスを管理するAI
+	MetaAI* pMetaAI_;
+
+	/*Player* pPlayer_;
+
+	Enemy* pEnemy_;*/
+	
 };

@@ -13,6 +13,9 @@ using intPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 
+class Player;
+class Enemy;
+
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
 /// </summary>
@@ -64,10 +67,13 @@ public:
 
 	intPair FloatToIntPair(float z, float x);
 
-	void SetEnemyPos(float z, float x) { enemyPos_ = { x,0,z }; }
+	/*void SetEnemyPos(float z, float x) { enemyPos_ = { x,0,z }; }
 	void SetEnemyPos(XMFLOAT3 pos) { enemyPos_ = { pos.x,0,pos.z }; }
 	void SetPlayerPos(float z, float x) { playerPos_ = { x,0,z }; }
-	void SetPlayerPos(XMFLOAT3 pos) { playerPos_ = { pos.x,0,pos.z }; }
+	void SetPlayerPos(XMFLOAT3 pos) { playerPos_ = { pos.x,0,pos.z }; }*/
+
+	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
+	void SetPlayer(Player* player) { pPlayer_ = player; }
 
 private:
 
@@ -80,9 +86,9 @@ private:
 
 	/////////////////////////////位置情報////////////////////////
 
-	//自分が担当するenemyとプレイヤーの位置を覚えておく
-	XMFLOAT3 enemyPos_;
-	XMFLOAT3 playerPos_;
+	//enemyとプレイヤーの位置を覚えておく
+	Player* pPlayer_;
+	Enemy* pEnemy_;
 	
 };
 

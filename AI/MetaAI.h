@@ -2,8 +2,9 @@
 #include "AI.h"
 #include "NavigationAI.h"
 #include "CharacterAI.h"
-#include "../Character/Enemy/Enemy.h"
-#include "../Character/Player/Player.h"
+
+class Player;
+class Enemy;
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
@@ -28,15 +29,15 @@ public:
 	void Release() override;
 
 
+	//////////////アクセス関数 //////////
+
+
 private:
 	
 	/////////各種インスタンス///////////
 
 	//NavigationAI* pNavigationAI_;
 	//CharacterAI* pCharacterAI_;
-	
-	//Enemy* pEnemy_;
-	//Player* pPlayer_;
 
 };
 

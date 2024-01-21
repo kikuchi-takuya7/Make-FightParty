@@ -3,10 +3,9 @@
 #include "EnemyState/EnemyStateManager.h"
 #include "EnemyState/EnemyState.h"
 #include "../Character.h"
-#include "../../AI/CharacterAI.h"
-#include "../../AI/AI.h"
 
 class EnemyStateManager;
+class NavigationAI;
 class CharacterAI;
 
 /// <summary>
@@ -52,6 +51,10 @@ public:
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
     void SetDead() { status_.isDead = true; }
+    void SetCharacterAI(CharacterAI* AI) { characterAI_ = AI; }
+    
+    //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
+    //void SetNavi(NavigationAI* naviAI) { characterAI_->SetNavigationAI(naviAI); }
 
 
 private:
@@ -63,7 +66,7 @@ private:
 
     EnemyStateManager* pState_; //敵の状態を表す
 
-    CharacterAI* CharacterAI_;//色んな判断をしてくれるAIのつもり
+    CharacterAI* characterAI_;//色んな判断をしてくれるAIのつもり
 
     //当たり判定
     //BoxCollider* pBodyCollision_;

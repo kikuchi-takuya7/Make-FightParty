@@ -1,6 +1,8 @@
 #include "MetaAI.h"
+#include "../Character/Enemy/Enemy.h"
+#include "../Character/Player/Player.h"
 
-MetaAI::MetaAI()//:pNavigationAI_(nullptr),pCharacterAI_(nullptr)
+MetaAI::MetaAI()
 {
 }
 

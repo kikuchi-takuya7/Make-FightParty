@@ -1,5 +1,7 @@
 #include "NavigationAI.h"
 #include "../Engine/Input.h"
+#include "../Character/Enemy/Enemy.h"
+#include "../Character/Player/Player.h"
 
 namespace {
 	const int STAGE_HEIGHT = 30;
@@ -17,9 +19,9 @@ namespace Astar {
 
 }
 
-NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
+NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH),pPlayer_(nullptr), pEnemy_(nullptr)
 {
-	playerPos_ = { 15,0,15 };
+	//playerPos = { 15,0,15 };
 }
 
 NavigationAI::~NavigationAI()
@@ -45,30 +47,16 @@ void NavigationAI::InitAstar()
 XMFLOAT3 NavigationAI::Astar()
 {
 
-	if (Input::IsKeyDown(DIK_LEFT))
-	{
-		playerPos_.x += -1;
-	}
-	if (Input::IsKeyDown(DIK_RIGHT))
-	{
-		playerPos_.x += 1;
-	}
-	if (Input::IsKeyDown(DIK_UP))
-	{
-		playerPos_.z += 1;
-	}
-	if (Input::IsKeyDown(DIK_DOWN))
-	{
-		playerPos_.z += -1;
-	}
-
 	//探索を始める場所と目標地点
 	intPair start;
 	intPair target;
 
+	XMFLOAT3 enemyPos = pEnemy_->GetPosition();
+	XMFLOAT3 playerPos = pPlayer_->GetPosition();
+
 	//スタート地点と目標地点をセットする
-	start = FloatToIntPair(enemyPos_.z, enemyPos_.x);
-	target = FloatToIntPair(playerPos_.z, playerPos_.x);
+	start = FloatToIntPair(enemyPos.z, enemyPos.x);
+	target = FloatToIntPair(playerPos.z, playerPos.x);
 
 	//既に目標地点にいるならば移動しない
 	if (start == target)
@@ -103,20 +91,20 @@ XMFLOAT3 NavigationAI::Astar()
 	}
 
 	//スタート地点の座標
-	rest.at(enemyPos_.z).at(enemyPos_.x) = intPair(enemyPos_.z, enemyPos_.x); 
+	rest.at(enemyPos.z).at(enemyPos.x) = intPair(enemyPos.z, enemyPos.x); 
 	
 	//探索済みの場所を昇順で記憶しておく
 	std::priority_queue<PP, vector<PP>, std::greater<PP>> que;
 
 	//スタート地点から探索を始める
-	que.emplace(ZERO, intPair(enemyPos_.z, enemyPos_.x));
+	que.emplace(ZERO, intPair(enemyPos.z, enemyPos.x));
 
 	//ありえない値の情報で初期化
 	const int Inf = 9999999;
 	dist.assign(height_, vector<long>(width_, Inf));
 
 	//スタート地点のコストを入れる
-	dist.at(enemyPos_.z).at(enemyPos_.x) = map.at(enemyPos_.z).at(enemyPos_.x); 
+	dist.at(enemyPos.z).at(enemyPos.x) = map.at(enemyPos.z).at(enemyPos.x); 
 
 	//targetまでの最短距離を求める
 	while (!que.empty())
@@ -174,8 +162,8 @@ XMFLOAT3 NavigationAI::Astar()
 	XMFLOAT3 nextPos = Path_Search(rest, start,target);
 
 	//A*アルゴリズムを整数のグリッド形式で読み込んでいるため小数以下の値を足しなおす
-	/*nextPos.z += enemyPos_.z - (int)enemyPos_.z;
-	nextPos.x += enemyPos_.x - (int)enemyPos_.x;*/
+	/*nextPos.z += enemyPos.z - (int)enemyPos.z;
+	nextPos.x += enemyPos.x - (int)enemyPos.x;*/
 
 	return nextPos;
 

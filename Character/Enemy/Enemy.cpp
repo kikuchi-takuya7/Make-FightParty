@@ -2,6 +2,7 @@
 #include "../../Engine/Model.h"
 #include "../../Engine/Input.h"
 #include "../../Engine/Global.h"
+#include "../../AI/CharacterAI.h"
 
 //定数
 namespace {
@@ -15,7 +16,7 @@ namespace {
 
 //コンストラクタ
 Enemy::Enemy(GameObject* parent)
-	:Character(parent, "Enemy"), hModel_(-1),pState_(new EnemyStateManager), CharacterAI_(new CharacterAI(this))
+	:Character(parent, "Enemy"), hModel_(-1),pState_(new EnemyStateManager), characterAI_(nullptr)
 
 {
 }
@@ -42,9 +43,9 @@ void Enemy::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.position_.z = 25.0f;
-	transform_.position_.x = 255.0f;
+	transform_.position_.x = 25.0f;
 
-	CharacterAI_->Initialize();
+	//characterAI_->Initialize();
 
 
 }
@@ -53,7 +54,7 @@ void Enemy::Initialize()
 void Enemy::ChildUpdate()
 {
 
-	CharacterAI_->MoveEnemy();
+	characterAI_->MoveEnemy();
 
 	//pState_->Update(this);
 
@@ -73,7 +74,7 @@ void Enemy::Draw()
 //開放
 void Enemy::Release()
 {
-	SAFE_DELETE(CharacterAI_);
+	SAFE_DELETE(characterAI_);
 	SAFE_DELETE(pState_);
 }
 
