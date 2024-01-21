@@ -44,7 +44,7 @@ void Player::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.position_.x = 15.0f;
-	transform_.position_.x = 15.0f;
+	transform_.position_.z = 15.0f;
 
 }
 
@@ -104,20 +104,22 @@ void Player::MovePlayer()
 	//fMove.x = Input::GetPadStickL(0).x;
 	//fMove.z = Input::GetPadStickL(0).y;
 
+	
+
 	//Œ‹‹ÇŒã‚Å³‹K‰»‚µ‚Ä‚é‚©‚ç‚±‚±‚Ì’l‚Í‘å‚«‚­‚Ä‚àˆÓ–¡‚È‚µ
-	if (Input::IsKey(DIK_A))
+	if (Input::IsKey(DIK_A) && transform_.position_.x >= 0)
 	{
 		fMove.x = -0.01f;
 	}
-	if (Input::IsKey(DIK_D))
+	if (Input::IsKey(DIK_D) && transform_.position_.x <= 29)
 	{
 		fMove.x = 0.01f;
 	}
-	if (Input::IsKey(DIK_W))
+	if (Input::IsKey(DIK_W) && transform_.position_.z <= 29)
 	{
 		fMove.z = 0.01f;
 	}
-	if (Input::IsKey(DIK_S))
+	if (Input::IsKey(DIK_S) && transform_.position_.z >= 0)
 	{
 		fMove.z = -0.01f;
 	}
