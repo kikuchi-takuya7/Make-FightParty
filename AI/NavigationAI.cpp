@@ -93,7 +93,7 @@ XMFLOAT3 NavigationAI::Astar()
 	//スタート地点の座標
 	rest.at(enemyPos.z).at(enemyPos.x) = intPair(enemyPos.z, enemyPos.x); 
 	
-	//探索済みの場所を昇順で記憶しておく
+	//探索済みの場所を昇順で記憶しておく。topで要素を呼び出した時にfirstの一番値が小さいのを持ってきてくれる
 	std::priority_queue<PP, vector<PP>, std::greater<PP>> que;
 
 	//スタート地点から探索を始める
@@ -209,7 +209,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 			}
 
 			//通ってきた座標を入れる
-			searchPos.push(rest.at(nz).at(nx));
+			searchPos.emplace(rest.at(nz).at(nx));
 
 			//次はその前にいた座標の上下左右を探索するため更新
 			nz = z;  
@@ -223,7 +223,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 
 	}
 
-	//メモリは確保されてた。
+
 	XMFLOAT3 fMove = ZERO_FLOAT3;
 
 	//一番上には開始位置が入ってるからそれを取り除く
@@ -265,10 +265,12 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 
 }
 
+
 int NavigationAI::Heuristic(int x, int z, intPair target)
 {
-	int tmpX = x - target.second;
-	int tmpZ = z - target.first;
+	//絶対値の差をとる
+	int tmpX = abs(x - target.second);
+	int tmpZ = abs(z - target.first);
 
 	//斜め移動なので大きいほうを返す
 	return max(tmpX, tmpZ);
