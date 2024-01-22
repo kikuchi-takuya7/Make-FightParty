@@ -39,21 +39,6 @@
     <Filter Include="Stage">
       <UniqueIdentifier>{db894dd7-305b-4827-859d-887bf5a33510}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character">
-      <UniqueIdentifier>{bf39cfdd-b0d1-4d00-b8f9-52c5cf3aad43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Character\Player">
-      <UniqueIdentifier>{5795ce21-3ca5-4bf7-8d6e-cf8241045dad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Character\Enemy">
-      <UniqueIdentifier>{3429db39-b625-49ec-a2f9-49d6c39ef3bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Character\Player\PlayerState">
-      <UniqueIdentifier>{5a12f476-cfab-4cea-ac68-ddf5f17c1f4a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Character\Enemy\EnemyState">
-      <UniqueIdentifier>{6c3eee5c-b536-46b2-8e1a-ec77a9bed26e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI">
       <UniqueIdentifier>{eebec4c1-ebf4-40ea-85af-3436dc556568}</UniqueIdentifier>
     </Filter>
@@ -62,6 +47,21 @@
     </Filter>
     <Filter Include="MapEditor\StageSource">
       <UniqueIdentifier>{3ac7620f-c5bf-4d2e-939b-9d42cf3cfced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character">
+      <UniqueIdentifier>{bf39cfdd-b0d1-4d00-b8f9-52c5cf3aad43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player">
+      <UniqueIdentifier>{5795ce21-3ca5-4bf7-8d6e-cf8241045dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player\PlayerState">
+      <UniqueIdentifier>{5a12f476-cfab-4cea-ac68-ddf5f17c1f4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Enemy">
+      <UniqueIdentifier>{3429db39-b625-49ec-a2f9-49d6c39ef3bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Enemy\EnemyState">
+      <UniqueIdentifier>{6c3eee5c-b536-46b2-8e1a-ec77a9bed26e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

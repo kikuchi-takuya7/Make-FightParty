@@ -7,7 +7,8 @@ namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
 
-	const int moveZ[8] = { ZERO, ZERO,    1,   -1, 1, 1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+	const int moveZ[8] = { ZERO, ZERO,    1,   -1, 1, 1,-1,-1 };
 	const int moveX[8] = {	  1,   -1, ZERO, ZERO, 1,-1, 1,-1 };
 
 	//上下左右に移動（探索）するための配列
@@ -82,7 +83,7 @@ XMFLOAT3 NavigationAI::Astar()
 	for (int i = ZERO; i < height_; i++) {
 		for (int f = ZERO; f < width_; f++) {
 
-			int n = ZERO;
+			int n = 1;
 			map.at(i).at(f) = n;
 
 			//restにxz座標を入れる
@@ -105,6 +106,8 @@ XMFLOAT3 NavigationAI::Astar()
 
 	//スタート地点のコストを入れる
 	dist.at(enemyPos.z).at(enemyPos.x) = map.at(enemyPos.z).at(enemyPos.x); 
+
+	int i = 0;
 
 	//targetまでの最短距離を求める
 	while (!que.empty())
@@ -133,8 +136,10 @@ XMFLOAT3 NavigationAI::Astar()
 				continue;
 			}
 
-			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
-			if (dist.at(sz).at(sx) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + Heuristic(sz, sx, target)) {
+			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
+
+			//これヒューリスティック関数全部足し続けてるから良くないかも。
+			if (dist.at(sz).at(sx) + Heuristic(sz, sx, target) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + Heuristic(nz, nx, target)) {
 				//今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 				continue; 
 			}
@@ -149,15 +154,19 @@ XMFLOAT3 NavigationAI::Astar()
 				break;
 			}
 
-			//ヒューリスティック分も込みで最短距離の更新
-			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + Heuristic(sz, sx, target);
+			//最短距離の更新
+			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx);
 
 			//次の探索候補を入れておく
-			que.emplace(PP(dist.at(sz).at(sx), intPair(sz, sx)));
+			que.emplace(PP(dist.at(sz).at(sx) + Heuristic(sz, sx, target), intPair(sz, sx)));
 		}
 
 		if (isBreak)
 			break;
+
+		i++;
+		if (i == 1000)
+			i = 0;
 
 	}
 
@@ -264,8 +273,8 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 int NavigationAI::Heuristic(int x, int z, intPair target)
 {
 	//絶対値の差をとる
-	int tmpX = abs(target.second - x);
-	int tmpZ = abs(target.first - z);
+	int tmpX = abs(x - target.second);
+	int tmpZ = abs(z - target.first);
 
 	//斜め移動なので大きいほうを返す
 	return max(tmpX, tmpZ);
