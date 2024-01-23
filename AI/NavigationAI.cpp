@@ -238,8 +238,15 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 		return fMove;	
 
 	//stackのtopは一番最後の要素を取ってくる
-	int checkVecX = start.second - searchPos.top().second;
 	int checkVecZ = start.first - searchPos.top().first;
+	int checkVecX = start.second - searchPos.top().second;
+
+	if (target.first == searchPos.top().first) {
+		checkVecZ = 0;
+	}
+	if (target.second == searchPos.top().second) {
+		checkVecX = 0;
+	}
 
 	//値逆？試行錯誤中
 	if (checkVecX == 1) {
