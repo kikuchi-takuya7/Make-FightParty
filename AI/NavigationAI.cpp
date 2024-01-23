@@ -107,8 +107,6 @@ XMFLOAT3 NavigationAI::Astar()
 	//スタート地点のコストを入れる
 	dist.at(enemyPos.z).at(enemyPos.x) = map.at(enemyPos.z).at(enemyPos.x); 
 
-	int i = 0;
-
 	//targetまでの最短距離を求める
 	while (!que.empty())
 	{
@@ -163,10 +161,6 @@ XMFLOAT3 NavigationAI::Astar()
 
 		if (isBreak)
 			break;
-
-		i++;
-		if (i == 1000)
-			i = 0;
 
 	}
 
