@@ -30,17 +30,13 @@ void CharacterAI::Release()
 //動かす
 void CharacterAI::MoveEnemy()
 {
-
-	//浮動小数点分もしっかり考えておこう
-	/*pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());*/
-
-	XMFLOAT3 fMove = Float3Add(pEnemy_->GetPosition(), pNavigationAI_->Astar());
-
-	pEnemy_->SetPosition(fMove);
+	//NavigationAIに向かうべき方向を聞く
+	XMFLOAT3 fMove = pNavigationAI_->Astar();
+	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
 	//向かう方向ベクトルを確認
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
-
+	vMove = XMVector3Normalize(vMove);
 	float length = Length(vMove);
 
 	//動いているなら角度を求めて回転する
@@ -65,7 +61,7 @@ void CharacterAI::MoveEnemy()
 
 		pEnemy_->SetRotateY(degree);
 
-		//pAttackCollision_->SetRotate(XMFLOAT3(ZERO, degree, ZERO));
+		pEnemy_->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
 
 	}
 

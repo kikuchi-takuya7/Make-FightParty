@@ -248,6 +248,7 @@ public:
 	void SetScale(XMFLOAT3 scale) { transform_.scale_ = scale; }
 	void SetScale(float x, float y, float z) { SetScale(XMFLOAT3(x, y, z)); }
 	void SetTransform(Transform transform) { transform_ = transform; }
+	
 
 	void SetObjectID(int ID) { objectID_ = ID; }
 	int GetObjectID() { return objectID_; }

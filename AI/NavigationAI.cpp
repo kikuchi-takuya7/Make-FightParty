@@ -6,6 +6,7 @@
 namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
+	const int STAGE_COST = 10;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
 	const int moveZ[8] = { ZERO, ZERO,    1,   -1, 1, 1,-1,-1 };
@@ -79,12 +80,11 @@ XMFLOAT3 NavigationAI::Astar()
 		rest.emplace_back(width_);
 	}
 
-	//ステージのコストを入れる。壁は-1
+	//ステージのコストを入れる。壁は-1.将来的にstageから持ってくる予定
 	for (int i = ZERO; i < height_; i++) {
 		for (int f = ZERO; f < width_; f++) {
 
-			int n = 10;
-			map.at(i).at(f) = n;
+			map.at(i).at(f) = STAGE_COST;
 
 			//restにxz座標を入れる
 			rest[i][f] = intPair(i, f);
@@ -125,7 +125,7 @@ XMFLOAT3 NavigationAI::Astar()
 			int sz = nz + moveZ[i];
 			int sx = nx + moveX[i];
 
-			int cost = 0;
+			int cost = ZERO;
 			
 			// 画面外なら
 			if (sz < ZERO || sz >= height_ || sx < ZERO || sx >= width_) {
@@ -137,8 +137,7 @@ XMFLOAT3 NavigationAI::Astar()
 				continue;
 			}
 
-			
-
+			//今と次の行ける最短距離(ヒューリスティック)を取っておく
 			int secondH = Heuristic(sz, sx, target);
 			int nowH = Heuristic(nz, nx, target);
 
@@ -165,7 +164,7 @@ XMFLOAT3 NavigationAI::Astar()
 			//最短距離の更新
 			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
 
-			//次の探索候補を入れておく
+			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
 			que.emplace(PP(dist.at(sz).at(sx) + secondH + cost, intPair(sz, sx)));
 		}
 
@@ -174,7 +173,7 @@ XMFLOAT3 NavigationAI::Astar()
 
 	}
 
-	XMFLOAT3 nextPos = Path_Search(rest, start,target);
+	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
 	return nextPos;
 
@@ -241,15 +240,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
 
-	//ごり押しです
-	/*if (target.first == searchPos.top().first) {
-		checkVecZ = 0;
-	}
-	if (target.second == searchPos.top().second) {
-		checkVecX = 0;
-	}*/
-
-
 	if (checkVecX == 1) {
 		
 		fMove.x = -1.0f;
@@ -272,34 +262,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 	vMove = XMVector3Normalize(vMove);
 	fMove = VectorToFloat3(vMove);
 	fMove = fMove * 0.1;	
-
-	//float length = Length(vMove);
-
-	////動いているなら角度を求めて回転する
-	//if (length != ZERO) {
-
-	//	XMVECTOR vFront = { 0,0,1,0 };
-	//	vMove = XMVector3Normalize(vMove);
-
-	//	//内積から角度を求める
-	//	XMVECTOR vDot = XMVector3Dot(vFront, vMove);
-	//	float dot = XMVectorGetX(vDot);
-	//	float angle = acos(dot);
-
-	//	//外積が-になる角度なら
-	//	XMVECTOR vCross = XMVector3Cross(vFront, vMove);
-	//	if (XMVectorGetY(vCross) < ZERO) {
-
-	//		angle *= -1;
-	//	}
-
-	//	float degree = XMConvertToDegrees(angle);
-
-	//	transform_.rotate_.y = degree;
-
-	//	pAttackCollision_->SetRotate(XMFLOAT3(ZERO, degree, ZERO));
-
-	//}
 
 	return fMove;
 

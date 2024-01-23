@@ -52,6 +52,7 @@ public:
     Status GetStatus() { return status_; }
     void SetDead() { status_.isDead = true; }
     void SetCharacterAI(CharacterAI* AI) { characterAI_ = AI; }
+    void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
     
     //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
     //void SetNavi(NavigationAI* naviAI) { characterAI_->SetNavigationAI(naviAI); }
