@@ -6,15 +6,17 @@
 namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
+
+	//コストを1にしたら経路復元の所で無限ループしてしまう。
 	const int STAGE_COST = 1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-	/*const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
-	const int moveX[8] = {	1,-1, 1,-1,    1,   -1, ZERO, ZERO };*/
+	const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
+	const int moveX[8] = {	1,-1, 1,-1,    1,   -1, ZERO, ZERO };
 
 	//上下左右に移動（探索）するための配列
-	const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
-	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
+	/*const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
+	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };*/
 }
 
 namespace Astar {
@@ -46,17 +48,18 @@ void NavigationAI::InitAstar()
 	
 }
 
+//グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar()
 {
 
 	//探索を始める場所と目標地点
-	intPair start;
-	intPair target;
+	IntPair start;
+	IntPair target;
 
 	XMFLOAT3 enemyPos = pEnemy_->GetPosition();
 	XMFLOAT3 playerPos = pPlayer_->GetPosition();
 
-	//スタート地点と目標地点をセットする
+	//スタート地点と目標地点を小数点を切り捨ててセットする
 	start = FloatToIntPair(enemyPos.z, enemyPos.x);
 	target = FloatToIntPair(playerPos.z, playerPos.x);
 
@@ -71,7 +74,7 @@ XMFLOAT3 NavigationAI::Astar()
 	Graph dist;
 
 	//経路復元に使用するため、この中には一個前にいたxy座標を入れておく
-	vector<vector<intPair>> rest;
+	vector<vector<IntPair>> rest;
 	
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < height_; i++) {
@@ -87,27 +90,25 @@ XMFLOAT3 NavigationAI::Astar()
 			map.at(i).at(f) = STAGE_COST;
 
 			//restにxz座標を入れる
-			rest[i][f] = intPair(i, f);
+			rest[i][f] = IntPair(i, f);
 		}
 	}
 
 	//スタート地点の座標
-	rest.at(enemyPos.z).at(enemyPos.x) = intPair(enemyPos.z, enemyPos.x); 
+	rest.at(start.first).at(start.second) = IntPair(start.first, start.second);
 	
 	//探索済みの場所を昇順で記憶しておく。topで要素を呼び出した時にfirstの一番値が小さいのを持ってきてくれる
 	std::priority_queue<PP, vector<PP>, std::greater<PP>> que;
 
 	//スタート地点から探索を始める
-	que.emplace(ZERO, intPair(enemyPos.z, enemyPos.x));
+	que.emplace(ZERO, IntPair(start.first, start.second));
 
 	//ありえない値の情報で初期化
 	const int Inf = 9999999;
 	dist.assign(height_, vector<long>(width_, Inf));
 
 	//スタート地点のコストを入れる
-	dist.at(enemyPos.z).at(enemyPos.x) = map.at(enemyPos.z).at(enemyPos.x); 
-
-	int test = 0;
+	dist.at(start.first).at(start.second) = map.at(start.first).at(start.second);
 
 	//targetまでの最短距離を求める
 	while (!que.empty())
@@ -129,8 +130,6 @@ XMFLOAT3 NavigationAI::Astar()
 
 			int cost = ZERO;
 			
-			test++;
-
 			// 画面外なら
 			if (sz < ZERO || sz >= height_ || sx < ZERO || sx >= width_) {
 				continue;
@@ -145,9 +144,9 @@ XMFLOAT3 NavigationAI::Astar()
 			int secondH = Heuristic(sz, sx, target);
 			int nowH = Heuristic(nz, nx, target);
 
-			//斜め移動にコストをつける。コストをつけないと斜め移動しかしなくなる.Astarにとっては斜め移動も上下移動も同じスピードだからqueに入った順番で決まっちゃう
-			if (i > 3) {
-				cost = 1;
+			//斜め移動にコストをつける。コストをつけないと斜め移動しかしなくなってしまった.Astarにとっては斜め移動も上下移動も同じスピードだからqueに入った順番で決まっちゃう可能性
+			if (i < 4) {
+				//cost = 1;
 			}
 
 #if 1
@@ -157,7 +156,7 @@ XMFLOAT3 NavigationAI::Astar()
 			}
 
 			//最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
-			rest.at(sz).at(sx) = intPair(nz, nx);
+			rest.at(sz).at(sx) = IntPair(nz, nx);
 
 			//目的地に着いたら
 			if (sz == target.first && sx == target.second) {
@@ -170,7 +169,7 @@ XMFLOAT3 NavigationAI::Astar()
 			dist.at(sz).at(sx) = map.at(sz).at(sx) + cost + secondH;
 
 			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
-			que.emplace(PP(dist.at(sz).at(sx), intPair(sz, sx)));
+			que.emplace(PP(dist.at(sz).at(sx), IntPair(sz, sx)));
 #else
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
@@ -179,7 +178,7 @@ XMFLOAT3 NavigationAI::Astar()
 			}
 
 			//最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
-			rest.at(sz).at(sx) = intPair(nz, nx);
+			rest.at(sz).at(sx) = IntPair(nz, nx);
 
 			//目的地に着いたら
 			if (sz == target.first && sx == target.second) {
@@ -192,7 +191,7 @@ XMFLOAT3 NavigationAI::Astar()
 			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost;
 
 			//次の探索候補を入れておく
-			que.emplace(PP(dist.at(sz).at(sx) + secondH, intPair(sz, sx)));
+			que.emplace(PP(dist.at(sz).at(sx) + secondH, IntPair(sz, sx)));
 #endif
 			
 		}
@@ -202,8 +201,9 @@ XMFLOAT3 NavigationAI::Astar()
 
 	}
 
-	if(Input::IsKeyDown(DIK_Q))
-		test = 0;
+	if (Input::IsKeyDown(DIK_Q)) {
+		int test = 0;
+	}
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
@@ -212,7 +212,7 @@ XMFLOAT3 NavigationAI::Astar()
 }
 
 //経路復元
-XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, intPair target)
+XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, IntPair target)
 {
 
 	//targetからスタート地点までたどりなおす
@@ -220,7 +220,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 	int nx = target.second;
 
 	//targetから探索するからstackで最後の方に獲得した座標を使うため
-	std::stack <intPair> searchPos;
+	std::stack <IntPair> searchPos;
 
 	//どの道をたどってきたか思い出す
 	while (true) {
@@ -234,7 +234,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 			x += moveX[n];
 
 			//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じじゃないなら
-			if (rest.at(nz).at(nx) != intPair(z, x)) {
+			if (rest.at(nz).at(nx) != IntPair(z, x)) {
 				continue;
 			}
 
@@ -311,7 +311,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 }
 
 
-int NavigationAI::Heuristic(int z, int x, intPair target)
+int NavigationAI::Heuristic(int z, int x, IntPair target)
 {
 	//絶対値の差をとる
 	int tmpX = abs(target.second - x);
@@ -327,24 +327,14 @@ int NavigationAI::Heuristic(int z, int x, intPair target)
 //
 //}
 
-bool NavigationAI::IsSomePos(XMFLOAT3 pos1, XMFLOAT3 pos2)
-{
-	pos1.x = pos1.x - (int)pos1.x;
-	pos1.x = pos1.x - (int)pos1.x;
-	pos1.x = pos1.x - (int)pos1.x;
-	pos1.x = pos1.x - (int)pos1.x;
-	pos1.x = pos1.x - (int)pos1.x;
-	pos1.x = pos1.x - (int)pos1.x;
-	return false;
-}
 
-intPair NavigationAI::FloatToIntPair(float z, float x)
+IntPair NavigationAI::FloatToIntPair(float z, float x)
 {
 
 	
 	int zPos = (int)z;
 	int xPos = (int)x;
-	intPair pair = std::make_pair(zPos, xPos);
+	IntPair pair = std::make_pair(zPos, xPos);
 
 	return pair;
 }

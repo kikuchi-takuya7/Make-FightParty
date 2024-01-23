@@ -9,7 +9,7 @@
 //z,xの位置関係がパッと見やすいからpairにしたけど、structにした方がいい？
 using std::vector;
 using std::pair;
-using intPair = pair<int, int>; // 座標を示す{ z,x }
+using IntPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 
@@ -44,9 +44,9 @@ public:
 
 	XMFLOAT3 Astar();
 
-	XMFLOAT3 Path_Search(vector<vector<intPair>> rest, intPair start, intPair target);
+	XMFLOAT3 Path_Search(vector<vector<IntPair>> rest, IntPair start, IntPair target);
 
-	int Heuristic(int x, int y, intPair target);
+	int Heuristic(int x, int y, IntPair target);
 
 	/// <summary>
 	/// 次に行くべき座標を教える
@@ -54,18 +54,10 @@ public:
 	/// <returns>次の座標</returns>
 	//XMFLOAT3 TeachNextPos();
 	
-	/// <summary>
-	/// 同じブロック内にいるかどうか
-	/// </summary>
-	/// <param name="pos1">比べたい値１</param>
-	/// <param name="pos2">比べたい値２</param>
-	/// <returns>同じ場所にいるならtrueを返す</returns>
-	bool IsSomePos(XMFLOAT3 pos1, XMFLOAT3 pos2);
-
 	//////////////アクセス関数//////////////
 	
 
-	intPair FloatToIntPair(float z, float x);
+	IntPair FloatToIntPair(float z, float x);
 
 	/*void SetEnemyPos(float z, float x) { enemyPos_ = { x,0,z }; }
 	void SetEnemyPos(XMFLOAT3 pos) { enemyPos_ = { pos.x,0,pos.z }; }
