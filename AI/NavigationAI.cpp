@@ -146,13 +146,14 @@ XMFLOAT3 NavigationAI::Astar()
 				cost = 1;
 			}
 
+#if 0
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
-				continue; 
+				continue;
 			}
 
 			//最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
-			rest.at(sz).at(sx) = intPair(nz, nx); 
+			rest.at(sz).at(sx) = intPair(nz, nx);
 
 			//目的地に着いたら
 			if (sz == target.first && sx == target.second) {
@@ -166,6 +167,29 @@ XMFLOAT3 NavigationAI::Astar()
 
 			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
 			que.emplace(PP(dist.at(sz).at(sx) + secondH + cost, intPair(sz, sx)));
+#else
+			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
+			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
+				continue;
+			}
+
+			//最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			rest.at(sz).at(sx) = intPair(nz, nx);
+
+			//目的地に着いたら
+			if (sz == target.first && sx == target.second) {
+
+				isBreak = true;
+				break;
+			}
+
+			//最短距離の更新
+			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
+
+			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
+			que.emplace(PP(dist.at(sz).at(sx) + secondH + cost, intPair(sz, sx)));
+#endif
+			
 		}
 
 		if (isBreak)
