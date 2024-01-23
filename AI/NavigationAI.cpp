@@ -83,7 +83,7 @@ XMFLOAT3 NavigationAI::Astar()
 	for (int i = ZERO; i < height_; i++) {
 		for (int f = ZERO; f < width_; f++) {
 
-			int n = 1;
+			int n = 10;
 			map.at(i).at(f) = n;
 
 			//restにxz座標を入れる
@@ -110,7 +110,8 @@ XMFLOAT3 NavigationAI::Astar()
 	//targetまでの最短距離を求める
 	while (!que.empty())
 	{
-		PP now = que.top();//今いる場所を確保
+		//今いる場所を確保
+		PP now = que.top();
 		que.pop();
 
 		bool isBreak = false;
@@ -124,6 +125,8 @@ XMFLOAT3 NavigationAI::Astar()
 			int sz = nz + moveZ[i];
 			int sx = nx + moveX[i];
 
+			int cost = 0;
+			
 			// 画面外なら
 			if (sz < ZERO || sz >= height_ || sx < ZERO || sx >= width_) {
 				continue;
@@ -134,11 +137,18 @@ XMFLOAT3 NavigationAI::Astar()
 				continue;
 			}
 
-			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
+			
 
-			//これヒューリスティック関数全部足し続けてるから良くないかも。
-			if (dist.at(sz).at(sx) + Heuristic(sz, sx, target) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + Heuristic(nz, nx, target)) {
-				//今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
+			int secondH = Heuristic(sz, sx, target);
+			int nowH = Heuristic(nz, nx, target);
+
+			//斜め移動にコストをつける。コストをつけないとヒューリスティックのせいで斜め移動しかしなくなる
+			if (i > 3) {
+				cost = 1;
+			}
+
+			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
+			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
 				continue; 
 			}
 
@@ -153,10 +163,10 @@ XMFLOAT3 NavigationAI::Astar()
 			}
 
 			//最短距離の更新
-			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx);
+			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
 
 			//次の探索候補を入れておく
-			que.emplace(PP(dist.at(sz).at(sx) + Heuristic(sz, sx, target), intPair(sz, sx)));
+			que.emplace(PP(dist.at(sz).at(sx) + secondH + cost, intPair(sz, sx)));
 		}
 
 		if (isBreak)
@@ -165,10 +175,6 @@ XMFLOAT3 NavigationAI::Astar()
 	}
 
 	XMFLOAT3 nextPos = Path_Search(rest, start,target);
-
-	//A*アルゴリズムを整数のグリッド形式で読み込んでいるため小数以下の値を足しなおす
-	/*nextPos.z += enemyPos.z - (int)enemyPos.z;
-	nextPos.x += enemyPos.x - (int)enemyPos.x;*/
 
 	return nextPos;
 
@@ -235,14 +241,15 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
 
-	if (target.first == searchPos.top().first) {
+	//ごり押しです
+	/*if (target.first == searchPos.top().first) {
 		checkVecZ = 0;
 	}
 	if (target.second == searchPos.top().second) {
 		checkVecX = 0;
-	}
+	}*/
 
-	//値逆？試行錯誤中
+
 	if (checkVecX == 1) {
 		
 		fMove.x = -1.0f;
@@ -261,10 +268,38 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 	}
 
 	//向かう方向ベクトルを確認
-	XMVECTOR tmp = XMLoadFloat3(&fMove);
-	tmp = XMVector3Normalize(tmp);
-	fMove = VectorToFloat3(tmp);
-	fMove = fMove / 10;	
+	XMVECTOR vMove = XMLoadFloat3(&fMove);
+	vMove = XMVector3Normalize(vMove);
+	fMove = VectorToFloat3(vMove);
+	fMove = fMove * 0.1;	
+
+	//float length = Length(vMove);
+
+	////動いているなら角度を求めて回転する
+	//if (length != ZERO) {
+
+	//	XMVECTOR vFront = { 0,0,1,0 };
+	//	vMove = XMVector3Normalize(vMove);
+
+	//	//内積から角度を求める
+	//	XMVECTOR vDot = XMVector3Dot(vFront, vMove);
+	//	float dot = XMVectorGetX(vDot);
+	//	float angle = acos(dot);
+
+	//	//外積が-になる角度なら
+	//	XMVECTOR vCross = XMVector3Cross(vFront, vMove);
+	//	if (XMVectorGetY(vCross) < ZERO) {
+
+	//		angle *= -1;
+	//	}
+
+	//	float degree = XMConvertToDegrees(angle);
+
+	//	transform_.rotate_.y = degree;
+
+	//	pAttackCollision_->SetRotate(XMFLOAT3(ZERO, degree, ZERO));
+
+	//}
 
 	return fMove;
 

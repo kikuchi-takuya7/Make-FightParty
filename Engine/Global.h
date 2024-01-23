@@ -77,6 +77,11 @@ static XMFLOAT3 operator /(const XMFLOAT3& f1, const float& f2) {
 	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
 }
 
+static XMFLOAT3 operator *(const XMFLOAT3& f1, const float& f2) {
+
+	return XMFLOAT3(f1.x * f2, f1.y * f2, f1.z * f2);
+}
+
 //static XMFLOAT3 operator /=(const XMFLOAT3& f1, const float& f2) {
 //
 //	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
