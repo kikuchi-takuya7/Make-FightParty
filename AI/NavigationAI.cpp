@@ -6,15 +6,15 @@
 namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
-	const int STAGE_COST = 10;
+	const int STAGE_COST = 1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-	const int moveZ[8] = { ZERO, ZERO,    1,   -1, 1, 1,-1,-1 };
-	const int moveX[8] = {	  1,   -1, ZERO, ZERO, 1,-1, 1,-1 };
+	/*const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
+	const int moveX[8] = {	1,-1, 1,-1,    1,   -1, ZERO, ZERO };*/
 
 	//上下左右に移動（探索）するための配列
-	/*const int moveZ[4] = { ZERO,ZERO,	1,	-1 };
-	const int moveX[4] = {    1,  -1,ZERO,ZERO };*/
+	const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
+	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
 }
 
 namespace Astar {
@@ -107,6 +107,8 @@ XMFLOAT3 NavigationAI::Astar()
 	//スタート地点のコストを入れる
 	dist.at(enemyPos.z).at(enemyPos.x) = map.at(enemyPos.z).at(enemyPos.x); 
 
+	int test = 0;
+
 	//targetまでの最短距離を求める
 	while (!que.empty())
 	{
@@ -127,6 +129,8 @@ XMFLOAT3 NavigationAI::Astar()
 
 			int cost = ZERO;
 			
+			test++;
+
 			// 画面外なら
 			if (sz < ZERO || sz >= height_ || sx < ZERO || sx >= width_) {
 				continue;
@@ -141,14 +145,14 @@ XMFLOAT3 NavigationAI::Astar()
 			int secondH = Heuristic(sz, sx, target);
 			int nowH = Heuristic(nz, nx, target);
 
-			//斜め移動にコストをつける。コストをつけないとヒューリスティックのせいで斜め移動しかしなくなる
+			//斜め移動にコストをつける。コストをつけないと斜め移動しかしなくなる.Astarにとっては斜め移動も上下移動も同じスピードだからqueに入った順番で決まっちゃう
 			if (i > 3) {
 				cost = 1;
 			}
 
-#if 0
+#if 1
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
-			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
+			if (dist.at(sz).at(sx) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + cost) {
 				continue;
 			}
 
@@ -163,13 +167,14 @@ XMFLOAT3 NavigationAI::Astar()
 			}
 
 			//最短距離の更新
-			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
+			dist.at(sz).at(sx) = map.at(sz).at(sx) + cost + secondH;
 
 			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
-			que.emplace(PP(dist.at(sz).at(sx) + secondH + cost, intPair(sz, sx)));
+			que.emplace(PP(dist.at(sz).at(sx), intPair(sz, sx)));
 #else
-			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
+			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
+				//今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 				continue;
 			}
 
@@ -183,11 +188,11 @@ XMFLOAT3 NavigationAI::Astar()
 				break;
 			}
 
-			//最短距離の更新
-			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
+			//ヒューリスティック分も込みで最短距離の更新
+			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost;
 
-			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
-			que.emplace(PP(dist.at(sz).at(sx) + secondH + cost, intPair(sz, sx)));
+			//次の探索候補を入れておく
+			que.emplace(PP(dist.at(sz).at(sx) + secondH, intPair(sz, sx)));
 #endif
 			
 		}
@@ -196,6 +201,9 @@ XMFLOAT3 NavigationAI::Astar()
 			break;
 
 	}
+
+	if(Input::IsKeyDown(DIK_Q))
+		test = 0;
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
@@ -241,6 +249,8 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 			//次はその前にいた座標の上下左右を探索するため更新
 			nz = z;  
 			nx = x;
+
+			break;
 		}
 
 		//次に探索する場所が初期位置に戻ったら止める。
@@ -263,6 +273,15 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 	//stackのtopは一番最後の要素を取ってくる
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
+
+	//ごり押しで修正することもできるけど良くない気がする
+	if (start.first == target.first) {
+		checkVecZ = 0;
+	}
+	if (start.second == target.second) {
+		checkVecX = 0;
+	}
+
 
 	if (checkVecX == 1) {
 		
@@ -292,14 +311,14 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<intPair>> rest,intPair start, i
 }
 
 
-int NavigationAI::Heuristic(int x, int z, intPair target)
+int NavigationAI::Heuristic(int z, int x, intPair target)
 {
 	//絶対値の差をとる
-	int tmpX = abs(x - target.second);
-	int tmpZ = abs(z - target.first);
+	int tmpX = abs(target.second - x);
+	int tmpZ = abs(target.first - z);
 
 	//斜め移動なので大きいほうを返す
-	return max(tmpX, tmpZ);
+	return max(tmpZ, tmpX);
 }
 
 //XMFLOAT3 NavigationAI::TeachNextPos()

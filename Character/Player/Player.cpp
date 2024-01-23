@@ -43,8 +43,8 @@ void Player::Initialize()
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.position_.x = 1.0f;
-	transform_.position_.z = 15.0f;
+	transform_.position_.x = 25.0f;
+	transform_.position_.z = 5.0f;
 
 }
 
