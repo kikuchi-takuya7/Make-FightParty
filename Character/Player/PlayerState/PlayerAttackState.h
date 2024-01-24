@@ -1,6 +1,8 @@
 #pragma once
 #include "PlayerState.h"
 
+class BoxCollider;
+
 /// <summary>
 /// UŒ‚‚µ‚½ó‘Ô
 /// </summary>
@@ -26,8 +28,12 @@ class PlayerAttackState : public PlayerState
 	/// <param name="player">Player‚Ìƒ|ƒCƒ“ƒ^</param>
 	void Enter(Player* player) override;
 
+
+
 private:
 
+	int time_;
+	//BoxCollider* pAttackCollision_;
 
 };
 

@@ -207,6 +207,12 @@ public:
 	/// <param name="collider">追加するCollider</param>
 	/// <param name="type">追加するColliderのattackType</param>
 	void AddCollider(Collider* collider, ColliderAttackType type);
+
+	/// <summary>
+	/// 特定のコライダーを破棄する
+	/// </summary>
+	/// <param name="type">破棄したいコライダーの種類</param>
+	void DeleteCollider(ColliderAttackType type);
 	
 	/// <summary>
 	/// 何かと衝突した場合に呼ばれる（オーバーライド用）

@@ -35,6 +35,11 @@ void PlayerJumpState::HandleInput(Player* player)
 		PlayerStateManager::playerState_ = PlayerStateManager::playerDieState_;
 		PlayerStateManager::playerState_->Enter(player);
 	}*/
+
+	if (Input::IsKeyDown(DIK_F)) {
+		PlayerStateManager::playerState_ = PlayerStateManager::playerAttackState_;
+		PlayerStateManager::playerState_->Enter(player);
+	}
 }
 
 void PlayerJumpState::Enter(Player* player)

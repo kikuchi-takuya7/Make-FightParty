@@ -15,9 +15,8 @@ namespace {
 
 //コンストラクタ
 Player::Player(GameObject* parent)
-	:Character(parent, "Player")
+	:Character(parent, "Player"),pState_(new PlayerStateManager)
 {
-	pState_ = new PlayerStateManager;
 }
 
 //デストラクタ
@@ -36,7 +35,7 @@ void Player::Initialize()
 
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
-
+	
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
 
 	//モデルデータのロード
@@ -51,10 +50,6 @@ void Player::Initialize()
 //更新
 void Player::ChildUpdate()
 {
-
-	/*if (Input::IsKey(DIK_L)) {
-		attackCollisionCenter_.z += 1;
-	}*/
 
 	MovePlayer();
 

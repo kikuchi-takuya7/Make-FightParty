@@ -201,10 +201,6 @@ XMFLOAT3 NavigationAI::Astar()
 
 	}
 
-	if (Input::IsKeyDown(DIK_Q)) {
-		int test = 0;
-	}
-
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
 	return nextPos;

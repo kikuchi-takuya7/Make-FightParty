@@ -217,6 +217,22 @@ void GameObject::AddCollider(Collider* collider, ColliderAttackType type)
 	colliderList_.push_back(collider);
 }
 
+//特定のコライダーを破棄する
+//引数:破棄するコライダーのタイプ
+void GameObject::DeleteCollider(ColliderAttackType type)
+{
+	for (auto it = colliderList_.begin(); it != colliderList_.end(); it++)
+	{
+		ColliderAttackType tmp = (*it)->GetAttackType();
+		
+		if (tmp == type) {
+			SAFE_DELETE(*it);
+			it = colliderList_.erase(it);
+		}
+		
+	}
+}
+
 //コライダー（衝突判定）を削除
 void GameObject::ClearCollider()
 {
