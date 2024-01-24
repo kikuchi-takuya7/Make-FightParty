@@ -11,12 +11,12 @@ namespace {
 	const int STAGE_COST = 1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-	const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
-	const int moveX[8] = {	1,-1, 1,-1,    1,   -1, ZERO, ZERO };
+	/*const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
+	const int moveX[8] = {	1,-1, 1,-1,    1,   -1, ZERO, ZERO };*/
 
 	//上下左右に移動（探索）するための配列
-	/*const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
-	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };*/
+	const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
+	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
 }
 
 namespace Astar {
@@ -144,12 +144,12 @@ XMFLOAT3 NavigationAI::Astar()
 			int secondH = Heuristic(sz, sx, target);
 			int nowH = Heuristic(nz, nx, target);
 
-			//斜め移動にコストをつける。コストをつけないと斜め移動しかしなくなってしまった.Astarにとっては斜め移動も上下移動も同じスピードだからqueに入った順番で決まっちゃう可能性
-			if (i < 4) {
-				//cost = 1;
+			//斜め移動にコストをつける。コストをつけないと斜め移動しかしなくなってしまった.Astarにとっては斜め移動も上下移動も同じスピードだから
+			if (i > 3) {
+				cost = 1;
 			}
 
-#if 1
+#if 0
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + cost) {
 				continue;
@@ -171,7 +171,7 @@ XMFLOAT3 NavigationAI::Astar()
 			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
 			que.emplace(PP(dist.at(sz).at(sx), IntPair(sz, sx)));
 #else
-			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
+			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋map+ヒューリスティックのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
 				//今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 				continue;
@@ -187,8 +187,8 @@ XMFLOAT3 NavigationAI::Astar()
 				break;
 			}
 
-			//ヒューリスティック分も込みで最短距離の更新
-			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost;
+			//そこに行くまでの最短距離の更新（ヒューリスティックを足してしまうと値が増え続けて探索が最適化できない）
+			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
 
 			//次の探索候補を入れておく
 			que.emplace(PP(dist.at(sz).at(sx) + secondH, IntPair(sz, sx)));
