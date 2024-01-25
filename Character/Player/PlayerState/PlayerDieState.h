@@ -7,6 +7,8 @@
 class PlayerDieState : public PlayerState
 {
 
+public:
+
 	/// <summary>
 	/// XV
 	/// </summary>

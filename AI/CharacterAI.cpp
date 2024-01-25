@@ -20,6 +20,8 @@ void CharacterAI::Initialize()
 	//pNavigationAI_->Initialize();
 
 	//pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());
+	isStay_ = false;
+	stayTime_ = 0;
 }
 
 void CharacterAI::Release()
@@ -30,8 +32,24 @@ void CharacterAI::Release()
 //動かす
 void CharacterAI::MoveEnemy()
 {
+
+	//一定時間止まる
+	if (isStay_) {
+		stayTime_++;
+		if (stayTime_ <= 60) {
+			return;
+		}
+	}
+
 	//NavigationAIに向かうべき方向を聞く
 	XMFLOAT3 fMove = pNavigationAI_->Astar();
+
+	//目標地点に着いた場合、一定時間止まる
+	if (fMove == ZERO_FLOAT3) {
+		isStay_ = true;//これ攻撃判定が広いせいで無限ループするときあり
+		stayTime_ = 0;
+	}
+
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
 	//向かう方向ベクトルを確認

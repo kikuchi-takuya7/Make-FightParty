@@ -45,16 +45,16 @@ void Character::Release()
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-	{
-		
-	}
+	//if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+	//{
+	//	
+	//}
 
-	//UŒ‚‚ð“–‚Ä‚½Žž‚Ìˆ—
-	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-	{
-		((Character*)pTarget)->HitDamage(status_.attackPower);
-	}
+	////UŒ‚‚ð“–‚Ä‚½Žž‚Ìˆ—
+	//if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
+	//{
+	//	((Character*)pTarget)->HitDamage(status_.attackPower);
+	//}
 }
 
 void Character::HitDamage(int damage)

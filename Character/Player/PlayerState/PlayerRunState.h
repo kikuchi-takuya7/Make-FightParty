@@ -6,7 +6,9 @@
 /// </summary>
 class PlayerRunState : public PlayerState
 {
-	
+
+public:
+
 	/// <summary>
 	/// XV
 	/// </summary>

@@ -245,6 +245,9 @@
     <ClCompile Include="AI\NavigationAI.cpp">
       <Filter>AI</Filter>
     </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerKnockBackState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -431,6 +434,9 @@
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerKnockBackState.h">
       <Filter>Character\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>

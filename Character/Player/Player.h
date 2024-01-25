@@ -37,7 +37,7 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    //void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 
     /////////////////////メンバ関数/////////////////////////////////////
@@ -52,11 +52,12 @@ public:
     /// </summary>
     void SetAttackCollider();
 
-    
-
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
     void SetDead() { status_.isDead = true; }
+    void ChangeState(StatePattern nextState);
+    void ChangeKnockBack(bool next) { isKnockBack_ = next; }
+    bool IsKnockBack() { return isKnockBack_; }
 
 
 private:
@@ -68,5 +69,6 @@ private:
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す
 
+    bool isKnockBack_; //ノックバック中ならtrue
 
 };

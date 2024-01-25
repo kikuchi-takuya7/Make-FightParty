@@ -11,6 +11,7 @@ class Player;
 /// </summary>
 class PlayerState
 {
+
 public:
 
 	/// <summary>

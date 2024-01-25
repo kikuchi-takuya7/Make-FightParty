@@ -45,6 +45,8 @@ void Player::Initialize()
 	transform_.position_.x = 25.0f;
 	transform_.position_.z = 5.0f;
 
+	isKnockBack_ = false;
+
 }
 
 //更新
@@ -77,22 +79,32 @@ void Player::Release()
 }
 
 //何か当たった時の処理
-//void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
-//{
-//
-//	//当たったときの処理
-//	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-//	{
-//		
-//	}
-//
-//	//攻撃を当てた時の処理
-//	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-//	{
-//		
-//	}
-//
-//}
+void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+{
+	//ノックバック中は当たり判定を無くす
+	if (isKnockBack_)
+		return;
+
+	//当たったときの処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+	{
+		((Character*)pTarget)->HitDamage(status_.attackPower);
+		pState_->ChangeState(KNOCKBACK, this);
+		
+		if (status_.hp <= 0) {
+			pState_->ChangeState(DIE, this);
+		}
+
+	}
+
+	//攻撃を当てた時の処理
+	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
+	{
+		
+
+	}
+
+}
 
 //プレイヤー移動の処理
 void Player::MoveCharacter()
@@ -172,4 +184,9 @@ void Player::MoveCharacter()
 void Player::SetAttackCollider()
 {
 	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
+}
+
+void Player::ChangeState(StatePattern nextState)
+{
+	pState_->ChangeState(nextState, this);
 }

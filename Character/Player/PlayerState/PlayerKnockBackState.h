@@ -2,9 +2,9 @@
 #include "PlayerState.h"
 
 /// <summary>
-/// ジャンプしてる状態
+/// プレイヤーが走っている状態
 /// </summary>
-class PlayerJumpState : public PlayerState
+class PlayerKnockBackState : public PlayerState
 {
 
 public:
@@ -30,7 +30,6 @@ public:
 
 private:
 
-	float velocity_;
-
+	int time_;
 };
 

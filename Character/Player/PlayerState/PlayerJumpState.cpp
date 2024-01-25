@@ -18,8 +18,7 @@ void PlayerJumpState::Update(Player* player)
 	if (playerPos.y <= ZERO) {
 		playerPos.y = 0;
 
-		PlayerStateManager::playerState_ = PlayerStateManager::playerIdleState_;
-		PlayerStateManager::playerState_->Enter(player);
+		player->ChangeState(IDLE);
 	}
 
 	player->SetPosition(playerPos);
@@ -37,8 +36,7 @@ void PlayerJumpState::HandleInput(Player* player)
 	}*/
 
 	if (Input::IsKeyDown(DIK_F)) {
-		PlayerStateManager::playerState_ = PlayerStateManager::playerAttackState_;
-		PlayerStateManager::playerState_->Enter(player);
+		player->ChangeState(ATTACK);
 	}
 }
 

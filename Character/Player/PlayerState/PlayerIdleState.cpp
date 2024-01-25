@@ -17,13 +17,11 @@ void PlayerIdleState::HandleInput(Player* player)
 	
 
 	if (Input::IsKeyDown(DIK_F)) {
-		PlayerStateManager::playerState_ = PlayerStateManager::playerAttackState_;
-		PlayerStateManager::playerState_->Enter(player);
+		player->ChangeState(ATTACK);
 	}
 	
 	if (Input::IsKeyDown(DIK_SPACE)) {
-		PlayerStateManager::playerState_ = PlayerStateManager::playerJumpState_;
-		PlayerStateManager::playerState_->Enter(player);
+		player->ChangeState(JUMP);
 	}
 
 }

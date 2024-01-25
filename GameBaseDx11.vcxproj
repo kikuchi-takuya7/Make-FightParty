@@ -150,6 +150,7 @@
     <ClCompile Include="Character\Player\PlayerState\PlayerDieState.cpp" />
     <ClCompile Include="Character\Player\PlayerState\PlayerIdleState.cpp" />
     <ClCompile Include="Character\Player\PlayerState\PlayerJumpState.cpp" />
+    <ClCompile Include="Character\Player\PlayerState\PlayerKnockBackState.cpp" />
     <ClCompile Include="Character\Player\PlayerState\PlayerRunState.cpp" />
     <ClCompile Include="Character\Player\PlayerState\PlayerState.cpp" />
     <ClCompile Include="Character\Player\PlayerState\PlayerStateManager.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Character\Player\PlayerState\PlayerDieState.h" />
     <ClInclude Include="Character\Player\PlayerState\PlayerIdleState.h" />
     <ClInclude Include="Character\Player\PlayerState\PlayerJumpState.h" />
+    <ClInclude Include="Character\Player\PlayerState\PlayerKnockBackState.h" />
     <ClInclude Include="Character\Player\PlayerState\PlayerRunState.h" />
     <ClInclude Include="Character\Player\PlayerState\PlayerState.h" />
     <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h" />

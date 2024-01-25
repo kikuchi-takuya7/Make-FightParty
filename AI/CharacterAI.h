@@ -49,5 +49,9 @@ private:
 
 	Enemy* pEnemy_;
 
+	//目標地点に着いたら一定時間止まる処理用
+	bool isStay_;
+	int stayTime_;
+
 };
 

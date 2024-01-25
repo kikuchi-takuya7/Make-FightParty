@@ -47,6 +47,7 @@ void Enemy::Initialize()
 
 	//characterAI_->Initialize();
 
+	
 
 }
 

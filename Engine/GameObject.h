@@ -218,6 +218,12 @@ public:
 	/// 何かと衝突した場合に呼ばれる（オーバーライド用）
 	/// </summary>
 	/// <param name="pTarget">衝突した相手</param>
+	virtual void OnCollision(GameObject* pTarget) {};
+
+	/// <summary>
+	/// 何かと衝突した場合に呼ばれる（オーバーライド用）
+	/// </summary>
+	/// <param name="pTarget">衝突した相手</param>
 	/// <param name="myType">当たったcolliderの自分のattackType</param>
 	/// <param name="targetType">当たったcolliderの相手のattackType</param>
 	virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
