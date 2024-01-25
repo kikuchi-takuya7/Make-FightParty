@@ -39,14 +39,14 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee) override;
+    //void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
     /////////////////////メンバ関数/////////////////////////////////////
 
     /// <summary>
-    /// 移動する
+    /// CharavterAIに移動する場所を聞いて移動する
     /// </summary>
-    void Move();
+    void MoveCharacter() override;
 
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }

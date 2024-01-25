@@ -13,18 +13,7 @@ struct Status {
 /// </summary>
 class Character : public GameObject
 {
-protected:
 
-    int hModel_;
-
-    //HP等のステータス
-    Status status_;
-
-    //CharacterStateManager* pState_; //プレイヤーの状態を表す
-
-    //当たり判定
-    BoxCollider* pBodyCollision_;
-    BoxCollider* pAttackCollision_;
 
 public:
     //コンストラクタ
@@ -51,10 +40,18 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee) override {};
+    virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 
     /////////////////////メンバ関数/////////////////////////////////////
+
+    /// <summary>
+    /// 攻撃に当たった時
+    /// </summary>
+    /// <param name="damage">食らったダメージ量</param>
+    void HitDamage(int damage);
+
+    //////////////////子供に継承させる関数//////////////////////////////
 
     /// <summary>
     /// 継承先用の初期化
@@ -76,10 +73,27 @@ public:
     /// </summary>
     virtual void ChildRelease() {};
 
+    /// <summary>
+    /// キャラクターの移動処理
+    /// </summary>
+    virtual void MoveCharacter() {};
+
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
     void SetDead() { status_.isDead = true; }
 
+protected:
+
+    int hModel_;
+
+    //HP等のステータス
+    Status status_;
+
+    //CharacterStateManager* pState_; //プレイヤーの状態を表す
+
+    //当たり判定
+    BoxCollider* pBodyCollision_;
+    BoxCollider* pAttackCollision_;
 
 private:
 

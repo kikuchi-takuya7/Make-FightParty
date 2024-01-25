@@ -1,4 +1,5 @@
 #include "PlayerStateManager.h"
+#include "../Player.h"
 
 //各static変数を初期化する。staticだからグローバルな位置で最初に初期化しないとダメ
 PlayerAttackState* PlayerStateManager::playerAttackState_ = new PlayerAttackState;
@@ -17,9 +18,12 @@ PlayerStateManager::PlayerStateManager()
 
 void PlayerStateManager::Update(Player* player)
 {
-	playerState_->Update(player);
 
-	//この下に当たり判定だとか死亡にする判定とかの共通処理を書く。エンジニアブートキャンプでsuper::UpDateみたいなんは一番最初に書くべき見たいな聞いたから多分この順番？詳細はメモできなかった
+	//ここに共通処理を書く。stateの処理を実行してからか実行する前かは後で決める
+
+	player->MoveCharacter();
+
+	playerState_->Update(player);
 
 }
 

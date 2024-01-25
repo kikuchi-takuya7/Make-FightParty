@@ -34,7 +34,7 @@ void Player::Initialize()
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
-	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
+	
 	
 	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
 
@@ -50,8 +50,6 @@ void Player::Initialize()
 //更新
 void Player::ChildUpdate()
 {
-
-	MovePlayer();
 
     pState_->Update(this);
 
@@ -79,18 +77,25 @@ void Player::Release()
 }
 
 //何か当たった時の処理
-void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
-{
+//void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+//{
+//
+//	//当たったときの処理
+//	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+//	{
+//		
+//	}
+//
+//	//攻撃を当てた時の処理
+//	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
+//	{
+//		
+//	}
+//
+//}
 
-	//当たったときの処理
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-	{
-		//KillMe();
-	}
-
-}
-
-void Player::MovePlayer()
+//プレイヤー移動の処理
+void Player::MoveCharacter()
 {
 
 	XMFLOAT3 fMove = ZERO_FLOAT3;
@@ -161,4 +166,10 @@ void Player::MovePlayer()
 
 	}
 
+}
+
+//攻撃用のコライダーをセットする
+void Player::SetAttackCollider()
+{
+	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 }

@@ -19,7 +19,7 @@ void EnemyStateManager::Update(Enemy* enemy)
 {
 	enemyState_->Update(enemy);
 
-	//この下に当たり判定だとか死亡にする判定とかの共通処理を書く。エンジニアブートキャンプでsuper::UpDateみたいなんは一番最初に書くべき見たいな聞いたから多分この順番？詳細はメモできなかった
+	
 
 }
 

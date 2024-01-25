@@ -37,7 +37,7 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee) override;
+    //void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 
     /////////////////////メンバ関数/////////////////////////////////////
@@ -45,7 +45,14 @@ public:
     /// <summary>
     /// プレイヤーの移動処理
     /// </summary>
-    void MovePlayer();
+    void MoveCharacter() override;
+
+    /// <summary>
+    /// 攻撃用のコライダーをセットする
+    /// </summary>
+    void SetAttackCollider();
+
+    
 
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
@@ -61,9 +68,5 @@ private:
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す
 
-    ////当たり判定
-    //BoxCollider* pBodyCollision_;
-    //BoxCollider* pAttackCollision_;
-    
 
 };

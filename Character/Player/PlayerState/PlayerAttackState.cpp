@@ -16,7 +16,7 @@ void PlayerAttackState::Update(Player* player)
 	//攻撃は殴る瞬間に少し前に出てジャンプできなくなるみたいな感じにしたい。スティックファイト座ゲームみたいな感じ
 
 	//攻撃が終わったら攻撃用のコライダーを破棄してstateを戻す
-	if (time_ >= 300) {
+	if (time_ >= 60) {
 		player->DeleteCollider(ColliderAttackType::COLLIDER_ATTACK);
 		PlayerStateManager::playerState_ = PlayerStateManager::playerIdleState_;
 		PlayerStateManager::playerState_->Enter(player);
@@ -32,6 +32,5 @@ void PlayerAttackState::HandleInput(Player* player)
 void PlayerAttackState::Enter(Player* player)
 {
 	time_ = 0;
-	//BoxCollider* pAttackCollision = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
-	//player->AddCollider(pAttackCollision, ColliderAttackType::COLLIDER_ATTACK);
+	player->SetAttackCollider();
 }

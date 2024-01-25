@@ -54,7 +54,7 @@ void Enemy::Initialize()
 void Enemy::ChildUpdate()
 {
 
-	characterAI_->MoveEnemy();
+	MoveCharacter();
 
 	//pState_->Update(this);
 
@@ -79,12 +79,23 @@ void Enemy::Release()
 }
 
 //‰½‚©“–‚½‚Á‚½Žž‚Ìˆ—
-void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetTypee)
+//void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+//{
+//	//“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
+//	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+//	{
+//
+//	}
+//
+//	//UŒ‚‚ð“–‚Ä‚½Žž‚Ìˆ—
+//	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
+//	{
+//
+//	}
+//
+//}
+
+void Enemy::MoveCharacter()
 {
-
-
-}
-
-void Enemy::Move()
-{
+	characterAI_->MoveEnemy();
 }
