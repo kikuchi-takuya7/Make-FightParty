@@ -34,7 +34,7 @@ void Enemy::Initialize()
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
-	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
+	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
 	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER,false };
 

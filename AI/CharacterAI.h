@@ -35,6 +35,7 @@ public:
 
 	void MoveEnemy();
 
+	void Stay();
 
 	///////////////////アクセス関数/////////////
 

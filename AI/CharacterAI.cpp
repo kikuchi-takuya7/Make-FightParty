@@ -44,10 +44,9 @@ void CharacterAI::MoveEnemy()
 	//NavigationAIに向かうべき方向を聞く
 	XMFLOAT3 fMove = pNavigationAI_->Astar();
 
-	//目標地点に着いた場合、一定時間止まる
+	//目標地点に着いた場合、一定時間止まる.攻撃した時にも止まりたい
 	if (fMove == ZERO_FLOAT3) {
-		isStay_ = true;//これ攻撃判定が広いせいで無限ループするときあり
-		stayTime_ = 0;
+		Stay();
 	}
 
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
@@ -83,4 +82,10 @@ void CharacterAI::MoveEnemy()
 
 	}
 
+}
+
+void CharacterAI::Stay()
+{
+	isStay_ = true;//これ攻撃判定が広いせいで無限ループするときあり
+	stayTime_ = 0;
 }
