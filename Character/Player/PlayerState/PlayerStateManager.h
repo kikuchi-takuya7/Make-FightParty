@@ -31,7 +31,7 @@ class PlayerStateManager
 public:
 	
 	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になるっていう予想
-	//ちなみに複数playerstateあってもちゃんとクラス毎にstaticで取ってくれる
+	//staticにしちゃうとクラス別でstateの変数持てないじゃんね
 	//enum使えばstatic使わなくても行けそうだけど、どっちがいいか
 	PlayerAttackState* playerAttackState_;
 	PlayerDieState* playerDieState_;

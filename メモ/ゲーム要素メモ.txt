@@ -11,3 +11,5 @@
 長くしすぎはダメかも
 
 playerStateManagerはnamespaceでもいい説ない？まだわからん
+
+目標地点：

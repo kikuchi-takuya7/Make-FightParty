@@ -89,3 +89,7 @@ void CharacterAI::Stay()
 	isStay_ = true;//‚±‚êUŒ‚”»’è‚ªL‚¢‚¹‚¢‚Å–³ŒÀƒ‹[ƒv‚·‚é‚Æ‚«‚ ‚è
 	stayTime_ = 0;
 }
+
+void CharacterAI::Attack()
+{
+}

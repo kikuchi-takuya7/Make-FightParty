@@ -8,6 +8,8 @@ class EnemyStateManager;
 class NavigationAI;
 class CharacterAI;
 
+
+
 /// <summary>
 /// キャラクターAIで動かす敵のクラス
 /// </summary>
