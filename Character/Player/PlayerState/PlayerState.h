@@ -6,6 +6,16 @@
 //‘O•ûéŒ¾
 class Player;
 
+enum PlayerStatePattern {
+	PLAYER_ATTACK,
+	PLAYER_DIE,
+	PLAYER_IDLE,
+	PLAYER_JUMP,
+	PLAYER_KNOCKBACK,
+	PLAYER_RUN,
+	PLAYER_NUM
+};
+
 /// <summary>
 /// playerState‚ÌŠî’êƒNƒ‰ƒX
 /// </summary>

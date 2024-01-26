@@ -37,6 +37,8 @@ public:
 
 	void Attack();
 
+	void IsAttack();
+
 	///////////////////アクセス関数/////////////
 
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }

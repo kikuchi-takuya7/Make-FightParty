@@ -20,7 +20,7 @@ public:
 	/// 入力によって状態を変化する
 	/// </summary>
 	/// <param name="enemy">Enemyのポインタ</param>
-	void HandleInput(Enemy* enemy) override;
+	void HandleInput(Enemy* enemy, CharacterAI* AI) override;
 
 	/// <summary>
 	/// 状態変化したときに一度だけ呼ばれる関数

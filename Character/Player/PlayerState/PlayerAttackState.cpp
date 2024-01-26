@@ -18,7 +18,7 @@ void PlayerAttackState::Update(Player* player)
 	//UŒ‚‚ªI‚í‚Á‚½‚çUŒ‚—p‚ÌƒRƒ‰ƒCƒ_[‚ð”jŠü‚µ‚Ästate‚ð–ß‚·
 	if (time_ >= 60) {
 		player->DeleteCollider(ColliderAttackType::COLLIDER_ATTACK);
-		player->ChangeState(IDLE);
+		player->ChangeState(PLAYER_IDLE);
 	}
 
 	HandleInput(player);

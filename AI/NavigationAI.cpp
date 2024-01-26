@@ -42,12 +42,6 @@ void NavigationAI::Release()
 {
 }
 
-void NavigationAI::InitAstar()
-{
-
-	
-}
-
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar()
 {
@@ -56,6 +50,7 @@ XMFLOAT3 NavigationAI::Astar()
 	IntPair start;
 	IntPair target;
 
+	//将来的にMetaAIに狙うべき敵を聞きたい
 	XMFLOAT3 enemyPos = pEnemy_->GetPosition();
 	XMFLOAT3 playerPos = pPlayer_->GetPosition();
 
@@ -333,4 +328,18 @@ IntPair NavigationAI::FloatToIntPair(float z, float x)
 	IntPair pair = std::make_pair(zPos, xPos);
 
 	return pair;
+}
+
+//引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
+float NavigationAI::Distance()
+{
+	
+	//将来的にMetaAIに狙うべき敵を聞きたい
+	XMFLOAT3 eP = pEnemy_->GetPosition();
+	XMFLOAT3 pP = pPlayer_->GetPosition();
+
+	//ピタゴラスの定理で距離を求められるらしい
+	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
+
+	return distance;
 }

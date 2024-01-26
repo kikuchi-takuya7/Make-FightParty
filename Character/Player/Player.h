@@ -42,13 +42,8 @@ public:
 
     /////////////////////メンバ関数/////////////////////////////////////
 
-    /// <summary>
-    /// プレイヤーの移動処理
-    /// </summary>
-    void MoveCharacter() override;
-
     ///////////////////アクセス関数/////////////////////////////////////
-    void ChangeState(StatePattern nextState);
+    void ChangeState(PlayerStatePattern nextState);
 
 
 private:

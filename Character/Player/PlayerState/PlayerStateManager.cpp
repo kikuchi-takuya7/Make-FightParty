@@ -20,19 +20,27 @@ PlayerStateManager::PlayerStateManager()
 	playerRunState_ = new PlayerRunState;
 
 	playerState_ = playerIdleState_;
-
-	nowState_ = IDLE;
 }
 
 void PlayerStateManager::Update(Player* player)
 {
 
-	//ここに共通処理を書く。stateの処理を実行してからか実行する前かは後で決める
+	//行動不能状態なら移動はしない
+	if (playerState_ == playerKnockBackState_ || playerState_ == playerDieState_) {
+		playerState_->Update(player);
+		return;
+	}
 
-	//ノックバック中じゃなければ移動できるように
-	if (player->IsKnockBack() == false) {
+	XMFLOAT3 playerPos = player->GetPosition();
 
-		player->MoveCharacter();
+
+	//移動キーが押されているなら
+	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D)|| Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
+	{
+
+		//Runstateで移動中なら速度早くして、他のstateなら移動速度遅くするとかが良い気がする
+		MovePlayer(player);
+		//ChangeState(PLAYER_RUN, player);
 	}
 
 	playerState_->Update(player);
@@ -53,31 +61,31 @@ void PlayerStateManager::ChangeState(PlayerStatePattern nextState, Player* playe
 	//状態を変更して、その状態の初期化処理を行う
 	switch (nextState)
 	{
-	case ATTACK:
+	case PLAYER_ATTACK:
 		playerState_ = playerAttackState_;
 		break;
 
-	case DIE:
+	case PLAYER_DIE:
 		playerState_ = playerDieState_;
 		break;
 
-	case IDLE:
+	case PLAYER_IDLE:
 		playerState_ = playerIdleState_;
 		break;
 
-	case JUMP:
+	case PLAYER_JUMP:
 		playerState_ = playerJumpState_;
 		break;
 
-	case KNOCKBACK:
+	case PLAYER_KNOCKBACK:
 		playerState_ = playerKnockBackState_;
 		break;
 
-	case RUN:
+	case PLAYER_RUN:
 		playerState_ = playerRunState_;
 		break;
 
-	case NUM:
+	case PLAYER_NUM:
 
 	default:
 		return;
@@ -86,4 +94,77 @@ void PlayerStateManager::ChangeState(PlayerStatePattern nextState, Player* playe
 
 	playerState_->Enter(player);
 	
+}
+
+void PlayerStateManager::MovePlayer(Player* player)
+{
+	XMFLOAT3 fMove = ZERO_FLOAT3;
+
+	////ここの引数でプレイヤー数を指定する
+	//fMove.x = Input::GetPadStickL(0).x;
+	//fMove.z = Input::GetPadStickL(0).y;
+
+	XMFLOAT3 playerPos = player->GetPosition();
+
+	//結局後で正規化してるからここの値は大きくても意味なし
+	if (Input::IsKey(DIK_A) && playerPos.x >= 0)
+	{
+		fMove.x = -0.01f;
+	}
+	if (Input::IsKey(DIK_D) && playerPos.x <= 29)
+	{
+		fMove.x = 0.01f;
+	}
+	if (Input::IsKey(DIK_W) && playerPos.z <= 29)
+	{
+		fMove.z = 0.01f;
+	}
+	if (Input::IsKey(DIK_S) && playerPos.z >= 0)
+	{
+		fMove.z = -0.01f;
+	}
+
+	XMVECTOR vMove = XMLoadFloat3(&fMove);
+
+	//斜めの移動でも早くならないように(必要か？)
+	vMove = XMVector3Normalize(vMove);
+
+	fMove = VectorToFloat3(vMove);
+
+	//速度調整
+	fMove.x *= 0.5;
+	fMove.z *= 0.5;
+
+	playerPos.x += fMove.x;
+	playerPos.z += fMove.z;
+
+	player->SetPosition(playerPos);
+
+	float length = Length(vMove);
+
+	//動いているなら角度を求めて回転する
+	if (length != ZERO) {
+
+		XMVECTOR vFront = { 0,0,1,0 };
+		vMove = XMVector3Normalize(vMove);
+
+		//内積から角度を求める
+		XMVECTOR vDot = XMVector3Dot(vFront, vMove);
+		float dot = XMVectorGetX(vDot);
+		float angle = acos(dot);
+
+		//外積が-になる角度なら
+		XMVECTOR vCross = XMVector3Cross(vFront, vMove);
+		if (XMVectorGetY(vCross) < ZERO) {
+
+			angle *= -1;
+		}
+
+		float degree = XMConvertToDegrees(angle);
+
+		player->SetRotateY(degree);
+
+		player->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
+
+	}
 }

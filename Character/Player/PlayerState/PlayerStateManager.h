@@ -9,15 +9,7 @@
 
 //class Player;
 
-enum PlayerStatePattern {
-	ATTACK,
-	DIE,
-	IDLE,
-	JUMP,
-	KNOCKBACK,
-	RUN,
-	NUM
-};
+
 
 //プレイヤーと敵のステートマネージャ共通にしたほうがいい説もあり
 //Characterクラスにステートマネージャ書けるし、当たり判定も継承しなくてよくなる
@@ -58,11 +50,13 @@ public:
 	/// <param name="change">変更後の状態</param>
 	/// <param name="player">変更するプレイヤーのポインタ</param>
 	void ChangeState(PlayerStatePattern nextState, Player* player);
+
+	void MovePlayer(Player* player);
 	
 	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
 
 private:
-	PlayerStatePattern nowState_;
+
 };
 
 //先輩はここstateを継承してたけど継承した理由がよくわからなかったから継承しなかった。っていうメモ

@@ -14,7 +14,7 @@ void PlayerKnockBackState::Update(Player* player)
 	player->SetPosition(playerPos);
 
 	if (time_ >= 30) {
-		player->ChangeState(IDLE);
+		player->ChangeState(PLAYER_IDLE);
 		player->ChangeKnockBack(false);
 	}
 

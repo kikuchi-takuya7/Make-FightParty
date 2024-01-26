@@ -40,30 +40,41 @@ public:
 
 	//////////メンバ関数///////////////
 
-	void InitAstar();
-
+	/// <summary>
+	/// Astarを使い目標地点を指示する
+	/// </summary>
 	XMFLOAT3 Astar();
 
+	/// <summary>
+	/// Astarアルゴリズムで使う経路復元用
+	/// </summary>
+	/// <param name="rest">一個前にいた座標を2次元配列で記憶したもの</param>
+	/// <param name="start">スタート地点</param>
+	/// <param name="target">目標地点</param>
+	/// <returns></returns>
 	XMFLOAT3 Path_Search(vector<vector<IntPair>> rest, IntPair start, IntPair target);
 
+	/// <summary>
+	/// ヒューリスティックで最短距離を測る
+	/// </summary>
+	/// <param name="x">現在のx座標</param>
+	/// <param name="y">現在のy座標</param>
+	/// <param name="target">目標地点</param>
+	/// <returns>最短距離の期待値</returns>
 	int Heuristic(int x, int y, IntPair target);
 
 	/// <summary>
-	/// 次に行くべき座標を教える
+	/// 小数点以下を切り捨てて整数にする
 	/// </summary>
-	/// <returns>次の座標</returns>
-	//XMFLOAT3 TeachNextPos();
-	
-	//////////////アクセス関数//////////////
-	
-
+	/// <param name="z">整数にしたいz</param>
+	/// <param name="x">整数にしたいx</param>
+	/// <returns>整数にしたIntPair</returns>
 	IntPair FloatToIntPair(float z, float x);
 
-	/*void SetEnemyPos(float z, float x) { enemyPos_ = { x,0,z }; }
-	void SetEnemyPos(XMFLOAT3 pos) { enemyPos_ = { pos.x,0,pos.z }; }
-	void SetPlayerPos(float z, float x) { playerPos_ = { x,0,z }; }
-	void SetPlayerPos(XMFLOAT3 pos) { playerPos_ = { pos.x,0,pos.z }; }*/
 
+	float Distance();
+	
+	//////////////アクセス関数//////////////
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
 	void SetPlayer(Player* player) { pPlayer_ = player; }
 

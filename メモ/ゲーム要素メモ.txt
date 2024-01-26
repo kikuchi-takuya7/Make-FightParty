@@ -12,4 +12,4 @@
 
 playerStateManagerはnamespaceでもいい説ない？まだわからん
 
-目標地点：
+もしカメラとか移動させる時があったら、playerクラスでやるか。ないと思うけど

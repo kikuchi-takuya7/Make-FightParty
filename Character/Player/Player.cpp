@@ -89,10 +89,10 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		((Character*)pTarget)->HitDamage(status_.attackPower);
-		pState_->ChangeState(KNOCKBACK, this);
+		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 		
 		if (status_.hp <= 0) {
-			pState_->ChangeState(DIE, this);
+			pState_->ChangeState(PLAYER_DIE, this);
 		}
 
 	}
@@ -106,81 +106,7 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 }
 
-//プレイヤー移動の処理
-void Player::MoveCharacter()
-{
-
-	XMFLOAT3 fMove = ZERO_FLOAT3;
-
-	////ここの引数でプレイヤー数を指定する
-	//fMove.x = Input::GetPadStickL(0).x;
-	//fMove.z = Input::GetPadStickL(0).y;
-
-	
-
-	//結局後で正規化してるからここの値は大きくても意味なし
-	if (Input::IsKey(DIK_A) && transform_.position_.x >= 0)
-	{
-		fMove.x = -0.01f;
-	}
-	if (Input::IsKey(DIK_D) && transform_.position_.x <= 29)
-	{
-		fMove.x = 0.01f;
-	}
-	if (Input::IsKey(DIK_W) && transform_.position_.z <= 29)
-	{
-		fMove.z = 0.01f;
-	}
-	if (Input::IsKey(DIK_S) && transform_.position_.z >= 0)
-	{
-		fMove.z = -0.01f;
-	}
-
-	XMVECTOR vMove = XMLoadFloat3(&fMove);
-
-	//斜めの移動でも早くならないように(必要か？)
-	vMove = XMVector3Normalize(vMove);
-
-	fMove = VectorToFloat3(vMove);
-
-	//速度調整
-	fMove.x *= 0.5;
-	fMove.z *= 0.5;
-
-	transform_.position_.x += fMove.x;
-	transform_.position_.z += fMove.z;
-
-	float length = Length(vMove);
-
-	//動いているなら角度を求めて回転する
-	if (length != ZERO) {
-
-		XMVECTOR vFront = { 0,0,1,0 };
-		vMove = XMVector3Normalize(vMove);
-
-		//内積から角度を求める
-		XMVECTOR vDot = XMVector3Dot(vFront, vMove);
-		float dot = XMVectorGetX(vDot);
-		float angle = acos(dot);
-
-		//外積が-になる角度なら
-		XMVECTOR vCross = XMVector3Cross(vFront, vMove);
-		if (XMVectorGetY(vCross) < ZERO) {
-
-			angle *= -1;
-		}
-
-		float degree = XMConvertToDegrees(angle);
-
-		transform_.rotate_.y = degree;
-
-		pAttackCollision_->SetRotate(XMFLOAT3(ZERO, degree, ZERO));
-
-	}
-
-}
-
-void Player::ChangeState(StatePattern nextState)
+void Player::ChangeState(PlayerStatePattern nextState)
 {
 	pState_->ChangeState(nextState, this);
 }

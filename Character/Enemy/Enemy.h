@@ -41,7 +41,7 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    //void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
     /////////////////////メンバ関数/////////////////////////////////////
 
@@ -52,9 +52,9 @@ public:
 
     ///////////////////アクセス関数/////////////////////////////////////
     void SetCharacterAI(CharacterAI* AI) { characterAI_ = AI; }
-    void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
+    
 
-    void ChangeState(StatePattern nextState);
+    void ChangeState(EnemyStatePattern nextState);
     
     //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
     //void SetNavi(NavigationAI* naviAI) { characterAI_->SetNavigationAI(naviAI); }

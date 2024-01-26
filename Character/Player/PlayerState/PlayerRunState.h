@@ -28,5 +28,8 @@ public:
 	/// <param name="player">Player‚Ìƒ|ƒCƒ“ƒ^</param>
 	void Enter(Player* player) override;
 
+
+	void MoveCharacter(Player* player);
+
 };
 

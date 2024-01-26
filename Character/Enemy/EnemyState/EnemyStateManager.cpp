@@ -1,4 +1,5 @@
 #include "EnemyStateManager.h"
+#include "../../../AI/CharacterAI.h"
 
 //各static変数を初期化する。staticだからグローバルな位置で最初に初期化しないとダメ
 
@@ -18,17 +19,22 @@ EnemyStateManager::EnemyStateManager()
 
 void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 {
+	//移動不可状態なら移動はしない
+	if (enemyState_ == enemyDieState_ || enemyState_ == enemyKnockBackState_ || enemyState_ == enemyAttackState_) {
+		
+		enemyState_->Update(enemy, AI);
+		return;
+	}
 
 
 	AI->MoveEnemy();
-
 	enemyState_->Update(enemy, AI);
 
 	
 
 }
 
-void EnemyStateManager::HandleInput(Enemy* enemy)
+void EnemyStateManager::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
@@ -41,31 +47,31 @@ void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy)
 	//状態を変更して、その状態の初期化処理を行う
 	switch (nextState)
 	{
-	case EnemyStatePattern::ATTACK:
+	case ENEMY_ATTACK:
 		enemyState_ = enemyAttackState_;
 		break;
 
-	case EnemyStatePattern::DIE:
+	case ENEMY_DIE:
 		enemyState_ = enemyDieState_;
 		break;
 
-	case EnemyStatePattern::IDLE:
+	case ENEMY_IDLE:
 		enemyState_ = enemyIdleState_;
 		break;
 
-	case EnemyStatePattern::JUMP:
+	case ENEMY_JUMP:
 		enemyState_ = enemyJumpState_;
 		break;
 
-	case EnemyStatePattern::KNOCKBACK:
+	case ENEMY_KNOCKBACK:
 		enemyState_ = enemyKnockBackState_;
 		break;
 
-	case EnemyStatePattern::RUN:
+	case ENEMY_RUN:
 		enemyState_ = enemyRunState_;
 		break;
 
-	case EnemyStatePattern::NUM:
+	case ENEMY_NUM:
 
 	default:
 		return;

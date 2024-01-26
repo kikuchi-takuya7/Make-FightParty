@@ -11,7 +11,7 @@ namespace {
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
+	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 1);
 }
 
 //コンストラクタ
@@ -80,28 +80,28 @@ void Enemy::ChildRelease()
 }
 
 //何か当たった時の処理
-//void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
-//{
-//	//当たったときの処理
-//	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-//	{
-//
-//	}
-//
-//	//攻撃を当てた時の処理
-//	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-//	{
-//
-//	}
-//
-//}
+void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+{
+	//当たったときの処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+	{
+
+	}
+
+	//攻撃を当てた時の処理
+	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
+	{
+
+	}
+
+}
 
 void Enemy::MoveCharacter()
 {
 	characterAI_->MoveEnemy();
 }
 
-void Enemy::ChangeState(StatePattern nextState)
+void Enemy::ChangeState(EnemyStatePattern nextState)
 {
 	pState_->ChangeState(nextState, this);
 }

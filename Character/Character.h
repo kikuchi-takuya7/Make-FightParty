@@ -84,6 +84,7 @@ public:
 
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
+    void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
     void ChangeKnockBack(bool next) { isKnockBack_ = next; }
     bool IsKnockBack() { return isKnockBack_; }
 

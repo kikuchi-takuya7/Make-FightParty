@@ -8,6 +8,16 @@
 class Enemy;
 class CharacterAI;
 
+enum EnemyStatePattern {
+	ENEMY_ATTACK,
+	ENEMY_DIE,
+	ENEMY_IDLE,
+	ENEMY_JUMP,
+	ENEMY_KNOCKBACK,
+	ENEMY_RUN,
+	ENEMY_NUM
+};
+
 /// <summary>
 /// EnemyStateの基底クラス
 /// </summary>
@@ -27,7 +37,7 @@ public:
 	/// 入力によって状態を変化する
 	/// </summary>
 	/// <param name="enemy">Enemyのポインタ</param>
-	virtual void HandleInput(Enemy* enemy) {};
+	virtual void HandleInput(Enemy* enemy, CharacterAI* AI) {};
 
 	/// <summary>
 	/// 状態変化したときに一度だけ呼ばれる関数

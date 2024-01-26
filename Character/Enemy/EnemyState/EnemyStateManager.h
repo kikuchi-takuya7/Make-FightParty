@@ -9,15 +9,7 @@
 
 //class Enemy;
 
-enum EnemyStatePattern {
-	ATTACK,
-	DIE,
-	IDLE,
-	JUMP,
-	KNOCKBACK,
-	RUN,
-	NUM
-};
+
 
 /// <summary>
 /// enemy‚Ìó‘Ô‚ğŠÇ—‚·‚é
@@ -42,7 +34,7 @@ public:
 
 	void Update(Enemy* enemy, CharacterAI* AI) override;
 
-	void HandleInput(Enemy* enemy) override;
+	void HandleInput(Enemy* enemy, CharacterAI* AI) override;
 
 	void Enter(Enemy* enemy) override;
 

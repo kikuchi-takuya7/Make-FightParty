@@ -4,7 +4,7 @@ void EnemyKnockBackState::Update(Enemy* enemy, CharacterAI* AI)
 {
 }
 
-void EnemyKnockBackState::HandleInput(Enemy* enemy)
+void EnemyKnockBackState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 

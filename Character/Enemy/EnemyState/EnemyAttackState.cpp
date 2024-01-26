@@ -3,10 +3,19 @@
 
 void EnemyAttackState::Update(Enemy* enemy, CharacterAI* AI)
 {
+	time_++;
+
+	if (time_ >= 60) {
+		enemy->DeleteCollider(COLLIDER_ATTACK);
+		enemy->ChangeState(ENEMY_IDLE);
+	}
+
+	HandleInput(enemy, AI);
 }
 
-void EnemyAttackState::HandleInput(Enemy* enemy)
+void EnemyAttackState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
+
 }
 
 void EnemyAttackState::Enter(Enemy* enemy)

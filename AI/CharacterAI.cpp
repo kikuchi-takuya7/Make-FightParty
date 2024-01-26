@@ -34,19 +34,11 @@ void CharacterAI::MoveEnemy()
 	//NavigationAIに向かうべき方向を聞く
 	XMFLOAT3 fMove = pNavigationAI_->Astar();
 
-	
-
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
 	if (fMove == ZERO_FLOAT3) {
-		pEnemy_->ChangeState(EnemyStatePattern::ATTACK);
+		pEnemy_->ChangeState(ENEMY_IDLE);
 	}
-
-	///
-	//ここに狙ってる敵との距離が近かったら攻撃する処理とかかな。内積使えば距離は出せそう
-	//ナビゲーションAIに敵との距離を測る関数を作ろう
-	///
-	
 
 	//向かう方向ベクトルを確認
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
@@ -77,10 +69,22 @@ void CharacterAI::MoveEnemy()
 
 		pEnemy_->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
 
+		//pEnemy_->ChangeState(ENEMY_RUN);
+
 	}
 
 }
 
 void CharacterAI::Attack()
 {
+
+}
+
+void CharacterAI::IsAttack()
+{
+	float distance = pNavigationAI_->Distance();
+	
+	if (distance <= 2.5f) {
+		pEnemy_->ChangeState(ENEMY_ATTACK);
+	}
 }
