@@ -3,42 +3,55 @@
 #include "EnemyDieState.h"
 #include "EnemyIdleState.h"
 #include "EnemyJumpState.h"
+#include "EnemyKnockBackState.h"
 #include "EnemyRunState.h"
 #include "EnemyState.h"
 
-class Enemy;
+//class Enemy;
+
+enum EnemyStatePattern {
+	ATTACK,
+	DIE,
+	IDLE,
+	JUMP,
+	KNOCKBACK,
+	RUN,
+	NUM
+};
 
 /// <summary>
 /// enemyの状態を管理する
 /// </summary>
-class EnemyStateManager
+class EnemyStateManager : public EnemyState
 {
 
 public:
 
+	
 	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になるっていう予想
-	static EnemyAttackState* enemyAttackState_;
-	static EnemyDieState* enemyDieState_;
-	static EnemyIdleState* enemyIdleState_;
-	static EnemyJumpState* enemyJumpState_;
-	static EnemyRunState* enemyRunState_;
+	EnemyAttackState* enemyAttackState_;
+	EnemyDieState* enemyDieState_;
+	EnemyIdleState* enemyIdleState_;
+	EnemyJumpState* enemyJumpState_;
+	EnemyKnockBackState* enemyKnockBackState_;
+	EnemyRunState* enemyRunState_;
 
-	static EnemyState* enemyState_;
+	EnemyState* enemyState_;
 
 	EnemyStateManager();
 
-	void Update(Enemy* enemy);
+	void Update(Enemy* enemy, CharacterAI* AI) override;
 
-	void HandleInput(Enemy* enemy);
+	void HandleInput(Enemy* enemy) override;
 
-	void Enter(Enemy* enemy);
+	void Enter(Enemy* enemy) override;
 
 	/// <summary>
 	/// 状態を変更する
 	/// </summary>
 	/// <param name="change">変更後の状態</param>
 	/// <param name="enemy">変更するプレイヤーのポインタ</param>
-	void ChangeState(EnemyState* nextState, Enemy* enemy);
+	void ChangeState(EnemyStatePattern nextState, Enemy* enemy);
 
 	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
 };

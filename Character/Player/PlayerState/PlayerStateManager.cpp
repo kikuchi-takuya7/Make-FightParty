@@ -47,8 +47,9 @@ void PlayerStateManager::Enter(Player* player)
 {
 }
 
-void PlayerStateManager::ChangeState(StatePattern nextState, Player* player)
+void PlayerStateManager::ChangeState(PlayerStatePattern nextState, Player* player)
 {
+
 	//ó‘Ô‚ğ•ÏX‚µ‚ÄA‚»‚Ìó‘Ô‚Ì‰Šú‰»ˆ—‚ğs‚¤
 	switch (nextState)
 	{

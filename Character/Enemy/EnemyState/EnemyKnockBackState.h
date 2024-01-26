@@ -4,7 +4,7 @@
 /// <summary>
 /// プレイヤーが走っている状態
 /// </summary>
-class EnemyJumpState : public EnemyState
+class EnemyKnockBackState : public EnemyState
 {
 
 public:
@@ -28,4 +28,8 @@ public:
 	/// <param name="enemy">Enemyのポインタ</param>
 	void Enter(Enemy* enemy) override;
 
+private:
+
+	int time_;
 };
+

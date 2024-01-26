@@ -27,7 +27,7 @@ Enemy::~Enemy()
 }
 
 //初期化
-void Enemy::Initialize()
+void Enemy::ChildInitialize()
 {
 
 	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), ZERO_FLOAT3);
@@ -36,7 +36,7 @@ void Enemy::Initialize()
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
 	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
-	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER,false };
+	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER};
 
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
@@ -55,14 +55,14 @@ void Enemy::Initialize()
 void Enemy::ChildUpdate()
 {
 
-	MoveCharacter();
+	//MoveCharacter();
 
-	//pState_->Update(this);
+	pState_->Update(this, characterAI_);
 
 }
 
 //描画
-void Enemy::Draw()
+void Enemy::ChildDraw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
@@ -73,7 +73,7 @@ void Enemy::Draw()
 }
 
 //開放
-void Enemy::Release()
+void Enemy::ChildRelease()
 {
 	SAFE_DELETE(characterAI_);
 	SAFE_DELETE(pState_);
@@ -99,4 +99,9 @@ void Enemy::Release()
 void Enemy::MoveCharacter()
 {
 	characterAI_->MoveEnemy();
+}
+
+void Enemy::ChangeState(StatePattern nextState)
+{
+	pState_->ChangeState(nextState, this);
 }

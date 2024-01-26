@@ -25,7 +25,7 @@ Player::~Player()
 }
 
 //初期化
-void Player::Initialize()
+void Player::ChildInitialize()
 {
 
 
@@ -36,7 +36,7 @@ void Player::Initialize()
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 	
 	
-	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER,false };
+	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER };
 
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
@@ -58,7 +58,7 @@ void Player::ChildUpdate()
 }
 
 //描画
-void Player::Draw()
+void Player::ChildDraw()
 {
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
@@ -72,7 +72,7 @@ void Player::Draw()
 }
 
 //開放
-void Player::Release()
+void Player::ChildRelease()
 {
 	SAFE_DELETE(pState_);
 
@@ -178,12 +178,6 @@ void Player::MoveCharacter()
 
 	}
 
-}
-
-//攻撃用のコライダーをセットする
-void Player::SetAttackCollider()
-{
-	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 }
 
 void Player::ChangeState(StatePattern nextState)

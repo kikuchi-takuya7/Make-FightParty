@@ -20,8 +20,6 @@ void CharacterAI::Initialize()
 	//pNavigationAI_->Initialize();
 
 	//pNavigationAI_->SetEnemyPos(pEnemy_->GetPosition());
-	isStay_ = false;
-	stayTime_ = 0;
 }
 
 void CharacterAI::Release()
@@ -33,23 +31,22 @@ void CharacterAI::Release()
 void CharacterAI::MoveEnemy()
 {
 
-	//一定時間止まる
-	if (isStay_) {
-		stayTime_++;
-		if (stayTime_ <= 60) {
-			return;
-		}
-	}
-
 	//NavigationAIに向かうべき方向を聞く
 	XMFLOAT3 fMove = pNavigationAI_->Astar();
 
-	//目標地点に着いた場合、一定時間止まる.攻撃した時にも止まりたい
-	if (fMove == ZERO_FLOAT3) {
-		Stay();
-	}
+	
 
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
+
+	if (fMove == ZERO_FLOAT3) {
+		pEnemy_->ChangeState(EnemyStatePattern::ATTACK);
+	}
+
+	///
+	//ここに狙ってる敵との距離が近かったら攻撃する処理とかかな。内積使えば距離は出せそう
+	//ナビゲーションAIに敵との距離を測る関数を作ろう
+	///
+	
 
 	//向かう方向ベクトルを確認
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
@@ -82,12 +79,6 @@ void CharacterAI::MoveEnemy()
 
 	}
 
-}
-
-void CharacterAI::Stay()
-{
-	isStay_ = true;//これ攻撃判定が広いせいで無限ループするときあり
-	stayTime_ = 0;
 }
 
 void CharacterAI::Attack()

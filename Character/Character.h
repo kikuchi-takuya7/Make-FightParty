@@ -4,7 +4,6 @@
 struct Status {
     int hp;
     int attackPower;
-    bool isDead;
 };
 
 
@@ -25,16 +24,16 @@ public:
     /////////////オーバーライドした関数/////////////////
 
     //初期化
-    virtual void Initialize() override;
+    void Initialize() override;
 
     //更新
     void Update() override;
 
     //描画
-    virtual void Draw() override;
+    void Draw() override;
 
     //開放
-    virtual void Release() override;
+    void Release() override;
 
     /// <summary>
     /// 別のcolliderに衝突したときに呼ばれる関数
@@ -50,6 +49,11 @@ public:
     /// </summary>
     /// <param name="damage">食らったダメージ量</param>
     void HitDamage(int damage);
+
+    /// <summary>
+    /// 攻撃用のコライダーをセットする
+    /// </summary>
+    void SetAttackCollider();
 
     //////////////////子供に継承させる関数//////////////////////////////
 
@@ -80,7 +84,8 @@ public:
 
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
-    void SetDead() { status_.isDead = true; }
+    void ChangeKnockBack(bool next) { isKnockBack_ = next; }
+    bool IsKnockBack() { return isKnockBack_; }
 
 protected:
 
@@ -94,6 +99,8 @@ protected:
     //当たり判定
     BoxCollider* pBodyCollision_;
     BoxCollider* pAttackCollision_;
+
+    bool isKnockBack_;
 
 private:
 

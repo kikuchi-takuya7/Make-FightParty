@@ -22,16 +22,16 @@ public:
     /////////////オーバーライドした関数/////////////////
 
     //初期化
-    void Initialize() override;
+    void ChildInitialize() override;
 
     //更新
     void ChildUpdate() override;
 
     //描画
-    void Draw() override;
+    void ChildDraw() override;
 
     //開放
-    void Release() override;
+    void ChildRelease() override;
 
     /// <summary>
     /// 別のcolliderに衝突したときに呼ばれる関数
@@ -47,17 +47,8 @@ public:
     /// </summary>
     void MoveCharacter() override;
 
-    /// <summary>
-    /// 攻撃用のコライダーをセットする
-    /// </summary>
-    void SetAttackCollider();
-
     ///////////////////アクセス関数/////////////////////////////////////
-    Status GetStatus() { return status_; }
-    void SetDead() { status_.isDead = true; }
     void ChangeState(StatePattern nextState);
-    void ChangeKnockBack(bool next) { isKnockBack_ = next; }
-    bool IsKnockBack() { return isKnockBack_; }
 
 
 private:

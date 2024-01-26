@@ -1,6 +1,5 @@
 #pragma once
 #include "AI.h"
-#include "../AI/CharacterAIState/EnemyStateManager.h"
 
 class NavigationAI;
 class MetaAI;
@@ -36,8 +35,6 @@ public:
 
 	void MoveEnemy();
 
-	void Stay();
-
 	void Attack();
 
 	///////////////////アクセス関数/////////////
@@ -53,12 +50,6 @@ private:
 
 	//自分が操る敵のインスタンス
 	Enemy* pEnemy_;
-
-	EnemyStateManager* pEnemyState_;
-
-	//目標地点に着いたら一定時間止まる処理用
-	bool isStay_;
-	int stayTime_;
 
 };
 

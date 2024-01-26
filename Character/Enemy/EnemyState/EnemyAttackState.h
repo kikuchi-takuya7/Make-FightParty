@@ -1,10 +1,8 @@
 #pragma once
 #include "EnemyState.h"
 
-class BoxCollider;
-
 /// <summary>
-/// 攻撃した状態
+/// プレイヤーが走っている状態
 /// </summary>
 class EnemyAttackState : public EnemyState
 {
@@ -15,7 +13,7 @@ public:
 	/// 更新
 	/// </summary>
 	/// <param name="enemy">Enemyのポインタ</param>
-	void Update(Enemy* enemy) override;
+	void Update(Enemy* enemy, CharacterAI* AI) override;
 
 
 	/// <summary>
@@ -30,12 +28,6 @@ public:
 	/// <param name="enemy">Enemyのポインタ</param>
 	void Enter(Enemy* enemy) override;
 
-
-
 private:
-
 	int time_;
-	//BoxCollider* pAttackCollision_;
-
 };
-

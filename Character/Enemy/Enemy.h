@@ -26,16 +26,16 @@ public:
     /////////////オーバーライドした関数/////////////////
 
     //初期化
-    void Initialize() override;
+    void ChildInitialize() override;
 
     //更新
     void ChildUpdate() override;
 
     //描画
-    void Draw() override;
+    void ChildDraw() override;
 
     //開放
-    void Release() override;
+    void ChildRelease() override;
 
     /// <summary>
     /// 別のcolliderに衝突したときに呼ばれる関数
@@ -51,10 +51,10 @@ public:
     void MoveCharacter() override;
 
     ///////////////////アクセス関数/////////////////////////////////////
-    Status GetStatus() { return status_; }
-    void SetDead() { status_.isDead = true; }
     void SetCharacterAI(CharacterAI* AI) { characterAI_ = AI; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
+
+    void ChangeState(StatePattern nextState);
     
     //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
     //void SetNavi(NavigationAI* naviAI) { characterAI_->SetNavigationAI(naviAI); }

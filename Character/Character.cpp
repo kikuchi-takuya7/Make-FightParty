@@ -18,7 +18,9 @@ Character::~Character()
 //‰Šú‰»
 void Character::Initialize()
 {
+	isKnockBack_ = false;
 
+	ChildInitialize();
 }
 
 //XV
@@ -33,13 +35,13 @@ void Character::Update()
 //•`‰æ
 void Character::Draw()
 {
-
+	ChildDraw();
 }
 
 //ŠJ•ú
 void Character::Release()
 {
-
+	ChildRelease();
 }
 
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
@@ -64,4 +66,10 @@ void Character::HitDamage(int damage)
 
 
 }
+
+void Character::SetAttackCollider()
+{
+	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
+}
+
 

@@ -7,9 +7,9 @@
 #include "PlayerRunState.h"
 #include "PlayerState.h"
 
-class Player;
+//class Player;
 
-enum StatePattern {
+enum PlayerStatePattern {
 	ATTACK,
 	DIE,
 	IDLE,
@@ -25,10 +25,12 @@ enum StatePattern {
 /// <summary>
 /// playerの状態を管理する
 /// </summary>
-class PlayerStateManager
+class PlayerStateManager : public PlayerState
 {
 
 public:
+
+	
 	
 	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になるっていう予想
 	//staticにしちゃうとクラス別でstateの変数持てないじゃんね
@@ -44,23 +46,24 @@ public:
 
 	PlayerStateManager();
 
-	void Update(Player* player);
+	void Update(Player* player) override;
 
-	void HandleInput(Player* player);
+	void HandleInput(Player* player) override;
 
-	void Enter(Player* player);
+	void Enter(Player* player) override;
 
 	/// <summary>
 	/// 状態を変更する
 	/// </summary>
 	/// <param name="change">変更後の状態</param>
 	/// <param name="player">変更するプレイヤーのポインタ</param>
-	void ChangeState(StatePattern nextState, Player* player);
+	void ChangeState(PlayerStatePattern nextState, Player* player);
 	
 	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
 
 private:
-	StatePattern nowState_;
+	PlayerStatePattern nowState_;
 };
 
 //先輩はここstateを継承してたけど継承した理由がよくわからなかったから継承しなかった。っていうメモ
+//関数が共通してるからなのかなぁ
