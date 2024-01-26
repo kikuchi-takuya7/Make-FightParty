@@ -13,3 +13,5 @@
 playerStateManagerはnamespaceでもいい説ない？まだわからん
 
 もしカメラとか移動させる時があったら、playerクラスでやるか。ないと思うけど
+
+RUNstate以外の時は速度遅くしたい（ジャンプ中とか攻撃中とか）
