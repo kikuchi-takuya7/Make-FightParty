@@ -82,15 +82,32 @@ void Enemy::ChildRelease()
 //何か当たった時の処理
 void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
+	//ノックバック中は当たり判定を無くす
+	if (isKnockBack_)
+		return;
+
 	//当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
+		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
+
+		XMFLOAT3 rotate = pTarget->GetRotate();
+
+		pState_->SetPlayerRot(rotate);
+
+		pState_->ChangeState(ENEMY_KNOCKBACK, this);
+
+
+		if (status_.hp <= 0) {
+			pState_->ChangeState(ENEMY_DIE, this);
+		}
 
 	}
 
 	//攻撃を当てた時の処理
 	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
 	{
+
 
 	}
 

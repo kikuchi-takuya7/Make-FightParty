@@ -28,4 +28,5 @@ void PlayerIdleState::HandleInput(Player* player)
 
 void PlayerIdleState::Enter(Player* player)
 {
+
 }

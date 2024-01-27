@@ -45,6 +45,9 @@ public:
 	/// <param name="enemy">変更するプレイヤーのポインタ</param>
 	void ChangeState(EnemyStatePattern nextState, Enemy* enemy);
 
+
+	void SetPlayerRot(XMFLOAT3 rot) { enemyKnockBackState_->SetPlayerRotate(rot); }
+
 	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
 };
 

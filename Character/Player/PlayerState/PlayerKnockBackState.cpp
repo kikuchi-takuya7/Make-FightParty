@@ -20,7 +20,7 @@ void PlayerKnockBackState::Update(Player* player)
 
 	//ƒŒ[ƒg‚Å‚Ê‚é‚Ê‚é“®‚­‚æ‚¤‚É
 	if (rate_ < 1.0f) { 
-		rate_ += 0.1f;
+		rate_ += 0.05f;
 
 		// •Ï‚È”š‚Å~‚Ü‚ç‚È‚¢‚æ‚¤‚É
 		if (rate_ > 1.0f) 

@@ -28,8 +28,21 @@ public:
 	/// <param name="enemy">Enemyのポインタ</param>
 	void Enter(Enemy* enemy) override;
 
+	void SetPlayerRotate(XMFLOAT3 rot) { playerRot_ = rot; }
+
+	float GetRateValue(float begin, float end, float rate);
+
 private:
 
-	int time_;
+	//時間（フレーム単位）
+	int flame_;
+
+	//緩急を付けるレート
+	float rate_;
+
+	//最終的な位置
+	XMFLOAT3 lastPoint_;
+
+	XMFLOAT3 playerRot_;
 };
 
