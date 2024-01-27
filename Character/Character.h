@@ -82,6 +82,8 @@ public:
     /// </summary>
     virtual void MoveCharacter() {};
 
+    virtual void ChildOnCollision() {};
+
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }

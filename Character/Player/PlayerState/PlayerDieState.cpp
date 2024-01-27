@@ -6,6 +6,7 @@ void PlayerDieState::Update(Player* player)
 
 	player->ClearCollider();
 	
+	player->SetPosition(1, 1, 0);
 	
 	HandleInput(player);
 }

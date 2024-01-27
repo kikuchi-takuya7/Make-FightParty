@@ -19,6 +19,7 @@ EnemyStateManager::EnemyStateManager()
 
 void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 {
+	
 	//ˆÚ“®•s‰Âó‘Ô‚È‚çˆÚ“®‚Í‚µ‚È‚¢
 	if (enemyState_ == enemyDieState_ || enemyState_ == enemyKnockBackState_ || enemyState_ == enemyAttackState_) {
 		
@@ -26,11 +27,8 @@ void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 		return;
 	}
 
-
 	AI->MoveEnemy();
 	enemyState_->Update(enemy, AI);
-
-	
 
 }
 

@@ -88,8 +88,14 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 	//“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
-		((Character*)pTarget)->HitDamage(status_.attackPower);
+		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
+
+		XMFLOAT3 rotate = pTarget->GetRotate();
+		
+		pState_->SetEnemyRot(rotate);
+
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
+
 		
 		if (status_.hp <= 0) {
 			pState_->ChangeState(PLAYER_DIE, this);

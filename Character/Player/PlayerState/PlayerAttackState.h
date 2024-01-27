@@ -34,7 +34,7 @@ public:
 
 private:
 
-	int time_;
+	int flame_;
 	//BoxCollider* pAttackCollision_;
 
 };
