@@ -12,34 +12,59 @@ MetaAI::~MetaAI()
 
 void MetaAI::Initialize()
 {
+	//最初は誰が一位でも同じ
+	No1CharaID_.push_back(0);
 }
 
 void MetaAI::Release()
 {
 }
 
+//狙うべき相手を決める関数
 int MetaAI::Targeting(int ID)
 {
-	Status tmp = characterStatusList_.at(ID);
-
 	int targetFrag = rand() % 3;
 
+	//殴られた相手を狙う可能性も残したい
+
+	//自分が1位だった場合0に固定する（同率でも）
+	if (characterStatusList_.at(No1CharaID_.at(0)).winPoint == characterStatusList_.at(ID).winPoint) {
+
+		targetFrag = 0;
+	}
+
+	//全体を見て一位のプレイヤーを優先的に狙うように
 	switch (targetFrag)
 	{
 
-		//一位の中から誰かを狙う
+	//プレイヤーの中からランダムで狙う	
 	case 0:
+		while (true)
+		{
+			//狙った相手が自分じゃなければ
+			int targetID = rand() % characterStatusList_.size();
+			if (targetID != ID)
+				return targetID;
+		}
+		break;
+	
+	//一位の中から誰かを狙う
 	case 1:
-		return rand() % No1CharaID_.size();
+	case 2:
+		while (true)
+		{
+			//狙った相手が自分じゃなければ
+			int targetID = rand() % No1CharaID_.size();
+			if (targetID != ID)
+				return targetID;
+		}
 		break;
 
-		//プレイヤの中からランダムで狙う
-	case 2:
-		return rand() % 4;
-	
 	default:
 		break;
 	}
+
+	return 0;
 
 }
 

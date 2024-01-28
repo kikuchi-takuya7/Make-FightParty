@@ -4,7 +4,6 @@
 #include "CharacterAI.h"
 #include "../Character/Character.h"
 
-
 class Player;
 class Enemy;
 class NavigationAI;
@@ -40,8 +39,8 @@ public:
 	void CheckNo1Chara();
 
 	//////////////アクセス関数 //////////
-	void PushEnemyStatus(Status status) { enemyStatusList_.push_back(status); }
-	void PushPlayerStatus(Status status) { playerStatusList_.push_back(status); }
+	//void PushEnemyStatus(Status status) { enemyStatusList_.push_back(status); }
+	//void PushPlayerStatus(Status status) { playerStatusList_.push_back(status); }
 	void PushCharacterStatus(Status status) { characterStatusList_.push_back(status); }
 
 	
@@ -52,14 +51,14 @@ public:
 private:
 	
 
-	vector<Status> enemyStatusList_;
-	vector<Status> playerStatusList_;
+	//vector<Status> enemyStatusList_;
+	//vector<Status> playerStatusList_;
 
 	vector<Status> characterStatusList_;
 
 	NavigationAI* pNavigationAI_;
 
-	//一位が複数人いる可能性もあるから
+	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;
 };
 

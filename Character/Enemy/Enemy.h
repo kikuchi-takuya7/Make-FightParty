@@ -51,13 +51,13 @@ public:
     void MoveCharacter() override;
 
     ///////////////////アクセス関数/////////////////////////////////////
-    void SetCharacterAI(CharacterAI* AI) { characterAI_ = AI; }
+    void SetCharacterAI(CharacterAI* AI) { pCharacterAI_ = AI; }
     
 
     void ChangeState(EnemyStatePattern nextState);
     
     //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
-    //void SetNavi(NavigationAI* naviAI) { characterAI_->SetNavigationAI(naviAI); }
+    //void SetNavi(NavigationAI* naviAI) { pCharacterAI_->SetNavigationAI(naviAI); }
 
 
 private:
@@ -69,7 +69,7 @@ private:
 
     EnemyStateManager* pState_; //敵の状態を表す
 
-    CharacterAI* characterAI_;//色んな判断をしてくれるAIのつもり
+    CharacterAI* pCharacterAI_;//色んな判断をしてくれるAIのつもり
 
     //当たり判定
     //BoxCollider* pBodyCollision_;

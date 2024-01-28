@@ -17,7 +17,7 @@ namespace {
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
-	: GameObject(parent, "MainGameScene"), pNavigationAI_(new NavigationAI), pMetaAI_(new MetaAI)//, pPlayer(nullptr), pEnemy(nullptr)
+	: GameObject(parent, "MainGameScene"), pNavigationAI_(new NavigationAI), pMetaAI_(new MetaAI)
 {
 }
 
@@ -37,14 +37,15 @@ void MainGameScene::Initialize()
 
 		Player* pPlayer;
 		pPlayer = Instantiate<Player>(this);
-		//pNavigationAI_->PushPlayer(pPlayer);
+		pPlayer->SetObjectID(i);
+
 		pNavigationAI_->PushCharacter(pPlayer);
-		pMetaAI_->PushPlayerStatus(pPlayer->GetStatus());
+		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
 
 		pPlayer->SetPosition(CHARA_POS[element]);
 		element++;
 
-		pPlayer->SetObjectID(i);
+		
 	}
 	
 	
@@ -53,9 +54,10 @@ void MainGameScene::Initialize()
 
 		Enemy* pEnemy;
 		pEnemy = Instantiate<Enemy>(this);
-		//pNavigationAI_->PushEnemy(pEnemy);
+		pEnemy->SetObjectID(i);
+
 		pNavigationAI_->PushCharacter(pEnemy);
-		pMetaAI_->PushEnemyStatus(pEnemy->GetStatus());
+		pMetaAI_->PushCharacterStatus(pEnemy->GetStatus());
 
 		CharacterAI* charaAI = new CharacterAI(pEnemy, pNavigationAI_);
 		charaAI->Initialize();
@@ -64,7 +66,7 @@ void MainGameScene::Initialize()
 		pEnemy->SetPosition(CHARA_POS[element]);
 		element++;
 
-		pEnemy->SetObjectID(i);
+		
 	}
 
 	

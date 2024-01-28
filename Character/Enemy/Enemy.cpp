@@ -16,7 +16,7 @@ namespace {
 
 //コンストラクタ
 Enemy::Enemy(GameObject* parent)
-	:Character(parent, "Enemy"), hModel_(-1),pState_(new EnemyStateManager), characterAI_(nullptr)
+	:Character(parent, "Enemy"), hModel_(-1),pState_(new EnemyStateManager), pCharacterAI_(nullptr)
 
 {
 }
@@ -42,7 +42,7 @@ void Enemy::ChildInitialize()
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
 
-	//characterAI_->Initialize();
+	//pCharacterAI_->Initialize();
 
 	
 
@@ -54,7 +54,7 @@ void Enemy::ChildUpdate()
 
 	//MoveCharacter();
 
-	pState_->Update(this, characterAI_);
+	pState_->Update(this, pCharacterAI_);
 
 }
 
@@ -72,7 +72,7 @@ void Enemy::ChildDraw()
 //開放
 void Enemy::ChildRelease()
 {
-	SAFE_DELETE(characterAI_);
+	SAFE_DELETE(pCharacterAI_);
 	SAFE_DELETE(pState_);
 }
 
@@ -94,8 +94,14 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 
 		pState_->ChangeState(ENEMY_KNOCKBACK, this);
 
+		//一定の確率で狙いを殴ってきた相手に変える
+		if (rand() % 2 == 0) {
+			
+			pCharacterAI_->SetTargetID(pTarget->GetObjectID());
+		}
 
 		if (status_.hp <= 0) {
+			
 			pState_->ChangeState(ENEMY_DIE, this);
 		}
 
@@ -112,7 +118,7 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 
 void Enemy::MoveCharacter()
 {
-	characterAI_->MoveEnemy();
+	pCharacterAI_->MoveEnemy();
 }
 
 void Enemy::ChangeState(EnemyStatePattern nextState)

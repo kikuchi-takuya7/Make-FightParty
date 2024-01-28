@@ -43,7 +43,7 @@ void NavigationAI::Release()
 }
 
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
-XMFLOAT3 NavigationAI::Astar(int ID)
+XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
 
 	//探索を始める場所と目標地点
@@ -51,8 +51,8 @@ XMFLOAT3 NavigationAI::Astar(int ID)
 	IntPair target;
 
 	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 startPos = pCharacterList_.at(ID)->GetPosition();
-	XMFLOAT3 targetPos = pPlayerList_.at(0)->GetPosition();
+	XMFLOAT3 startPos = pCharacterList_.at(myID)->GetPosition();
+	XMFLOAT3 targetPos = pCharacterList_.at(targetID)->GetPosition();
 
 	//スタート地点と目標地点を小数点を切り捨ててセットする
 	start = FloatToIntPair(startPos.z, startPos.x);
@@ -331,12 +331,12 @@ IntPair NavigationAI::FloatToIntPair(float z, float x)
 }
 
 //引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
-float NavigationAI::Distance(int ID)
+float NavigationAI::Distance(int myID, int targetID)
 {
 	
 	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 eP = pEnemyList_.at(ID)->GetPosition();
-	XMFLOAT3 pP = pPlayerList_.at(0)->GetPosition();
+	XMFLOAT3 eP = pCharacterList_.at(myID)->GetPosition();
+	XMFLOAT3 pP = pCharacterList_.at(targetID)->GetPosition();
 
 	//ピタゴラスの定理で距離を求められるらしい
 	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);

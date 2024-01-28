@@ -13,8 +13,7 @@ using IntPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 
-class Player;
-class Enemy;
+class Character;
 
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
@@ -41,9 +40,9 @@ public:
 	//////////メンバ関数///////////////
 
 	/// <summary>
-	/// Astarを使い目標地点を指示する
+	/// Astarを使い目標地点を探索する
 	/// </summary>
-	XMFLOAT3 Astar(int ID);
+	XMFLOAT3 Astar(int myID, int targetID);
 
 	/// <summary>
 	/// Astarアルゴリズムで使う経路復元用
@@ -72,7 +71,7 @@ public:
 	IntPair FloatToIntPair(float z, float x);
 
 
-	float Distance(int ID);
+	float Distance(int myID, int targetID);
 	
 	//////////////アクセス関数//////////////
 	//void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
