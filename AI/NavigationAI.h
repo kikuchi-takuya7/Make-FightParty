@@ -75,8 +75,9 @@ public:
 	float Distance(int ID);
 	
 	//////////////アクセス関数//////////////
-	void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
-	void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
+	//void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
+	//void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
+	void PushCharacter(Character* chara) { pCharacterList_.push_back(chara); }
 
 private:
 
@@ -90,8 +91,10 @@ private:
 	/////////////////////////////位置情報////////////////////////
 
 	//enemyとプレイヤーの位置を覚えておく
-	vector<Player*> pPlayerList_;
-	vector<Enemy*> pEnemyList_;
+	//vector<Player*> pPlayerList_;
+	//vector<Enemy*> pEnemyList_;
+
+	vector<Character*> pCharacterList_;
 	
 };
 

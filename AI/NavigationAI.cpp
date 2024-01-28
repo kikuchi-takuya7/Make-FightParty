@@ -25,7 +25,7 @@ namespace Astar {
 
 NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
-	//playerPos = { 15,0,15 };
+	//targetPos = { 15,0,15 };
 }
 
 NavigationAI::~NavigationAI()
@@ -51,12 +51,12 @@ XMFLOAT3 NavigationAI::Astar(int ID)
 	IntPair target;
 
 	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 enemyPos = pEnemyList_.at(ID)->GetPosition();
-	XMFLOAT3 playerPos = pPlayerList_.at(0)->GetPosition();
+	XMFLOAT3 startPos = pCharacterList_.at(ID)->GetPosition();
+	XMFLOAT3 targetPos = pPlayerList_.at(0)->GetPosition();
 
 	//スタート地点と目標地点を小数点を切り捨ててセットする
-	start = FloatToIntPair(enemyPos.z, enemyPos.x);
-	target = FloatToIntPair(playerPos.z, playerPos.x);
+	start = FloatToIntPair(startPos.z, startPos.x);
+	target = FloatToIntPair(targetPos.z, targetPos.x);
 
 	//既に目標地点にいるならば移動しない
 	if (start == target)

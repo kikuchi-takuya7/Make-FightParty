@@ -37,7 +37,8 @@ void MainGameScene::Initialize()
 
 		Player* pPlayer;
 		pPlayer = Instantiate<Player>(this);
-		pNavigationAI_->PushPlayer(pPlayer);
+		//pNavigationAI_->PushPlayer(pPlayer);
+		pNavigationAI_->PushCharacter(pPlayer);
 		pMetaAI_->PushPlayerStatus(pPlayer->GetStatus());
 
 		pPlayer->SetPosition(CHARA_POS[element]);
@@ -52,7 +53,8 @@ void MainGameScene::Initialize()
 
 		Enemy* pEnemy;
 		pEnemy = Instantiate<Enemy>(this);
-		pNavigationAI_->PushEnemy(pEnemy);
+		//pNavigationAI_->PushEnemy(pEnemy);
+		pNavigationAI_->PushCharacter(pEnemy);
 		pMetaAI_->PushEnemyStatus(pEnemy->GetStatus());
 
 		CharacterAI* charaAI = new CharacterAI(pEnemy, pNavigationAI_);

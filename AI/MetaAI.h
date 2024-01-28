@@ -32,18 +32,34 @@ public:
 	void Release() override;
 
 
+	////////////メンバ関数////////////////
+
+
+	int Targeting(int ID);
+
+	void CheckNo1Chara();
+
 	//////////////アクセス関数 //////////
 	void PushEnemyStatus(Status status) { enemyStatusList_.push_back(status); }
 	void PushPlayerStatus(Status status) { playerStatusList_.push_back(status); }
+	void PushCharacterStatus(Status status) { characterStatusList_.push_back(status); }
+
+	
+
+
 
 
 private:
 	
-	/////////各種インスタンス///////////
 
 	vector<Status> enemyStatusList_;
 	vector<Status> playerStatusList_;
 
+	vector<Status> characterStatusList_;
+
 	NavigationAI* pNavigationAI_;
+
+	//一位が複数人いる可能性もあるから
+	vector<int> No1CharaID_;
 };
 
