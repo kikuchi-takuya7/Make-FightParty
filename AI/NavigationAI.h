@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// Astarを使い目標地点を指示する
 	/// </summary>
-	XMFLOAT3 Astar();
+	XMFLOAT3 Astar(int ID);
 
 	/// <summary>
 	/// Astarアルゴリズムで使う経路復元用
@@ -72,11 +72,11 @@ public:
 	IntPair FloatToIntPair(float z, float x);
 
 
-	float Distance();
+	float Distance(int ID);
 	
 	//////////////アクセス関数//////////////
-	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
-	void SetPlayer(Player* player) { pPlayer_ = player; }
+	void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
+	void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
 
 private:
 
@@ -90,8 +90,8 @@ private:
 	/////////////////////////////位置情報////////////////////////
 
 	//enemyとプレイヤーの位置を覚えておく
-	Player* pPlayer_;
-	Enemy* pEnemy_;
+	vector<Player*> pPlayerList_;
+	vector<Enemy*> pEnemyList_;
 	
 };
 

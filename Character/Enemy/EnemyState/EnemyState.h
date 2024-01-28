@@ -14,8 +14,7 @@ enum EnemyStatePattern {
 	ENEMY_IDLE,
 	ENEMY_JUMP,
 	ENEMY_KNOCKBACK,
-	ENEMY_RUN,
-	ENEMY_NUM
+	ENEMY_RUN
 };
 
 /// <summary>

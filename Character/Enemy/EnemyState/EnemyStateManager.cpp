@@ -69,8 +69,6 @@ void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy)
 		enemyState_ = enemyRunState_;
 		break;
 
-	case ENEMY_NUM:
-
 	default:
 		return;
 		break;

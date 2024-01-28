@@ -23,7 +23,7 @@ namespace Astar {
 
 }
 
-NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH),pPlayer_(nullptr), pEnemy_(nullptr)
+NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
 	//playerPos = { 15,0,15 };
 }
@@ -43,7 +43,7 @@ void NavigationAI::Release()
 }
 
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
-XMFLOAT3 NavigationAI::Astar()
+XMFLOAT3 NavigationAI::Astar(int ID)
 {
 
 	//探索を始める場所と目標地点
@@ -51,8 +51,8 @@ XMFLOAT3 NavigationAI::Astar()
 	IntPair target;
 
 	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 enemyPos = pEnemy_->GetPosition();
-	XMFLOAT3 playerPos = pPlayer_->GetPosition();
+	XMFLOAT3 enemyPos = pEnemyList_.at(ID)->GetPosition();
+	XMFLOAT3 playerPos = pPlayerList_.at(0)->GetPosition();
 
 	//スタート地点と目標地点を小数点を切り捨ててセットする
 	start = FloatToIntPair(enemyPos.z, enemyPos.x);
@@ -331,12 +331,12 @@ IntPair NavigationAI::FloatToIntPair(float z, float x)
 }
 
 //引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
-float NavigationAI::Distance()
+float NavigationAI::Distance(int ID)
 {
 	
 	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 eP = pEnemy_->GetPosition();
-	XMFLOAT3 pP = pPlayer_->GetPosition();
+	XMFLOAT3 eP = pEnemyList_.at(ID)->GetPosition();
+	XMFLOAT3 pP = pPlayerList_.at(0)->GetPosition();
 
 	//ピタゴラスの定理で距離を求められるらしい
 	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);

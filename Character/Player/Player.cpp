@@ -36,14 +36,11 @@ void Player::ChildInitialize()
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 	
 	
-	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER };
+	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER, 0, false };
 
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
-
-	transform_.position_.x = 25.0f;
-	transform_.position_.z = 5.0f;
 
 	isKnockBack_ = false;
 

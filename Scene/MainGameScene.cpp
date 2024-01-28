@@ -9,6 +9,11 @@
 #include "../AI/CharacterAI.h"
 #include "../Engine/Global.h"
 
+namespace {
+	const int PLAYER_NUM = 1;
+	const int ENEMY_NUM = 3;
+	const XMFLOAT3 CHARA_POS[4] = { XMFLOAT3(5,ZERO,5),XMFLOAT3(25,ZERO,5) ,XMFLOAT3(5,ZERO,25) ,XMFLOAT3(25,ZERO,25) };
+}
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
@@ -23,20 +28,44 @@ void MainGameScene::Initialize()
 	pNavigationAI_->Initialize();
 	pMetaAI_->Initialize();
 
-	Player* pPlayer;
+	
+	int element = 0;
+	
 
-	Enemy* pEnemy;
+	//Astarアルゴリズムが完成してから複数人追加できるようにしよう
+	for (int i = 0; i < PLAYER_NUM; i++) {
 
-	//Astarアルゴリズムが完成してから複数人追加しよう
-	pPlayer = Instantiate<Player>(this);
-	pNavigationAI_->SetPlayer(pPlayer);
+		Player* pPlayer;
+		pPlayer = Instantiate<Player>(this);
+		pNavigationAI_->PushPlayer(pPlayer);
+		pMetaAI_->PushPlayerStatus(pPlayer->GetStatus());
+
+		pPlayer->SetPosition(CHARA_POS[element]);
+		element++;
+
+		pPlayer->SetObjectID(i);
+	}
+	
 	
 	//各種AIを用意してセットする
-	pEnemy = Instantiate<Enemy>(this);
-	pNavigationAI_->SetEnemy(pEnemy);
-	CharacterAI* charaAI = new CharacterAI(pEnemy, pNavigationAI_);
-	charaAI->Initialize();
-	pEnemy->SetCharacterAI(charaAI);
+	for (int i = 0; i < ENEMY_NUM; i++) {
+
+		Enemy* pEnemy;
+		pEnemy = Instantiate<Enemy>(this);
+		pNavigationAI_->PushEnemy(pEnemy);
+		pMetaAI_->PushEnemyStatus(pEnemy->GetStatus());
+
+		CharacterAI* charaAI = new CharacterAI(pEnemy, pNavigationAI_);
+		charaAI->Initialize();
+
+		pEnemy->SetCharacterAI(charaAI);
+		pEnemy->SetPosition(CHARA_POS[element]);
+		element++;
+
+		pEnemy->SetObjectID(i);
+	}
+
+	
 	
 	
 	//SAFE_DELETE(charaAI);

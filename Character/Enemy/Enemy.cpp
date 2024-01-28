@@ -36,14 +36,11 @@ void Enemy::ChildInitialize()
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
 	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
-	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER};
+	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER, 0, false};
 
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
-
-	transform_.position_.z = 15.0f;
-	transform_.position_.x = 15.0f;
 
 	//characterAI_->Initialize();
 

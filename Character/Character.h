@@ -4,6 +4,8 @@
 struct Status {
     int hp;
     int attackPower;
+    int winPoint;
+    bool dead;
 };
 
 

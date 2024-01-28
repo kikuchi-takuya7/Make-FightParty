@@ -12,8 +12,7 @@ enum PlayerStatePattern {
 	PLAYER_IDLE,
 	PLAYER_JUMP,
 	PLAYER_KNOCKBACK,
-	PLAYER_RUN,
-	PLAYER_NUM
+	PLAYER_RUN
 };
 
 /// <summary>

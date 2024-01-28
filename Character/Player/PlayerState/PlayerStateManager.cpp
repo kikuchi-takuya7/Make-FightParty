@@ -85,8 +85,6 @@ void PlayerStateManager::ChangeState(PlayerStatePattern nextState, Player* playe
 		playerState_ = playerRunState_;
 		break;
 
-	case PLAYER_NUM:
-
 	default:
 		return;
 		break;
