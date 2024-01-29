@@ -41,8 +41,8 @@ public:
 	//////////////アクセス関数 //////////
 	//void PushEnemyStatus(Status status) { enemyStatusList_.push_back(status); }
 	//void PushPlayerStatus(Status status) { playerStatusList_.push_back(status); }
-	void PushCharacterStatus(Status status) { characterStatusList_.push_back(status); }
-
+	void PushCharacterStatus(Status status) { characterStatusList_.emplace_back(status); }
+	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	
 
 

@@ -25,6 +25,12 @@ PlayerStateManager::PlayerStateManager()
 void PlayerStateManager::Update(Player* player)
 {
 
+	//UŒ‚‚µ‚Ä‚éŽž‚ÉUŒ‚‹ò‚ç‚Á‚½Žž‚ÉUŒ‚”»’è‚ðÁ‚·—pB‚»‚ê‚¼‚ê‚ÌEnter‚É’u‚¢‚½•û‚ª‚¢‚¢‚©‚È
+	if (playerState_ != playerAttackState_) {
+
+		player->DeleteCollider(COLLIDER_ATTACK);
+	}
+
 	//s“®•s”\ó‘Ô‚È‚çˆÚ“®‚Í‚µ‚È‚¢
 	if (playerState_ == playerKnockBackState_ || playerState_ == playerDieState_) {
 		playerState_->Update(player);

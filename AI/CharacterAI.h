@@ -44,6 +44,7 @@ public:
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void SetTargetID(int ID) { targetID_ = ID; }
+	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 
 private:
 

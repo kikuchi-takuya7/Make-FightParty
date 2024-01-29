@@ -80,6 +80,19 @@ void PlayerKnockBackState::Enter(Player* player)
 
 	lastPoint_ = VectorToFloat3(pos);
 
+	if (lastPoint_.x <= 0) {
+		lastPoint_.x = 0;
+	}
+	if (lastPoint_.x >= 29) {
+		lastPoint_.x = 29;
+	}
+	if (lastPoint_.z <= 0) {
+		lastPoint_.z = 0;
+	}
+	if (lastPoint_.z >= 29) {
+		lastPoint_.z = 29;
+	}
+
 	//player->SetPosition(VectorToFloat3(pos));
 
 }

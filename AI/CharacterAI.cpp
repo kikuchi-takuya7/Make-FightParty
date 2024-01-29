@@ -18,7 +18,7 @@ CharacterAI::~CharacterAI()
 void CharacterAI::Initialize()
 {
 	//Å‰‚É‘_‚¤“G‚ÌID‚ðŒˆ‚ß‚Ä‚à‚ç‚¤
-	pMetaAI_->Targeting(pEnemy_->GetObjectID());
+	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
 
 }
 
@@ -33,6 +33,9 @@ void CharacterAI::MoveEnemy()
 
 	//NavigationAI‚ÉŒü‚©‚¤‚×‚«•ûŒü‚ð•·‚­
 	XMFLOAT3 fMove = pNavigationAI_->Astar(pEnemy_->GetObjectID(), targetID_);
+
+	int test = pEnemy_->GetObjectID();
+
 
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
@@ -85,6 +88,6 @@ void CharacterAI::IsAttack()
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
 	if (distance <= 2.5f) {
-		//pEnemy_->ChangeState(ENEMY_ATTACK);
+		pEnemy_->ChangeState(ENEMY_ATTACK);
 	}
 }

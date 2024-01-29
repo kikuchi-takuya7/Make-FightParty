@@ -27,9 +27,9 @@ void MainGameScene::Initialize()
 
 	pNavigationAI_->Initialize();
 	pMetaAI_->Initialize();
-
+	pMetaAI_->SetNavigationAI(pNavigationAI_);
 	
-	int element = 0;
+	int objectID = 0;
 	
 
 	//Astarアルゴリズムが完成してから複数人追加できるようにしよう
@@ -37,40 +37,45 @@ void MainGameScene::Initialize()
 
 		Player* pPlayer;
 		pPlayer = Instantiate<Player>(this);
-		pPlayer->SetObjectID(i);
+		pPlayer->SetObjectID(objectID);
 
 		pNavigationAI_->PushCharacter(pPlayer);
 		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
 
-		pPlayer->SetPosition(CHARA_POS[element]);
-		element++;
+		pPlayer->SetPosition(CHARA_POS[objectID]);
+		objectID++;
 
 		
 	}
 	
+	Enemy* pEnemy[ENEMY_NUM];
 	
 	//各種AIを用意してセットする
 	for (int i = 0; i < ENEMY_NUM; i++) {
 
-		Enemy* pEnemy;
-		pEnemy = Instantiate<Enemy>(this);
-		pEnemy->SetObjectID(i);
+		pEnemy[i] = Instantiate<Enemy>(this);
+		pEnemy[i]->SetObjectID(objectID);
 
-		pNavigationAI_->PushCharacter(pEnemy);
-		pMetaAI_->PushCharacterStatus(pEnemy->GetStatus());
+		pNavigationAI_->PushCharacter(pEnemy[i]);
+		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
 
-		CharacterAI* charaAI = new CharacterAI(pEnemy, pNavigationAI_);
-		charaAI->Initialize();
+		pEnemy[i]->SetPosition(CHARA_POS[objectID]);
+		objectID++;
 
-		pEnemy->SetCharacterAI(charaAI);
-		pEnemy->SetPosition(CHARA_POS[element]);
-		element++;
-
-		
 	}
 
-	
-	
+	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めてプレイヤー以外もちゃんと狙うように
+	for (int i = 0; i < ENEMY_NUM; i++) {
+
+		
+		CharacterAI* charaAI = new CharacterAI(pEnemy[i], pNavigationAI_);
+		charaAI->SetMetaAI(pMetaAI_);
+		charaAI->Initialize();
+
+		pEnemy[i]->SetCharacterAI(charaAI);
+		
+
+	}
 	
 	//SAFE_DELETE(charaAI);
 

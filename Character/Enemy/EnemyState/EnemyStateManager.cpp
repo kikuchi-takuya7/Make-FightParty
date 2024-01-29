@@ -1,5 +1,6 @@
 #include "EnemyStateManager.h"
 #include "../../../AI/CharacterAI.h"
+#include "../Enemy.h"
 
 //各static変数を初期化する。staticだからグローバルな位置で最初に初期化しないとダメ
 
@@ -19,6 +20,11 @@ EnemyStateManager::EnemyStateManager()
 
 void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 {
+	//攻撃してる時に攻撃喰らった時に攻撃判定を消す用。それぞれのEnterに置いた方がいいかな
+	if (enemyState_ != enemyAttackState_) {
+
+		enemy->DeleteCollider(COLLIDER_ATTACK);
+	}
 	
 	//移動不可状態なら移動はしない
 	if (enemyState_ == enemyDieState_ || enemyState_ == enemyKnockBackState_ || enemyState_ == enemyAttackState_) {
