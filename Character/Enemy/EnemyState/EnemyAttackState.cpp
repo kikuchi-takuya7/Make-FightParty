@@ -6,7 +6,7 @@ void EnemyAttackState::Update(Enemy* enemy, CharacterAI* AI)
 	time_++;
 
 	if (time_ >= 60) {
-		enemy->DeleteCollider(COLLIDER_ATTACK);
+		enemy->EraseCollider(COLLIDER_ATTACK);
 		enemy->ChangeState(ENEMY_IDLE);
 	}
 

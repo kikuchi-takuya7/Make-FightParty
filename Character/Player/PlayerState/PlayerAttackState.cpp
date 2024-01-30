@@ -20,7 +20,7 @@ void PlayerAttackState::Update(Player* player)
 
 	//UŒ‚‚ªI‚í‚Á‚½‚çUŒ‚—p‚ÌƒRƒ‰ƒCƒ_[‚ð”jŠü‚µ‚Ästate‚ð–ß‚·
 	if (flame_ >= ATTACK_RIGIDITYFLAME) {
-		player->DeleteCollider(ColliderAttackType::COLLIDER_ATTACK);
+		player->EraseCollider(ColliderAttackType::COLLIDER_ATTACK);
 		player->ChangeState(PLAYER_IDLE);
 	}
 

@@ -4,11 +4,9 @@
 void PlayerDieState::Update(Player* player)
 {
 
+	//player->SetPosition(1, 1, 0);
 	
-	
-	player->SetPosition(1, 1, 0);
-	
-	HandleInput(player);
+	//HandleInput(player);
 }
 
 void PlayerDieState::HandleInput(Player* player)
@@ -19,4 +17,7 @@ void PlayerDieState::Enter(Player* player)
 {
 
 	player->ClearCollider();
+	Status status = player->GetStatus();
+	status.dead = true;
+	player->SetStatus(status);
 }

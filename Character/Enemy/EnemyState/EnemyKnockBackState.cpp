@@ -41,7 +41,6 @@ void EnemyKnockBackState::Update(Enemy* enemy, CharacterAI* AI)
 	//‹ò‚ç‚¢d’¼‚ªI‚í‚Á‚½‚ç
 	if (flame_ >= KNOCKBACK_RIGIDITYFLAME) {
 		enemy->ChangeState(ENEMY_IDLE);
-		enemy->ChangeKnockBack(false);
 	}
 
 	HandleInput(enemy,AI);
@@ -56,7 +55,6 @@ void EnemyKnockBackState::Enter(Enemy* enemy)
 	//FX‰Šú‰»
 	flame_ = ZERO;
 	rate_ = 0.0f;
-	enemy->ChangeKnockBack(true);
 
 
 	//“G‚ÌŒü‚¢‚Ä‚é•ûŒü‚É‰ñ“]‚³‚¹‚é‚½‚ß‰ñ“]‚ð‹t‚É‚·‚é

@@ -34,9 +34,6 @@ void CharacterAI::MoveEnemy()
 	//NavigationAI‚ÉŒü‚©‚¤‚×‚«•ûŒü‚ð•·‚­
 	XMFLOAT3 fMove = pNavigationAI_->Astar(pEnemy_->GetObjectID(), targetID_);
 
-	int test = pEnemy_->GetObjectID();
-
-
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
 	if (fMove == ZERO_FLOAT3) {

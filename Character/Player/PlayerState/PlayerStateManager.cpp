@@ -25,11 +25,15 @@ PlayerStateManager::PlayerStateManager()
 void PlayerStateManager::Update(Player* player)
 {
 
+	
+
 	//UŒ‚‚µ‚Ä‚éŽž‚ÉUŒ‚‹ò‚ç‚Á‚½Žž‚ÉUŒ‚”»’è‚ðÁ‚·—pB‚»‚ê‚¼‚ê‚ÌEnter‚É’u‚¢‚½•û‚ª‚¢‚¢‚©‚È
 	if (playerState_ != playerAttackState_) {
 
-		player->DeleteCollider(COLLIDER_ATTACK);
+		player->EraseCollider(COLLIDER_ATTACK);
 	}
+
+	
 
 	//s“®•s”\ó‘Ô‚È‚çˆÚ“®‚Í‚µ‚È‚¢
 	if (playerState_ == playerKnockBackState_ || playerState_ == playerDieState_) {
@@ -50,6 +54,11 @@ void PlayerStateManager::Update(Player* player)
 	}
 
 	playerState_->Update(player);
+
+	//Ž€‚Êˆ—‚Í‚±‚±‚Å‚¢‚¢‚Ì‚©
+	if (player->GetStatus().hp <= 0) {
+		ChangeState(PLAYER_DIE, player);
+	}
 
 }
 

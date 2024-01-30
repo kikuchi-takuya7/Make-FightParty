@@ -44,7 +44,8 @@ void Enemy::ChildInitialize()
 
 	//pCharacterAI_->Initialize();
 
-	
+	/*AddCollider(pAttackCollision_, COLLIDER_ATTACK);
+	pState_->ChangeState(ENEMY_ATTACK, this);*/
 
 }
 
@@ -80,7 +81,7 @@ void Enemy::ChildRelease()
 void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
-	if (isKnockBack_)
+	if (pState_->enemyKnockBackState_ == pState_->enemyState_)
 		return;
 
 	//当たったときの処理
@@ -88,21 +89,16 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
 
-		XMFLOAT3 rotate = pTarget->GetRotate();
+		//敵の方向に向きなおす
+		pState_->SetPlayerRot(pTarget->GetRotate());
 
-		pState_->SetPlayerRot(rotate);
-
+		//ノックバックさせる
 		pState_->ChangeState(ENEMY_KNOCKBACK, this);
 
 		//一定の確率で狙いを殴ってきた相手に変える
 		if (rand() % 2 == 0) {
 			
 			pCharacterAI_->SetTargetID(pTarget->GetObjectID());
-		}
-
-		if (status_.hp <= 0) {
-			
-			pState_->ChangeState(ENEMY_DIE, this);
 		}
 
 	}

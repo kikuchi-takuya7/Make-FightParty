@@ -212,7 +212,7 @@ public:
 	/// 特定のコライダーを破棄する
 	/// </summary>
 	/// <param name="type">破棄したいコライダーの種類</param>
-	void DeleteCollider(ColliderAttackType type);
+	void EraseCollider(ColliderAttackType type);
 	
 	/// <summary>
 	/// 何かと衝突した場合に呼ばれる（オーバーライド用）

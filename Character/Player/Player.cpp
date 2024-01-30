@@ -6,7 +6,7 @@
 //定数
 namespace {
 	const int PLAYER_HP = 100;
-	const int PLAYER_ATTACK_POWER = 20;
+	const int PLAYER_ATTACK_POWER = 100;
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
@@ -41,8 +41,6 @@ void Player::ChildInitialize()
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
-
-	isKnockBack_ = false;
 
 }
 
@@ -79,7 +77,7 @@ void Player::ChildRelease()
 void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
-	if (isKnockBack_)
+	if (pState_->playerKnockBackState_ == pState_->playerState_)
 		return;
 
 	//当たったときの処理
@@ -94,9 +92,7 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
 		
-		if (status_.hp <= 0) {
-			pState_->ChangeState(PLAYER_DIE, this);
-		}
+		
 
 	}
 

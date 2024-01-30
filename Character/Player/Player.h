@@ -54,7 +54,4 @@ private:
     //Status status_;
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す
-
-    bool isKnockBack_; //ノックバック中ならtrue
-
 };

@@ -20,10 +20,12 @@ EnemyStateManager::EnemyStateManager()
 
 void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 {
+
+	
 	//UŒ‚‚µ‚Ä‚éŽž‚ÉUŒ‚‹ò‚ç‚Á‚½Žž‚ÉUŒ‚”»’è‚ðÁ‚·—pB‚»‚ê‚¼‚ê‚ÌEnter‚É’u‚¢‚½•û‚ª‚¢‚¢‚©‚È
 	if (enemyState_ != enemyAttackState_) {
 
-		enemy->DeleteCollider(COLLIDER_ATTACK);
+		enemy->EraseCollider(COLLIDER_ATTACK);
 	}
 	
 	//ˆÚ“®•s‰Âó‘Ô‚È‚çˆÚ“®‚Í‚µ‚È‚¢
@@ -35,6 +37,12 @@ void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 
 	AI->MoveEnemy();
 	enemyState_->Update(enemy, AI);
+
+	//Ž€‚Êˆ—‚±‚±‚Å‚¢‚¢H
+	if (enemy->GetStatus().hp <= 0) {
+
+		ChangeState(ENEMY_DIE, enemy);
+	}
 
 }
 

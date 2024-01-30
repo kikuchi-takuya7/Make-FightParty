@@ -53,11 +53,16 @@ public:
 
 	void MovePlayer(Player* player);
 
-	void SetEnemyRot(XMFLOAT3 rot) { playerKnockBackState_->SetEnemyRotate(rot); }
 	
+	//////////////////////////アクセス関数/////////////////////////////////
+
+	void SetEnemyRot(XMFLOAT3 rot) { playerKnockBackState_->SetEnemyRotate(rot); }
+
+
 	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
 
 private:
+
 
 };
 

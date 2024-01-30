@@ -41,7 +41,6 @@ void PlayerKnockBackState::Update(Player* player)
 	//‹ò‚ç‚¢d’¼‚ªI‚í‚Á‚½‚ç
 	if (flame_ >= KNOCKBACK_RIGIDITYFLAME) {
 		player->ChangeState(PLAYER_IDLE);
-		player->ChangeKnockBack(false);
 	}
 
 	HandleInput(player);
@@ -56,7 +55,6 @@ void PlayerKnockBackState::Enter(Player* player)
 	//FX‰Šú‰»
 	flame_ = ZERO;
 	rate_ = 0.0f;
-	player->ChangeKnockBack(true);
 
 
 	//“G‚ÌŒü‚¢‚Ä‚é•ûŒü‚É‰ñ“]‚³‚¹‚é‚½‚ß‰ñ“]‚ð‹t‚É‚·‚é

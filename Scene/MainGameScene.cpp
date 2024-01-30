@@ -91,6 +91,7 @@ void MainGameScene::Initialize()
 //XV
 void MainGameScene::Update()
 {
+
 }
 
 //•`‰æ

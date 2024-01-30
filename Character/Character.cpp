@@ -18,7 +18,6 @@ Character::~Character()
 //‰Šú‰»
 void Character::Initialize()
 {
-	isKnockBack_ = false;
 
 	ChildInitialize();
 }
