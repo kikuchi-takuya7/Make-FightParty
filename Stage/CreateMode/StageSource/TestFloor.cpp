@@ -1,5 +1,5 @@
 #include "TestFloor.h"
-#include "../MapEditor.h"
+#include "../CreateMode.h"
 #include "../../Model.h"
 
 //コンストラクタ

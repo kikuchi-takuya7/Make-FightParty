@@ -3,6 +3,7 @@
 
 class MetaAI;
 class NavigationAI;
+class Stage;
 class Status;//構造体だけどこれいいの？？？？
 
 //■■シーンを管理するクラス
@@ -35,6 +36,8 @@ private:
 
 	//ゲーム全体のバランスを管理するAI
 	MetaAI* pMetaAI_;
+
+	Stage* stage_;
 
 	/*Player* pPlayer_;
 

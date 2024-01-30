@@ -1,7 +1,7 @@
 #include "MainGameScene.h"
 #include "../Character/Player/Player.h"
 #include "../Stage/Stage.h"
-#include "../MapEditor/MapEditor.h"
+#include "../Stage/CreateMode/CreateMode.h"
 #include "../Engine/Camera.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../AI/MetaAI.h"
@@ -81,8 +81,8 @@ void MainGameScene::Initialize()
 	//SAFE_DELETE(charaAI);
 
 
-	Instantiate<Stage>(this);
-	//Instantiate<MapEditor>(this);
+	stage_ = Instantiate<Stage>(this);
+	Instantiate<CreateMode>(this);
 
 	Camera::SetPosition(XMFLOAT3(15, 10, -20));
 	Camera::SetTarget(XMFLOAT3(15, 0, 15));
@@ -92,7 +92,10 @@ void MainGameScene::Initialize()
 //更新
 void MainGameScene::Update()
 {
+
+	//一戦毎に勝者が決まったらプレイヤーにオブジェクトを追加してもらう処理を入れる
 	if (pMetaAI_->NextGame()) {
+		
 		
 	}
 }

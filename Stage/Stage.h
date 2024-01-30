@@ -1,7 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
-//◆◆◆を管理するクラス
+//stageを管理するクラス
 class Stage : public GameObject
 {
 
@@ -24,8 +24,13 @@ public:
     //開放
     void Release() override;
 
+
+
 private:
 
     int hModel_;
+
+
+
 
 };
