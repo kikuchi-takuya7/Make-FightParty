@@ -17,7 +17,7 @@ class MetaAI : public AI
 public:
 
 	//コンストラクタ
-	MetaAI();
+	MetaAI(GameObject* parent);
 
 	//デストラクタ
 	~MetaAI();
@@ -33,17 +33,25 @@ public:
 
 	////////////メンバ関数////////////////
 
-
+	/// <summary>
+	/// 狙うべき相手を支持する
+	/// </summary>
+	/// <param name="ID">自分のID</param>
+	/// <returns>狙うべき相手のID</returns>
 	int Targeting(int ID);
 
+	/// <summary>
+	/// 1位のキャラIDは誰か、何人いるかを確認
+	/// </summary>
 	void CheckNo1Chara();
 
+	bool NextGame();
+
 	//////////////アクセス関数 //////////
-	//void PushEnemyStatus(Status status) { enemyStatusList_.push_back(status); }
-	//void PushPlayerStatus(Status status) { playerStatusList_.push_back(status); }
+
 	void PushCharacterStatus(Status status) { characterStatusList_.emplace_back(status); }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
-	
+	void ChangeStatus(int ID, Status status) { characterStatusList_.at(ID) = status; }
 
 
 

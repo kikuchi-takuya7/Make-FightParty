@@ -17,7 +17,7 @@ void PlayerDieState::Enter(Player* player)
 {
 
 	player->ClearCollider();
-	Status status = player->GetStatus();
-	status.dead = true;
-	player->SetStatus(status);
+
+	player->Dead();
+	
 }

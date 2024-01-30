@@ -17,7 +17,7 @@ namespace {
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
-	: GameObject(parent, "MainGameScene"), pNavigationAI_(new NavigationAI), pMetaAI_(new MetaAI)
+	: GameObject(parent, "MainGameScene"), pNavigationAI_(Instantiate<NavigationAI>(this)), pMetaAI_(Instantiate<MetaAI>(this))
 {
 }
 
@@ -67,12 +67,13 @@ void MainGameScene::Initialize()
 	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めてプレイヤー以外もちゃんと狙うように
 	for (int i = 0; i < ENEMY_NUM; i++) {
 
-		
-		CharacterAI* charaAI = new CharacterAI(pEnemy[i], pNavigationAI_);
+		CharacterAI* charaAI = Instantiate<CharacterAI>(this);
+		charaAI->SetEnemy(pEnemy[i]);
+		charaAI->SetNavigationAI(pNavigationAI_);
 		charaAI->SetMetaAI(pMetaAI_);
-		charaAI->Initialize();
-
 		pEnemy[i]->SetCharacterAI(charaAI);
+
+		charaAI->AskTarget();
 		
 
 	}
@@ -91,7 +92,9 @@ void MainGameScene::Initialize()
 //更新
 void MainGameScene::Update()
 {
-
+	if (pMetaAI_->NextGame()) {
+		
+	}
 }
 
 //描画
@@ -106,8 +109,13 @@ void MainGameScene::Release()
 	SAFE_RELEASE(pEnemy);*/
 	//SAFE_RELEASE(pMetaAI_);//RELEASEじゃなくてDELETEの可能性ワンタン
 	//SAFE_RELEASE(pNavigationAI_);
-	SAFE_DELETE(pMetaAI_);
-	SAFE_DELETE(pNavigationAI_);
+	/*SAFE_DELETE(pMetaAI_);
+	SAFE_DELETE(pNavigationAI_);*/
 	
 	
+}
+
+void MainGameScene::CallStatus(int ID, Status status)
+{
+	pMetaAI_->ChangeStatus(ID, status);
 }

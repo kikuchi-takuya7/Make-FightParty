@@ -25,15 +25,11 @@ PlayerStateManager::PlayerStateManager()
 void PlayerStateManager::Update(Player* player)
 {
 
-	
-
 	//攻撃してる時に攻撃喰らった時に攻撃判定を消す用。それぞれのEnterに置いた方がいいかな
 	if (playerState_ != playerAttackState_) {
 
 		player->EraseCollider(COLLIDER_ATTACK);
 	}
-
-	
 
 	//行動不能状態なら移動はしない
 	if (playerState_ == playerKnockBackState_ || playerState_ == playerDieState_) {

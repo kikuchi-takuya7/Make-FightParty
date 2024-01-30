@@ -60,6 +60,11 @@ void Character::SetAttackCollider()
 	AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 }
 
+void Character::Dead()
+{
+	status_.dead = true;
+}
+
 void Character::KnockBackEnter(float distance)
 {
 	//FX‰Šú‰»

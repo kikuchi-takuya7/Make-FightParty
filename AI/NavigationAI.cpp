@@ -23,7 +23,8 @@ namespace Astar {
 
 }
 
-NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
+NavigationAI::NavigationAI(GameObject* parent)
+	:AI(parent, "NavigationAI"), height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
 	//targetPos = { 15,0,15 };
 }

@@ -14,8 +14,8 @@ class CharacterAI : public AI
 public:
 
 	//コンストラクタ
-	CharacterAI();
-	CharacterAI(Enemy* enemy, NavigationAI* naviAI);
+	CharacterAI(GameObject* parent);
+	CharacterAI(GameObject* parent,Enemy* enemy, NavigationAI* naviAI);
 
 	//デストラクタ
 	~CharacterAI();
@@ -30,6 +30,7 @@ public:
 
 	/////////////////メンバ関数//////////////////////////
 
+	void AskTarget();
 	
 	////////////////オブジェクトを操るメンバ関数///////////////////
 
@@ -39,12 +40,18 @@ public:
 
 	void IsAttack();
 
+
+	///////////////////上位AIに情報を伝える関数/////////////////////////////
+
+	void TellStatus();
+
 	///////////////////アクセス関数/////////////
 
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
-	void SetTargetID(int ID) { targetID_ = ID; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
+
+	void SetTargetID(int ID) { targetID_ = ID; }
 
 private:
 

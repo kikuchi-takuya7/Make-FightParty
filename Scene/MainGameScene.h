@@ -3,6 +3,7 @@
 
 class MetaAI;
 class NavigationAI;
+class Status;//構造体だけどこれいいの？？？？
 
 //■■シーンを管理するクラス
 class MainGameScene : public GameObject
@@ -23,6 +24,9 @@ public:
 
 	//開放
 	void Release() override;
+
+
+	void CallStatus(int ID, Status status);
 
 private:
 

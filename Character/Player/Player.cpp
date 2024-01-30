@@ -2,6 +2,8 @@
 #include "../../Engine/Model.h"
 #include "../../Engine/Input.h"
 #include "../../Engine/Global.h"
+#include "../../AI/MetaAI.h"
+#include "../../Scene/MainGameScene.h"
 
 //定数
 namespace {
@@ -103,6 +105,15 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 	}
 
+}
+
+void Player::TellStatus()
+{
+	
+	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？
+
+	//((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
+	((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
 }
 
 void Player::ChangeState(PlayerStatePattern nextState)

@@ -73,7 +73,7 @@ void Enemy::ChildDraw()
 //ŠJ•ú
 void Enemy::ChildRelease()
 {
-	SAFE_DELETE(pCharacterAI_);
+	SAFE_RELEASE(pCharacterAI_);
 	SAFE_DELETE(pState_);
 }
 
@@ -115,6 +115,11 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 void Enemy::MoveCharacter()
 {
 	pCharacterAI_->MoveEnemy();
+}
+
+void Enemy::TellStatus()
+{
+	pCharacterAI_->TellStatus();
 }
 
 void Enemy::ChangeState(EnemyStatePattern nextState)

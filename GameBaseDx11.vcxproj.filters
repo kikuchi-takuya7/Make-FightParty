@@ -412,9 +412,6 @@
     <ClInclude Include="AI\NavigationAI.h">
       <Filter>AI</Filter>
     </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
     <ClInclude Include="Character\Player\PlayerState\PlayerKnockBackState.h">
       <Filter>Character\Player\PlayerState</Filter>
     </ClInclude>
@@ -444,6 +441,9 @@
     </ClInclude>
     <ClInclude Include="Character\Enemy\EnemyState\EnemyStateManager.h">
       <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h">
+      <Filter>Character\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,11 +3,13 @@
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
 
-CharacterAI::CharacterAI() :pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
+CharacterAI::CharacterAI(GameObject* parent)
+	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
 {
 }
 
-CharacterAI::CharacterAI(Enemy* enemy, NavigationAI* naviAI) :pNavigationAI_(naviAI),pMetaAI_(nullptr), pEnemy_(enemy)
+CharacterAI::CharacterAI(GameObject* parent, Enemy* enemy, NavigationAI* naviAI)
+	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy)
 {
 }
 
@@ -17,14 +19,19 @@ CharacterAI::~CharacterAI()
 
 void CharacterAI::Initialize()
 {
-	//Å‰‚É‘_‚¤“G‚ÌID‚ðŒˆ‚ß‚Ä‚à‚ç‚¤
-	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
+	
 
 }
 
 void CharacterAI::Release()
 {
 
+}
+
+void CharacterAI::AskTarget()
+{
+	//‘_‚¤“G‚ÌID‚ðŒˆ‚ß‚Ä‚à‚ç‚¤
+	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
 }
 
 //“®‚©‚·
@@ -84,7 +91,12 @@ void CharacterAI::IsAttack()
 {
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
-	if (distance <= 2.5f) {
+	if (distance <= 2.0f) {
 		pEnemy_->ChangeState(ENEMY_ATTACK);
 	}
+}
+
+void CharacterAI::TellStatus()
+{
+	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
 }

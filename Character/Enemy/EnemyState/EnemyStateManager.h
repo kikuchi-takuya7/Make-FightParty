@@ -45,7 +45,6 @@ public:
 	/// <param name="enemy">変更するプレイヤーのポインタ</param>
 	void ChangeState(EnemyStatePattern nextState, Enemy* enemy);
 
-	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
+	//マネージャにAIのインスタンス持たせた所で結局update呼ぶときにはAI引数として必要だからなぁ
+	//いっそのことそれぞれのstate全部のメンバ変数にAIの入れ物作る？それもなんか違う気がする
 };
-
-//先輩はここstateを継承してたけど継承した理由がよくわからなかったから継承しなかった。っていうメモ

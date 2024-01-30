@@ -18,13 +18,13 @@ class Character;
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
 /// </summary>
-class NavigationAI : AI
+class NavigationAI : public AI
 {
 	//
 public:
 
 	//コンストラクタ
-	NavigationAI();
+	NavigationAI(GameObject* parent);
 
 	//デストラクタ
 	~NavigationAI();

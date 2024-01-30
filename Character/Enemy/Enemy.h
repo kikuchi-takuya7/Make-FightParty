@@ -50,9 +50,13 @@ public:
     /// </summary>
     void MoveCharacter() override;
 
+    /////////////////////AIに伝える関数/////////////////////////////
+
+    void TellStatus();
+
+
     ///////////////////アクセス関数/////////////////////////////////////
     void SetCharacterAI(CharacterAI* AI) { pCharacterAI_ = AI; }
-    
 
     void ChangeState(EnemyStatePattern nextState);
     

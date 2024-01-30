@@ -57,6 +57,9 @@ public:
     /// </summary>
     void SetAttackCollider();
 
+    void Dead();
+
+    //////////////////////ˆê•”‚Ìstate‚Åg‚¤ŠÖ”/////////////////////////////
 
     void KnockBackEnter(float distance);
 

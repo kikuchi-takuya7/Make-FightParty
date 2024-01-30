@@ -2,7 +2,8 @@
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
 
-MetaAI::MetaAI() :pNavigationAI_(nullptr), No1CharaID_(0),characterStatusList_(0)
+MetaAI::MetaAI(GameObject* parent)
+	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),characterStatusList_(0)
 {
 }
 
@@ -26,8 +27,6 @@ int MetaAI::Targeting(int ID)
 {
 	int targetFrag = rand() % 3;
 
-	//殴られた相手を狙う可能性も残したい
-
 	//自分が1位だった場合0に固定する（同率でも）
 	if (characterStatusList_.at(No1CharaID_.at(ZERO)).winPoint == characterStatusList_.at(ID).winPoint) {
 
@@ -38,7 +37,7 @@ int MetaAI::Targeting(int ID)
 	switch (targetFrag)
 	{
 
-	//プレイヤーの中からランダムで狙う	
+	//キャラクターの中からランダムで狙う	
 	case 0:
 		while (true)
 		{
@@ -109,4 +108,24 @@ void MetaAI::CheckNo1Chara()
 	}
 
 	
+}
+
+bool MetaAI::NextGame()
+{
+	
+	int deadNum = 0;
+	
+	//死んでる人数を数える
+	for (int i = 0; i < characterStatusList_.size(); i++) {
+		if (characterStatusList_.at(i).dead) {
+			deadNum++;
+		}
+	}
+
+	//3人以上死んでいたら
+	if (deadNum >= 3) {
+		return true;
+	}
+
+	return false;
 }

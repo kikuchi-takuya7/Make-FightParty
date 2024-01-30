@@ -42,6 +42,8 @@ public:
 
     /////////////////////メンバ関数/////////////////////////////////////
 
+    void TellStatus();
+
     ///////////////////アクセス関数/////////////////////////////////////
     void ChangeState(PlayerStatePattern nextState);
 
@@ -52,6 +54,8 @@ private:
 
     ////HP等のステータス
     //Status status_;
+
+    
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す
 };
