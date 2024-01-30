@@ -28,6 +28,10 @@ void Character::Update()
 
 	//死んでる時とかアップデートしたくないときにここで止めちゃえばいい
 
+	if (status_.dead) {
+		return;
+	}
+
 	ChildUpdate();
 }
 
