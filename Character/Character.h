@@ -57,6 +57,13 @@ public:
     /// </summary>
     void SetAttackCollider();
 
+
+    void KnockBackEnter(float distance);
+
+    void KnockBackUpdate(int rigidityFlame);
+
+    float GetRateValue(float begin, float end, float rate);
+
     //////////////////子供に継承させる関数//////////////////////////////
 
     /// <summary>
@@ -90,6 +97,7 @@ public:
     Status GetStatus() { return status_; }
     void SetStatus(Status status) { status_ = status; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
+    void SetTargetRotate(XMFLOAT3 rot) { targetRot_ = rot; }
 
 protected:
 
@@ -106,8 +114,17 @@ protected:
 
 private:
 
-    
 
+    //////ノックバック関数で使うやつ/////////
 
+    //緩急を付けるレート
+    float knockBackRate_;
+
+    //最終的な位置
+    XMFLOAT3 lastPoint_;
+
+    XMFLOAT3 targetRot_;
+
+    ////////////////////////////////////////////
 
 };

@@ -90,7 +90,7 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
 
 		//敵の方向に向きなおす
-		pState_->SetPlayerRot(pTarget->GetRotate());
+		SetTargetRotate(pTarget->GetRotate());
 
 		//ノックバックさせる
 		pState_->ChangeState(ENEMY_KNOCKBACK, this);

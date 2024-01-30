@@ -87,7 +87,7 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 		XMFLOAT3 rotate = pTarget->GetRotate();
 		
-		pState_->SetEnemyRot(rotate);
+		SetTargetRotate(rotate);
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
