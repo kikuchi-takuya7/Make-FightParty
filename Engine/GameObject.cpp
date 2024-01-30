@@ -210,10 +210,30 @@ void GameObject::KillObjectSub(GameObject* obj)
 
 
 //コライダー（衝突判定）を追加する
-void GameObject::AddCollider(Collider* collider)
+void GameObject::AddCollider(Collider* collider, ColliderAttackType type)
 {
 	collider->SetGameObject(this);
+	collider->SetAttackType(type);
 	colliderList_.push_back(collider);
+}
+
+//特定のコライダーを破棄する(デリートはしない)
+//引数:破棄するコライダーのタイプ
+void GameObject::EraseCollider(ColliderAttackType type)
+{
+	for (auto it = colliderList_.begin(); it != colliderList_.end();)
+	{
+		ColliderAttackType tmp = (*it)->GetAttackType();
+		
+		//デリートはせず、colliderListからだけ削除して当たり判定を消す
+		if (tmp == type) {
+			//SAFE_DELETE(*it);
+			it = colliderList_.erase(it);
+		}
+		else {
+			it++;
+		}
+	}
 }
 
 //コライダー（衝突判定）を削除
@@ -244,7 +264,8 @@ void GameObject::Collision(GameObject* pTarget)
 			if ((*i)->IsHit(*j))
 			{
 				//当たった
-				this->OnCollision(pTarget);
+				this->OnCollision(pTarget,(*i)->GetAttackType(), (*j)->GetAttackType());
+
 			}
 		}
 	}
@@ -365,10 +386,10 @@ void GameObject::Imgui_WindowSub()
 
 
 ////ローカル行列の取得（このオブジェクトの行列）
-//XMMATRIX GameObject::GetLocalMatrix(void)
-//{
-//	return transform_.GetWorldMatrix();
-//}
+XMMATRIX GameObject::GetLocalMatrix(void)
+{
+	return transform_.matScale_ * transform_.matRotate_ * transform_.matTranslate_;
+}
 
 //ワールド行列の取得（親の影響を受けた最終的な行列）
 XMMATRIX GameObject::GetWorldMatrix(void)

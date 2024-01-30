@@ -48,7 +48,7 @@ private:
             ((MapEditor*)pParent->GetParent())->AddCreateObject(object);
 
         return object;*/
-        return nullptr
+        return nullptr;
     }
     //セーブマネージャー色々変えてるときに必要ないって結論に至った
     

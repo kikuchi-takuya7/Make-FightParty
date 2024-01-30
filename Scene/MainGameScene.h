@@ -1,6 +1,10 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+class MetaAI;
+class NavigationAI;
+class Stage;
+class Status;//構造体だけどこれいいの？？？？
 
 //■■シーンを管理するクラス
 class MainGameScene : public GameObject
@@ -23,4 +27,20 @@ public:
 	void Release() override;
 
 
+	void CallStatus(int ID, Status status);
+
+private:
+
+	//
+	NavigationAI* pNavigationAI_;
+
+	//ゲーム全体のバランスを管理するAI
+	MetaAI* pMetaAI_;
+
+	Stage* stage_;
+
+	/*Player* pPlayer_;
+
+	Enemy* pEnemy_;*/
+	
 };

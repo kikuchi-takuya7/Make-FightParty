@@ -133,12 +133,12 @@ GameObject* SaveManager::CreateObj(std::string className)
 {
     //ロードしたobjectNameに対応するオブジェクトを作成し、SaveManagerを呼び出したのがMapEditorならcreateObjectに入れる
     if (className == "TestWall") {
-        TestWall* object = CreateObject<TestWall>();
-        return object;
+        //TestWall* object = CreateObject<TestWall>();
+        //return object;
     }
     else if (className == "TestFloor") {
-        TestFloor* object = CreateObject<TestFloor>();
-        return object;
+        //TestFloor* object = CreateObject<TestFloor>();
+        //return object;
     }
 
     return NULL;   // 指定のクラスが無い

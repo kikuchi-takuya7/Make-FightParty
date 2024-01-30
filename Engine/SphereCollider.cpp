@@ -3,12 +3,13 @@
 #include "Model.h"
 
 //コンストラクタ（当たり判定の作成）
-//引数：basePos	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
+//引数：center	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
 //引数：size	当たり判定のサイズ
-SphereCollider::SphereCollider(XMFLOAT3 center, float radius)
+SphereCollider::SphereCollider(XMFLOAT3 center, float size)
 {
 	center_ = center;
-	size_ = XMFLOAT3(radius, radius, radius);
+	size_ = XMFLOAT3(size, size, size);
+	rotate_ = XMFLOAT3(ZERO, ZERO, ZERO);
 	type_ = COLLIDER_CIRCLE;
 
 	//リリース時は判定枠は表示しない

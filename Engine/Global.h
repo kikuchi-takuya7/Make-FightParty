@@ -9,13 +9,12 @@
 
 
 //0の定数
-#define ZERO 0.0f
+const float ZERO = 0.0f;
+const XMFLOAT3 ZERO_FLOAT3 = XMFLOAT3(ZERO, ZERO, ZERO);
 
+//////////////////////////関数///////////////////////
 
-
-////////関数///////////
-
-//staticにしないとエラー。global.hが何度も呼び出されるから多重定義になっちゃう的な？
+//staticにしないとエラー。global.hが何度も呼び出されるから多重定義になっちゃう的な？とにかくプロジェクト動いてからいつでも使うから静的に取っておku
 
 //XMFLOAT3型2つを足し算する
 static XMFLOAT3 Float3Add(XMFLOAT3 a, XMFLOAT3 b)
@@ -44,6 +43,10 @@ static XMFLOAT3 VectorToFloat3(XMVECTOR v)
 	return a;
 }
 
+
+////////////////オペレーター////////////////////////////消すかも
+
+
 static XMFLOAT3 operator + (const XMFLOAT3& v1, const XMVECTOR& v2) {
 
 	XMVECTOR pv = XMLoadFloat3(&v1);
@@ -68,6 +71,21 @@ static XMVECTOR operator -(const XMFLOAT3& p1, const XMVECTOR& p2) {
 	XMVECTOR p1v = XMLoadFloat3(&p1);
 	return p1v - p2;
 }
+
+static XMFLOAT3 operator /(const XMFLOAT3& f1, const float& f2) {
+	
+	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
+}
+
+static XMFLOAT3 operator *(const XMFLOAT3& f1, const float& f2) {
+
+	return XMFLOAT3(f1.x * f2, f1.y * f2, f1.z * f2);
+}
+
+//static XMFLOAT3 operator /=(const XMFLOAT3& f1, const float& f2) {
+//
+//	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
+//}
 
 static bool operator ==(const XMFLOAT3& f1, const XMFLOAT3& f2) {
 

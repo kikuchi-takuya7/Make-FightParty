@@ -42,6 +42,8 @@ public:
 	virtual void Update(void) {}
 	virtual void Draw() {}
 	virtual void Release(void) {}
+	
+	//ImGuiで変更したい数値がある時に作る関数
 	virtual void Imgui_Window() {}
 
 	/// <summary>
@@ -55,10 +57,10 @@ public:
 	void ReleaseSub();
 	void Imgui_WindowSub();
 
-
+	//memo 使ってないからこれで正しいか不明
 	////ローカル行列の取得（このオブジェクトの行列）
 	////戻値：ローカル行列
-	//XMMATRIX GetLocalMatrix();
+	XMMATRIX GetLocalMatrix();
 
 	//ワールド行列の取得（親の影響を受けた最終的な行列）
 	//戻値：ワールド行列
@@ -67,11 +69,11 @@ public:
 	/// <summary>
 	/// 呼び出されたオブジェクトのtransformを変更できるスライダーを表示
 	/// </summary>
-	/// <param name="posmin">posの最小値</param>
-	/// <param name="posmax">posの最大値</param>
-	/// <param name="rot">rotの最大値</param>
-	/// <param name="scl">sclの最大値</param>
-	/// <param name="s">表示する名前（Player,positionみたいな）</param>
+	/// <param name="posmin">positionの最小値</param>
+	/// <param name="posmax">positionの最大値</param>
+	/// <param name="rot">rotateの最大値</param>
+	/// <param name="scl">scaleの最大値</param>
+	/// <param name="s">表示する名前</param>
 	void Setting_Transform(Transform& _transform, float posmin, float posmax, float rot, float scl, std::string s);
 
 	//SettingTransformのXMFLOAT3だけバージョン（position想定）
@@ -199,14 +201,32 @@ public:
 	//子オブジェクトを全て削除
 	void KillAllChildren();
 
+	/// <summary>
+	/// コライダー（衝突判定）を追加する
+	/// </summary>
+	/// <param name="collider">追加するCollider</param>
+	/// <param name="type">追加するColliderのattackType</param>
+	void AddCollider(Collider* collider, ColliderAttackType type);
 
-
-	//コライダー（衝突判定）を追加する
-	void AddCollider(Collider* collider);
-
-	//何かと衝突した場合に呼ばれる（オーバーライド用）
-	//引数：pTarget	衝突した相手
+	/// <summary>
+	/// 特定のコライダーを破棄する
+	/// </summary>
+	/// <param name="type">破棄したいコライダーの種類</param>
+	void EraseCollider(ColliderAttackType type);
+	
+	/// <summary>
+	/// 何かと衝突した場合に呼ばれる（オーバーライド用）
+	/// </summary>
+	/// <param name="pTarget">衝突した相手</param>
 	virtual void OnCollision(GameObject* pTarget) {};
+
+	/// <summary>
+	/// 何かと衝突した場合に呼ばれる（オーバーライド用）
+	/// </summary>
+	/// <param name="pTarget">衝突した相手</param>
+	/// <param name="myType">当たったcolliderの自分のattackType</param>
+	/// <param name="targetType">当たったcolliderの相手のattackType</param>
+	virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
 
 	//コライダー（衝突判定）を削除
 	void ClearCollider();
@@ -240,10 +260,12 @@ public:
 	void SetScale(XMFLOAT3 scale) { transform_.scale_ = scale; }
 	void SetScale(float x, float y, float z) { SetScale(XMFLOAT3(x, y, z)); }
 	void SetTransform(Transform transform) { transform_ = transform; }
+	
 
 	void SetObjectID(int ID) { objectID_ = ID; }
 	int GetObjectID() { return objectID_; }
 
+	
 
 private:
 

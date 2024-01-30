@@ -29,14 +29,8 @@
     <Filter Include="01Engine\Json">
       <UniqueIdentifier>{5669ef0e-6428-43a4-8468-727d952518cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Player">
-      <UniqueIdentifier>{df3b82cb-7412-4076-8529-45243bd7bdc9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{43fe54d2-ee69-4ac9-9e0d-8f0b6645a1b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="State">
-      <UniqueIdentifier>{a91a1ea1-9aa8-484a-a9ae-54ce81d4a38f}</UniqueIdentifier>
     </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -45,11 +39,32 @@
     <Filter Include="Stage">
       <UniqueIdentifier>{db894dd7-305b-4827-859d-887bf5a33510}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{eebec4c1-ebf4-40ea-85af-3436dc556568}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MapEditor">
       <UniqueIdentifier>{5196636c-f92e-4351-8ca0-2bd7dcc299a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MapEditor\StageSource">
-      <UniqueIdentifier>{3ac7620f-c5bf-4d2e-939b-9d42cf3cfced}</UniqueIdentifier>
+    <Filter Include="Character">
+      <UniqueIdentifier>{bf39cfdd-b0d1-4d00-b8f9-52c5cf3aad43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player">
+      <UniqueIdentifier>{5795ce21-3ca5-4bf7-8d6e-cf8241045dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Player\PlayerState">
+      <UniqueIdentifier>{5a12f476-cfab-4cea-ac68-ddf5f17c1f4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Enemy">
+      <UniqueIdentifier>{3429db39-b625-49ec-a2f9-49d6c39ef3bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Enemy\EnemyState">
+      <UniqueIdentifier>{849e8960-4041-4acd-9dd4-58657124d5ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stage\CreateMode">
+      <UniqueIdentifier>{435a06ef-8e74-4a12-8f89-955bce5e6516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stage\CreateMode\StageSource">
+      <UniqueIdentifier>{ab129971-c84f-4812-9772-eb6eb44c4b0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,32 +167,8 @@
     <ClCompile Include="Scene\DevelopSelectScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Player\Player.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\MainGameScene.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerState.cpp">
-      <Filter>State</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerJumpState.cpp">
-      <Filter>State</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerIdleState.cpp">
-      <Filter>State</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerRunState.cpp">
-      <Filter>State</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerAttackState.cpp">
-      <Filter>State</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerDieState.cpp">
-      <Filter>State</Filter>
-    </ClCompile>
-    <ClCompile Include="State\PlayerStateManager.cpp">
-      <Filter>State</Filter>
     </ClCompile>
     <ClCompile Include="Stage\Stage.cpp">
       <Filter>Stage</Filter>
@@ -188,11 +179,83 @@
     <ClCompile Include="MapEditor\MapEditor.cpp">
       <Filter>MapEditor</Filter>
     </ClCompile>
-    <ClCompile Include="MapEditor\MapSource\TestFloor.cpp">
-      <Filter>MapEditor\StageSource</Filter>
+    <ClCompile Include="Character\Enemy\Enemy.cpp">
+      <Filter>Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="MapEditor\MapSource\TestWall.cpp">
-      <Filter>MapEditor\StageSource</Filter>
+    <ClCompile Include="Character\Player\Player.cpp">
+      <Filter>Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerAttackState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerDieState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerIdleState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerJumpState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerRunState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerStateManager.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>Character</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\AI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\CharacterAI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\MetaAI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\NavigationAI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Player\PlayerState\PlayerKnockBackState.cpp">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyAttackState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyDieState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyIdleState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyJumpState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyKnockBackState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyRunState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyState.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Enemy\EnemyState\EnemyStateManager.cpp">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\CreateMode.cpp">
+      <Filter>Stage\CreateMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\TestWall.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -304,30 +367,6 @@
     <ClInclude Include="Scene\MainGameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="State\PlayerState.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="State\PlayerJumpState.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="State\PlayerIdleState.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="State\PlayerRunState.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="State\PlayerAttackState.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="State\PlayerDieState.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="State\PlayerStateManager.h">
-      <Filter>State</Filter>
-    </ClInclude>
-    <ClInclude Include="Player\Player.h">
-      <Filter>Player</Filter>
-    </ClInclude>
     <ClInclude Include="Stage\Stage.h">
       <Filter>Stage</Filter>
     </ClInclude>
@@ -337,11 +376,83 @@
     <ClInclude Include="MapEditor\MapEditor.h">
       <Filter>MapEditor</Filter>
     </ClInclude>
-    <ClInclude Include="MapEditor\MapSource\TestFloor.h">
-      <Filter>MapEditor\StageSource</Filter>
+    <ClInclude Include="Character\Player\Player.h">
+      <Filter>Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="MapEditor\MapSource\TestWall.h">
-      <Filter>MapEditor\StageSource</Filter>
+    <ClInclude Include="Character\Player\PlayerState\PlayerAttackState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerDieState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerIdleState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerJumpState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerRunState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
+      <Filter>Character</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\AI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\CharacterAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\MetaAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\NavigationAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Player\PlayerState\PlayerKnockBackState.h">
+      <Filter>Character\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\Enemy.h">
+      <Filter>Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyAttackState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyDieState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyIdleState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyJumpState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyKnockBackState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyRunState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyState.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Enemy\EnemyState\EnemyStateManager.h">
+      <Filter>Character\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\CreateMode.h">
+      <Filter>Stage\CreateMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\TestWall.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
