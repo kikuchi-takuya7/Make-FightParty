@@ -41,7 +41,7 @@ void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 	//死ぬ処理ここでいい？
 	if (enemy->GetStatus().hp <= 0) {
 
-		ChangeState(ENEMY_DIE, enemy);
+		ChangeState(ENEMY_DIE, enemy, AI);
 	}
 
 }
@@ -50,11 +50,11 @@ void EnemyStateManager::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
-void EnemyStateManager::Enter(Enemy* enemy)
+void EnemyStateManager::Enter(Enemy* enemy, CharacterAI* AI)
 {
 }
 
-void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy)
+void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy, CharacterAI* AI)
 {
 	//状態を変更して、その状態の初期化処理を行う
 	switch (nextState)
@@ -88,6 +88,6 @@ void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy)
 		break;
 	}
 
-	enemyState_->Enter(enemy);
+	enemyState_->Enter(enemy, AI);
 }
 

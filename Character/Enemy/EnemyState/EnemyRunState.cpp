@@ -12,6 +12,6 @@ void EnemyRunState::HandleInput(Enemy* enemy, CharacterAI* AI)
 	AI->IsAttack();
 }
 
-void EnemyRunState::Enter(Enemy* enemy)
+void EnemyRunState::Enter(Enemy* enemy, CharacterAI* AI)
 {
 }

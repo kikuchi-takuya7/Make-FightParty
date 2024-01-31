@@ -26,6 +26,6 @@ public:
 	/// 状態変化したときに一度だけ呼ばれる関数
 	/// </summary>
 	/// <param name="enemy">Enemyのポインタ</param>
-	void Enter(Enemy* enemy) override;
+	void Enter(Enemy* enemy, CharacterAI* AI) override;
 
 };

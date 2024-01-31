@@ -19,5 +19,6 @@ void PlayerDieState::Enter(Player* player)
 	player->ClearCollider();
 
 	player->Dead();
+	player->TellStatus();
 	
 }

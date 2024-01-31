@@ -20,9 +20,6 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
-    <Filter Include="01Engine\SaveManager">
-      <UniqueIdentifier>{89b76ae9-3a93-41e3-972f-c6ee48826e3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01Engine\ImGui">
       <UniqueIdentifier>{263ccdcc-3ac7-4815-a58a-4de4eaae9368}</UniqueIdentifier>
     </Filter>
@@ -41,9 +38,6 @@
     </Filter>
     <Filter Include="AI">
       <UniqueIdentifier>{eebec4c1-ebf4-40ea-85af-3436dc556568}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MapEditor">
-      <UniqueIdentifier>{5196636c-f92e-4351-8ca0-2bd7dcc299a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Character">
       <UniqueIdentifier>{bf39cfdd-b0d1-4d00-b8f9-52c5cf3aad43}</UniqueIdentifier>
@@ -158,9 +152,6 @@
     <ClCompile Include="Engine\Imgui\imgui_widgets.cpp">
       <Filter>01Engine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\SaveManager\SaveManager.cpp">
-      <Filter>01Engine\SaveManager</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\MapEditorScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -172,12 +163,6 @@
     </ClCompile>
     <ClCompile Include="Stage\Stage.cpp">
       <Filter>Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="MapEditor\MapController.cpp">
-      <Filter>MapEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="MapEditor\MapEditor.cpp">
-      <Filter>MapEditor</Filter>
     </ClCompile>
     <ClCompile Include="Character\Enemy\Enemy.cpp">
       <Filter>Character\Enemy</Filter>
@@ -355,9 +340,6 @@
     <ClInclude Include="Engine\Imgui\imstb_truetype.h">
       <Filter>01Engine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\SaveManager\SaveManager.h">
-      <Filter>01Engine\SaveManager</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\MapEditorScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -369,12 +351,6 @@
     </ClInclude>
     <ClInclude Include="Stage\Stage.h">
       <Filter>Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="MapEditor\MapController.h">
-      <Filter>MapEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="MapEditor\MapEditor.h">
-      <Filter>MapEditor</Filter>
     </ClInclude>
     <ClInclude Include="Character\Player\Player.h">
       <Filter>Character\Player</Filter>

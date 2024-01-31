@@ -93,7 +93,7 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 		SetTargetRotate(pTarget->GetRotate());
 
 		//ノックバックさせる
-		pState_->ChangeState(ENEMY_KNOCKBACK, this);
+		pState_->ChangeState(ENEMY_KNOCKBACK, this, pCharacterAI_);
 
 		//一定の確率で狙いを殴ってきた相手に変える
 		if (rand() % 2 == 0) {
@@ -117,12 +117,7 @@ void Enemy::MoveCharacter()
 	pCharacterAI_->MoveEnemy();
 }
 
-void Enemy::TellStatus()
-{
-	pCharacterAI_->TellStatus();
-}
-
 void Enemy::ChangeState(EnemyStatePattern nextState)
 {
-	pState_->ChangeState(nextState, this);
+	pState_->ChangeState(nextState, this, pCharacterAI_);
 }

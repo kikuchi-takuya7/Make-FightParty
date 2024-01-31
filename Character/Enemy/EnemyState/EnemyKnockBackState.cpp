@@ -32,7 +32,7 @@ void EnemyKnockBackState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
-void EnemyKnockBackState::Enter(Enemy* enemy)
+void EnemyKnockBackState::Enter(Enemy* enemy, CharacterAI* AI)
 {
 	flame_ = 0;
 	enemy->KnockBackEnter(KNOCKBACK_DISTANCE);

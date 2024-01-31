@@ -1,5 +1,6 @@
 #include "EnemyDieState.h"
 #include "../Enemy.h"
+#include "../../../AI/CharacterAI.h"
 
 void EnemyDieState::Update(Enemy* enemy, CharacterAI* AI)
 {
@@ -9,7 +10,7 @@ void EnemyDieState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
-void EnemyDieState::Enter(Enemy* enemy)
+void EnemyDieState::Enter(Enemy* enemy, CharacterAI* AI)
 {
 	//死ぬときにコライダーつけてまとめて消せるようにみたいな
 	//enemy->EraseCollider(COLLIDER_ATTACK);
@@ -19,5 +20,5 @@ void EnemyDieState::Enter(Enemy* enemy)
 
 	//死んだことをメタAIに伝える
 	enemy->Dead();
-	enemy->TellStatus();
+	AI->TellStatus();
 }

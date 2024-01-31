@@ -17,22 +17,31 @@ namespace {
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
-	: GameObject(parent, "MainGameScene"), pNavigationAI_(Instantiate<NavigationAI>(this)), pMetaAI_(Instantiate<MetaAI>(this))
+	: GameObject(parent, "MainGameScene"), pNavigationAI_(nullptr), pMetaAI_(nullptr),pStage_(nullptr)
 {
+
 }
 
 //初期化
 void MainGameScene::Initialize()
 {
 
+	pNavigationAI_ = Instantiate<NavigationAI>(this);
+	pMetaAI_ = Instantiate<MetaAI>(this);
+	pStage_ = Instantiate<Stage>(this);
+
 	pNavigationAI_->Initialize();
 	pMetaAI_->Initialize();
 	pMetaAI_->SetNavigationAI(pNavigationAI_);
 	
 	int objectID = 0;
-	
 
-	//Astarアルゴリズムが完成してから複数人追加できるようにしよう
+	CreateMode* createMode = new CreateMode;
+	createMode->Initialize();
+	pStage_->SetCreateMode(createMode);
+	pMetaAI_->SetCreateMode(createMode);
+
+	//プレイヤーをプレイ人数分用意する
 	for (int i = 0; i < PLAYER_NUM; i++) {
 
 		Player* pPlayer;
@@ -81,23 +90,16 @@ void MainGameScene::Initialize()
 	//SAFE_DELETE(charaAI);
 
 
-	stage_ = Instantiate<Stage>(this);
-	Instantiate<CreateMode>(this);
+	pMetaAI_->GameCameraSet();
 
-	Camera::SetPosition(XMFLOAT3(15, 10, -20));
-	Camera::SetTarget(XMFLOAT3(15, 0, 15));
+	
 
 }
 
 //更新
 void MainGameScene::Update()
 {
-
-	//一戦毎に勝者が決まったらプレイヤーにオブジェクトを追加してもらう処理を入れる
-	if (pMetaAI_->NextGame()) {
-		
-		
-	}
+	pMetaAI_->NextGame();
 }
 
 //描画

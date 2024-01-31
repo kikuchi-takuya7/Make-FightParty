@@ -2,22 +2,23 @@
 #include "../../Engine/Model.h"
 #include "../../Engine/Input.h"
 #include "../../Engine/Camera.h"
-#include <vector>
-#include <string>
-#include <stdexcept>
 #include "../../Engine/Global.h"
 #include "StageSource/TestWall.h"
 #include "StageSource/TestFloor.h"
+#include <vector>
+#include <string>
+#include <stdexcept>
+
 
 namespace {
     const int PLAYER_NUM = 1;
-    const XMFLOAT3 OBJECT_POS[10] = { XMFLOAT3(5,25,ZERO),XMFLOAT3(10,25,ZERO) ,XMFLOAT3(15,25,ZERO) ,XMFLOAT3(20,25,ZERO),XMFLOAT3(25,25,ZERO),
-                                      XMFLOAT3(5,5,ZERO) ,XMFLOAT3(10,5,ZERO)  ,XMFLOAT3(15,5,ZERO)  ,XMFLOAT3(20,5,ZERO) ,XMFLOAT3(25,5,ZERO) };
+    const XMFLOAT3 OBJECT_POS[8] = { XMFLOAT3(10,22,15),XMFLOAT3(15,22,15) ,XMFLOAT3(20,22,15) ,XMFLOAT3(25,22,15),
+                                      XMFLOAT3(10,10,15) ,XMFLOAT3(15,10,15)  ,XMFLOAT3(20,10,15)  ,XMFLOAT3(25,10,15)};
 }
 
 //コンストラクタ
-CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), selecting_object(PATTERN_END), isSave_(false), nextObjectId_(0), isNewSave_(false), isLoad_(false)
+CreateMode::CreateMode()
+    : selecting_Object(PATTERN_END), nextObjectId_(0)
 {
 
 
@@ -27,30 +28,144 @@ CreateMode::CreateMode(GameObject* parent)
 void CreateMode::Initialize()
 {
     //ファイルの中に入ってるすべてのfbxファイルの名前の取得
-    fileName_ = get_file_path_in_dir("./StageSource/", "fbx");
+    fileName_ = GetFilePath("../Assets/StageResource/", "fbx");
 
     //fileNameの個数分の要素数を確保
     hModel_.assign(fileName_.size(), -1);
 
+    //ファイルの中に入ってたリソースをすべてロードする
     for (int i = 0; i < hModel_.size(); i++) {
-        std::string dir = "Map/";
+        std::string dir = "StageResource/";
         hModel_.at(i) = Model::Load(dir + fileName_.at(i));
         assert(hModel_.at(i) >= 0);
+
+        //hModelに対応するパターンを記憶する
+        modelPair_.push_back(std::make_pair(hModel_.at(i), (FBXPATTERN)i));
     }
 
-    CheckDeleteObject();
-    nextObjectId_ = MaxObjectId();
-    nextObjectId_++;
+    
+
+    isUpdate_ = false;
 }
 
 //更新
 void CreateMode::Update()
 {
-    //毎回チェックしないとデリートしたタイミングでエラー出る。多分RootObjectのUpdateで消されたかどうか確認してるから
-    CheckDeleteObject();
 
+    if (!isUpdate_) {
+        return;
+    }
 
+    //カーソルがモデルに合わさってるなら
+    if (IsOverlapCursor()) {
 
+        //モデルを光らせたい
+
+        if (Input::IsMouseButtonDown(0))
+        {
+            CreateObject();
+        }
+    }
+    
+}
+
+//描画
+void CreateMode::Draw()
+{
+    if (!isUpdate_) {
+        return;
+    }
+
+    
+
+    for (int i = 0; i < hModel_.size(); i++) {
+
+        Transform objPos;
+        objPos.position_ = OBJECT_POS[i];
+        Model::SetTransform(hModel_.at(i), objPos);
+        Model::Draw(hModel_.at(i));
+    }
+}
+
+//開放
+void CreateMode::Release()
+{
+}
+
+GameObject* CreateMode::CreateObject()
+{
+
+    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
+    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
+
+    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
+    switch (selecting_Object)
+    {
+    case TESTFLOOR: {
+        TestFloor* pObject = CreateInstance<TestFloor>();
+        return pObject;
+        break;
+    }
+    case TESTWALL: {
+        TestWall* pObject = CreateInstance<TestWall>();
+        return pObject;
+        break;
+    }
+    case PATTERN_END: {
+        break;
+    }
+    default:
+        break;
+    }
+
+    return NULL;   // 指定のクラスが無い
+}
+
+void CreateMode::AddCreateObject(GameObject* object)
+{
+    //CheckDeleteObject();
+    createObjectList_.push_back(object);
+    nextObjectId_++;
+}
+
+std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
+{
+    HANDLE hFind;
+    WIN32_FIND_DATA win32fd;//defined at Windwos.h
+    std::vector<std::string> file_names;
+
+    //拡張子の設定
+    std::string search_name = dir_name + "*." + extension;
+
+    hFind = FindFirstFile(search_name.c_str(), &win32fd);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+        throw std::runtime_error("file not found");
+    }
+
+    do {
+        if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        }
+        else {
+            file_names.push_back(win32fd.cFileName);
+            printf("%s\n", file_names.back().c_str());
+
+        }
+    } while (FindNextFile(hFind, &win32fd));
+
+    FindClose(hFind);
+
+    return file_names;
+}
+
+void CreateMode::MoveCamPos()
+{
+    Camera::SetPosition(XMFLOAT3(15, 20, 0));
+    Camera::SetTarget(XMFLOAT3(15, 20, 15));
+}
+
+bool CreateMode::IsOverlapCursor()
+{
     float w = (float)(Direct3D::screenWidth_ / 2.0f);
     float h = (float)(Direct3D::screenHeight_ / 2.0f);
     float offsetX = 0;
@@ -98,193 +213,19 @@ void CreateMode::Update()
     XMStoreFloat3(&data.start, vMouseFront);
     XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
 
-    Model::RayCast(hModel_[0], &data);
+    //カーソルから飛ばしたレイがモデルに当たってるか確認する
+    for (int i = 0; i < hModel_.size(); i++) {
+        Model::RayCast(hModel_.at(i), &data);
 
-    /*if (data.hit) {
-        data.hit = false;
+        //当たってたら即終了
+        if (data.hit) {
 
-    }*/
-
-    Transform objPos;
-    objPos.position_.y = 1.0f;
-
-    //左クリックされた
-    if (Input::IsMouseButtonDown(0))
-    {
-        //何らかの処理
-        CreateObject();
-    }
-}
-
-//描画
-void CreateMode::Draw()
-{
-
-    if (selecting_object == PATTERN_END)
-        return;
-
-    Transform objPos;
-
-
-
-    Model::SetTransform(hModel_.at(selecting_object), objPos);
-    Model::Draw(hModel_.at(selecting_object));
-}
-
-//開放
-void CreateMode::Release()
-{
-}
-
-void CreateMode::Imgui_Window()
-{
-}
-
-GameObject* CreateMode::CreateObject()
-{
-
-    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
-    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
-
-    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
-    switch (selecting_object)
-    {
-    case TESTFLOOR: {
-        TestFloor* pObject = CreateInstance<TestFloor>();
-        return pObject;
-        break;
-    }
-    case TESTWALL: {
-        TestWall* pObject = CreateInstance<TestWall>();
-        return pObject;
-        break;
-    }
-    case PATTERN_END: {
-        break;
-    }
-    default:
-        break;
-    }
-
-    return NULL;   // 指定のクラスが無い
-}
-
-void CreateMode::AddCreateObject(GameObject* object)
-{
-    //CheckDeleteObject();
-    createObjectList_.push_back(object);
-    nextObjectId_++;
-}
-
-std::vector<std::string> CreateMode::get_file_path_in_dir(const std::string& dir_name, const std::string& extension) noexcept(false)
-{
-    HANDLE hFind;
-    WIN32_FIND_DATA win32fd;//defined at Windwos.h
-    std::vector<std::string> file_names;
-
-    //拡張子の設定
-    std::string search_name = dir_name + "*." + extension;
-
-    hFind = FindFirstFile(search_name.c_str(), &win32fd);
-
-    if (hFind == INVALID_HANDLE_VALUE) {
-        throw std::runtime_error("file not found");
-    }
-
-    do {
-        if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-        }
-        else {
-            file_names.push_back(win32fd.cFileName);
-            printf("%s\n", file_names.back().c_str());
-
-        }
-    } while (FindNextFile(hFind, &win32fd));
-
-    FindClose(hFind);
-
-    return file_names;
-}
-
-void CreateMode::CheckDeleteObject()
-{
-
-    for (auto itr = createObjectList_.begin(); itr != createObjectList_.end();) {
-        if ((*itr)->IsDead()) {
-            itr = createObjectList_.erase(itr);
-        }
-        else {
-            itr++;
+            selecting_Object = modelPair_.at(i).second;
+            return true;
         }
     }
-}
-
-void CreateMode::AllDeleteCreateObject()
-{
-    for (auto itr = createObjectList_.begin(); itr != createObjectList_.end(); itr++) {
-        (*itr)->KillMe();
-    }
-
-    createObjectList_.clear();
-}
-
-void CreateMode::ChengeUp(GameObject* pTarget)
-{
-
-    auto itr = createObjectList_.begin();
-
-    //既に先頭なら
-    if ((*itr) == pTarget)
-        return;
-
-    for (itr; itr != createObjectList_.end(); itr++) {
-        if ((*itr) == pTarget) {
-            createObjectList_.splice(std::next(itr, -1), createObjectList_, itr);
-            break;
-        }
-    }
-
-
-    //この関数を子から呼び出してるのにKillAllChildrenでぶっ殺してるからエラーになる
-    //bool型変数を作ってtrueならこっちのUpDate中に上の処理をする奴も考えたけどファイルのロードが上手くできてなかった。プロジェクト実行中はファイル書き換えても実行中には新しいデータをロードできない？
-}
-
-void CreateMode::ChengeDown(GameObject* pTarget)
-{
-
-    auto itr = createObjectList_.end();
-
-    itr--;
-    //既に一番後ろなら
-    if ((*itr) == pTarget)
-        return;
-
-    while (itr != createObjectList_.begin()) {
-
-        itr--;
-
-        if ((*itr) == pTarget) {
-            createObjectList_.splice(std::next(itr, 2), createObjectList_, itr);
-            break;
-        }
-    }
-
-}
-
-int CreateMode::MaxObjectId()
-{
-    int ID = 0;
-    for (auto itr = createObjectList_.begin(); itr != createObjectList_.end(); itr++) {
-        int tmp = (*itr)->GetObjectID();
-        if (ID < tmp) {
-            ID = tmp;
-        }
-    }
-
-    return ID;
-}
-
-void CreateMode::BackUpSave()
-{
-
+    
+    return false;
+    
+    
 }

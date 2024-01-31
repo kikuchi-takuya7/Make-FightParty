@@ -2,10 +2,12 @@
 #include "AI.h"
 #include "NavigationAI.h"
 #include "CharacterAI.h"
+#include "../Stage/CreateMode/CreateMode.h"
 #include "../Character/Character.h"
 
 class Player;
 class Enemy;
+class CreateMode;
 class NavigationAI;
 
 /// <summary>
@@ -45,14 +47,16 @@ public:
 	/// </summary>
 	void CheckNo1Chara();
 
-	bool NextGame();
+	void NextGame();
+
+	void GameCameraSet();
 
 	//////////////アクセス関数 //////////
 
 	void PushCharacterStatus(Status status) { characterStatusList_.emplace_back(status); }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void ChangeStatus(int ID, Status status) { characterStatusList_.at(ID) = status; }
-
+	void SetCreateMode(CreateMode* create) { pCreateMode_ = create; }
 
 
 
@@ -65,6 +69,8 @@ private:
 	vector<Status> characterStatusList_;
 
 	NavigationAI* pNavigationAI_;
+
+	CreateMode* pCreateMode_;
 
 	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;

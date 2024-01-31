@@ -8,6 +8,6 @@ void EnemyJumpState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
-void EnemyJumpState::Enter(Enemy* enemy)
+void EnemyJumpState::Enter(Enemy* enemy, CharacterAI* AI)
 {
 }

@@ -1,6 +1,7 @@
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
+#include "../Engine/Camera.h"
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),characterStatusList_(0)
@@ -110,7 +111,7 @@ void MetaAI::CheckNo1Chara()
 	
 }
 
-bool MetaAI::NextGame()
+void MetaAI::NextGame()
 {
 	
 	int deadNum = 0;
@@ -124,8 +125,19 @@ bool MetaAI::NextGame()
 
 	//3人以上死んでいたら
 	if (deadNum >= 3) {
-		return true;
+		pCreateMode_->Enter();
+		pCreateMode_->MoveCamPos();
 	}
 
-	return false;
+	//デバック用
+	if (Input::IsKeyDown(DIK_1)) {
+		pCreateMode_->Enter();
+		pCreateMode_->MoveCamPos();
+	}
+}
+
+void MetaAI::GameCameraSet()
+{
+	Camera::SetPosition(XMFLOAT3(15, 10, -20));
+	Camera::SetTarget(XMFLOAT3(15, 0, 15));
 }
