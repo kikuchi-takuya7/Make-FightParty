@@ -7,16 +7,36 @@
 enum FBXPATTERN {
 	//SCHOOL,
 	CANNON,
+	NEEDLE,
 	ONEBROCK,
 	TESTFLOOR,
-	TESTWALL,
 	PATTERN_END
 };
 
-struct BACKUPDATA {
-	std::string objectName;
-	int objectId;
-	Transform objectTrans;
+struct ModelInfo {
+
+	//モデル番号
+	int hModel;
+
+	//モデルの種類
+	FBXPATTERN modelPattern;
+
+	//初期化
+	ModelInfo(int h, FBXPATTERN pattern) {
+		hModel = h;
+		modelPattern = pattern;
+	}
+
+};
+
+struct SelectModelInfo {
+
+	//何番目のモデルか
+	int num;
+
+	//
+
+
 };
 
 //オブジェクト追加モードを管理するクラス
@@ -48,6 +68,8 @@ public:
 	/// <returns>作成したオブジェクト</returns>
 	GameObject* CreateObject();
 
+	void SelectObject();
+
 	//createObjectListに入れる
 	void AddCreateObject(GameObject* object);
 
@@ -63,22 +85,25 @@ public:
 
 private:
 
-	std::vector<int> hModel_;
+	std::vector<ModelInfo> modelData;
 
 	//Mapファイルの中に入ってるfbxファイルの名前を入れる
 	std::vector<std::string> fileName_;
 
-	//imguiで選択されているオブジェクト
-	FBXPATTERN selecting_Object;
+	//viewObjectListのどこが選ばれたか
+	int selecting_Object;
 
 	//作成したオブジェクトリスト
 	std::list<GameObject*> createObjectList_;
 
 	//hModelがどのモデルかのペアを表す
-	std::vector<std::pair<int, FBXPATTERN>> modelPair_;
+	//std::vector<std::pair<int, FBXPATTERN>> modelPair_;
 
-	//モデル番号、そのモデルが何番目にあるか
-	std::vector<std::pair<int, int>> viewObjectList_;
+	//表示させているオブジェクトの一覧（モデル番号）
+	std::vector<int> viewObjectList_;
+
+	//プレイヤーが設置するオブジェクト。{モデル番号,座標}どのプレイヤーが選んでるかは要素番目で示す
+	std::pair<int,XMFLOAT3> settingObject_;
 
 	bool isUpdate_;
 

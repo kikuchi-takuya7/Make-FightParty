@@ -8,13 +8,14 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include "../../Engine/Debug.h"
 
 
 namespace {
     const int PLAYER_NUM = 1;
     const int MAX_VIEW_OBJECT = 8;
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(10,22,15),XMFLOAT3(15,22,15) ,XMFLOAT3(20,22,15) ,XMFLOAT3(25,22,15),
-                                      XMFLOAT3(10,10,15) ,XMFLOAT3(15,10,15)  ,XMFLOAT3(20,10,15)  ,XMFLOAT3(25,10,15)};
+                                                   XMFLOAT3(10,18,15) ,XMFLOAT3(15,18,15)  ,XMFLOAT3(20,18,15)  ,XMFLOAT3(25,18,15)};
 }
 
 //コンストラクタ
@@ -32,16 +33,13 @@ void CreateMode::Initialize()
     fileName_ = GetFilePath("../Assets/StageResource/", "fbx");
 
     //fileNameの個数分の要素数を確保
-    hModel_.assign(fileName_.size(), -1);
+    modelData.assign(fileName_.size(), ModelInfo(-1, PATTERN_END));
 
     //ファイルの中に入ってたリソースをすべてロードする
-    for (int i = 0; i < hModel_.size(); i++) {
+    for (int i = 0; i < modelData.size(); i++) {
         std::string dir = "StageResource/";
-        hModel_.at(i) = Model::Load(dir + fileName_.at(i));
-        assert(hModel_.at(i) >= 0);
-
-        //hModelに対応するパターンを記憶する
-        modelPair_.push_back(std::make_pair(hModel_.at(i), (FBXPATTERN)i));
+        modelData.at(i).hModel = Model::Load(dir + fileName_.at(i));
+        assert(modelData.at(i).hModel >= 0);
     }
 
     
@@ -57,7 +55,8 @@ void CreateMode::ViewInit()
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
         //hModelの中からランダムで表示させるオブジェクトを決める
-        viewObjectList_.push_back(std::make_pair(rand() % hModel_.size() + hModel_.at(0), i));
+        viewObjectList_.push_back(rand() % modelData.size() + modelData.at(0).hModel);
+        //viewObjectList_.push_back(std::make_pair(modelData.at(i), i));
     }
 }
 
@@ -72,12 +71,16 @@ void CreateMode::Update()
     //カーソルがモデルに合わさってるなら
     if (IsOverlapCursor()) {
 
-        //モデルを光らせたい
+        //ここでモデルを光らせたい
+        Debug::Log("hit",true);
 
         if (Input::IsMouseButtonDown(0))
         {
-            CreateObject();
+            SelectObject();
         }
+    }
+    else {
+        Debug::Log("nohit", true);
     }
     
 }
@@ -91,12 +94,17 @@ void CreateMode::Draw()
 
     
 
-    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+    for (int i = 0; i < viewObjectList_.size(); i++) {
 
         Transform objPos;
         objPos.position_ = OBJECT_POS[i];
-        Model::SetTransform(viewObjectList_.at(i).first, objPos);
-        Model::Draw(viewObjectList_.at(i).first);
+        
+        if (i == selecting_Object) {
+            objPos.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
+        }
+
+        Model::SetTransform(viewObjectList_.at(i), objPos);
+        Model::Draw(viewObjectList_.at(i));
     }
 }
 
@@ -119,11 +127,6 @@ GameObject* CreateMode::CreateObject()
         return pObject;
         break;
     }
-    case TESTWALL: {
-        TestWall* pObject = CreateInstance<TestWall>();
-        return pObject;
-        break;
-    }
     case PATTERN_END: {
         break;
     }
@@ -132,6 +135,22 @@ GameObject* CreateMode::CreateObject()
     }
 
     return NULL;   // 指定のクラスが無い
+}
+
+void CreateMode::SelectObject()
+{
+
+    //全てのhModelを探索する
+    for (int i = 0; i < modelData.size(); i++) {
+
+        if (viewObjectList_.at(selecting_Object) == modelData.at(i).hModel) {
+
+
+            //セッティングオブジェクトに情報を与えて要素を消す
+            
+        }
+    }
+
 }
 
 void CreateMode::AddCreateObject(GameObject* object)
@@ -227,19 +246,28 @@ bool CreateMode::IsOverlapCursor()
     XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);*/
 
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
-    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+    for (int i = 0; i < viewObjectList_.size(); i++) {
         RayCastData data;
         XMStoreFloat3(&data.start, vMouseFront);
         XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
-        Model::RayCast(viewObjectList_.at(i).first, &data);
+
+        //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す
+        Transform objPos;
+        objPos.position_ = OBJECT_POS[i];
+        Model::SetTransform(viewObjectList_.at(i), objPos);
+
+        Model::RayCast(viewObjectList_.at(i), &data);
 
         //当たってたら即終了　
-        //そのオブジェクトが何番目にあるかで判定しようかとも考えた
-        if (data.hit && i == viewObjectList_.at(i).second) {
+        if (data.hit) {
 
-            selecting_Object = modelPair_.at(i).second;
+            //
+            selecting_Object = i;
             return true;
         }
+
+        //ありえない値にしとく
+        selecting_Object = 99999;
     }
     
     return false;

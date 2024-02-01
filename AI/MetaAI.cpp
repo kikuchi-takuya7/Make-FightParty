@@ -125,9 +125,9 @@ void MetaAI::NextGame()
 
 	//3人以上死んでいたら
 	if (deadNum >= 3) {
-		pCreateMode_->ViewInit();
+		/*pCreateMode_->ViewInit();
 		pCreateMode_->Enter();
-		pCreateMode_->MoveCamPos();
+		pCreateMode_->MoveCamPos();*/
 	}
 
 	//デバック用
