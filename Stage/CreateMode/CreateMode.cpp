@@ -12,7 +12,8 @@
 
 namespace {
     const int PLAYER_NUM = 1;
-    const XMFLOAT3 OBJECT_POS[8] = { XMFLOAT3(10,22,15),XMFLOAT3(15,22,15) ,XMFLOAT3(20,22,15) ,XMFLOAT3(25,22,15),
+    const int MAX_VIEW_OBJECT = 8;
+    const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(10,22,15),XMFLOAT3(15,22,15) ,XMFLOAT3(20,22,15) ,XMFLOAT3(25,22,15),
                                       XMFLOAT3(10,10,15) ,XMFLOAT3(15,10,15)  ,XMFLOAT3(20,10,15)  ,XMFLOAT3(25,10,15)};
 }
 
@@ -48,6 +49,18 @@ void CreateMode::Initialize()
     isUpdate_ = false;
 }
 
+void CreateMode::ViewInit()
+{
+    viewObjectList_.clear();
+
+
+    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+
+        //hModelの中からランダムで表示させるオブジェクトを決める
+        viewObjectList_.push_back(std::make_pair(rand() % hModel_.size() + hModel_.at(0), i));
+    }
+}
+
 //更新
 void CreateMode::Update()
 {
@@ -78,12 +91,12 @@ void CreateMode::Draw()
 
     
 
-    for (int i = 0; i < hModel_.size(); i++) {
+    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
         Transform objPos;
         objPos.position_ = OBJECT_POS[i];
-        Model::SetTransform(hModel_.at(i), objPos);
-        Model::Draw(hModel_.at(i));
+        Model::SetTransform(viewObjectList_.at(i).first, objPos);
+        Model::Draw(viewObjectList_.at(i).first);
     }
 }
 
@@ -208,17 +221,21 @@ bool CreateMode::IsOverlapCursor()
     int	changeZ = 0;
     float minDist = 9999;
 
-
-    RayCastData data;
+    //レイキャストするたびにレイのstartが変わってる？
+    /*RayCastData data;
     XMStoreFloat3(&data.start, vMouseFront);
-    XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
+    XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);*/
 
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
-    for (int i = 0; i < hModel_.size(); i++) {
-        Model::RayCast(hModel_.at(i), &data);
+    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+        RayCastData data;
+        XMStoreFloat3(&data.start, vMouseFront);
+        XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
+        Model::RayCast(viewObjectList_.at(i).first, &data);
 
-        //当たってたら即終了
-        if (data.hit) {
+        //当たってたら即終了　
+        //そのオブジェクトが何番目にあるかで判定しようかとも考えた
+        if (data.hit && i == viewObjectList_.at(i).second) {
 
             selecting_Object = modelPair_.at(i).second;
             return true;

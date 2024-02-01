@@ -6,7 +6,8 @@
 //新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
 enum FBXPATTERN {
 	//SCHOOL,
-	TEST,
+	CANNON,
+	ONEBROCK,
 	TESTFLOOR,
 	TESTWALL,
 	PATTERN_END
@@ -28,6 +29,7 @@ public:
 
 	//初期化
 	void Initialize();
+	void ViewInit();
 
 	//更新
 	void Update();
@@ -74,6 +76,9 @@ private:
 
 	//hModelがどのモデルかのペアを表す
 	std::vector<std::pair<int, FBXPATTERN>> modelPair_;
+
+	//モデル番号、そのモデルが何番目にあるか
+	std::vector<std::pair<int, int>> viewObjectList_;
 
 	bool isUpdate_;
 
