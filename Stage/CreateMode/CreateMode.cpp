@@ -74,20 +74,27 @@ void CreateMode::Update()
         //ここでモデルを光らせたい
         Debug::Log("hit",true);
 
-        if (Input::IsMouseButtonDown(0))
-        {
+        if (Input::IsMouseButtonDown(0)){
             SelectObject();
         }
     }
     else {
         Debug::Log("nohit", true);
     }
+
+    if (IsAllDecidedObject()) {
+
+    }
+
     
 }
 
 //描画
 void CreateMode::Draw()
 {
+
+    //アップデート内でクリエイトモードとセットモードで切り替えるか
+    
     if (!isUpdate_) {
         return;
     }
@@ -140,16 +147,16 @@ GameObject* CreateMode::CreateObject()
 void CreateMode::SelectObject()
 {
 
-    //全てのhModelを探索する
+    //全てのhModelを探索する(複数人分用意するときに必要か?)
     for (int i = 0; i < modelData.size(); i++) {
-
         if (viewObjectList_.at(selecting_Object) == modelData.at(i).hModel) {
-
-
-            //セッティングオブジェクトに情報を与えて要素を消す
-            
         }
     }
+
+    //セッティングオブジェクトに情報を与えて要素を消す
+    settingObject_ = std::make_pair(viewObjectList_.at(selecting_Object), ZERO_FLOAT3);
+    viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
+
 
 }
 
@@ -273,4 +280,15 @@ bool CreateMode::IsOverlapCursor()
     return false;
     
     
+}
+
+bool CreateMode::IsAllDecidedObject()
+{
+
+    //キャラクター全員がオブジェクトを選択し終わっていたら
+    if (Input::IsKeyDown(DIK_2)) {
+        return true;
+    }
+
+    return false;
 }

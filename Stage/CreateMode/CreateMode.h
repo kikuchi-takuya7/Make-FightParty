@@ -31,8 +31,6 @@ struct ModelInfo {
 
 struct SelectModelInfo {
 
-	//何番目のモデルか
-	int num;
 
 	//
 
@@ -80,6 +78,8 @@ public:
 
 	bool IsOverlapCursor();
 
+	bool IsAllDecidedObject();
+
 	void Enter() { isUpdate_ = true; }
 	void Leave() { isUpdate_ = false; }
 
@@ -102,8 +102,8 @@ private:
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;
 
-	//プレイヤーが設置するオブジェクト。{モデル番号,座標}どのプレイヤーが選んでるかは要素番目で示す
-	std::pair<int,XMFLOAT3> settingObject_;
+	//プレイヤーが設置するオブジェクト。{モデル番号,座標}どのプレイヤーが選んでるかは要素番目で示す.モデルパターンは入れる必要なしかな
+	std::vector<std::pair<int,XMFLOAT3>> settingObject_;
 
 	bool isUpdate_;
 
