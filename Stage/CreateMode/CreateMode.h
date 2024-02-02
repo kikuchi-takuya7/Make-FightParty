@@ -3,9 +3,14 @@
 #include <stack>
 #include <vector>
 
+enum CREATESTATE {
+	SELECT_MODE,
+	SETTING_MODE,
+	NONE
+};
+
 //新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
 enum FBXPATTERN {
-	//SCHOOL,
 	CANNON,
 	NEEDLE,
 	ONEBROCK,
@@ -74,16 +79,31 @@ public:
 	//ディレクトリ内の指定した識別子のファイルネームを獲得
 	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
-	void MoveCamPos();
+	//////////////////////セレクトモードで使う関数////////////////////////////////
+
+	void SelectModeCamPos();
 
 	bool IsOverlapCursor();
 
 	bool IsAllDecidedObject();
 
+	void SwapElements();
+
+	//////////////////////セッティングモードで使う関数////////////////////////////////
+
+	void SettingModeCamPos();
+
+
+
+	///////////////////////////アクセス関数///////////////////////////////
+	void ToSelectMode();
+	void ToSettingMode();
 	void Enter() { isUpdate_ = true; }
 	void Leave() { isUpdate_ = false; }
 
 private:
+
+	CREATESTATE nowState_;
 
 	std::vector<ModelInfo> modelData;
 
@@ -95,9 +115,6 @@ private:
 
 	//作成したオブジェクトリスト
 	std::list<GameObject*> createObjectList_;
-
-	//hModelがどのモデルかのペアを表す
-	//std::vector<std::pair<int, FBXPATTERN>> modelPair_;
 
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;

@@ -127,14 +127,12 @@ void MetaAI::NextGame()
 	if (deadNum >= 3) {
 		/*pCreateMode_->ViewInit();
 		pCreateMode_->Enter();
-		pCreateMode_->MoveCamPos();*/
+		pCreateMode_->SelectModeCamPos();*/
 	}
 
 	//デバック用
 	if (Input::IsKeyDown(DIK_1)) {
-		pCreateMode_->ViewInit();
-		pCreateMode_->Enter();
-		pCreateMode_->MoveCamPos();
+		pCreateMode_->ToSelectMode();
 	}
 }
 

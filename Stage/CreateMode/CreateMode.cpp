@@ -49,14 +49,15 @@ void CreateMode::Initialize()
 
 void CreateMode::ViewInit()
 {
+    //カメラの位置を変えて
+    SelectModeCamPos();
+
+    //前回までのviewObjectをすべて消去して、新しくセットする
     viewObjectList_.clear();
-
-
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
         //hModelの中からランダムで表示させるオブジェクトを決める
-        viewObjectList_.push_back(rand() % modelData.size() + modelData.at(0).hModel);
-        //viewObjectList_.push_back(std::make_pair(modelData.at(i), i));
+        viewObjectList_.emplace_back(rand() % modelData.size() + modelData.at(0).hModel);
     }
 }
 
@@ -64,27 +65,44 @@ void CreateMode::ViewInit()
 void CreateMode::Update()
 {
 
-    if (!isUpdate_) {
+    switch (nowState_)
+    {
+    case SELECT_MODE:
+
+        //カーソルがモデルに合わさってるなら
+        if (IsOverlapCursor()) {
+
+            //ここでモデルを光らせたい
+            Debug::Log("hit", true);
+
+            if (Input::IsMouseButtonDown(0)) {
+                SelectObject();
+            }
+        }
+        else {
+            Debug::Log("nohit", true);
+        }
+
+        if (IsAllDecidedObject()) {
+            ToSettingMode();
+        }
+        
+        break;
+    
+    case SETTING_MODE:
+
+        if (Input::IsKey(DIK_A)) {
+            settingObject_.at(0).second.x += 1;
+        }
+
+        break;
+
+    case NONE:
+    default:
         return;
     }
 
-    //カーソルがモデルに合わさってるなら
-    if (IsOverlapCursor()) {
-
-        //ここでモデルを光らせたい
-        Debug::Log("hit",true);
-
-        if (Input::IsMouseButtonDown(0)){
-            SelectObject();
-        }
-    }
-    else {
-        Debug::Log("nohit", true);
-    }
-
-    if (IsAllDecidedObject()) {
-
-    }
+    
 
     
 }
@@ -94,25 +112,42 @@ void CreateMode::Draw()
 {
 
     //アップデート内でクリエイトモードとセットモードで切り替えるか
-    
-    if (!isUpdate_) {
+
+    switch (nowState_)
+    {
+    case SELECT_MODE:
+
+        for (int i = 0; i < viewObjectList_.size(); i++) {
+
+            Transform objPos;
+            objPos.position_ = OBJECT_POS[i];
+
+            if (i == selecting_Object) {
+                objPos.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
+            }
+
+            Model::SetTransform(viewObjectList_.at(i), objPos);
+            Model::Draw(viewObjectList_.at(i));
+        }
+        break;
+
+    case SETTING_MODE:
+        
+        for (int i = 0; i < settingObject_.size(); i++) {
+
+            Transform objPos;
+            objPos.position_ = settingObject_.at(i).second;
+            Model::SetTransform(settingObject_.at(i).first, objPos);
+            Model::Draw(settingObject_.at(i).first);
+        }
+        break;
+
+    case NONE:
+    default:
         return;
     }
 
     
-
-    for (int i = 0; i < viewObjectList_.size(); i++) {
-
-        Transform objPos;
-        objPos.position_ = OBJECT_POS[i];
-        
-        if (i == selecting_Object) {
-            objPos.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
-        }
-
-        Model::SetTransform(viewObjectList_.at(i), objPos);
-        Model::Draw(viewObjectList_.at(i));
-    }
 }
 
 //開放
@@ -154,7 +189,7 @@ void CreateMode::SelectObject()
     }
 
     //セッティングオブジェクトに情報を与えて要素を消す
-    settingObject_ = std::make_pair(viewObjectList_.at(selecting_Object), ZERO_FLOAT3);
+    settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), XMFLOAT3(15.0f,0,15.0f)));
     viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
 
 
@@ -163,7 +198,7 @@ void CreateMode::SelectObject()
 void CreateMode::AddCreateObject(GameObject* object)
 {
     //CheckDeleteObject();
-    createObjectList_.push_back(object);
+    createObjectList_.emplace_back(object);
     nextObjectId_++;
 }
 
@@ -186,7 +221,7 @@ std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, co
         if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
         }
         else {
-            file_names.push_back(win32fd.cFileName);
+            file_names.emplace_back(win32fd.cFileName);
             printf("%s\n", file_names.back().c_str());
 
         }
@@ -197,7 +232,7 @@ std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, co
     return file_names;
 }
 
-void CreateMode::MoveCamPos()
+void CreateMode::SelectModeCamPos()
 {
     Camera::SetPosition(XMFLOAT3(15, 20, 0));
     Camera::SetTarget(XMFLOAT3(15, 20, 15));
@@ -286,9 +321,38 @@ bool CreateMode::IsAllDecidedObject()
 {
 
     //キャラクター全員がオブジェクトを選択し終わっていたら
-    if (Input::IsKeyDown(DIK_2)) {
+    if (settingObject_.size() == 4) {
         return true;
     }
 
     return false;
+}
+
+void CreateMode::SwapElements()
+{
+
+    //選択したIDの順番からsettingObjectの順番を入れ替える。1から順番に
+
+
+}
+
+void CreateMode::SettingModeCamPos()
+{
+    /*Camera::SetPosition(XMFLOAT3(15, 5, 15));
+    Camera::SetTarget(XMFLOAT3(15, 0, 15));*/
+    Camera::SetPosition(XMFLOAT3(15, 15, -15));
+    Camera::SetTarget(XMFLOAT3(15, 0, 15));
+}
+
+void CreateMode::ToSelectMode()
+{
+    ViewInit();
+    nowState_ = SELECT_MODE;
+}
+
+void CreateMode::ToSettingMode()
+{
+    SwapElements();
+    SettingModeCamPos();
+    nowState_ = SETTING_MODE;
 }
