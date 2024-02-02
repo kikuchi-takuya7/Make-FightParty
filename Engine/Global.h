@@ -97,3 +97,14 @@ static bool operator ==(const XMFLOAT3& f1, const XMFLOAT3& f2) {
 
 	return ans;
 }
+
+static bool operator !=(const XMFLOAT3& f1, const XMFLOAT3& f2) {
+
+	bool ans = false;
+
+	if (f1.x != f2.x && f1.y != f2.y && f1.z != f2.z) {
+		ans = true;
+	}
+
+	return ans;
+}

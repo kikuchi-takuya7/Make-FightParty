@@ -105,7 +105,6 @@ void Character::KnockBackEnter(float distance)
 		lastPoint_.z = 29;
 	}
 
-	//player->SetPosition(VectorToFloat3(pos));
 }
 
 void Character::KnockBackUpdate(int rigidityFlame)

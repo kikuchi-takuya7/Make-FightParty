@@ -53,6 +53,7 @@ public:
 	//初期化
 	void Initialize();
 	void ViewInit();
+	void SettingInit();
 
 	//更新
 	void Update();
@@ -81,8 +82,6 @@ public:
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
 
-	void SelectModeCamPos();
-
 	bool IsOverlapCursor();
 
 	bool IsAllDecidedObject();
@@ -91,15 +90,20 @@ public:
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
 
-	void SettingModeCamPos();
+	void MovingObject();
 
 
+
+	/////////////////////////カメラ移動で使う関数//////////////////////////////////
+
+	float GetRateValue(float begin, float end, float rate);
+
+	void MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar);
 
 	///////////////////////////アクセス関数///////////////////////////////
 	void ToSelectMode();
 	void ToSettingMode();
-	void Enter() { isUpdate_ = true; }
-	void Leave() { isUpdate_ = false; }
+	CREATESTATE GetState() { return nowState_; }
 
 private:
 
@@ -122,9 +126,18 @@ private:
 	//プレイヤーが設置するオブジェクト。{モデル番号,座標}どのプレイヤーが選んでるかは要素番目で示す.モデルパターンは入れる必要なしかな
 	std::vector<std::pair<int,XMFLOAT3>> settingObject_;
 
-	bool isUpdate_;
+	float rotateObjectValue_;
 
 	int nextObjectId_;
+
+	int flame_;
+	
+	//////カメラを滑らかに動かすのに使う変数
+
+	//緩急を付けるレート
+	float camMoveRate_;
+
+
 
 	//インスタンスを作成してobjectListに入れるテンプレート
 	template <class T>

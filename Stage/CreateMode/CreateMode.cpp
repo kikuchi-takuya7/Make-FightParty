@@ -11,11 +11,22 @@
 #include "../../Engine/Debug.h"
 
 
+//定数宣言
 namespace {
     const int PLAYER_NUM = 1;
     const int MAX_VIEW_OBJECT = 8;
-    const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(10,22,15),XMFLOAT3(15,22,15) ,XMFLOAT3(20,22,15) ,XMFLOAT3(25,22,15),
-                                                   XMFLOAT3(10,18,15) ,XMFLOAT3(15,18,15)  ,XMFLOAT3(20,18,15)  ,XMFLOAT3(25,18,15)};
+    const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
+                                                   XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
+    //参加するプレイヤーの最大人数分
+    const XMFLOAT3 PLAYER_UI_POS[4] = { XMFLOAT3(5,15,15),XMFLOAT3(10,15,15) ,XMFLOAT3(15,15,15) ,XMFLOAT3(20,15,15) };
+    const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
+    const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
+    const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 15, -15);
+    const XMFLOAT3 SETTING_CAM_TAR = XMFLOAT3(15, 0, 15);
+    const XMFLOAT3 GAME_CAM_POS = XMFLOAT3(15, 10, -20);
+    const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
+    const int WAIT_FLAME = 120;
+
 }
 
 //コンストラクタ
@@ -42,15 +53,16 @@ void CreateMode::Initialize()
         assert(modelData.at(i).hModel >= 0);
     }
 
-    
-
-    isUpdate_ = false;
+    rotateObjectValue_ = 0;
+    nowState_ = NONE;
+    flame_ = 0;
 }
 
 void CreateMode::ViewInit()
 {
-    //カメラの位置を変えて
-    SelectModeCamPos();
+    flame_ = 0;
+    rotateObjectValue_ = 0;
+    camMoveRate_ = 0.0f;
 
     //前回までのviewObjectをすべて消去して、新しくセットする
     viewObjectList_.clear();
@@ -61,6 +73,16 @@ void CreateMode::ViewInit()
     }
 }
 
+void CreateMode::SettingInit()
+{
+
+    flame_ = 0;
+    camMoveRate_ = 0.0f;
+
+    SwapElements();
+   
+}
+
 //更新
 void CreateMode::Update()
 {
@@ -69,21 +91,30 @@ void CreateMode::Update()
     {
     case SELECT_MODE:
 
-        //カーソルがモデルに合わさってるなら
-        if (IsOverlapCursor()) {
+        MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR);
 
-            //ここでモデルを光らせたい
-            Debug::Log("hit", true);
+        //オブジェクトがプレイヤー分選択されたら
+        if (!IsAllDecidedObject()) {
 
-            if (Input::IsMouseButtonDown(0)) {
-                SelectObject();
+            //カーソルがモデルに合わさってるなら
+            if (IsOverlapCursor()) {
+
+                //ここでモデルを光らせたい
+                Debug::Log("hit", true);
+
+                if (Input::IsMouseButtonDown(0)) {
+                    SelectObject();
+                }
             }
-        }
-        else {
-            Debug::Log("nohit", true);
+            else {
+                Debug::Log("nohit", true);
+            }
+
+            break;
         }
 
-        if (IsAllDecidedObject()) {
+        flame_++;
+        if (flame_ == WAIT_FLAME) {
             ToSettingMode();
         }
         
@@ -91,9 +122,9 @@ void CreateMode::Update()
     
     case SETTING_MODE:
 
-        if (Input::IsKey(DIK_A)) {
-            settingObject_.at(0).second.x += 1;
-        }
+        MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR);
+
+        //移動する処理。
 
         break;
 
@@ -119,25 +150,38 @@ void CreateMode::Draw()
 
         for (int i = 0; i < viewObjectList_.size(); i++) {
 
-            Transform objPos;
-            objPos.position_ = OBJECT_POS[i];
-
+            Transform objTrans;
+            objTrans.position_ = OBJECT_POS[i];
+            objTrans.rotate_.y = rotateObjectValue_;
+            
             if (i == selecting_Object) {
-                objPos.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
+                objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
             }
 
-            Model::SetTransform(viewObjectList_.at(i), objPos);
+            Model::SetTransform(viewObjectList_.at(i), objTrans);
             Model::Draw(viewObjectList_.at(i));
         }
+
+        for (int i = 0; i < settingObject_.size(); i++) {
+            
+            Transform objTrans;
+            objTrans.position_ = PLAYER_UI_POS[i];
+            objTrans.rotate_.y = rotateObjectValue_;
+
+            Model::SetTransform(settingObject_.at(i).first, objTrans);
+            Model::Draw(settingObject_.at(i).first);
+        }
+
+        rotateObjectValue_++;
         break;
 
     case SETTING_MODE:
         
         for (int i = 0; i < settingObject_.size(); i++) {
 
-            Transform objPos;
-            objPos.position_ = settingObject_.at(i).second;
-            Model::SetTransform(settingObject_.at(i).first, objPos);
+            Transform objTrans;
+            objTrans.position_ = settingObject_.at(i).second;
+            Model::SetTransform(settingObject_.at(i).first, objTrans);
             Model::Draw(settingObject_.at(i).first);
         }
         break;
@@ -192,7 +236,6 @@ void CreateMode::SelectObject()
     settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), XMFLOAT3(15.0f,0,15.0f)));
     viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
 
-
 }
 
 void CreateMode::AddCreateObject(GameObject* object)
@@ -230,12 +273,6 @@ std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, co
     FindClose(hFind);
 
     return file_names;
-}
-
-void CreateMode::SelectModeCamPos()
-{
-    Camera::SetPosition(XMFLOAT3(15, 20, 0));
-    Camera::SetTarget(XMFLOAT3(15, 20, 15));
 }
 
 bool CreateMode::IsOverlapCursor()
@@ -294,9 +331,9 @@ bool CreateMode::IsOverlapCursor()
         XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
 
         //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す
-        Transform objPos;
-        objPos.position_ = OBJECT_POS[i];
-        Model::SetTransform(viewObjectList_.at(i), objPos);
+        Transform objTrans;
+        objTrans.position_ = OBJECT_POS[i];
+        Model::SetTransform(viewObjectList_.at(i), objTrans);
 
         Model::RayCast(viewObjectList_.at(i), &data);
 
@@ -333,15 +370,49 @@ void CreateMode::SwapElements()
 
     //選択したIDの順番からsettingObjectの順番を入れ替える。1から順番に
 
+}
+
+void CreateMode::MovingObject()
+{
+
+    //コントローラーでやるとしたらカーソルの位置からレイを飛ばしたらどこの座標に当たったかも重要になってくる
 
 }
 
-void CreateMode::SettingModeCamPos()
+float CreateMode::GetRateValue(float begin, float end, float rate)
 {
-    /*Camera::SetPosition(XMFLOAT3(15, 5, 15));
-    Camera::SetTarget(XMFLOAT3(15, 0, 15));*/
-    Camera::SetPosition(XMFLOAT3(15, 15, -15));
-    Camera::SetTarget(XMFLOAT3(15, 0, 15));
+    return (end - begin) * rate + begin;
+}
+
+void CreateMode::MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar)
+{
+    //カメラの位置と見る地点を徐々に変える
+    XMFLOAT3 nowCamPos = Camera::GetPosition();
+    XMFLOAT3 nowCamTar = Camera::GetTarget();
+
+    //レートでぬるぬる動くように
+    if (camMoveRate_ < 1.0f) {
+        camMoveRate_ += 0.05f;
+
+        // 変な数字で止まらないように
+        if (camMoveRate_ > 1.0f)
+            camMoveRate_ = 1.0f;
+
+        //ターゲットとポジションが同じだとエラー起きるから注意
+
+        nowCamPos.x = GetRateValue(nowCamPos.x, lastPos.x, camMoveRate_);
+        nowCamPos.y = GetRateValue(nowCamPos.y, lastPos.y, camMoveRate_);
+        nowCamPos.z = GetRateValue(nowCamPos.z, lastPos.z, camMoveRate_);
+
+        Camera::SetPosition(nowCamPos);
+
+        nowCamTar.x = GetRateValue(nowCamTar.x, lastTar.x, camMoveRate_);
+        nowCamTar.y = GetRateValue(nowCamTar.y, lastTar.y, camMoveRate_);
+        nowCamTar.z = GetRateValue(nowCamTar.z, lastTar.z, camMoveRate_);
+
+        Camera::SetTarget(nowCamTar);
+
+    }
 }
 
 void CreateMode::ToSelectMode()
@@ -352,7 +423,7 @@ void CreateMode::ToSelectMode()
 
 void CreateMode::ToSettingMode()
 {
-    SwapElements();
-    SettingModeCamPos();
+    
+    SettingInit();
     nowState_ = SETTING_MODE;
 }

@@ -124,14 +124,12 @@ void MetaAI::NextGame()
 	}
 
 	//3人以上死んでいたら
-	if (deadNum >= 3) {
-		/*pCreateMode_->ViewInit();
-		pCreateMode_->Enter();
-		pCreateMode_->SelectModeCamPos();*/
+	if (deadNum >= 3 && pCreateMode_->GetState() == NONE) {
+		pCreateMode_->ToSelectMode();
 	}
 
 	//デバック用
-	if (Input::IsKeyDown(DIK_1)) {
+	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
 		pCreateMode_->ToSelectMode();
 	}
 }
