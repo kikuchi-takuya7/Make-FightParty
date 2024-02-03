@@ -100,7 +100,7 @@ private:
 	/////////////////////////////Character‚Ìî•ñ////////////////////////
 
 	vector<Character*> pCharacterList_;
-	std::list<int> enemyID_;
+	vector<int> enemyID_;
 	
 };
 

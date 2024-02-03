@@ -51,7 +51,12 @@ void NavigationAI::MoveSelectObject(Transform& trans, int ID)
 		return;
 	}
 
+	//“G‚Ì•ª‚¾‚¯‚Ç‚±‚ÉˆÚ“®‚³‚¹‚é‚©‚Ìˆ—‚ğ‚·‚é
+	//CharacterAI‚ÉˆÚ“®‚³‚¹‚éŠÖ”ì‚Á‚ÄA‚»‚ÌŠÖ”“à‚ÅMetaAI‚É‚Ç‚ÌêŠ‚É’u‚¯‚Î‚¢‚¢‚©•·‚­Š´‚¶‚©‚ÈH
+	for (int i = enemyID_.at(ZERO); i < enemyID_.back();i++) {
 
+		pCharacterList_.at(i);
+	}
 
 }
 
