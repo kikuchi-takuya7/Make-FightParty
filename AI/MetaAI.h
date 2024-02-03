@@ -57,7 +57,7 @@ public:
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void ChangeStatus(int ID, Status status) { characterStatusList_.at(ID) = status; }
 	void SetCreateMode(CreateMode* create) { pCreateMode_ = create; }
-
+	vector<int> GetRanking() { return ranking_; }
 
 
 private:
@@ -74,5 +74,8 @@ private:
 
 	//Œ»İ1ˆÊ‚Ìl‚ÌID‚ğŠo‚¦‚Ä‚¨‚­
 	vector<int> No1CharaID_;
+
+	//Œ»İ‚Ì‡ˆÊ‚ğID‚ÅŠo‚¦‚Ä‚¨‚­
+	vector<int> ranking_;
 };
 

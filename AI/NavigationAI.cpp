@@ -43,6 +43,18 @@ void NavigationAI::Release()
 {
 }
 
+void NavigationAI::MoveSelectObject(Transform& trans, int ID)
+{
+
+	//プレイヤーなら処理しない
+	if (ID < enemyID_.front()) {
+		return;
+	}
+
+
+
+}
+
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
@@ -302,7 +314,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 }
 
-
 int NavigationAI::Heuristic(int z, int x, IntPair target)
 {
 	//絶対値の差をとる
@@ -312,13 +323,6 @@ int NavigationAI::Heuristic(int z, int x, IntPair target)
 	//斜め移動なので大きいほうを返す
 	return max(tmpZ, tmpX);
 }
-
-//XMFLOAT3 NavigationAI::TeachNextPos()
-//{
-//	XMFLOAT3 fMove = { (float)teachPath_.second, ZERO, nextPos_.first };
-//
-//}
-
 
 IntPair NavigationAI::FloatToIntPair(float z, float x)
 {

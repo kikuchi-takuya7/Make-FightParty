@@ -9,6 +9,8 @@
 #include <string>
 #include <stdexcept>
 #include "../../Engine/Debug.h"
+#include "../../AI/MetaAI.h"
+#include "../../AI/NavigationAI.h"
 
 
 //定数宣言
@@ -30,8 +32,8 @@ namespace {
 }
 
 //コンストラクタ
-CreateMode::CreateMode()
-    : selecting_Object(PATTERN_END), nextObjectId_(0)
+CreateMode::CreateMode(GameObject* parent)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),selecting_Object(PATTERN_END), nextObjectId_(0)
 {
 
 
@@ -125,6 +127,7 @@ void CreateMode::Update()
         MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR);
 
         //移動する処理。
+        MovingObject();
 
         break;
 
@@ -148,6 +151,7 @@ void CreateMode::Draw()
     {
     case SELECT_MODE:
 
+        //空中に浮くオブジェクトを表示する
         for (int i = 0; i < viewObjectList_.size(); i++) {
 
             Transform objTrans;
@@ -162,10 +166,14 @@ void CreateMode::Draw()
             Model::Draw(viewObjectList_.at(i));
         }
 
+        //vector<int> ranking = pMetaAI_->GetRanking();
+
+        //既に選ばれたオブジェクトを表示する
         for (int i = 0; i < settingObject_.size(); i++) {
             
+            //最下位からオブジェクトを選択するため、選んだ人の位置から置く
             Transform objTrans;
-            objTrans.position_ = PLAYER_UI_POS[i];
+            objTrans.position_ = PLAYER_UI_POS[pMetaAI_->GetRanking().at(settingObject_.size() - i)];
             objTrans.rotate_.y = rotateObjectValue_;
 
             Model::SetTransform(settingObject_.at(i).first, objTrans);
@@ -179,9 +187,7 @@ void CreateMode::Draw()
         
         for (int i = 0; i < settingObject_.size(); i++) {
 
-            Transform objTrans;
-            objTrans.position_ = settingObject_.at(i).second;
-            Model::SetTransform(settingObject_.at(i).first, objTrans);
+            Model::SetTransform(settingObject_.at(i).first, settingObject_.at(i).second);
             Model::Draw(settingObject_.at(i).first);
         }
         break;
@@ -198,30 +204,30 @@ void CreateMode::Draw()
 void CreateMode::Release()
 {
 }
-
-GameObject* CreateMode::CreateObject()
-{
-
-    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
-    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
-
-    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
-    switch (selecting_Object)
-    {
-    case TESTFLOOR: {
-        TestFloor* pObject = CreateInstance<TestFloor>();
-        return pObject;
-        break;
-    }
-    case PATTERN_END: {
-        break;
-    }
-    default:
-        break;
-    }
-
-    return NULL;   // 指定のクラスが無い
-}
+//
+//GameObject* CreateMode::CreateObject()
+//{
+//
+//    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
+//    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
+//
+//    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
+//    switch (selecting_Object)
+//    {
+//    case TESTFLOOR: {
+//        TestFloor* pObject = CreateInstance<TestFloor>();
+//        return pObject;
+//        break;
+//    }
+//    case PATTERN_END: {
+//        break;
+//    }
+//    default:
+//        break;
+//    }
+//
+//    return NULL;   // 指定のクラスが無い
+//}
 
 void CreateMode::SelectObject()
 {
@@ -232,8 +238,13 @@ void CreateMode::SelectObject()
         }
     }
 
-    //セッティングオブジェクトに情報を与えて要素を消す
-    settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), XMFLOAT3(15.0f,0,15.0f)));
+    
+
+    //セッティングオブジェクトに情報を与えて要素を消す.この時点でCharacter順にしちゃいたい？
+    Transform objPos;
+    objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
+    settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), objPos));
+    //settingObject_.at()
     viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
 
 }
@@ -370,12 +381,24 @@ void CreateMode::SwapElements()
 
     //選択したIDの順番からsettingObjectの順番を入れ替える。1から順番に
 
+
+
 }
 
 void CreateMode::MovingObject()
 {
 
     //コントローラーでやるとしたらカーソルの位置からレイを飛ばしたらどこの座標に当たったかも重要になってくる
+    //ステージを立方体で埋めた奴にして、当たった奴の上に載せる説もワンチャン
+    
+    vector<int> ranking = pMetaAI_->GetRanking();
+
+    //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらうか
+    for (int i = 0; i < settingObject_.size(); i++) {
+        pNavigationAI_->MoveSelectObject(settingObject_.at(i).second,ranking.at(i));
+    }
+    
+
 
 }
 

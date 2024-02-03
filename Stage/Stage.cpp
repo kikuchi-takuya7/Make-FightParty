@@ -2,7 +2,8 @@
 #include "../Engine/Model.h"
 #include "../Engine/Global.h"
 
-Stage::Stage(GameObject* parent):hModel_(-1),pCreateMode_(nullptr)
+Stage::Stage(GameObject* parent)
+	:GameObject(parent, "Stage"),hModel_(-1),pCreateMode_(nullptr)
 {
 }
 
@@ -26,7 +27,7 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
-	pCreateMode_->Update();
+	//pCreateMode_->Update();
 }
 
 void Stage::Draw()
@@ -35,11 +36,11 @@ void Stage::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
-	pCreateMode_->Draw();
+	//pCreateMode_->Draw();
 
 }
 
 void Stage::Release()
 {
-	SAFE_DELETE(pCreateMode_);
+	//SAFE_DELETE(pCreateMode_);
 }

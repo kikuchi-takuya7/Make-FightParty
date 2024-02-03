@@ -4,7 +4,7 @@
 #include "../Engine/Camera.h"
 
 MetaAI::MetaAI(GameObject* parent)
-	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),characterStatusList_(0)
+	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),ranking_(0),characterStatusList_(0)
 {
 }
 
@@ -17,6 +17,11 @@ void MetaAI::Initialize()
 
 	//最初は誰が一位でも同じ
 	No1CharaID_.emplace_back(ZERO);
+
+	//とりあえずでIDだけ入れとく
+	for (int i = 0; i < 4; i++) {
+		ranking_.emplace_back(i);
+	}
 }
 
 void MetaAI::Release()
@@ -82,7 +87,7 @@ void MetaAI::CheckNo1Chara()
 	//ソートする用の配列に入れる
 	for (int i = ZERO; i < characterStatusList_.size(); i++) {
 
-		//キャラのステータスとIDを入れる（リストに入ってる順番がそのままIDになってる）
+		//キャラのWinPointとIDを入れる（リストに入ってる順番がそのままIDになってる）
 		ranking.emplace_back(std::make_pair(characterStatusList_.at(i).winPoint,i));
 	}
 
@@ -92,19 +97,24 @@ void MetaAI::CheckNo1Chara()
 	//一位のポイントとIDを覚えておく
 	No1WinPoint = ranking.at(ZERO).first;
 	No1CharaID_.emplace_back(ranking.at(ZERO).second);
+	
+	//ついでにメンバ変数のランキングも更新する
+	ranking_.at(ZERO) = ranking.at(ZERO).second;
 	sameRateChara++;
 
 	for (int i = 1; i < ranking.size(); i++) {
 
-		//一位の人と同じポイントなら
+		//一位の人と同じポイントなら同率１位を入れる
 		if (No1WinPoint == characterStatusList_.at(i).winPoint) {
 
 			sameRateChara++;
 			No1CharaID_.emplace_back(ranking.at(i).second);
+			ranking_.at(i) = ranking.at(i).second;
 		}
 		else {
-			//二位以下は探索しない
-			break;
+			
+			//2位以下を更新
+			ranking_.at(i) = ranking.at(i).second;
 		}
 	}
 

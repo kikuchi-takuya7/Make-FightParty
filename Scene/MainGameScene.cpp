@@ -36,10 +36,12 @@ void MainGameScene::Initialize()
 	
 	int objectID = 0;
 
-	CreateMode* createMode = new CreateMode;
-	createMode->Initialize();
+	CreateMode* createMode = Instantiate<CreateMode>(this);
+	createMode->SetMetaAI(pMetaAI_);
+	createMode->SetNavigationAI(pNavigationAI_);
 	pStage_->SetCreateMode(createMode);
 	pMetaAI_->SetCreateMode(createMode);
+
 
 	//プレイヤーをプレイ人数分用意する
 	for (int i = 0; i < PLAYER_NUM; i++) {
@@ -65,7 +67,9 @@ void MainGameScene::Initialize()
 		pEnemy[i] = Instantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
 
+		pNavigationAI_->PushEnemyID(objectID);
 		pNavigationAI_->PushCharacter(pEnemy[i]);
+		
 		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
 
 		pEnemy[i]->SetPosition(CHARA_POS[objectID]);
@@ -80,6 +84,7 @@ void MainGameScene::Initialize()
 		charaAI->SetEnemy(pEnemy[i]);
 		charaAI->SetNavigationAI(pNavigationAI_);
 		charaAI->SetMetaAI(pMetaAI_);
+
 		pEnemy[i]->SetCharacterAI(charaAI);
 
 		charaAI->AskTarget();
