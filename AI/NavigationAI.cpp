@@ -2,6 +2,7 @@
 #include "../Engine/Input.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
+#include "CharacterAI.h"
 
 namespace {
 	const int STAGE_HEIGHT = 30;
@@ -47,15 +48,12 @@ void NavigationAI::MoveSelectObject(Transform& trans, int ID)
 {
 
 	//プレイヤーなら処理しない
-	if (ID < enemyID_.front()) {
-		return;
-	}
 
 	//敵の分だけどこに移動させるかの処理をする
 	//CharacterAIに移動させる関数作って、その関数内でMetaAIにどの場所に置けばいいか聞く感じかな？
-	for (int i = enemyID_.at(ZERO); i < enemyID_.back();i++) {
+	for (int i = ZERO; i < pCharacterAIList_.size();i++) {
 
-		pCharacterList_.at(i);
+		pCharacterAIList_.at(i)->MoveSelectObject();
 	}
 
 }

@@ -67,7 +67,6 @@ void MainGameScene::Initialize()
 		pEnemy[i] = Instantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
 
-		pNavigationAI_->PushEnemyID(objectID);
 		pNavigationAI_->PushCharacter(pEnemy[i]);
 		
 		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
@@ -84,6 +83,8 @@ void MainGameScene::Initialize()
 		charaAI->SetEnemy(pEnemy[i]);
 		charaAI->SetNavigationAI(pNavigationAI_);
 		charaAI->SetMetaAI(pMetaAI_);
+
+		pNavigationAI_->PushCharacterAI(charaAI);
 
 		pEnemy[i]->SetCharacterAI(charaAI);
 

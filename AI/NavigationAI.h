@@ -13,7 +13,9 @@ using IntPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 
+
 class Character;
+class CharacterAI;
 
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
@@ -86,7 +88,7 @@ public:
 	//void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
 	//void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
 	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
-	void PushEnemyID(int ID) { enemyID_.emplace_back(ID); }
+	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }
 
 private:
 
@@ -100,7 +102,8 @@ private:
 	/////////////////////////////Characterの情報////////////////////////
 
 	vector<Character*> pCharacterList_;
-	vector<int> enemyID_;
+
+	vector<CharacterAI*> pCharacterAIList_;
 	
 };
 

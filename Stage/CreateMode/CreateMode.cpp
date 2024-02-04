@@ -15,7 +15,7 @@
 
 //定数宣言
 namespace {
-    const int PLAYER_NUM = 1;
+    const int PLAYER_NUM = 4;
     const int MAX_VIEW_OBJECT = 8;
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
@@ -55,6 +55,23 @@ void CreateMode::Initialize()
         assert(modelData.at(i).hModel >= 0);
     }
 
+    //前回までのviewObjectをすべて消去して、新しくセットする
+    viewObjectList_.clear();
+    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+
+        //hModelの中からランダムで表示させるオブジェクトを決める
+        viewObjectList_.emplace_back(rand() % modelData.size() + modelData.at(0).hModel);
+    }
+
+    //事前にプレイヤーの数だけ
+    for (int i = ZERO; i < PLAYER_NUM; i++) {
+
+        Transform objPos;
+        settingObject_.at(i) = std::make_pair(-1, objPos);
+    }
+
+
+
     rotateObjectValue_ = 0;
     nowState_ = NONE;
     flame_ = 0;
@@ -65,14 +82,20 @@ void CreateMode::ViewInit()
     flame_ = 0;
     rotateObjectValue_ = 0;
     camMoveRate_ = 0.0f;
+    
+    //前回のセッティングオブジェクトの情報をすべて消して、事前に４つ分の要素を取っておく
+    for (int i = ZERO; i < settingObject_.size(); i++) {
 
-    //前回までのviewObjectをすべて消去して、新しくセットする
-    viewObjectList_.clear();
+        settingObject_.at(i).first = -1;
+    }
+
+    //hModelの中からランダムで表示させるオブジェクトを入れなおす
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
-        //hModelの中からランダムで表示させるオブジェクトを決める
-        viewObjectList_.emplace_back(rand() % modelData.size() + modelData.at(0).hModel);
+        viewObjectList_.at(i) = rand() % modelData.size() + modelData.at(0).hModel;
     }
+
+    
 }
 
 void CreateMode::SettingInit()
@@ -173,6 +196,8 @@ void CreateMode::Draw()
             
             //最下位からオブジェクトを選択するため、選んだ人の位置から置く
             Transform objTrans;
+
+            //メタAIからランキングを聞いて、そのランキングの一番下の人からオブジェクトを表示。そもそも並び替えちゃえばこんなことする必要ない？
             objTrans.position_ = PLAYER_UI_POS[pMetaAI_->GetRanking().at(settingObject_.size() - i)];
             objTrans.rotate_.y = rotateObjectValue_;
 
@@ -186,6 +211,11 @@ void CreateMode::Draw()
     case SETTING_MODE:
         
         for (int i = 0; i < settingObject_.size(); i++) {
+
+            //まだ選択されていなかったら
+            if (settingObject_.at(i).first == -1) {
+                continue;
+            }
 
             Model::SetTransform(settingObject_.at(i).first, settingObject_.at(i).second);
             Model::Draw(settingObject_.at(i).first);
@@ -204,7 +234,7 @@ void CreateMode::Draw()
 void CreateMode::Release()
 {
 }
-//
+
 //GameObject* CreateMode::CreateObject()
 //{
 //
@@ -233,13 +263,10 @@ void CreateMode::SelectObject()
 {
 
     //全てのhModelを探索する(複数人分用意するときに必要か?)
-    for (int i = 0; i < modelData.size(); i++) {
-        if (viewObjectList_.at(selecting_Object) == modelData.at(i).hModel) {
-        }
-    }
+   
 
     
-
+    //セッティングオブジェクトをinitializeの時点で4つ分要素確保しといて、入れる感じの方が良いか？
     //セッティングオブジェクトに情報を与えて要素を消す.この時点でCharacter順にしちゃいたい？
     Transform objPos;
     objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
@@ -369,17 +396,23 @@ bool CreateMode::IsAllDecidedObject()
 {
 
     //キャラクター全員がオブジェクトを選択し終わっていたら
-    if (settingObject_.size() == 4) {
-        return true;
+
+    for (int i = ZERO; i < settingObject_.size(); i++) {
+
+        //まだ選択されていないオブジェクトがあったら
+        if (settingObject_.at(i).first == -1) {
+            return false;
+        }
     }
 
-    return false;
+    return true;
 }
 
 void CreateMode::SwapElements()
 {
 
     //選択したIDの順番からsettingObjectの順番を入れ替える。1から順番に
+    vector<int> ranking = pMetaAI_->GetRanking();
 
 
 

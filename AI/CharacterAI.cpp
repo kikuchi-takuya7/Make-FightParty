@@ -96,6 +96,13 @@ void CharacterAI::IsAttack()
 	}
 }
 
+void CharacterAI::MoveSelectObject()
+{
+	//MetaAI‚É‚Ç‚±‚É’u‚¯‚Î‚¢‚¢‚©•·‚­H
+
+
+}
+
 void CharacterAI::TellStatus()
 {
 	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
