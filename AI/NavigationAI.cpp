@@ -44,17 +44,16 @@ void NavigationAI::Release()
 {
 }
 
-void NavigationAI::MoveSelectObject(Transform& trans, int ID)
+Transform NavigationAI::MoveSelectObject(int ID)
 {
 
 	//プレイヤーなら処理しない
+	//最大のプレイ人数は4人で、そこから敵の合計数を引いた数が、敵の最初のIDとなるため、それ以下のIDはプレイヤーになる
+	int minEnemyID = 4 - pCharacterAIList_.size();
 
-	//敵の分だけどこに移動させるかの処理をする
-	//CharacterAIに移動させる関数作って、その関数内でMetaAIにどの場所に置けばいいか聞く感じかな？
-	for (int i = ZERO; i < pCharacterAIList_.size();i++) {
-
-		pCharacterAIList_.at(i)->MoveSelectObject();
-	}
+	//IDから最小の敵IDを引いて照らし合わせる
+	return pCharacterAIList_.at(ID - minEnemyID)->MoveSelectObject();
+	
 
 }
 

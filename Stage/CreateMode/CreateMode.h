@@ -95,7 +95,7 @@ public:
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
 
-	void MovingObject();
+	void AIMovingObject();
 
 
 
@@ -111,6 +111,7 @@ public:
 	CREATESTATE GetState() { return nowState_; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
+	void SetStartEnemyID(int ID) { startEnemyID_ = ID; }
 
 private:
 
@@ -133,7 +134,7 @@ private:
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;
 
-	//プレイヤーが設置するオブジェクト。{モデル番号,そのモデルのTransform}どのプレイヤーが選んでるかは要素番目で示す.モデルパターンは入れる必要なしかな
+	//プレイヤーが設置するオブジェクト。{モデル番号,そのモデルのTransform}どのプレイヤーが選んでるかは要素番目で示している
 	std::vector<std::pair<int,Transform>> settingObject_;
 
 	float rotateObjectValue_;
@@ -141,7 +142,9 @@ private:
 	int nextObjectId_;
 
 	int flame_;
-	
+
+	int startEnemyID_;
+
 	//////カメラを滑らかに動かすのに使う変数
 
 	//緩急を付けるレート

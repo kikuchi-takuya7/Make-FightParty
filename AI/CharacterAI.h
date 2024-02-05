@@ -43,7 +43,7 @@ public:
 
 
 
-	void MoveSelectObject();
+	Transform MoveSelectObject();
 
 	///////////////////ãˆÊAI‚Éî•ñ‚ğ“`‚¦‚éŠÖ”/////////////////////////////
 

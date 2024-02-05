@@ -42,7 +42,7 @@ public:
 	//////////ƒƒ“ƒoŠÖ”///////////////
 
 
-	void MoveSelectObject(Transform& trans,int ID);
+	Transform MoveSelectObject(int ID);
 
 
 

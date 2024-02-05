@@ -148,7 +148,9 @@ void CreateMode::Update()
         MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR);
 
         //移動する処理。
-        MovingObject();
+        if (Input::IsKeyDown(DIK_0)) {
+            AIMovingObject();
+        }
 
         break;
 
@@ -195,8 +197,8 @@ void CreateMode::Draw()
             //最下位からオブジェクトを選択するため、選んだ人の位置から置く
             Transform objTrans;
 
-            //メタAIからランキングを聞いて、そのランキングの一番下の人からオブジェクトを表示。そもそも並び替えちゃえばこんなことする必要ない？
-            objTrans.position_ = PLAYER_UI_POS[pMetaAI_->GetRanking().at(settingObject_.size() - i)];
+            //settingObjectはすでに順位順になってるからそのまま表示しようとして大丈夫なはず
+            objTrans.position_ = PLAYER_UI_POS[i];
             objTrans.rotate_.y = rotateObjectValue_;
 
             Model::SetTransform(settingObject_.at(i).first, objTrans);
@@ -209,11 +211,6 @@ void CreateMode::Draw()
     case SETTING_MODE:
         
         for (int i = 0; i < settingObject_.size(); i++) {
-
-            //まだ選択されていなかったら
-            if (settingObject_.at(i).first == -1) {
-                continue;
-            }
 
             Model::SetTransform(settingObject_.at(i).first, settingObject_.at(i).second);
             Model::Draw(settingObject_.at(i).first);
@@ -266,9 +263,20 @@ void CreateMode::SelectObject()
     objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
     //settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), objPos));
     
-    //ここでランキングを取得してビリから入れていく。メンバ変数が必要かも
-    std::vector<int> ranking = pMetaAI_->GetRanking();
-    settingObject_.at(0);
+    //rankingのビリからセットする
+    int selectedObjectNum = 3;
+    for (int i = 0; i < settingObject_.size(); i++) {
+        
+        //選ばれたオブジェクトがあったら、次の順位の人を選択する
+        if (settingObject_.at(i).first != -1) {
+            selectedObjectNum--;
+        }
+    }
+
+    //選択したビリの位置から順にオブジェクトを入れてく
+    settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object);
+    settingObject_.at(selectedObjectNum).second = objPos;
+
     viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
 
 }
@@ -405,7 +413,7 @@ bool CreateMode::IsAllDecidedObject()
     return true;
 }
 
-void CreateMode::MovingObject()
+void CreateMode::AIMovingObject()
 {
 
     //コントローラーでやるとしたらカーソルの位置からレイを飛ばしたらどこの座標に当たったかも重要になってくる
@@ -414,8 +422,12 @@ void CreateMode::MovingObject()
     vector<int> ranking = pMetaAI_->GetRanking();
 
     //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらうか
-    for (int i = 0; i < settingObject_.size(); i++) {
-        pNavigationAI_->MoveSelectObject(settingObject_.at(i).second,ranking.at(i));
+    //すでにsettingObjectはID順番になってるはず
+    for (int i = startEnemyID_; i < settingObject_.size(); i++) {
+
+        //引数として戻り値として返すか、アドレス渡して変えてもらうかどっちにする。って思ったけどそもそもTransform引数で渡す必要ないか
+        //settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
+        settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
     }
     
 

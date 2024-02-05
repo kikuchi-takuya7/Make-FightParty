@@ -59,6 +59,9 @@ void MainGameScene::Initialize()
 		
 	}
 	
+	//敵の最初のIDを覚えて後で使う
+	createMode->SetStartEnemyID(objectID);
+
 	Enemy* pEnemy[ENEMY_NUM];
 	
 	//各種AIを用意してセットする
@@ -75,6 +78,8 @@ void MainGameScene::Initialize()
 		objectID++;
 
 	}
+
+
 
 	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めてプレイヤー以外もちゃんと狙うように
 	for (int i = 0; i < ENEMY_NUM; i++) {
