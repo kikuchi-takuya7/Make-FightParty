@@ -90,7 +90,8 @@ public:
 
 	bool IsAllDecidedObject();
 
-	void SwapElements();
+	//事前にプレイヤーの数だけ用意して、その順位に対応した位置に置くから大丈夫？
+	//void SwapElements();
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
 

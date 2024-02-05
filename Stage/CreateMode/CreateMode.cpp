@@ -63,11 +63,11 @@ void CreateMode::Initialize()
         viewObjectList_.emplace_back(rand() % modelData.size() + modelData.at(0).hModel);
     }
 
-    //事前にプレイヤーの数だけ
+    //事前にプレイヤーの数だけ要素を用意して初期化しておく
     for (int i = ZERO; i < PLAYER_NUM; i++) {
 
         Transform objPos;
-        settingObject_.at(i) = std::make_pair(-1, objPos);
+        settingObject_.emplace_back(std::make_pair(-1, objPos));
     }
 
 
@@ -83,10 +83,12 @@ void CreateMode::ViewInit()
     rotateObjectValue_ = 0;
     camMoveRate_ = 0.0f;
     
-    //前回のセッティングオブジェクトの情報をすべて消して、事前に４つ分の要素を取っておく
-    for (int i = ZERO; i < settingObject_.size(); i++) {
+    //前回のセッティングオブジェクトの情報をすべて初期化する
+    for (int i = ZERO; i < PLAYER_NUM; i++) {
 
+        Transform objPos;
         settingObject_.at(i).first = -1;
+        settingObject_.at(i).second = objPos;
     }
 
     //hModelの中からランダムで表示させるオブジェクトを入れなおす
@@ -94,8 +96,6 @@ void CreateMode::ViewInit()
 
         viewObjectList_.at(i) = rand() % modelData.size() + modelData.at(0).hModel;
     }
-
-    
 }
 
 void CreateMode::SettingInit()
@@ -103,8 +103,6 @@ void CreateMode::SettingInit()
 
     flame_ = 0;
     camMoveRate_ = 0.0f;
-
-    SwapElements();
    
 }
 
@@ -260,18 +258,17 @@ void CreateMode::Release()
 //}
 
 void CreateMode::SelectObject()
-{
-
-    //全てのhModelを探索する(複数人分用意するときに必要か?)
-   
-
-    
+{   
     //セッティングオブジェクトをinitializeの時点で4つ分要素確保しといて、入れる感じの方が良いか？
     //セッティングオブジェクトに情報を与えて要素を消す.この時点でCharacter順にしちゃいたい？
+    
     Transform objPos;
     objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
-    settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), objPos));
-    //settingObject_.at()
+    //settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), objPos));
+    
+    //ここでランキングを取得してビリから入れていく。メンバ変数が必要かも
+    std::vector<int> ranking = pMetaAI_->GetRanking();
+    settingObject_.at(0);
     viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
 
 }
@@ -406,16 +403,6 @@ bool CreateMode::IsAllDecidedObject()
     }
 
     return true;
-}
-
-void CreateMode::SwapElements()
-{
-
-    //選択したIDの順番からsettingObjectの順番を入れ替える。1から順番に
-    vector<int> ranking = pMetaAI_->GetRanking();
-
-
-
 }
 
 void CreateMode::MovingObject()

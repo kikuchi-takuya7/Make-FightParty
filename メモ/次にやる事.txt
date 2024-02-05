@@ -55,3 +55,4 @@ Navigation内のプレイヤーposはmetaAIから支持されたプレイヤー�
 
 2/04:どうやってモデルをCPUで動かすか非常に悩ましい
 
+2/05:SelectObjectいじってる途中
