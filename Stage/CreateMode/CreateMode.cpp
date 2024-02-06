@@ -33,7 +33,7 @@ namespace {
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),selecting_Object(PATTERN_END), nextObjectId_(0)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), selecting_Object_(PATTERN_END),nextObjectId_(0)
 {
 
 
@@ -46,13 +46,13 @@ void CreateMode::Initialize()
     fileName_ = GetFilePath("../Assets/StageResource/", "fbx");
 
     //fileNameの個数分の要素数を確保
-    modelData.assign(fileName_.size(), ModelInfo(-1, PATTERN_END));
+    modelData_.assign(fileName_.size(), ModelInfo(-1, PATTERN_END));
 
     //ファイルの中に入ってたリソースをすべてロードする
-    for (int i = 0; i < modelData.size(); i++) {
+    for (int i = 0; i < modelData_.size(); i++) {
         std::string dir = "StageResource/";
-        modelData.at(i).hModel = Model::Load(dir + fileName_.at(i));
-        assert(modelData.at(i).hModel >= 0);
+        modelData_.at(i).hModel = Model::Load(dir + fileName_.at(i));
+        assert(modelData_.at(i).hModel >= 0);
     }
 
     //前回までのviewObjectをすべて消去して、新しくセットする
@@ -60,7 +60,7 @@ void CreateMode::Initialize()
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
         //hModelの中からランダムで表示させるオブジェクトを決める
-        viewObjectList_.emplace_back(rand() % modelData.size() + modelData.at(0).hModel);
+        viewObjectList_.emplace_back(rand() % modelData_.size() + modelData_.at(0).hModel);
     }
 
     //事前にプレイヤーの数だけ要素を用意して初期化しておく
@@ -94,7 +94,7 @@ void CreateMode::ViewInit()
     //hModelの中からランダムで表示させるオブジェクトを入れなおす
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
-        viewObjectList_.at(i) = rand() % modelData.size() + modelData.at(0).hModel;
+        viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(0).hModel;
     }
 }
 
@@ -152,6 +152,8 @@ void CreateMode::Update()
             AIMovingObject();
         }
 
+        PlayerMovingObject();
+
         break;
 
     case NONE:
@@ -181,7 +183,7 @@ void CreateMode::Draw()
             objTrans.position_ = OBJECT_POS[i];
             objTrans.rotate_.y = rotateObjectValue_;
             
-            if (i == selecting_Object) {
+            if (i == selecting_Object_) {
                 objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
             }
 
@@ -237,7 +239,7 @@ void CreateMode::Release()
 //    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
 //
 //    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
-//    switch (selecting_Object)
+//    switch (selecting_Object_)
 //    {
 //    case TESTFLOOR: {
 //        TestFloor* pObject = CreateInstance<TestFloor>();
@@ -261,7 +263,7 @@ void CreateMode::SelectObject()
     
     Transform objPos;
     objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
-    //settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object), objPos));
+    //settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object_), objPos));
     
     //rankingのビリからセットする
     int selectedObjectNum = 3;
@@ -274,10 +276,10 @@ void CreateMode::SelectObject()
     }
 
     //選択したビリの位置から順にオブジェクトを入れてく
-    settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object);
+    settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object_);
     settingObject_.at(selectedObjectNum).second = objPos;
 
-    viewObjectList_.erase(viewObjectList_.begin() + selecting_Object);
+    viewObjectList_.erase(viewObjectList_.begin() + selecting_Object_);
 
 }
 
@@ -384,12 +386,12 @@ bool CreateMode::IsOverlapCursor()
         if (data.hit) {
 
             //
-            selecting_Object = i;
+            selecting_Object_ = i;
             return true;
         }
 
         //ありえない値にしとく
-        selecting_Object = 99999;
+        selecting_Object_ = 99999;
     }
     
     return false;
@@ -429,7 +431,13 @@ void CreateMode::AIMovingObject()
         //settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
         settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
     }
-    
+}
+
+void CreateMode::PlayerMovingObject()
+{
+    XMFLOAT3 stageSize = pStage_->GetStageSize();
+    int stageModel = pStage_->GetStageHandle();
+
 
 
 }

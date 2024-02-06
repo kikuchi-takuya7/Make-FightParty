@@ -349,9 +349,6 @@
     <ClInclude Include="Scene\MainGameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Stage.h">
-      <Filter>Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Character\Player\Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
@@ -429,6 +426,9 @@
     </ClInclude>
     <ClInclude Include="AI\NavigationAI.h">
       <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\Stage.h">
+      <Filter>Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

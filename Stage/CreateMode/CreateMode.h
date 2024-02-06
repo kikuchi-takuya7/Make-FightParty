@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Engine/GameObject.h"
-
+#include "../Stage.h"
 #include <stack>
 #include <vector>
 
@@ -37,6 +37,7 @@ struct ModelInfo {
 
 class MetaAI;
 class NavigationAI;
+class Stage;
 
 struct SelectModelInfo {
 
@@ -71,7 +72,7 @@ public:
 	std::list<GameObject*> GetCreateObjectList() { return createObjectList_; }
 
 	/// <summary>
-	/// selecting_objectに対応したオブジェクトを作成する
+	/// selecting_Object_に対応したオブジェクトを作成する
 	/// </summary>
 	/// <returns>作成したオブジェクト</returns>
 	GameObject* CreateObject();
@@ -86,6 +87,7 @@ public:
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
 
+	//モデル番号とそのモデルの位置を渡していけるようにしてみた
 	bool IsOverlapCursor();
 
 	bool IsAllDecidedObject();
@@ -97,7 +99,7 @@ public:
 
 	void AIMovingObject();
 
-
+	void PlayerMovingObject();
 
 	/////////////////////////カメラ移動で使う関数//////////////////////////////////
 
@@ -111,22 +113,24 @@ public:
 	CREATESTATE GetState() { return nowState_; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
+	void SetStage(Stage* stage) { pStage_ = stage; }
 	void SetStartEnemyID(int ID) { startEnemyID_ = ID; }
 
 private:
 
 	MetaAI* pMetaAI_;
 	NavigationAI* pNavigationAI_;
+	Stage* pStage_;
 
 	CREATESTATE nowState_;
 
-	std::vector<ModelInfo> modelData;
+	std::vector<ModelInfo> modelData_;
 
 	//Mapファイルの中に入ってるfbxファイルの名前を入れる
 	std::vector<std::string> fileName_;
 
 	//viewObjectListのどこが選ばれたか
-	int selecting_Object;
+	int selecting_Object_;
 
 	//作成したオブジェクトリスト
 	std::list<GameObject*> createObjectList_;

@@ -20,10 +20,6 @@ namespace {
 	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
 }
 
-namespace Astar {
-
-}
-
 NavigationAI::NavigationAI(GameObject* parent)
 	:AI(parent, "NavigationAI"), height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
