@@ -1,8 +1,9 @@
 #pragma once
 #include "../../GameObject.h"
+#include "StageSourceBase.h"
 
 //◆◆◆を管理するクラス
-class TestFloor : public GameObject
+class TestFloor : public StageSourceBase
 {
     int hModel_;    //モデル番号
     //char objectID_; //どのオブジェクトかimguiが判別するためのオブジェクト

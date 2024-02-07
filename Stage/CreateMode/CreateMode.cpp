@@ -153,6 +153,14 @@ void CreateMode::Update()
         }
 
         PlayerMovingObject();
+        
+        if (SelectingOverlapCursor()) {
+            if (Input::IsMouseButtonDown(0)) {
+                
+
+            }
+
+        }
 
         break;
 
@@ -232,29 +240,29 @@ void CreateMode::Release()
 {
 }
 
-//GameObject* CreateMode::CreateObject()
-//{
-//
-//    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
-//    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
-//
-//    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
-//    switch (selecting_Object_)
-//    {
-//    case TESTFLOOR: {
-//        TestFloor* pObject = CreateInstance<TestFloor>();
-//        return pObject;
-//        break;
-//    }
-//    case PATTERN_END: {
-//        break;
-//    }
-//    default:
-//        break;
-//    }
-//
-//    return NULL;   // 指定のクラスが無い
-//}
+GameObject* CreateMode::CreateObject()
+{
+
+    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
+    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
+
+    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
+    switch (selecting_Object_)
+    {
+    case TESTFLOOR: {
+        TestFloor* pObject = CreateInstance<TestFloor>();
+        return pObject;
+        break;
+    }
+    case PATTERN_END: {
+        break;
+    }
+    default:
+        break;
+    }
+
+    return NULL;   // 指定のクラスが無い
+}
 
 void CreateMode::SelectObject()
 {   
@@ -397,6 +405,80 @@ bool CreateMode::IsOverlapCursor()
     return false;
     
     
+}
+
+bool CreateMode::SelectingOverlapCursor()
+{
+    float w = (float)(Direct3D::screenWidth_ / 2.0f);
+    float h = (float)(Direct3D::screenHeight_ / 2.0f);
+    float offsetX = 0;
+    float offsetY = 0;
+    float minZ = 0;
+    float maxZ = 1;
+
+    //ビューポート作成
+    XMMATRIX vp =
+    {
+        w                ,0                ,0           ,0,
+        0                ,-h               ,0           ,0,
+        0                ,0                ,maxZ - minZ ,0,
+        offsetX + w      ,offsetY + h      ,minZ        ,1
+    };
+
+    //ビューポートを逆行列に
+    XMMATRIX invVP = XMMatrixInverse(nullptr, vp);
+    //プロジェクション変換
+    XMMATRIX invProj = XMMatrixInverse(nullptr, Camera::GetProjectionMatrix());
+    //びゅー変換
+    XMMATRIX invView = XMMatrixInverse(nullptr, Camera::GetViewMatrix());
+
+    XMFLOAT3 mousePosFront = Input::GetMousePosition();
+    mousePosFront.z = 0.0;
+    XMFLOAT3 mousePosBack = Input::GetMousePosition();
+    mousePosBack.z = 1.0f;
+
+    //1,mousePosFrontをベクトルに変換
+    XMVECTOR vMouseFront = XMLoadFloat3(&mousePosFront);
+    //2. 1にinvVP,invPrj,invViewをかける
+    vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
+    //3,mousePosBackをベクトルに変換
+    XMVECTOR vMouseBack = XMLoadFloat3(&mousePosBack);
+    //4,3にinvVP,invPrj,invVeewをかける
+    vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
+    //5,2から4に向かってレイを打つ（とりあえず）
+
+    int changeX = 0;
+    int	changeZ = 0;
+    float minDist = 9999;
+
+    XMFLOAT3 stageSize = pStage_->GetStageSize();
+    int stageHandle = pStage_->GetStageHandle();
+
+    //カーソルから飛ばしたレイがモデルに当たってるか確認する
+    for (int z = 0; z < stageSize.z; z++) {
+        for (int x = 0; x < stageSize.x; x++) {
+            
+            RayCastData data;
+            XMStoreFloat3(&data.start, vMouseFront);
+            XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
+
+            //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す
+            Transform objTrans;
+            objTrans.position_ = XMFLOAT3(x, ZERO, z);
+            Model::SetTransform(stageHandle, objTrans);
+
+            Model::RayCast(stageHandle, &data);
+
+            //当たってたら即終了　
+            if (data.hit) {
+
+                settingObject_.at(ZERO).second = objTrans;
+                return true;
+            }
+        }       
+    }
+
+    return false;
 }
 
 bool CreateMode::IsAllDecidedObject()

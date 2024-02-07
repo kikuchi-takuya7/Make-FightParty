@@ -1,7 +1,9 @@
 #include "Stage.h"
 #include "../Engine/Model.h"
 #include "../Engine/Global.h"
-#include "../Engine/Global.h"
+#include "CreateMode/CreateMode.h"
+#include "../Stage/CreateMode/StageSource/TestFloor.h"
+
 
 namespace {
 	XMFLOAT3 STAGE_SIZE = XMFLOAT3(30.0f, ZERO, 30.0f);
@@ -49,7 +51,7 @@ void Stage::Draw()
 		}
 	}
 
-	//pCreateMode_->Draw();
+	
 
 }
 

@@ -1,19 +1,19 @@
 #pragma once
-#include "../Engine/GameObject.h"
+#include "../../../Engine/GameObject.h"
 
 
 class CreateMode;
 
-//stageを管理するクラス
-class Stage : public GameObject
+//StageSourceの元となるクラス
+class StageSourceBase : public GameObject
 {
 
 public:
     //コンストラクタ
-    Stage(GameObject* parent);
+    StageSourceBase(GameObject* parent,std::string name);
 
     //デストラクタ
-    ~Stage();
+    ~StageSourceBase();
 
     //////////////オーバーロードした関数///////////////
 
@@ -29,24 +29,21 @@ public:
     //開放
     void Release() override;
 
+    void OnCollision(GameObject* pTarget) override;
 
-    ///////////////CreateModeで使う関数///////////////////////
+    ///////////////継承先で使う関数///////////////////////
 
 
 
 
     ////////////////アクセス関数//////////////////
 
-    void SetCreateMode(CreateMode* createMode) { pCreateMode_ = createMode; }
     int GetStageHandle() { return hModel_; }
-    XMFLOAT3 GetStageSize();
-    
+
 
 private:
 
     int hModel_;
-
-    CreateMode* pCreateMode_;
 
 
 };

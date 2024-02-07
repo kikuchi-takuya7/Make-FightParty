@@ -4,7 +4,7 @@
 
 //コンストラクタ
 TestFloor::TestFloor(GameObject* parent)
-	:GameObject(parent, "TestFloor"), hModel_(-1), isDelete_(false), isClose_(false)
+	:StageSourceBase(parent, "TestFloor"), hModel_(-1), isDelete_(false), isClose_(false)
 {
 }
 

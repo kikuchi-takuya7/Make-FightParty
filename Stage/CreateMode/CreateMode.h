@@ -90,10 +90,9 @@ public:
 	//モデル番号とそのモデルの位置を渡していけるようにしてみた
 	bool IsOverlapCursor();
 
-	bool IsAllDecidedObject();
+	bool SelectingOverlapCursor();
 
-	//事前にプレイヤーの数だけ用意して、その順位に対応した位置に置くから大丈夫？
-	//void SwapElements();
+	bool IsAllDecidedObject();
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
 
@@ -160,11 +159,9 @@ private:
 	template <class T>
 	T* CreateInstance()
 	{
-		//T* pObject = Instantiate<T>(this);
-		//AddCreateObject(pObject);
-		//pObject->SetObjectID(nextObjectId_); //作ったオブジェクト順に識別するためのIDを付ける
-		//return pObject;
-		return nullptr;
+		T* pObject = Instantiate<T>(this);
+		AddCreateObject(pObject);
+		return pObject;
 	}
 
 };

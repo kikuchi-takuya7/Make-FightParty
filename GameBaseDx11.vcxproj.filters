@@ -236,11 +236,11 @@
     <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\CreateMode\StageSource\TestWall.cpp">
-      <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClCompile>
     <ClCompile Include="Stage\Stage.cpp">
       <Filter>Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\StageSourceBase.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -349,6 +349,9 @@
     <ClInclude Include="Scene\MainGameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Stage\Stage.h">
+      <Filter>Stage</Filter>
+    </ClInclude>
     <ClInclude Include="Character\Player\Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
@@ -418,17 +421,14 @@
     <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\CreateMode\StageSource\TestWall.h">
-      <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClInclude>
     <ClInclude Include="Stage\CreateMode\CreateMode.h">
       <Filter>Stage\CreateMode</Filter>
     </ClInclude>
     <ClInclude Include="AI\NavigationAI.h">
       <Filter>AI</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Stage.h">
-      <Filter>Stage</Filter>
+    <ClInclude Include="Stage\CreateMode\StageSource\StageSourceBase.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

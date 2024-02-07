@@ -39,6 +39,7 @@ void MainGameScene::Initialize()
 	CreateMode* createMode = Instantiate<CreateMode>(this);
 	createMode->SetMetaAI(pMetaAI_);
 	createMode->SetNavigationAI(pNavigationAI_);
+	createMode->SetStage(pStage_);
 	pStage_->SetCreateMode(createMode);
 	pMetaAI_->SetCreateMode(createMode);
 
