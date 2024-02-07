@@ -15,7 +15,6 @@ enum FBXPATTERN {
 	CANNON,
 	NEEDLE,
 	ONEBROCK,
-	TESTFLOOR,
 	PATTERN_END
 };
 
@@ -38,14 +37,7 @@ struct ModelInfo {
 class MetaAI;
 class NavigationAI;
 class Stage;
-
-struct SelectModelInfo {
-
-
-	//
-
-
-};
+class StageSourceBase;
 
 //オブジェクト追加モードを管理するクラス
 class CreateMode :public GameObject
@@ -69,42 +61,35 @@ public:
 	//開放
 	void Release() override;
 
-	std::list<GameObject*> GetCreateObjectList() { return createObjectList_; }
+	
 
-	/// <summary>
-	/// selecting_Object_に対応したオブジェクトを作成する
-	/// </summary>
-	/// <returns>作成したオブジェクト</returns>
-	GameObject* CreateObject();
+	
+	void CreateObject(int hModel,Transform trans);
 
 	void SelectObject();
 
-	//createObjectListに入れる
-	void AddCreateObject(GameObject* object);
+	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);
 
 	//ディレクトリ内の指定した識別子のファイルネームを獲得
 	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
 
-	//モデル番号とそのモデルの位置を渡していけるようにしてみた
-	bool IsOverlapCursor();
-
-	bool SelectingOverlapCursor();
+	bool IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back);
 
 	bool IsAllDecidedObject();
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
 
-	void AIMovingObject();
+	bool IsStageOverlapCursor(XMVECTOR front, XMVECTOR back);
 
-	void PlayerMovingObject();
+	void AIMovingObject();
 
 	/////////////////////////カメラ移動で使う関数//////////////////////////////////
 
-	float GetRateValue(float begin, float end, float rate);
-
 	void MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar);
+
+	float GetRateValue(float begin, float end, float rate);
 
 	///////////////////////////アクセス関数///////////////////////////////
 	void ToSelectMode();
@@ -114,6 +99,10 @@ public:
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void SetStage(Stage* stage) { pStage_ = stage; }
 	void SetStartEnemyID(int ID) { startEnemyID_ = ID; }
+	std::list<StageSourceBase*> GetCreateObjectList() { return createObjectList_; }
+
+	//createObjectListに入れる
+	void AddCreateObject(StageSourceBase* object);
 
 private:
 
@@ -132,7 +121,7 @@ private:
 	int selecting_Object_;
 
 	//作成したオブジェクトリスト
-	std::list<GameObject*> createObjectList_;
+	std::list<StageSourceBase*> createObjectList_;
 
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;
@@ -157,10 +146,13 @@ private:
 
 	//インスタンスを作成してobjectListに入れるテンプレート
 	template <class T>
-	T* CreateInstance()
+	T* CreateInstance(int hModel, Transform trans)
 	{
 		T* pObject = Instantiate<T>(this);
 		AddCreateObject(pObject);
+		pStage_->PushStageSource(pObject);
+		pObject->SetTransform(trans);
+		pObject->SetHandle(hModel);
 		return pObject;
 	}
 

@@ -242,6 +242,15 @@
     <ClCompile Include="Stage\CreateMode\StageSource\StageSourceBase.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\OneBrock.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\Needle.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -428,6 +437,15 @@
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\StageSourceBase.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\OneBrock.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\Needle.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
   </ItemGroup>

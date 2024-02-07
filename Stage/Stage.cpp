@@ -2,6 +2,7 @@
 #include "../Engine/Model.h"
 #include "../Engine/Global.h"
 #include "CreateMode/CreateMode.h"
+#include "../Stage/CreateMode/StageSource/OneBrock.h"
 #include "../Stage/CreateMode/StageSource/TestFloor.h"
 
 
@@ -10,7 +11,7 @@ namespace {
 }
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent, "Stage"),hModel_(-1),pCreateMode_(nullptr)
+	:GameObject(parent, "Stage"),hModel_(-1),pCreateMode_(nullptr), pStageSourceList_(0)
 {
 }
 
@@ -49,6 +50,11 @@ void Stage::Draw()
 			Model::SetTransform(hModel_, blockTrans);
 			Model::Draw(hModel_);
 		}
+	}
+
+	for (int i = 0; i < pStageSourceList_.size(); i++) {
+
+		//•`‰æ‚Í‚»‚ê‚¼‚ê‚Ìƒ\[ƒX‚Éˆê”C‚µ‚¿‚á‚¤B‚à‚µ‚©‚µ‚½‚ç—Ç‚­‚È‚¢‚Ì‚©‚à‚µ‚ê‚È‚¢‚¯‚Ç
 	}
 
 	

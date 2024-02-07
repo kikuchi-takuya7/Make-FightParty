@@ -1,16 +1,17 @@
 #include "CreateMode.h"
+#include <vector>
+#include <string>
+#include <stdexcept>
 #include "../../Engine/Model.h"
 #include "../../Engine/Input.h"
 #include "../../Engine/Camera.h"
 #include "../../Engine/Global.h"
-#include "StageSource/TestWall.h"
-#include "StageSource/TestFloor.h"
-#include <vector>
-#include <string>
-#include <stdexcept>
 #include "../../Engine/Debug.h"
 #include "../../AI/MetaAI.h"
 #include "../../AI/NavigationAI.h"
+#include "StageSource/OneBrock.h"
+#include "StageSource/Cannon.h"
+#include "StageSource/Needle.h"
 
 
 //定数宣言
@@ -52,6 +53,7 @@ void CreateMode::Initialize()
     for (int i = 0; i < modelData_.size(); i++) {
         std::string dir = "StageResource/";
         modelData_.at(i).hModel = Model::Load(dir + fileName_.at(i));
+        modelData_.at(i).modelPattern = (FBXPATTERN)i;
         assert(modelData_.at(i).hModel >= 0);
     }
 
@@ -119,8 +121,13 @@ void CreateMode::Update()
         //オブジェクトがプレイヤー分選択されたら
         if (!IsAllDecidedObject()) {
 
-            //カーソルがモデルに合わさってるなら
-            if (IsOverlapCursor()) {
+            //マウスからレイを飛ばす用のベクトルを獲得
+            XMVECTOR front;
+            XMVECTOR back;
+            GetCursorRay(front, back);
+            //レイキャストするたびにレイのstartが変わってる？
+
+            if (IsSelectingOverlapCursor(front, back)) {
 
                 //ここでモデルを光らせたい
                 Debug::Log("hit", true);
@@ -152,11 +159,16 @@ void CreateMode::Update()
             AIMovingObject();
         }
 
-        PlayerMovingObject();
-        
-        if (SelectingOverlapCursor()) {
+        //マウスからレイを飛ばす用のベクトルを獲得
+        XMVECTOR front;
+        XMVECTOR back;
+        GetCursorRay(front, back);
+
+        if (IsStageOverlapCursor(front, back)) {
             if (Input::IsMouseButtonDown(0)) {
-                
+
+                //ひとまずプレイヤーは1人目だけだから
+                CreateObject(settingObject_.at(ZERO).first, settingObject_.at(ZERO).second);
 
             }
 
@@ -240,28 +252,40 @@ void CreateMode::Release()
 {
 }
 
-GameObject* CreateMode::CreateObject()
+void CreateMode::CreateObject(int hModel, Transform trans)
 {
 
-    //forで回してFBXPATTERNとfilenameの要素の順番が一致したところでオブジェクトを作るのも想定したけどobjectNameとかがめんどくさくなるから無し
-    //対応したenum型の数字になったらそのオブジェクトを作成してcreateObjectにプッシュバックする
+    FBXPATTERN pattern = PATTERN_END;
+
+    //モデル番号のFBXPATTERNを探す
+    for (int i = 0; i < modelData_.size(); i++) {
+        if (modelData_.at(i).hModel == hModel) {
+            pattern = modelData_.at(i).modelPattern;
+        }
+    }
 
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
-    switch (selecting_Object_)
+    switch (pattern)
     {
-    case TESTFLOOR: {
-        TestFloor* pObject = CreateInstance<TestFloor>();
-        return pObject;
+    case CANNON:
+        CreateInstance<Cannon>(hModel, trans);
         break;
-    }
-    case PATTERN_END: {
+
+    case NEEDLE:
+        CreateInstance<Needle>(hModel, trans);
         break;
-    }
+
+    case ONEBROCK:
+        CreateInstance<OneBrock>(hModel, trans);
+        break;
+
+    case PATTERN_END:
     default:
         break;
     }
 
-    return NULL;   // 指定のクラスが無い
+    //クリックしたらそのオブジェクトを消す（モデル番号を無くして処理しなくする）
+    settingObject_.at(ZERO).first = -1;
 }
 
 void CreateMode::SelectObject()
@@ -291,11 +315,9 @@ void CreateMode::SelectObject()
 
 }
 
-void CreateMode::AddCreateObject(GameObject* object)
+void CreateMode::AddCreateObject(StageSourceBase* object)
 {
-    //CheckDeleteObject();
     createObjectList_.emplace_back(object);
-    nextObjectId_++;
 }
 
 std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
@@ -328,7 +350,7 @@ std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, co
     return file_names;
 }
 
-bool CreateMode::IsOverlapCursor()
+void CreateMode::GetCursorRay(XMVECTOR& front, XMVECTOR& back)
 {
     float w = (float)(Direct3D::screenWidth_ / 2.0f);
     float h = (float)(Direct3D::screenHeight_ / 2.0f);
@@ -359,29 +381,23 @@ bool CreateMode::IsOverlapCursor()
     mousePosBack.z = 1.0f;
 
     //1,mousePosFrontをベクトルに変換
-    XMVECTOR vMouseFront = XMLoadFloat3(&mousePosFront);
+    front = XMLoadFloat3(&mousePosFront);
     //2. 1にinvVP,invPrj,invViewをかける
-    vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
+    front = XMVector3TransformCoord(front, invVP * invProj * invView);
     //3,mousePosBackをベクトルに変換
-    XMVECTOR vMouseBack = XMLoadFloat3(&mousePosBack);
+    back = XMLoadFloat3(&mousePosBack);
     //4,3にinvVP,invPrj,invVeewをかける
-    vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
-    //5,2から4に向かってレイを打つ（とりあえず）
+    back = XMVector3TransformCoord(back, invVP * invProj * invView);
+    
+}
 
-    int changeX = 0;
-    int	changeZ = 0;
-    float minDist = 9999;
-
-    //レイキャストするたびにレイのstartが変わってる？
-    /*RayCastData data;
-    XMStoreFloat3(&data.start, vMouseFront);
-    XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);*/
-
+bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
+{
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
     for (int i = 0; i < viewObjectList_.size(); i++) {
         RayCastData data;
-        XMStoreFloat3(&data.start, vMouseFront);
-        XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
+        XMStoreFloat3(&data.start, front);
+        XMStoreFloat3(&data.dir, back - front);
 
         //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す
         Transform objTrans;
@@ -401,55 +417,27 @@ bool CreateMode::IsOverlapCursor()
         //ありえない値にしとく
         selecting_Object_ = 99999;
     }
-    
+
     return false;
-    
-    
 }
 
-bool CreateMode::SelectingOverlapCursor()
+bool CreateMode::IsAllDecidedObject()
 {
-    float w = (float)(Direct3D::screenWidth_ / 2.0f);
-    float h = (float)(Direct3D::screenHeight_ / 2.0f);
-    float offsetX = 0;
-    float offsetY = 0;
-    float minZ = 0;
-    float maxZ = 1;
 
-    //ビューポート作成
-    XMMATRIX vp =
-    {
-        w                ,0                ,0           ,0,
-        0                ,-h               ,0           ,0,
-        0                ,0                ,maxZ - minZ ,0,
-        offsetX + w      ,offsetY + h      ,minZ        ,1
-    };
+    //キャラクター全員がオブジェクトを選択し終わっていたら
+    for (int i = ZERO; i < settingObject_.size(); i++) {
 
-    //ビューポートを逆行列に
-    XMMATRIX invVP = XMMatrixInverse(nullptr, vp);
-    //プロジェクション変換
-    XMMATRIX invProj = XMMatrixInverse(nullptr, Camera::GetProjectionMatrix());
-    //びゅー変換
-    XMMATRIX invView = XMMatrixInverse(nullptr, Camera::GetViewMatrix());
+        //まだ選択されていないオブジェクトがあったら
+        if (settingObject_.at(i).first == -1) {
+            return false;
+        }
+    }
 
-    XMFLOAT3 mousePosFront = Input::GetMousePosition();
-    mousePosFront.z = 0.0;
-    XMFLOAT3 mousePosBack = Input::GetMousePosition();
-    mousePosBack.z = 1.0f;
+    return true;
+}
 
-    //1,mousePosFrontをベクトルに変換
-    XMVECTOR vMouseFront = XMLoadFloat3(&mousePosFront);
-    //2. 1にinvVP,invPrj,invViewをかける
-    vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
-    //3,mousePosBackをベクトルに変換
-    XMVECTOR vMouseBack = XMLoadFloat3(&mousePosBack);
-    //4,3にinvVP,invPrj,invVeewをかける
-    vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
-    //5,2から4に向かってレイを打つ（とりあえず）
-
-    int changeX = 0;
-    int	changeZ = 0;
-    float minDist = 9999;
+bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
+{
 
     XMFLOAT3 stageSize = pStage_->GetStageSize();
     int stageHandle = pStage_->GetStageHandle();
@@ -457,10 +445,10 @@ bool CreateMode::SelectingOverlapCursor()
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
     for (int z = 0; z < stageSize.z; z++) {
         for (int x = 0; x < stageSize.x; x++) {
-            
+
             RayCastData data;
-            XMStoreFloat3(&data.start, vMouseFront);
-            XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
+            XMStoreFloat3(&data.start, front);
+            XMStoreFloat3(&data.dir, back - front);
 
             //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す
             Transform objTrans;
@@ -475,26 +463,10 @@ bool CreateMode::SelectingOverlapCursor()
                 settingObject_.at(ZERO).second = objTrans;
                 return true;
             }
-        }       
-    }
-
-    return false;
-}
-
-bool CreateMode::IsAllDecidedObject()
-{
-
-    //キャラクター全員がオブジェクトを選択し終わっていたら
-
-    for (int i = ZERO; i < settingObject_.size(); i++) {
-
-        //まだ選択されていないオブジェクトがあったら
-        if (settingObject_.at(i).first == -1) {
-            return false;
         }
     }
 
-    return true;
+    return false;
 }
 
 void CreateMode::AIMovingObject()
@@ -513,20 +485,6 @@ void CreateMode::AIMovingObject()
         //settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
         settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
     }
-}
-
-void CreateMode::PlayerMovingObject()
-{
-    XMFLOAT3 stageSize = pStage_->GetStageSize();
-    int stageModel = pStage_->GetStageHandle();
-
-
-
-}
-
-float CreateMode::GetRateValue(float begin, float end, float rate)
-{
-    return (end - begin) * rate + begin;
 }
 
 void CreateMode::MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar)
@@ -560,8 +518,14 @@ void CreateMode::MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar)
     }
 }
 
+float CreateMode::GetRateValue(float begin, float end, float rate)
+{
+    return (end - begin) * rate + begin;
+}
+
 void CreateMode::ToSelectMode()
 {
+
     ViewInit();
     nowState_ = SELECT_MODE;
 }

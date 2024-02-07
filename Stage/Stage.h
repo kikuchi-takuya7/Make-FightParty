@@ -1,8 +1,9 @@
 #pragma once
 #include "../Engine/GameObject.h"
-
+#include <vector>
 
 class CreateMode;
+class StageSourceBase;
 
 //stageを管理するクラス
 class Stage : public GameObject
@@ -38,8 +39,10 @@ public:
     ////////////////アクセス関数//////////////////
 
     void SetCreateMode(CreateMode* createMode) { pCreateMode_ = createMode; }
+    void PushStageSource(StageSourceBase* source) { pStageSourceList_.emplace_back(source); }
     int GetStageHandle() { return hModel_; }
     XMFLOAT3 GetStageSize();
+    
     
 
 private:
@@ -48,5 +51,7 @@ private:
 
     CreateMode* pCreateMode_;
 
+    //必要あるかはわからない
+    std::vector<StageSourceBase*> pStageSourceList_;
 
 };
