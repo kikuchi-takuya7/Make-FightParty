@@ -83,6 +83,8 @@ public:
 
 	bool IsStageOverlapCursor(XMVECTOR front, XMVECTOR back);
 
+	bool IsOverlapPosition();
+
 	void AIMovingObject();
 
 	/////////////////////////カメラ移動で使う関数//////////////////////////////////
@@ -117,7 +119,7 @@ private:
 	//Mapファイルの中に入ってるfbxファイルの名前を入れる
 	std::vector<std::string> fileName_;
 
-	//viewObjectListのどこが選ばれたか
+	//viewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
 	int selecting_Object_;
 
 	//作成したオブジェクトリスト
@@ -141,8 +143,6 @@ private:
 
 	//緩急を付けるレート
 	float camMoveRate_;
-
-
 
 	//インスタンスを作成してobjectListに入れるテンプレート
 	template <class T>

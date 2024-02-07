@@ -30,11 +30,12 @@ namespace {
     const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
     const int WAIT_FLAME = 120;
 
+    const int INF = 999999;
 }
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), selecting_Object_(PATTERN_END),nextObjectId_(0)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), selecting_Object_(0),nextObjectId_(0)
 {
 
 
@@ -84,6 +85,7 @@ void CreateMode::ViewInit()
     flame_ = 0;
     rotateObjectValue_ = 0;
     camMoveRate_ = 0.0f;
+    selecting_Object_ = INF;
     
     //前回のセッティングオブジェクトの情報をすべて初期化する
     for (int i = ZERO; i < PLAYER_NUM; i++) {
@@ -105,6 +107,7 @@ void CreateMode::SettingInit()
 
     flame_ = 0;
     camMoveRate_ = 0.0f;
+    selecting_Object_ = INF;
    
 }
 
@@ -165,14 +168,14 @@ void CreateMode::Update()
         GetCursorRay(front, back);
 
         if (IsStageOverlapCursor(front, back)) {
-            if (Input::IsMouseButtonDown(0)) {
+            if (Input::IsMouseButtonDown(0) && IsOverlapPosition() == false) {
 
                 //ひとまずプレイヤーは1人目だけだから
                 CreateObject(settingObject_.at(ZERO).first, settingObject_.at(ZERO).second);
-
             }
-
         }
+
+
 
         break;
 
@@ -461,8 +464,31 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
             if (data.hit) {
 
                 settingObject_.at(ZERO).second = objTrans;
+                selecting_Object_ = ZERO;
                 return true;
             }
+        }
+    }
+
+    selecting_Object_ = INF;
+
+    return false;
+}
+
+bool CreateMode::IsOverlapPosition()
+{
+
+    Transform pos = settingObject_.at(selecting_Object_).second;
+
+    for (int i = 0; i < settingObject_.size(); i++) {
+
+        if (i == selecting_Object_) {
+            continue;
+        }
+
+        if (settingObject_.at(i).second == pos) {
+            
+            return true;
         }
     }
 
