@@ -100,7 +100,8 @@ Transform CharacterAI::MoveSelectObject()
 {
 	
 	//アイテムの種類によって置くオブジェクトを決める？砲台は端っことか。時間あるか？あと向きもちゃんと買える
-	
+	//MetaAIに
+
 	Transform objTrans;
 	objTrans.position_.x = rand() % 29 + 1;
 	objTrans.position_.z = rand() % 29 + 1;

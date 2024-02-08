@@ -61,16 +61,13 @@ public:
 	//開放
 	void Release() override;
 
-	
-
-	
 	void CreateObject(int hModel,Transform trans);
 
 	void SelectObject();
 
 	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);
 
-	//ディレクトリ内の指定した識別子のファイルネームを獲得
+	//ディレクトリ内の指定した識別子のファイルネームを獲得	
 	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////

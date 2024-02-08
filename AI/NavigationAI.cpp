@@ -43,7 +43,6 @@ void NavigationAI::Release()
 Transform NavigationAI::MoveSelectObject(int ID)
 {
 
-	//プレイヤーなら処理しない
 	//最大のプレイ人数は4人で、そこから敵の合計数を引いた数が、敵の最初のIDとなるため、それ以下のIDはプレイヤーになる
 	int minEnemyID = 4 - pCharacterAIList_.size();
 

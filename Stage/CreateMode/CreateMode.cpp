@@ -175,6 +175,18 @@ void CreateMode::Update()
             }
         }
 
+        bool isAllCreate = true;
+        for (int i = 0; i < settingObject_.size(); i++) {
+            
+            //モデル番号が-1じゃないなら
+            if (settingObject_.at(i).first != -1) {
+                isAllCreate = false;
+            }
+        }
+
+        if (isAllCreate) {
+            //ゲームに戻る処理
+        }
 
 
         break;
@@ -418,7 +430,7 @@ bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
         }
 
         //ありえない値にしとく
-        selecting_Object_ = 99999;
+        selecting_Object_ = INF;
     }
 
     return false;
@@ -498,19 +510,16 @@ bool CreateMode::IsOverlapPosition()
 void CreateMode::AIMovingObject()
 {
 
-    //コントローラーでやるとしたらカーソルの位置からレイを飛ばしたらどこの座標に当たったかも重要になってくる
-    //ステージを立方体で埋めた奴にして、当たった奴の上に載せる説もワンチャン
-    
-    vector<int> ranking = pMetaAI_->GetRanking();
-
     //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらうか
     //すでにsettingObjectはID順番になってるはず
     for (int i = startEnemyID_; i < settingObject_.size(); i++) {
 
         //引数として戻り値として返すか、アドレス渡して変えてもらうかどっちにする。って思ったけどそもそもTransform引数で渡す必要ないか
-        //settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
         settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
+        CreateObject(settingObject_.at(i).first, settingObject_.at(i).second);
     }
+
+    
 }
 
 void CreateMode::MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar)
