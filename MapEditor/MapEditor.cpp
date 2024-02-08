@@ -6,8 +6,8 @@
 #include <string>
 #include <stdexcept>
 #include "../Engine/Global.h"
-#include "MapSource/TestWall.h"
-#include "MapSource/TestFloor.h"
+#include "../Stage/CreateMode/StageSource/TestFloor.h"
+#include "../Stage/CreateMode/StageSource/TestWall.h"
 
 
 //コンストラクタ

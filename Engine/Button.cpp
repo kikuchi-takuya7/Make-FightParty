@@ -44,7 +44,7 @@ Button::Button(GameObject* parent)
 	tmpLimit_ = 0;
 	alphaFlag_ = false;
 	startFlag_ = false;
-	nextScene_ = NONE;
+	nextScene_ = SCENE_ID_TITLE;
 	isFlash_ = false;
 }
 
@@ -149,7 +149,7 @@ void Button::SetAlphaPush(float alpha)
 	Image::SetAlpha(hPush_, alpha);
 }
 
-void Button::SetNextScene(NEXTSCENE next)
+void Button::SetNextScene(SCENE_ID next)
 {
 	nextScene_ = next;
 }
@@ -201,8 +201,6 @@ void Button::ChangeScene()
 		case NONE:
 			break;
 		case SELECT: {
-			SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-			pSceneManager->ChangeScene(SCENE_ID_SELECT);
 		}
 			break;
 		default:

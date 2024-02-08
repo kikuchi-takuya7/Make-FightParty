@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "SceneManager.h"
 
 enum NEXTSCENE {
 	NONE = -1,
@@ -24,7 +25,7 @@ public:
 	void SetPosition(int x, int y);
 	void SetAlphaNormal(float alpha);//通常時表示する画像　
 	void SetAlphaPush(float alpha);//押されている最中に表示する画像
-	void SetNextScene(NEXTSCENE next);
+	void SetNextScene(SCENE_ID next);
 	void SetIsFlash(bool flash);
 	
 	//pushedを変える
@@ -61,5 +62,5 @@ private:
 
 	bool isFlash_;//待機状態で点滅させるかどうか。trueなら点滅
 
-	NEXTSCENE nextScene_;
+	SCENE_ID nextScene_;
 };
