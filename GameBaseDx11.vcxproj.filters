@@ -158,9 +158,6 @@
     <ClCompile Include="Engine\Imgui\imgui_widgets.cpp">
       <Filter>01Engine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\SaveManager\SaveManager.cpp">
-      <Filter>01Engine\SaveManager</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\MapEditorScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -256,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="Stage\CreateMode\StageSource\TestWall.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Button.cpp">
+      <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -355,9 +358,6 @@
     <ClInclude Include="Engine\Imgui\imstb_truetype.h">
       <Filter>01Engine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\SaveManager\SaveManager.h">
-      <Filter>01Engine\SaveManager</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\MapEditorScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -453,6 +453,12 @@
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\TestWall.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Button.h">
+      <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
