@@ -52,6 +52,33 @@ Transform NavigationAI::MoveSelectObject(int ID)
 
 }
 
+//ステータスをリセットする（winPoint以外）
+void NavigationAI::AllResetStatus()
+{
+
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->ResetStatus();
+	}
+
+}
+
+//全ての描画を止める
+void NavigationAI::AllStopDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDraw();
+	}
+
+}
+
+void NavigationAI::AllStartDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StartDraw();
+	}
+
+}
+
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {

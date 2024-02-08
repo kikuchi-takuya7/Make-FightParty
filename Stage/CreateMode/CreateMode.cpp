@@ -171,21 +171,25 @@ void CreateMode::Update()
             if (Input::IsMouseButtonDown(0) && IsOverlapPosition() == false) {
 
                 //ひとまずプレイヤーは1人目だけだから
-                CreateObject(settingObject_.at(ZERO).first, settingObject_.at(ZERO).second);
+                CreateObject(settingObject_.at(ZERO).first, settingObject_.at(ZERO).second, ZERO);
             }
         }
 
-        bool isAllCreate = true;
-        for (int i = 0; i < settingObject_.size(); i++) {
-            
-            //モデル番号が-1じゃないなら
-            if (settingObject_.at(i).first != -1) {
-                isAllCreate = false;
-            }
-        }
+        //全てのオブジェクトを設置し終わったらゲームに戻る
+        {
+            bool isAllCreate = true;
+            for (int i = 0; i < settingObject_.size(); i++) {
 
-        if (isAllCreate) {
-            //ゲームに戻る処理
+                //モデル番号が-1じゃないなら
+                if (settingObject_.at(i).first != -1) {
+                    isAllCreate = false;
+                }
+            }
+
+            if (isAllCreate) {
+                //ゲームに戻る処理
+                ToGameMode();
+            }
         }
 
 
@@ -267,7 +271,7 @@ void CreateMode::Release()
 {
 }
 
-void CreateMode::CreateObject(int hModel, Transform trans)
+void CreateMode::CreateObject(int hModel, Transform trans, int element)
 {
 
     FBXPATTERN pattern = PATTERN_END;
@@ -300,7 +304,7 @@ void CreateMode::CreateObject(int hModel, Transform trans)
     }
 
     //クリックしたらそのオブジェクトを消す（モデル番号を無くして処理しなくする）
-    settingObject_.at(ZERO).first = -1;
+    settingObject_.at(element).first = -1;
 }
 
 void CreateMode::SelectObject()
@@ -326,7 +330,7 @@ void CreateMode::SelectObject()
     settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object_);
     settingObject_.at(selectedObjectNum).second = objPos;
 
-    viewObjectList_.erase(viewObjectList_.begin() + selecting_Object_);
+    viewObjectList_.at(selecting_Object_) = -1;
 
 }
 
@@ -516,7 +520,7 @@ void CreateMode::AIMovingObject()
 
         //引数として戻り値として返すか、アドレス渡して変えてもらうかどっちにする。って思ったけどそもそもTransform引数で渡す必要ないか
         settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
-        CreateObject(settingObject_.at(i).first, settingObject_.at(i).second);
+        CreateObject(settingObject_.at(i).first, settingObject_.at(i).second, i);
     }
 
     
@@ -563,6 +567,8 @@ void CreateMode::ToSelectMode()
 
     ViewInit();
     nowState_ = SELECT_MODE;
+
+    pNavigationAI_->AllStopDraw();
 }
 
 void CreateMode::ToSettingMode()
@@ -570,4 +576,14 @@ void CreateMode::ToSettingMode()
     
     SettingInit();
     nowState_ = SETTING_MODE;
+}
+
+void CreateMode::ToGameMode()
+{
+
+    //ここで一旦暗転とかさせたいから移動はすぐでいいや
+    pMetaAI_->ResetGame();
+    nowState_ = NONE;
+
+    //pNavigationAI_->AllResetStatus();
 }

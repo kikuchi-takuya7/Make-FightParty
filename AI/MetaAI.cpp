@@ -121,7 +121,7 @@ void MetaAI::CheckNo1Chara()
 	
 }
 
-void MetaAI::NextGame()
+void MetaAI::ToCreateMode()
 {
 	
 	int deadNum = 0;
@@ -142,6 +142,15 @@ void MetaAI::NextGame()
 	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
 		pCreateMode_->ToSelectMode();
 	}
+}
+
+void MetaAI::ResetGame()
+{
+
+	pNavigationAI_->AllResetStatus();
+	pNavigationAI_->AllStartDraw();
+	GameCameraSet();
+
 }
 
 void MetaAI::GameCameraSet()

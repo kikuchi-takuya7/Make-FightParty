@@ -43,6 +43,9 @@ public:
     /// <param name="pTarget">当たった相手</param>
     void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
+
+    void ResetStatus() override;
+
     /////////////////////メンバ関数/////////////////////////////////////
 
     /// <summary>
@@ -64,8 +67,6 @@ public:
 
 
 private:
-
-    int hModel_;
 
     //HP等のステータス
     //Status status_;

@@ -44,7 +44,11 @@ public:
 
 	Transform MoveSelectObject(int ID);
 
+	void AllResetStatus();
 
+	void AllStopDraw();
+
+	void AllStartDraw();
 
 	float Distance(int myID, int targetID);
 

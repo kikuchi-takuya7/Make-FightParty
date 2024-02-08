@@ -39,6 +39,7 @@ public:
     /// <param name="pTarget">“–‚½‚Á‚½‘Šè</param>
     void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
+    void ResetStatus() override;
 
     /////////////////////ƒƒ“ƒoŠÖ”/////////////////////////////////////
 

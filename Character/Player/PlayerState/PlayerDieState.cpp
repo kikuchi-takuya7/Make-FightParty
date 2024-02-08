@@ -15,8 +15,8 @@ void PlayerDieState::HandleInput(Player* player)
 
 void PlayerDieState::Enter(Player* player)
 {
-
-	player->ClearCollider();
+	player->EraseCollider(COLLIDER_ATTACK);
+	player->EraseCollider(COLLIDER_BODY);
 
 	player->Dead();
 	player->TellStatus();

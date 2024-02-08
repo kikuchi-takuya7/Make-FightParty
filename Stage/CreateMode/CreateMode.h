@@ -40,6 +40,7 @@ class Stage;
 class StageSourceBase;
 
 //オブジェクト追加モードを管理するクラス
+//2つしかモードが無いからまとめたけどstateにした方が良い？
 class CreateMode :public GameObject
 {
 public:
@@ -61,7 +62,7 @@ public:
 	//開放
 	void Release() override;
 
-	void CreateObject(int hModel,Transform trans);
+	void CreateObject(int hModel,Transform trans, int element);
 
 	void SelectObject();
 
@@ -93,6 +94,7 @@ public:
 	///////////////////////////アクセス関数///////////////////////////////
 	void ToSelectMode();
 	void ToSettingMode();
+	void ToGameMode();
 	CREATESTATE GetState() { return nowState_; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }

@@ -47,7 +47,9 @@ public:
 	/// </summary>
 	void CheckNo1Chara();
 
-	void NextGame();
+	void ToCreateMode();
+
+	void ResetGame();
 
 	void GameCameraSet();
 

@@ -9,10 +9,6 @@
 namespace {
 	const int PLAYER_HP = 100;
 	const int PLAYER_ATTACK_POWER = 100;
-	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
-	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
-	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 }
 
 //コンストラクタ
@@ -30,20 +26,15 @@ Player::~Player()
 void Player::ChildInitialize()
 {
 
+	//開始地点に移動する
+	SetPosition(startPos_);
 
 	//addcolliderしたら勝手に開放されるからね
-	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
-	
-	
-	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER, 0, false };
+	status_.attackPower = PLAYER_ATTACK_POWER;
 
-	//モデルデータのロード
-	hModel_ = Model::Load("PlayerFbx/player.fbx");
-	assert(hModel_ >= 0);
-
+	
 }
 
 //更新
@@ -107,6 +98,27 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 }
 
+void Player::ResetStatus()
+{
+
+	//初期化して位置を戻す
+	//ChildInitialize();
+
+	//開始地点に移動する
+	SetPosition(startPos_);
+	
+	//addcolliderしたら勝手に開放されるからね
+	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
+	
+	status_.hp = PLAYER_HP;
+	status_.dead = false;
+
+	TellStatus();
+
+	ChangeState(PLAYER_IDLE);
+
+}
+
 void Player::TellStatus()
 {
 	
@@ -115,6 +127,7 @@ void Player::TellStatus()
 	//((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
 	((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
 }
+
 
 void Player::ChangeState(PlayerStatePattern nextState)
 {

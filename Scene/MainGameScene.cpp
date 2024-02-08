@@ -55,6 +55,7 @@ void MainGameScene::Initialize()
 		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
 
 		pPlayer->SetPosition(CHARA_POS[objectID]);
+		pPlayer->SetStartPos(CHARA_POS[objectID]);
 		objectID++;
 
 		
@@ -76,6 +77,7 @@ void MainGameScene::Initialize()
 		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
 
 		pEnemy[i]->SetPosition(CHARA_POS[objectID]);
+		pEnemy[i]->SetStartPos(CHARA_POS[objectID]);
 		objectID++;
 
 	}
@@ -111,7 +113,9 @@ void MainGameScene::Initialize()
 //更新
 void MainGameScene::Update()
 {
-	pMetaAI_->NextGame();
+
+	//一試合が終わったらクリエイトモードに移動する
+	pMetaAI_->ToCreateMode();
 }
 
 //描画

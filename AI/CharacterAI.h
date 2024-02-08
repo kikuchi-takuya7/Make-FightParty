@@ -31,6 +31,8 @@ public:
 	/////////////////ƒƒ“ƒoŠÖ”//////////////////////////
 
 	void AskTarget();
+
+	
 	
 	////////////////’S“–‚·‚é“G‚ğ‘€‚éƒƒ“ƒoŠÖ”///////////////////
 
@@ -39,9 +41,6 @@ public:
 	void Attack();
 
 	void IsAttack();
-
-
-
 
 	Transform MoveSelectObject();
 
