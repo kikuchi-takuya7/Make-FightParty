@@ -3,11 +3,11 @@
 #include "../Engine/Global.h"
 #include "CreateMode/CreateMode.h"
 #include "../Stage/CreateMode/StageSource/OneBrock.h"
-#include "../Stage/CreateMode/StageSource/TestFloor.h"
 
 
 namespace {
 	XMFLOAT3 STAGE_SIZE = XMFLOAT3(30.0f, ZERO, 30.0f);
+	const int STAGE_COST = 1;
 }
 
 Stage::Stage(GameObject* parent)
@@ -29,7 +29,19 @@ void Stage::Initialize()
 	transform_.position_.x = ZERO;
 	transform_.position_.z = ZERO;
 
+	//width分の行を先にheight列分だけ確保しておく
+	for (int i = ZERO; i < STAGE_SIZE.z; i++) {
+		map_.emplace_back(STAGE_SIZE.x);
+	}
 
+	//ステージの初期コストを入れる
+	for (int z = ZERO; z < STAGE_SIZE.z; z++) {
+		for (int x = ZERO; x < STAGE_SIZE.x; x++) {
+
+			map_.at(z).at(x) = STAGE_COST;
+
+		}
+	}
 
 }
 
@@ -43,8 +55,8 @@ void Stage::Draw()
 
 	Transform blockTrans;
 
-	for (int x = 0; x < STAGE_SIZE.x; x++) {
-		for (int z = 0; z < STAGE_SIZE.z; z++) {
+	for (int z = 0; z < STAGE_SIZE.z; z++) {
+		for (int x = 0; x < STAGE_SIZE.x; x++) {
 			blockTrans.position_.z = z;
 			blockTrans.position_.x = x;
 			Model::SetTransform(hModel_, blockTrans);
@@ -52,12 +64,6 @@ void Stage::Draw()
 		}
 	}
 
-	for (int i = 0; i < pStageSourceList_.size(); i++) {
-
-		//描画はそれぞれのソースに一任しちゃう。もしかしたら良くないのかもしれないけど
-	}
-
-	
 
 }
 

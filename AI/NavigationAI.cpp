@@ -3,12 +3,12 @@
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
 #include "CharacterAI.h"
+#include "../Stage/Stage.h"
 
 namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
 
-	//コストを1にしたら経路復元の所で無限ループしてしまう。
 	const int STAGE_COST = 1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
@@ -76,7 +76,6 @@ void NavigationAI::AllStartDraw()
 	for (int i = 0; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->StartDraw();
 	}
-
 }
 
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
@@ -99,8 +98,8 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	if (start == target)
 		return ZERO_FLOAT3;
 
-	//マップのコストを入れる。
-	Graph map;
+	//マップコストをステージから聞く
+	Graph map = pStage_->GetMap();
 
 	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
 	Graph dist;
@@ -110,20 +109,8 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < height_; i++) {
-		map.emplace_back(width_);
 		dist.emplace_back(width_);
 		rest.emplace_back(width_);
-	}
-
-	//ステージのコストを入れる。壁は-1.将来的にstageから持ってくる予定
-	for (int i = ZERO; i < height_; i++) {
-		for (int f = ZERO; f < width_; f++) {
-
-			map.at(i).at(f) = STAGE_COST;
-
-			//restにxz座標を入れる
-			rest[i][f] = IntPair(i, f);
-		}
 	}
 
 	//スタート地点の座標
@@ -138,6 +125,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	//ありえない値の情報で初期化
 	const int Inf = 9999999;
 	dist.assign(height_, vector<long>(width_, Inf));
+	rest.assign(height_, vector<IntPair>(width_, IntPair(ZERO,ZERO)));
 
 	//スタート地点のコストを入れる
 	dist.at(start.first).at(start.second) = map.at(start.first).at(start.second);

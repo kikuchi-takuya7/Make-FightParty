@@ -33,16 +33,23 @@ public:
 
     ///////////////CreateModeで使う関数///////////////////////
 
-
+    void StageCostCheck();
 
 
     ////////////////アクセス関数//////////////////
+
+    /// <summary>
+    /// ステージのコストをセットする
+    /// </summary>
+    /// <param name="pos">そのオブジェクトの位置</param>
+    /// <param name="cost">オブジェクトのコスト</param>
+    void SetStageCost(XMFLOAT3 pos, int cost) { map_.at(pos.z).at(pos.x) = cost; }
 
     void SetCreateMode(CreateMode* createMode) { pCreateMode_ = createMode; }
     void PushStageSource(StageSourceBase* source) { pStageSourceList_.emplace_back(source); }
     int GetStageHandle() { return hModel_; }
     XMFLOAT3 GetStageSize();
-    
+    std::vector<std::vector<long>> GetMap() { return map_; }
     
 
 private:
@@ -51,7 +58,10 @@ private:
 
     CreateMode* pCreateMode_;
 
+    //二次元配列でマップやコストを表す
+    std::vector<std::vector<long>> map_; 
+
     //必要あるかはわからない
-    std::vector<StageSourceBase*> pStageSourceList_;
+    std::list<StageSourceBase*> pStageSourceList_;
 
 };

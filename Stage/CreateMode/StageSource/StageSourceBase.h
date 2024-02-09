@@ -10,7 +10,11 @@ class StageSourceBase : public GameObject
 
 protected:
 
+    //モデル番号
     int hModel_;
+
+    //ステージに置いたときのコスト。Astarアルゴリズムで使用
+    int cost_;
 
 public:
     //コンストラクタ
@@ -61,7 +65,10 @@ public:
     ////////////////アクセス関数//////////////////
 
     int GetHandle() { return hModel_; }
+    int GetStageCost() { return cost_; }
     void SetHandle(int handle) { hModel_ = handle; }
+
+    
 
 
 private:

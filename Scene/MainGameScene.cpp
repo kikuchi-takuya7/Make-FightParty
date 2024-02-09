@@ -30,8 +30,8 @@ void MainGameScene::Initialize()
 	pMetaAI_ = Instantiate<MetaAI>(this);
 	pStage_ = Instantiate<Stage>(this);
 
-	pNavigationAI_->Initialize();
-	pMetaAI_->Initialize();
+	pNavigationAI_->SetStage(pStage_);
+
 	pMetaAI_->SetNavigationAI(pNavigationAI_);
 	
 	int objectID = 0;

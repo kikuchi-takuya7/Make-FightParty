@@ -532,7 +532,7 @@ bool CreateMode::IsOverlapPosition()
 
 void CreateMode::AIMovingObject()
 {
-
+    //オブジェクトの位置が被ってないか確認する用
     std::vector<XMFLOAT3> pos;
 
     //既に作ったオブジェクトの全ての位置を確認する

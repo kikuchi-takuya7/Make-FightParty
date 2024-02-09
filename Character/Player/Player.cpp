@@ -123,10 +123,12 @@ void Player::ResetStatus()
 void Player::TellStatus()
 {
 	
-	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？
+	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？名前検索しちゃっていい？
 
 	//((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
-	((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
+	//((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
+
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
 }
 
 

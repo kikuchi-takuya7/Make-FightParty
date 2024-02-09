@@ -1,5 +1,11 @@
 #include "Cannon.h"
 
+namespace {
+
+	const int COST = -1;
+
+}
+
 Cannon::Cannon(GameObject* parent)
 	:StageSourceBase(parent, "Cannon")
 {
@@ -13,6 +19,8 @@ void Cannon::ChildInitialize()
 {
 
 	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
+	cost_ = COST;
+
 
 }
 

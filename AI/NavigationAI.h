@@ -16,6 +16,7 @@ using PP = pair<long, pair<int, int>>;//first‚ÉƒRƒXƒgBsecond‚É‚»‚ÌƒRƒXƒg‚ÌˆÊ’u‚
 
 class Character;
 class CharacterAI;
+class Stage;
 
 /// <summary>
 /// ƒLƒƒƒ‰ƒNƒ^[AI‚Æƒƒ^AI‚Éî•ñ‚ğ’ñ‹Ÿ‚·‚é
@@ -89,10 +90,10 @@ public:
 
 	
 	//////////////ƒAƒNƒZƒXŠÖ”//////////////
-	//void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
-	//void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
+
 	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
 	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }
+	void SetStage(Stage* stage) { pStage_ = stage; }
 
 private:
 
@@ -101,7 +102,8 @@ private:
 	//ƒXƒe[ƒW‚Ìc•‚Æ‰¡•
 	int height_, width_; 
 	
-	
+	//ƒXƒe[ƒW‚Ìî•ñ
+	Stage* pStage_;
 
 	/////////////////////////////Character‚Ìî•ñ////////////////////////
 

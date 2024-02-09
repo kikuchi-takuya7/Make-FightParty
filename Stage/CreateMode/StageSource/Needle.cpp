@@ -1,5 +1,11 @@
 #include "Needle.h"
 
+namespace {
+
+	const int COST = 5;
+
+}
+
 Needle::Needle(GameObject* parent)
 	:StageSourceBase(parent, "Needle")
 {
@@ -13,6 +19,7 @@ void Needle::ChildInitialize()
 {
 
 	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
+	cost_ = COST;
 
 }
 

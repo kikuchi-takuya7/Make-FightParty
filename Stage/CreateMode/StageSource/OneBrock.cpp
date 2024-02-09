@@ -1,5 +1,11 @@
 #include "OneBrock.h"
 
+namespace {
+
+	const int COST = -1;
+
+}
+
 OneBrock::OneBrock(GameObject* parent)
 	:StageSourceBase(parent, "OneBrock")
 {
@@ -13,6 +19,7 @@ void OneBrock::ChildInitialize()
 {
 
 	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
+	cost_ = COST;
 
 }
 
