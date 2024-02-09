@@ -48,6 +48,8 @@ public:
 	//引数：parent  親オブジェクト（SceneManager）
 	CreateMode(GameObject* parent);
 
+	//////////////////オーバーライドした関数///////////////////////
+
 	//初期化
 	void Initialize() override;
 	void ViewInit();
@@ -62,8 +64,20 @@ public:
 	//開放
 	void Release() override;
 
+
+	////////////////////オブジェクトを操る関数/////////////////////
+
+	/// <summary>
+	/// オブジェクトを作成する
+	/// </summary>
+	/// <param name="hModel">モデル番号</param>
+	/// <param name="trans">モデルのTransform</param>
+	/// <param name="element">何番目の要素か</param>
 	void CreateObject(int hModel,Transform trans, int element);
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void SelectObject();
 
 	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);

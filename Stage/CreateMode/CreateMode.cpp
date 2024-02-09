@@ -340,11 +340,7 @@ void CreateMode::SelectObject()
     settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object_);
     settingObject_.at(selectedObjectNum).second = objPos;
     
-
-    //àÍÅXè¡Ç≥Ç»Ç≠ÇƒÇ‡Ç±ÇÍÇ≈çsÇØÇΩÇÁäyÇæÇ¡ÇΩ
     viewObjectList_.at(selecting_Object_) = -1;
-    
-    //viewObjectList_.erase(viewObjectList_.begin() + selecting_Object_);
 
 }
 
@@ -518,14 +514,15 @@ bool CreateMode::IsOverlapPosition()
 
     Transform pos = settingObject_.at(selecting_Object_).second;
 
+
     for (int i = 0; i < settingObject_.size(); i++) {
 
+        //é©ï™Ç»ÇÁèàóùÇµÇ»Ç¢
         if (i == selecting_Object_) {
             continue;
         }
 
         if (settingObject_.at(i).second == pos) {
-            
             return true;
         }
     }
@@ -568,9 +565,6 @@ void CreateMode::AIMovingObject()
                 break;
         
         }
-        
-        
-        
         
         CreateObject(settingObject_.at(i).first, settingObject_.at(i).second, i);
     }
