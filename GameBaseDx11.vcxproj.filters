@@ -427,9 +427,6 @@
     <ClInclude Include="Character\Enemy\EnemyState\EnemyStateManager.h">
       <Filter>Character\Enemy\EnemyState</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h">
-      <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClInclude>
     <ClInclude Include="Stage\CreateMode\CreateMode.h">
       <Filter>Stage\CreateMode</Filter>
     </ClInclude>
@@ -446,6 +443,9 @@
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\Needle.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,12 +16,12 @@
 
 //定数宣言
 namespace {
-    const int PLAYER_NUM = 4;
+    const int MAX_CHARACTER_NUM = 4;
     const int MAX_VIEW_OBJECT = 8;
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
     //参加するプレイヤーの最大人数分
-    const XMFLOAT3 PLAYER_UI_POS[PLAYER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
+    const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
     const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
     const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 15, -15);
@@ -35,7 +35,7 @@ namespace {
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), selecting_Object_(0),nextObjectId_(0)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), selecting_Object_(0),nextSelectCharacterID_(0)
 {
 
 
@@ -55,7 +55,7 @@ void CreateMode::Initialize()
     modelData_.assign(fileName.size(), ModelInfo(-1, PATTERN_END));
 
     //ファイルの中に入ってたリソースをすべてロードする
-    for (int i = 0; i < modelData_.size(); i++) {
+    for (int i = ZERO; i < modelData_.size(); i++) {
         std::string dir = "StageResource/";
         modelData_.at(i).hModel = Model::Load(dir + fileName.at(i));
         modelData_.at(i).modelPattern = (FBXPATTERN)i;
@@ -63,13 +63,13 @@ void CreateMode::Initialize()
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
-    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+    for (int i = ZERO; i < MAX_VIEW_OBJECT; i++) {
 
         viewObjectList_.emplace_back(-1);
     }
 
     //事前にプレイヤーの数だけ要素を用意して初期化しておく
-    for (int i = ZERO; i < PLAYER_NUM; i++) {
+    for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
 
         Transform objPos;
         settingObject_.emplace_back(std::make_pair(-1, objPos));
@@ -77,40 +77,37 @@ void CreateMode::Initialize()
 
 
 
-    rotateObjectValue_ = 0;
+    rotateObjectValue_ = ZERO;
     nowState_ = NONE;
-    flame_ = 0;
+    flame_ = ZERO;
 }
 
 void CreateMode::ViewInit()
 {
-    flame_ = 0;
-    rotateObjectValue_ = 0;
-    camMoveRate_ = 0.0f;
+
+    flame_ = ZERO;
+    rotateObjectValue_ = ZERO;
+    camMoveRate_ = ZERO;
     selecting_Object_ = INF;
+    nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
+
+    ranking_ = pMetaAI_->GetRanking();
+
     
     //前回のセッティングオブジェクトの情報をすべて初期化する
-    for (int i = ZERO; i < PLAYER_NUM; i++) {
-
+    for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
         Transform objPos;
         settingObject_.at(i).first = -1;
         settingObject_.at(i).second = objPos;
     }
 
-    //前回までのviewObjectをすべて消去して、新しくセットする
-    //要素clearするのめんどくさい気がするけど、-1にしただけだと謎エラー出ちゃった
-    //viewObjectList_.clear();
-    //for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
-
-    //    //hModelの中からランダムで表示させるオブジェクトを決める
-    //    viewObjectList_.emplace_back(rand() % modelData_.size() + modelData_.at(ZERO).hModel);
-    //}
-
+    //hModelの中からランダムで表示させるオブジェクトを決める
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
-
-        //hModelの中からランダムで表示させるオブジェクトを決める
         viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
     }
+
+
+    
 
 }
 
@@ -133,8 +130,15 @@ void CreateMode::Update()
 
         MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR);
 
-        //オブジェクトがプレイヤー分選択されたら
+        //オブジェクトがプレイヤー分選択されていなかったら
         if (!IsAllDecidedObject()) {
+
+            //次にオブジェクトを選ぶ人がAIならAI用の処理をする
+            if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
+                AISelectObject(ranking_.at(nextSelectCharacterID_));
+                nextSelectCharacterID_--;
+                return;
+            }
 
             //マウスからレイを飛ばす用のベクトルを獲得
             XMVECTOR front;
@@ -142,24 +146,19 @@ void CreateMode::Update()
             GetCursorRay(front, back);
             //レイキャストするたびにレイのstartが変わってる？
 
+            //オブジェクトにカーソルがあってる状態でクリックされたら
             if (IsSelectingOverlapCursor(front, back)) {
-
-                //ここでモデルを光らせたい
-                Debug::Log("hit", true);
-
                 if (Input::IsMouseButtonDown(0)) {
-                    SelectObject();
+                    SelectObject(ranking_.at(nextSelectCharacterID_));
+                    nextSelectCharacterID_--;
                 }
-            }
-            else {
-                Debug::Log("nohit", true);
             }
 
             break;
         }
 
         flame_++;
-        if (flame_ == WAIT_FLAME) {
+        if (flame_ >= WAIT_FLAME) {
             ToSettingMode();
         }
         
@@ -319,34 +318,7 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     settingObject_.at(element).first = -1;
 }
 
-void CreateMode::SelectObject()
-{   
-    //セッティングオブジェクトをinitializeの時点で4つ分要素確保しといて、入れる感じの方が良いか？
-    //セッティングオブジェクトに情報を与えて要素を消す.この時点でCharacter順にしちゃいたい？
-    
-    Transform objPos;
-    objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
-    
-    vector<int> ranking = pMetaAI_->GetRanking();
 
-    //rankingのビリからセットする
-    int selectedObjectNum = 3;
-    for (int i = 0; i < settingObject_.size(); i++) {
-        
-        //選ばれたオブジェクトがあったら、次の順位の人を選択する
-        if (settingObject_.at(i).first != -1) {
-            selectedObjectNum--;
-        }
-    }
-
-    //選択したビリの位置から順にオブジェクトを入れてく
-    settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object_);
-    settingObject_.at(selectedObjectNum).second = objPos;
-    
-    //選択されたオブジェクトは消す
-    viewObjectList_.at(selecting_Object_) = -1;
-
-}
 
 void CreateMode::AddCreateObject(StageSourceBase* object)
 {
@@ -424,6 +396,60 @@ void CreateMode::GetCursorRay(XMVECTOR& front, XMVECTOR& back)
     //4,3にinvVP,invPrj,invVeewをかける
     back = XMVector3TransformCoord(back, invVP * invProj * invView);
     
+}
+
+void CreateMode::AISelectObject(int ID)
+{
+
+    vector<int> modelList;
+
+    //表示されてるモデルのモデル番号を全て取得する
+    for (int i = 0; i < viewObjectList_.size(); i++) {
+        
+        //-1は判定しない
+        if (viewObjectList_.at(i) == -1) {
+            continue;
+        }
+
+        //既にmodelListに入れてるモデル番号か
+        bool duplicate = false;
+
+        //modelListに既に入れてる番号か確認する
+        for (int m = 0; m < modelData_.size(); m++) {
+            if (modelList.at(m) == viewObjectList_.at(i)) {
+                duplicate = true;
+            }
+        }
+
+        //重複してないモデル番号なら、modelListに入れる
+        if (duplicate == false) {
+            modelList.emplace_back(viewObjectList_.at(i));
+        }
+    }
+
+    //選択するオブジェクトの要素番目を入れる
+    selecting_Object_ = pMetaAI_->SelectObject(modelList);
+
+    //選択する
+    SelectObject(ID);
+    
+
+}
+
+void CreateMode::SelectObject(int ID)
+{
+  
+    Transform objPos;
+    objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
+
+  
+    //選択したオブジェクトを入れてく
+    settingObject_.at(ID).first = viewObjectList_.at(selecting_Object_);
+    settingObject_.at(ID).second = objPos;
+
+    //選択されたオブジェクトは消す
+    viewObjectList_.at(selecting_Object_) = -1;
+
 }
 
 bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)

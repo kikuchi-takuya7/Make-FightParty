@@ -75,10 +75,9 @@ public:
 	/// <param name="element">何番目の要素か</param>
 	void CreateObject(int hModel,Transform trans, int element);
 
-	/// <summary>
-	/// 
-	/// </summary>
-	void SelectObject();
+
+	//createObjectListに入れる
+	void AddCreateObject(StageSourceBase* object);
 
 	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);
 
@@ -86,6 +85,10 @@ public:
 	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
+
+	void AISelectObject(int ID);
+
+	void SelectObject(int ID);
 
 	bool IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back);
 
@@ -116,20 +119,23 @@ public:
 	void SetStartEnemyID(int ID) { startEnemyID_ = ID; }
 	std::list<StageSourceBase*> GetCreateObjectList() { return createObjectList_; }
 
-	//createObjectListに入れる
-	void AddCreateObject(StageSourceBase* object);
 
 private:
+
+	//モードを管理する変数
+	CREATESTATE nowState_;
+
+	/////////////AI等のインスタンス///////////
 
 	MetaAI* pMetaAI_;
 	NavigationAI* pNavigationAI_;
 	Stage* pStage_;
 
-	CREATESTATE nowState_;
 
+	/////////オブジェクト操作に使う変数////////////
+
+	//モデルのデータを保存する配列
 	std::vector<ModelInfo> modelData_;
-
-	
 
 	//viewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
 	int selecting_Object_;
@@ -140,23 +146,36 @@ private:
 	//プレイヤーが設置するオブジェクト。{モデル番号,そのモデルのTransform}どのプレイヤーが選んでるかは要素番目で示している
 	std::vector<std::pair<int,Transform>> settingObject_;
 
+	//クリエイトモード時のランキング
+	std::vector<int> ranking_;
+
+	//次に選択するプレイヤーのID
+	int nextSelectCharacterID_;
+
+	/////////////その他/////////
+
 	//作成したオブジェクトリスト
 	std::list<StageSourceBase*> createObjectList_;
 
+	//モデルを回転させる変数
 	float rotateObjectValue_;
 
-	int nextObjectId_;
-
+	//待機する時間
 	int flame_;
 
+	//敵の最初のID
 	int startEnemyID_;
+
+	
 
 	//////カメラを滑らかに動かすのに使う変数
 
 	//緩急を付けるレート
 	float camMoveRate_;
 
-	//インスタンスを作成してobjectListに入れるテンプレート
+
+
+	//インスタンスを作成して色々するテンプレート
 	template <class T>
 	T* CreateInstance(int hModel, Transform trans)
 	{

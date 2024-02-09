@@ -123,6 +123,8 @@ void MetaAI::CheckNo1Chara()
 
 void MetaAI::ToCreateMode()
 {
+
+	CheckNo1Chara();
 	
 	int deadNum = 0;
 	
@@ -172,4 +174,13 @@ void MetaAI::GameCameraSet()
 {
 	Camera::SetPosition(XMFLOAT3(15, 10, -20));
 	Camera::SetTarget(XMFLOAT3(15, 0, 15));
+}
+
+int MetaAI::SelectObject(vector<int> model)
+{
+
+	//ç°ÇÕÇ∆ÇËÇ†Ç¶Ç∏ÉâÉìÉ_ÉÄÇ≈ï‘Ç∑
+	return model.at(rand() % model.size());
+
+
 }

@@ -53,6 +53,8 @@ public:
 
 	void GameCameraSet();
 
+	int SelectObject(vector<int> model);
+
 	//////////////アクセス関数 //////////
 
 	void PushCharacterStatus(Status status) { characterStatusList_.emplace_back(status); }
