@@ -126,15 +126,30 @@ void MetaAI::ToCreateMode()
 	
 	int deadNum = 0;
 	
+	int winPlayer = 0;
+
 	//死んでる人数を数える
 	for (int i = 0; i < characterStatusList_.size(); i++) {
+		
 		if (characterStatusList_.at(i).dead) {
 			deadNum++;
 		}
+		else {
+			//勝ったやつのプレイヤーIDを覚えておく
+			winPlayer = i;
+		}
+
+		
 	}
+
+	//勝ったプレイヤーのwinPointを増やしてクリエイトモードへ
 
 	//3人以上死んでいたら
 	if (deadNum >= 3 && pCreateMode_->GetState() == NONE) {
+		
+		Status status = characterStatusList_.at(winPlayer);
+		status.winPoint++;
+		pNavigationAI_->SetStatus(winPlayer, status);
 		pCreateMode_->ToSelectMode();
 	}
 

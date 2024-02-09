@@ -17,6 +17,7 @@ using PP = pair<long, pair<int, int>>;//first‚ÉƒRƒXƒgBsecond‚É‚»‚ÌƒRƒXƒg‚ÌˆÊ’u‚
 class Character;
 class CharacterAI;
 class Stage;
+struct Status;
 
 /// <summary>
 /// ƒLƒƒƒ‰ƒNƒ^[AI‚Æƒƒ^AI‚Éî•ñ‚ğ’ñ‹Ÿ‚·‚é
@@ -53,6 +54,7 @@ public:
 
 	float Distance(int myID, int targetID);
 
+	
 
 	//////////////////AstarƒAƒ‹ƒSƒŠƒYƒ€‚Åg‚¤ŠÖ”//////////////////
 	
@@ -90,6 +92,8 @@ public:
 
 	
 	//////////////ƒAƒNƒZƒXŠÖ”//////////////
+
+	void SetStatus(int ID, Status status);
 
 	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
 	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }

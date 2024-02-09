@@ -360,3 +360,8 @@ float NavigationAI::Distance(int myID, int targetID)
 
 	return distance;
 }
+
+void NavigationAI::SetStatus(int ID, Status status)
+{
+	pCharacterList_.at(ID)->SetStatus(status);
+}

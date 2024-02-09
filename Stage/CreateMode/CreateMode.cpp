@@ -21,7 +21,7 @@ namespace {
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
     //参加するプレイヤーの最大人数分
-    const XMFLOAT3 PLAYER_UI_POS[4] = { XMFLOAT3(5,15,15),XMFLOAT3(10,15,15) ,XMFLOAT3(15,15,15) ,XMFLOAT3(20,15,15) };
+    const XMFLOAT3 PLAYER_UI_POS[PLAYER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
     const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
     const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 15, -15);
@@ -44,26 +44,28 @@ CreateMode::CreateMode(GameObject* parent)
 //初期化
 void CreateMode::Initialize()
 {
+
+    //Mapファイルの中に入ってるfbxファイルの名前を入れる
+    std::vector<std::string> fileName;
+
     //ファイルの中に入ってるすべてのfbxファイルの名前の取得
-    fileName_ = GetFilePath("../Assets/StageResource/", "fbx");
+    fileName = GetFilePath("../Assets/StageResource/", "fbx");
 
     //fileNameの個数分の要素数を確保
-    modelData_.assign(fileName_.size(), ModelInfo(-1, PATTERN_END));
+    modelData_.assign(fileName.size(), ModelInfo(-1, PATTERN_END));
 
     //ファイルの中に入ってたリソースをすべてロードする
     for (int i = 0; i < modelData_.size(); i++) {
         std::string dir = "StageResource/";
-        modelData_.at(i).hModel = Model::Load(dir + fileName_.at(i));
+        modelData_.at(i).hModel = Model::Load(dir + fileName.at(i));
         modelData_.at(i).modelPattern = (FBXPATTERN)i;
         assert(modelData_.at(i).hModel >= 0);
     }
 
-    ////前回までのviewObjectをすべて消去して、新しくセットする
-    viewObjectList_.clear();
+    //MAX_VIEW_OBJECT分の要素を事前に取っておく
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
-        //hModelの中からランダムで表示させるオブジェクトを決める
-        viewObjectList_.emplace_back(rand() % modelData_.size() + modelData_.at(0).hModel);
+        viewObjectList_.emplace_back(-1);
     }
 
     //事前にプレイヤーの数だけ要素を用意して初期化しておく
@@ -324,8 +326,9 @@ void CreateMode::SelectObject()
     
     Transform objPos;
     objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
-    //settingObject_.emplace_back(std::make_pair(viewObjectList_.at(selecting_Object_), objPos));
     
+    vector<int> ranking = pMetaAI_->GetRanking();
+
     //rankingのビリからセットする
     int selectedObjectNum = 3;
     for (int i = 0; i < settingObject_.size(); i++) {
@@ -340,6 +343,7 @@ void CreateMode::SelectObject()
     settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object_);
     settingObject_.at(selectedObjectNum).second = objPos;
     
+    //選択されたオブジェクトは消す
     viewObjectList_.at(selecting_Object_) = -1;
 
 }
@@ -541,22 +545,23 @@ void CreateMode::AIMovingObject()
         pos.emplace_back((*it)->GetPosition());
     }
 
-    //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらうか
+    //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらう
     //すでにsettingObjectはID順番になってるはず
     for (int i = startEnemyID_; i < settingObject_.size(); i++) {
 
-
+        //モデルのTransformの位置を決める
         while (true) {
 
-            //モデルのTransformの位置を決める
+            //NavigationAIを経由してどこに置くかを決める
             settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
         
             bool isBreak = true;
 
             //モデルの位置が他と被っていたら、もう一度
-            for (int i = 0; i < pos.size(); i++) {
-                if (pos.at(i) == settingObject_.at(i).second.position_) {
+            for (int f = 0; f < pos.size(); f++) {
+                if (pos.at(f) == settingObject_.at(i).second.position_) {
                     isBreak = false;
+                    srand(time(NULL));
                     break;
                 }
             }

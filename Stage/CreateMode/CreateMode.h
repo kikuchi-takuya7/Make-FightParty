@@ -129,20 +129,19 @@ private:
 
 	std::vector<ModelInfo> modelData_;
 
-	//Mapファイルの中に入ってるfbxファイルの名前を入れる
-	std::vector<std::string> fileName_;
+	
 
 	//viewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
 	int selecting_Object_;
-
-	//作成したオブジェクトリスト
-	std::list<StageSourceBase*> createObjectList_;
 
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;
 
 	//プレイヤーが設置するオブジェクト。{モデル番号,そのモデルのTransform}どのプレイヤーが選んでるかは要素番目で示している
 	std::vector<std::pair<int,Transform>> settingObject_;
+
+	//作成したオブジェクトリスト
+	std::list<StageSourceBase*> createObjectList_;
 
 	float rotateObjectValue_;
 
