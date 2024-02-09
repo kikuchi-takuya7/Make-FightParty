@@ -58,7 +58,7 @@ void CreateMode::Initialize()
         assert(modelData_.at(i).hModel >= 0);
     }
 
-    //前回までのviewObjectをすべて消去して、新しくセットする
+    ////前回までのviewObjectをすべて消去して、新しくセットする
     viewObjectList_.clear();
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
@@ -95,18 +95,28 @@ void CreateMode::ViewInit()
         settingObject_.at(i).second = objPos;
     }
 
-    //hModelの中からランダムで表示させるオブジェクトを入れなおす
+    //前回までのviewObjectをすべて消去して、新しくセットする
+    //要素clearするのめんどくさい気がするけど、-1にしただけだと謎エラー出ちゃった
+    //viewObjectList_.clear();
+    //for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+
+    //    //hModelの中からランダムで表示させるオブジェクトを決める
+    //    viewObjectList_.emplace_back(rand() % modelData_.size() + modelData_.at(ZERO).hModel);
+    //}
+
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
 
-        viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(0).hModel;
+        //hModelの中からランダムで表示させるオブジェクトを決める
+        viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
     }
+
 }
 
 void CreateMode::SettingInit()
 {
 
-    flame_ = 0;
-    camMoveRate_ = 0.0f;
+    flame_ = ZERO;
+    camMoveRate_ = ZERO;
     selecting_Object_ = INF;
    
 }
@@ -329,14 +339,20 @@ void CreateMode::SelectObject()
     //選択したビリの位置から順にオブジェクトを入れてく
     settingObject_.at(selectedObjectNum).first = viewObjectList_.at(selecting_Object_);
     settingObject_.at(selectedObjectNum).second = objPos;
+    
 
+    //一々消さなくてもこれで行けたら楽だった
     viewObjectList_.at(selecting_Object_) = -1;
+    
+    //viewObjectList_.erase(viewObjectList_.begin() + selecting_Object_);
 
 }
 
 void CreateMode::AddCreateObject(StageSourceBase* object)
 {
+    //後々のこと考えたらID割り振ったほうがいいか。後で爆弾とか実装する事考えたら
     createObjectList_.emplace_back(object);
+
 }
 
 std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
@@ -414,6 +430,12 @@ bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
 {
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
     for (int i = 0; i < viewObjectList_.size(); i++) {
+
+        //既に選択されたオブジェクト要素の位置なら
+        if (viewObjectList_.at(i) == -1) {
+            continue;
+        }
+
         RayCastData data;
         XMStoreFloat3(&data.start, front);
         XMStoreFloat3(&data.dir, back - front);
@@ -514,12 +536,42 @@ bool CreateMode::IsOverlapPosition()
 void CreateMode::AIMovingObject()
 {
 
+    std::vector<XMFLOAT3> pos;
+
+    //既に作ったオブジェクトの全ての位置を確認する
+    for (auto it = createObjectList_.begin(); it != createObjectList_.end(); it++) {
+
+        pos.emplace_back((*it)->GetPosition());
+    }
+
     //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらうか
     //すでにsettingObjectはID順番になってるはず
     for (int i = startEnemyID_; i < settingObject_.size(); i++) {
 
-        //引数として戻り値として返すか、アドレス渡して変えてもらうかどっちにする。って思ったけどそもそもTransform引数で渡す必要ないか
-        settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
+
+        while (true) {
+
+            //モデルのTransformの位置を決める
+            settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
+        
+            bool isBreak = true;
+
+            //モデルの位置が他と被っていたら、もう一度
+            for (int i = 0; i < pos.size(); i++) {
+                if (pos.at(i) == settingObject_.at(i).second.position_) {
+                    isBreak = false;
+                    break;
+                }
+            }
+
+            if (isBreak)
+                break;
+        
+        }
+        
+        
+        
+        
         CreateObject(settingObject_.at(i).first, settingObject_.at(i).second, i);
     }
 

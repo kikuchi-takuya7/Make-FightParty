@@ -101,8 +101,9 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 void Player::ResetStatus()
 {
 
-	//初期化して位置を戻す
-	//ChildInitialize();
+	//コライダーを一旦消す。消さないと勝ってるプレイヤーのコライダーが重なる
+	EraseCollider(COLLIDER_ATTACK);
+	EraseCollider(COLLIDER_BODY);
 
 	//開始地点に移動する
 	SetPosition(startPos_);

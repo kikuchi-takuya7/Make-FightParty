@@ -104,10 +104,14 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 
 void Enemy::ResetStatus()
 {
+	//コライダーを一旦消す。消さないと勝ってるプレイヤーのコライダーが重なる
+	EraseCollider(COLLIDER_ATTACK);
+	EraseCollider(COLLIDER_BODY);
+
 	//開始地点に移動する
 	SetPosition(startPos_);
 
-	//addcolliderしたら勝手に開放されるからね
+	//体の当たり判定を復活させる
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
 	status_.hp = ENEMY_HP;
