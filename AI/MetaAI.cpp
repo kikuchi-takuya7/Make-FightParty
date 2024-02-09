@@ -124,8 +124,6 @@ void MetaAI::CheckNo1Chara()
 void MetaAI::ToCreateMode()
 {
 
-	CheckNo1Chara();
-	
 	int deadNum = 0;
 	
 	int winPlayer = 0;
@@ -149,9 +147,12 @@ void MetaAI::ToCreateMode()
 	//3人以上死んでいたら
 	if (deadNum >= 3 && pCreateMode_->GetState() == NONE) {
 		
-		Status status = characterStatusList_.at(winPlayer);
-		status.winPoint++;
-		pNavigationAI_->SetStatus(winPlayer, status);
+		//勝ったプレイヤーのwinPointを増やして、現在の順位を確認する
+		characterStatusList_.at(winPlayer).winPoint++;
+
+		//キャラクタークラスにも教える
+		pNavigationAI_->SetStatus(winPlayer, characterStatusList_.at(winPlayer));
+		CheckNo1Chara();
 		pCreateMode_->ToSelectMode();
 	}
 

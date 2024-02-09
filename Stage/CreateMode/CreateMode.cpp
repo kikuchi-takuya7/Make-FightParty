@@ -137,7 +137,7 @@ void CreateMode::Update()
             if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
                 AISelectObject(ranking_.at(nextSelectCharacterID_));
                 nextSelectCharacterID_--;
-                return;
+                break;
             }
 
             //マウスからレイを飛ばす用のベクトルを獲得
@@ -404,7 +404,7 @@ void CreateMode::AISelectObject(int ID)
     vector<int> modelList;
 
     //表示されてるモデルのモデル番号を全て取得する
-    for (int i = 0; i < viewObjectList_.size(); i++) {
+    for (int i = ZERO; i < viewObjectList_.size(); i++) {
         
         //-1は判定しない
         if (viewObjectList_.at(i) == -1) {
@@ -415,7 +415,7 @@ void CreateMode::AISelectObject(int ID)
         bool duplicate = false;
 
         //modelListに既に入れてる番号か確認する
-        for (int m = 0; m < modelData_.size(); m++) {
+        for (int m = ZERO; m < modelList.size(); m++) {
             if (modelList.at(m) == viewObjectList_.at(i)) {
                 duplicate = true;
             }
@@ -427,8 +427,17 @@ void CreateMode::AISelectObject(int ID)
         }
     }
 
-    //選択するオブジェクトの要素番目を入れる
-    selecting_Object_ = pMetaAI_->SelectObject(modelList);
+    //選択するオブジェクトのモデル番号を覚える
+    int selectModel = pMetaAI_->SelectObject(modelList);
+
+    //選択されたモデル番号を探して、selectingObjectに入れる
+    for (int i = ZERO; i < viewObjectList_.size(); i++) {
+        if (viewObjectList_.at(i) == selectModel) {
+            selecting_Object_ = i;
+            break;
+        }
+
+    }
 
     //選択する
     SelectObject(ID);
@@ -440,7 +449,7 @@ void CreateMode::SelectObject(int ID)
 {
   
     Transform objPos;
-    objPos.position_ = XMFLOAT3(15.0f, 0, 15.0f);
+    objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
 
   
     //選択したオブジェクトを入れてく
@@ -455,7 +464,7 @@ void CreateMode::SelectObject(int ID)
 bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
 {
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
-    for (int i = 0; i < viewObjectList_.size(); i++) {
+    for (int i = ZERO; i < viewObjectList_.size(); i++) {
 
         //既に選択されたオブジェクト要素の位置なら
         if (viewObjectList_.at(i) == -1) {
@@ -510,8 +519,8 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
     int stageHandle = pStage_->GetStageHandle();
 
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
-    for (int z = 0; z < stageSize.z; z++) {
-        for (int x = 0; x < stageSize.x; x++) {
+    for (int z = ZERO; z < stageSize.z; z++) {
+        for (int x = ZERO; x < stageSize.x; x++) {
 
             RayCastData data;
             XMStoreFloat3(&data.start, front);
@@ -544,7 +553,14 @@ bool CreateMode::IsOverlapPosition()
 
     Transform pos = settingObject_.at(selecting_Object_).second;
 
+    //既に作成されたオブジェクトと被った位置か確認する
+    for (auto it = createObjectList_.begin(); it != createObjectList_.end(); it++) {
+        if ((*it)->GetPosition() == pos.position_) {
+            return true;
+        }
+    }
 
+    //今セットしてる途中のオブジェクトと位置が被ってるかどうか
     for (int i = 0; i < settingObject_.size(); i++) {
 
         //自分なら処理しない
@@ -572,7 +588,6 @@ void CreateMode::AIMovingObject()
     }
 
     //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらう
-    //すでにsettingObjectはID順番になってるはず
     for (int i = startEnemyID_; i < settingObject_.size(); i++) {
 
         //モデルのTransformの位置を決める
