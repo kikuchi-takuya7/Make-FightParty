@@ -100,6 +100,7 @@ public:
 
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
+    XMFLOAT3 GetStartPos() { return startPos_; }
     void SetStatus(Status status) { status_ = status; }
     void SetStartPos(XMFLOAT3 pos) { startPos_ = pos; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }

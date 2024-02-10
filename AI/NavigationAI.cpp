@@ -78,6 +78,20 @@ void NavigationAI::AllStartDraw()
 	}
 }
 
+//プレイヤーの開始位置と被ってるか
+//引数：比べるXMFLOAT3型の変数
+bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+
+		if (pos == pCharacterList_.at(i)->GetStartPos()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {

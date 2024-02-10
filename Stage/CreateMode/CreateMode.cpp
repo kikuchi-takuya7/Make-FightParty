@@ -314,6 +314,10 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
         break;
     }
 
+    Graph test = pStage_->GetMap();
+
+
+
     //クリックしたらそのオブジェクトを消す（モデル番号を無くして処理しなくする）
     settingObject_.at(element).first = -1;
 }
@@ -587,15 +591,23 @@ void CreateMode::AIMovingObject()
         pos.emplace_back((*it)->GetPosition());
     }
 
-    //ナビゲーションAIにIDとそのオブジェクトのTransを渡して、あっちで色々してもらう
+    //AIが選んだオブジェクトを置かせる
     for (int i = startEnemyID_; i < settingObject_.size(); i++) {
 
-        //モデルのTransformの位置を決める
+        //モデルのTransformの位置を他のオブジェクトと被ってない位置に置けるまで繰り替えす
         while (true) {
+
+            
 
             //NavigationAIを経由してどこに置くかを決める
             settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
         
+            //プレイヤーの位置と被っていたらもう一度
+            if (pNavigationAI_->IsOverlapPos(settingObject_.at(i).second.position_)) {
+                srand(time(NULL));
+                continue;
+            }
+            
             bool isBreak = true;
 
             //モデルの位置が他と被っていたら、もう一度
@@ -606,7 +618,7 @@ void CreateMode::AIMovingObject()
                     break;
                 }
             }
-
+            
             if (isBreak)
                 break;
         
