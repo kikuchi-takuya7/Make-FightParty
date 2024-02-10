@@ -102,12 +102,6 @@ public:
 
 	void AIMovingObject();
 
-	/////////////////////////カメラ移動で使う関数//////////////////////////////////
-
-	void MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar);
-
-	float GetRateValue(float begin, float end, float rate);
-
 	///////////////////////////アクセス関数///////////////////////////////
 	void ToSelectMode();
 	void ToSettingMode();
@@ -170,10 +164,7 @@ private:
 
 	//////カメラを滑らかに動かすのに使う変数
 
-	//緩急を付けるレート
-	float camMoveRate_;
-
-
+	bool isCamMoveEnd_;
 
 	//インスタンスを作成して色々するテンプレート
 	template <class T>

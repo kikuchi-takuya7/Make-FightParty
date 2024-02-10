@@ -18,6 +18,8 @@
 namespace {
     const int MAX_CHARACTER_NUM = 4;
     const int MAX_VIEW_OBJECT = 8;
+    const float CAM_MOVE_RATE = 0.05f;
+
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
     //参加するプレイヤーの最大人数分
@@ -35,7 +37,7 @@ namespace {
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), selecting_Object_(0),nextSelectCharacterID_(0)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr)
 {
 
 
@@ -75,11 +77,7 @@ void CreateMode::Initialize()
         settingObject_.emplace_back(std::make_pair(-1, objPos));
     }
 
-
-
-    rotateObjectValue_ = ZERO;
     nowState_ = NONE;
-    flame_ = ZERO;
 }
 
 void CreateMode::ViewInit()
@@ -87,9 +85,10 @@ void CreateMode::ViewInit()
 
     flame_ = ZERO;
     rotateObjectValue_ = ZERO;
-    camMoveRate_ = ZERO;
     selecting_Object_ = INF;
     nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
+
+    isCamMoveEnd_ = false;
 
     ranking_ = pMetaAI_->GetRanking();
 
@@ -115,9 +114,8 @@ void CreateMode::SettingInit()
 {
 
     flame_ = ZERO;
-    camMoveRate_ = ZERO;
     selecting_Object_ = INF;
-   
+    isCamMoveEnd_ = false;
 }
 
 //更新
@@ -127,8 +125,11 @@ void CreateMode::Update()
     switch (nowState_)
     {
     case SELECT_MODE:
-
-        MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR);
+        
+        if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false && isCamMoveEnd_ == false) {
+            isCamMoveEnd_ = true;
+            break;
+        }
 
         //オブジェクトがプレイヤー分選択されていなかったら
         if (!IsAllDecidedObject()) {
@@ -166,7 +167,10 @@ void CreateMode::Update()
     
     case SETTING_MODE:
 
-        MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR);
+        if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false && isCamMoveEnd_ == false) {
+            isCamMoveEnd_ = true;
+            break;
+        }
 
         //移動する処理。
         if (Input::IsKeyDown(DIK_0)) {
@@ -197,7 +201,15 @@ void CreateMode::Update()
                 }
             }
 
+            
             if (isAllCreate) {
+
+                //選択後に1秒待つ
+                flame_++;
+                if (flame_ <= 60) {
+                    return;
+                }
+
                 //ゲームに戻る処理
                 ToGameMode();
             }
@@ -628,42 +640,6 @@ void CreateMode::AIMovingObject()
     
 }
 
-void CreateMode::MoveCam(XMFLOAT3 lastPos, XMFLOAT3 lastTar)
-{
-    //カメラの位置と見る地点を徐々に変える
-    XMFLOAT3 nowCamPos = Camera::GetPosition();
-    XMFLOAT3 nowCamTar = Camera::GetTarget();
-
-    //レートでぬるぬる動くように
-    if (camMoveRate_ < 1.0f) {
-        camMoveRate_ += 0.05f;
-
-        // 変な数字で止まらないように
-        if (camMoveRate_ > 1.0f)
-            camMoveRate_ = 1.0f;
-
-        //ターゲットとポジションが同じだとエラー起きるから注意
-
-        nowCamPos.x = GetRateValue(nowCamPos.x, lastPos.x, camMoveRate_);
-        nowCamPos.y = GetRateValue(nowCamPos.y, lastPos.y, camMoveRate_);
-        nowCamPos.z = GetRateValue(nowCamPos.z, lastPos.z, camMoveRate_);
-
-        Camera::SetPosition(nowCamPos);
-
-        nowCamTar.x = GetRateValue(nowCamTar.x, lastTar.x, camMoveRate_);
-        nowCamTar.y = GetRateValue(nowCamTar.y, lastTar.y, camMoveRate_);
-        nowCamTar.z = GetRateValue(nowCamTar.z, lastTar.z, camMoveRate_);
-
-        Camera::SetTarget(nowCamTar);
-
-    }
-}
-
-float CreateMode::GetRateValue(float begin, float end, float rate)
-{
-    return (end - begin) * rate + begin;
-}
-
 void CreateMode::ToSelectMode()
 {
 
@@ -682,6 +658,7 @@ void CreateMode::ToSettingMode()
 
 void CreateMode::ToGameMode()
 {
+    
 
     //ここで一旦暗転とかさせたいから移動はすぐでいいや
     pMetaAI_->ResetGame();
