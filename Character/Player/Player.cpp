@@ -85,7 +85,6 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
 	}
-
 }
 
 void Player::ResetStatus()
