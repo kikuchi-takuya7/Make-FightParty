@@ -596,9 +596,7 @@ void CreateMode::AIMovingObject()
 
         //モデルのTransformの位置を他のオブジェクトと被ってない位置に置けるまで繰り替えす
         while (true) {
-
-            
-
+                        
             //NavigationAIを経由してどこに置くかを決める
             settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
         
