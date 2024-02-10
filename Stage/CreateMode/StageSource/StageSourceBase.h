@@ -1,7 +1,6 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
 
-
 class CreateMode;
 
 //StageSourceの元となるクラス
@@ -15,6 +14,9 @@ protected:
 
     //ステージに置いたときのコスト。Astarアルゴリズムで使用
     int cost_;
+
+    //当たり判定
+    BoxCollider* pBoxCollision_;
 
 public:
     //コンストラクタ
@@ -62,6 +64,8 @@ public:
     virtual void ChildRelease() {};
 
 
+    
+
     ////////////////アクセス関数//////////////////
 
     int GetHandle() { return hModel_; }
@@ -69,7 +73,9 @@ public:
     void SetHandle(int handle) { hModel_ = handle; }
 
     
+protected:
 
+    
 
 private:
 

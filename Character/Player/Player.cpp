@@ -67,13 +67,13 @@ void Player::ChildRelease()
 }
 
 //何か当たった時の処理
-void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
 	if (pState_->playerKnockBackState_ == pState_->playerState_)
 		return;
 
-	//当たったときの処理
+	//攻撃に当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
@@ -83,16 +83,6 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 		SetTargetRotate(rotate);
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
-
-		
-		
-
-	}
-
-	//攻撃を当てた時の処理
-	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-	{
-		
 
 	}
 

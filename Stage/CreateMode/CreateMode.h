@@ -173,7 +173,7 @@ private:
 		T* pObject = Instantiate<T>(this);
 		AddCreateObject(pObject);
 		pStage_->PushStageSource(pObject);
-		pStage_->SetStageCost(trans.position_, pObject->GetStageCost());
+		//pStage_->SetStageCost(trans.position_, pObject->GetStageCost());
 		pObject->SetTransform(trans);
 		pObject->SetHandle(hModel);
 		return pObject;

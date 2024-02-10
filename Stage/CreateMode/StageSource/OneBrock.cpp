@@ -21,6 +21,7 @@ void OneBrock::ChildInitialize()
 	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
 	cost_ = COST;
 
+	AddCollider(pBoxCollision_, COLLIDER_BROCK);
 }
 
 void OneBrock::ChildUpdate()

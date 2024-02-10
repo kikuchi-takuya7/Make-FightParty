@@ -41,7 +41,7 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 
     /////////////////////メンバ関数/////////////////////////////////////
@@ -93,7 +93,7 @@ public:
     /// </summary>
     virtual void MoveCharacter() {};
 
-    virtual void ChildOnCollision() {};
+    virtual void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
 
     //stateまとめて処理したいけど何とかできないかな
     virtual void ResetStatus() {};
@@ -123,6 +123,9 @@ protected:
 
     //それぞれのキャラのスタート地点
     XMFLOAT3 startPos_;
+
+    //前にいた座標
+    XMFLOAT3 prevPos_;
 
 private:
 

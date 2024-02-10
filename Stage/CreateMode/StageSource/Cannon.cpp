@@ -1,4 +1,6 @@
 #include "Cannon.h"
+#include "../../../Character/Character.h"
+
 
 namespace {
 
@@ -21,7 +23,7 @@ void Cannon::ChildInitialize()
 	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
 	cost_ = COST;
 
-
+	AddCollider(pBoxCollision_, COLLIDER_BROCK);
 }
 
 void Cannon::ChildUpdate()
@@ -40,4 +42,6 @@ void Cannon::ChildRelease()
 
 void Cannon::OnCollision(GameObject* pTarget)
 {
+	
+
 }

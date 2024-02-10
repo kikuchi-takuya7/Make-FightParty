@@ -2,6 +2,7 @@
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
+#include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 
 namespace {
 	const int CHARACTER_HP = 100;
@@ -44,9 +45,14 @@ void Character::Initialize()
 void Character::Update()
 {
 
+	//今いる位置をprevPosに置いておく
+	prevPos_ = transform_.position_;
+
 	//死んでる時とかアップデートしたくないときにここで止めちゃえばいい
 
 	ChildUpdate();
+
+
 }
 
 //描画
@@ -67,6 +73,13 @@ void Character::Release()
 
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
+	
+	//壁にぶつかったら前にいた座標に戻す
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK) {
+		SetPosition(prevPos_);
+	}
+
+	ChildOnCollision(pTarget, myType, targetType);
 }
 
 void Character::HitDamage(int damage)
