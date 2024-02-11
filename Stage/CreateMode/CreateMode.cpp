@@ -81,7 +81,7 @@ void CreateMode::Initialize()
     nowState_ = NONE;
 
     timer_->SetLimit(WAIT_TIME);
-    //timer_->StartDraw();
+    
 }
 
 void CreateMode::ViewInit()
@@ -92,6 +92,7 @@ void CreateMode::ViewInit()
     selecting_Object_ = INF;
     nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
 
+    isObjectMoving_ = false;
     isCamMoveEnd_ = false;
 
     ranking_ = pMetaAI_->GetRanking();
@@ -122,6 +123,15 @@ void CreateMode::SettingInit()
     selecting_Object_ = INF;
     isCamMoveEnd_ = false;
 
+    //settingObjectの位置をステージの真ん中に設定する
+    for (int i = 0; i < settingObject_.size(); i++) {
+        
+        Transform objPos;
+        objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+
+        settingObject_.at(i).second = objPos;
+    }
+
     timer_->Reset();
 }
 
@@ -138,13 +148,28 @@ void CreateMode::Update()
             break;
         }
 
+        /*timer_->Start();
+        if (timer_->IsFinished()) {
+            timer_->Reset();
+        }
+        else {
+            break;
+        }*/
+        
+
         //オブジェクトがプレイヤー分選択されていなかったら
         if (!IsAllDecidedObject()) {
 
+            //オブジェクトが移動中なら更新しない
+            if (isObjectMoving_) {
+                break;
+            }
+
             //次にオブジェクトを選ぶ人がAIならAI用の処理をする
-            if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
+            if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {    
                 AISelectObject(ranking_.at(nextSelectCharacterID_));
                 nextSelectCharacterID_--;
+                isObjectMoving_ = true;
                 break;
             }
 
@@ -152,7 +177,7 @@ void CreateMode::Update()
             XMVECTOR front;
             XMVECTOR back;
             GetCursorRay(front, back);
-            //レイキャストするたびにレイのstartが変わってる？
+            //memo.レイキャストするたびにレイのstartが変わってる
 
             //オブジェクトにカーソルがあってる状態でクリックされたら
             if (IsSelectingOverlapCursor(front, back)) {
@@ -261,15 +286,20 @@ void CreateMode::Draw()
 
         //既に選ばれたオブジェクトを表示する
         for (int i = 0; i < settingObject_.size(); i++) {
-            
-            //最下位からオブジェクトを選択するため、選んだ人の位置から置く
-            Transform objTrans;
 
-            //settingObjectはすでに順位順になってるからそのまま表示しようとして大丈夫なはず
-            objTrans.position_ = PLAYER_UI_POS[i];
-            objTrans.rotate_.y = rotateObjectValue_;
+            //-1なら更新しない。これが無いと勝手に動いちゃう
+            if (settingObject_.at(i).first == -1) {
+                continue;
+            }
 
-            Model::SetTransform(settingObject_.at(i).first, objTrans);
+            //選んだオブジェクトを滑らかに動かす
+            if (RateMovePosition(settingObject_.at(i).second.position_, PLAYER_UI_POS[i], 0.1f)) {
+                isObjectMoving_ = false;
+            }
+
+            settingObject_.at(i).second.rotate_.y = rotateObjectValue_;
+
+            Model::SetTransform(settingObject_.at(i).first, settingObject_.at(i).second);
             Model::Draw(settingObject_.at(i).first);
         }
 
@@ -469,14 +499,13 @@ void CreateMode::SelectObject(int ID)
 {
   
     Transform objPos;
-    objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
-
+    objPos.position_ = OBJECT_POS[selecting_Object_];
   
     //選択したオブジェクトを入れてく
     settingObject_.at(ID).first = viewObjectList_.at(selecting_Object_);
     settingObject_.at(ID).second = objPos;
 
-    //選択されたオブジェクトは消す
+    //選択された位置のオブジェクトは消す
     viewObjectList_.at(selecting_Object_) = -1;
 
 }

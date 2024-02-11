@@ -94,6 +94,14 @@ public:
 	void Load_Transform_File(HANDLE hFile, LPCSTR fileName);
 
 	
+	/// <summary>
+	/// 滑らかに移動させる
+	/// </summary>
+	/// <param name="position">動かしたいオブジェクトの座標</param>
+	/// <param name="lastPos">最終的なポジション</param>
+	/// <param name="moveRate">どのぐらい滑らかに移動させるか(最大1.0f)</param>
+	/// <returns>移動し終わったらtrue</returns>
+	bool RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float moveRate);
 
 	//各フラグの制御
 	bool IsDead();			// 削除するかどうか
@@ -273,6 +281,7 @@ private:
 	//引数：obj　削除するオブジェクト
 	void KillObjectSub(GameObject* obj);
 
+	float GetRateValue(float begin, float end, float rate);
 
 private:
 	//フラグ
@@ -293,6 +302,9 @@ private:
 
 	//オブジェクトを識別するIDというか順番みたいな感じになってる。IDがないとImguiで識別できなくなっちゃう
 	int objectID_;
+
+	//オブジェクトを滑らかに動かすために必要
+	float moveRate_;
 
 };
 

@@ -87,8 +87,16 @@ public:
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
 
+	/// <summary>
+	/// AIがオブジェクトを選択する関数
+	/// </summary>
+	/// <param name="ID">オブジェクトを選択する敵のID</param>
 	void AISelectObject(int ID);
 
+	/// <summary>
+	/// settingObjectに選んだオブジェクトの情報を渡す
+	/// </summary>
+	/// <param name="ID">オブジェクトを選んだ人のID</param>
 	void SelectObject(int ID);
 
 	bool IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back);
@@ -161,7 +169,11 @@ private:
 	//敵の最初のID
 	int startEnemyID_;
 
+	//時間を置くのに使う
 	Timer* timer_;
+
+	//AIがオブジェクトを選んだか
+	bool isObjectMoving_;
 
 	//////カメラを滑らかに動かすのに使う変数
 

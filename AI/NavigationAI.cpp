@@ -109,15 +109,16 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	target = FloatToIntPair(targetPos.z, targetPos.x);
 
 	//既に目標地点にいるならば移動しない
-	if (start == target)
+	if (start == target) {
 		return ZERO_FLOAT3;
+	}
+		
 
 	//マップコストをステージから聞く
 	Graph map = pStage_->GetMap();
 
 	if (Input::IsKeyDown(DIK_1)) {
 		int i = 0;
-	
 	}
 
 
@@ -243,6 +244,11 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
+	//残り1マスとかの時中途半端に止まるのでその分を補完する
+	if (nextPos == ZERO_FLOAT3) {
+		return Float3Sub(targetPos, startPos) * 0.08f;
+	}
+	
 	return nextPos;
 
 }
