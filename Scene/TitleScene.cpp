@@ -15,11 +15,11 @@ void TitleScene::Initialize()
 {
 
 	std::string str[3] = { "Make","&","Fight Party" };
-	
+
 
 	//画像データのロード
 	for (int i = 0; i < ARRAYSIZE(hPict_); i++) {
-	
+
 		std::string dir = "Image/";
 		std::string extention = ".png";
 
@@ -70,6 +70,7 @@ void TitleScene::Draw()
 //開放
 void TitleScene::Release()
 {
+	//pText_->Release();
 }
 
 void TitleScene::Imgui_Window()
