@@ -70,7 +70,7 @@ void TitleScene::Draw()
 //ŠJ•ú
 void TitleScene::Release()
 {
-	pText_->Release();
+	//pText_->Release();
 }
 
 void TitleScene::Imgui_Window()
