@@ -19,6 +19,5 @@ void EnemyDieState::Enter(Enemy* enemy, CharacterAI* AI)
 	//enemy->ClearCollider();
 
 	//Ž€‚ñ‚¾‚±‚Æ‚ðƒƒ^AI‚É“`‚¦‚é
-	enemy->Dead();
 	AI->TellStatus();
 }

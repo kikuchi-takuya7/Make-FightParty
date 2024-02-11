@@ -43,7 +43,7 @@ public:
     /// </summary>
     /// <param name="pos">そのオブジェクトの位置</param>
     /// <param name="cost">オブジェクトのコスト</param>
-    void SetStageCost(XMFLOAT3 pos, int cost) { map_.at(pos.z).at(pos.x) = cost; }
+    void SetStageCost(XMFLOAT3 pos, int cost);
 
     void SetCreateMode(CreateMode* createMode) { pCreateMode_ = createMode; }
     void PushStageSource(StageSourceBase* source) { pStageSourceList_.emplace_back(source); }

@@ -84,6 +84,10 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
+		//HP‚ª0‚É‚È‚Á‚½‚ç
+		if (status_.hp <= 0) {
+			status_.dead = true;
+		}
 	}
 }
 

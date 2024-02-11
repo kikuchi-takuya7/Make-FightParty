@@ -37,8 +37,10 @@ void PlayerStateManager::Update(Player* player)
 		return;
 	}
 
-	XMFLOAT3 playerPos = player->GetPosition();
-
+	//Ž€‚Êˆ—
+	if (player->GetStatus().dead) {
+		ChangeState(PLAYER_DIE, player);
+	}
 
 	//ˆÚ“®ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚È‚ç
 	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D)|| Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
@@ -51,10 +53,7 @@ void PlayerStateManager::Update(Player* player)
 
 	playerState_->Update(player);
 
-	//Ž€‚Êˆ—‚Í‚±‚±‚Å‚¢‚¢‚Ì‚©
-	if (player->GetStatus().hp <= 0) {
-		ChangeState(PLAYER_DIE, player);
-	}
+	
 
 }
 

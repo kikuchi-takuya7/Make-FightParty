@@ -33,8 +33,18 @@ int MetaAI::Targeting(int ID)
 {
 	int targetFrag = rand() % 3;
 
-	//自分が1位だった場合0に固定する（同率でも）
-	if (characterStatusList_.at(No1CharaID_.at(ZERO)).winPoint == characterStatusList_.at(ID).winPoint) {
+	bool No1AllDead = true;
+
+	//１位が誰かしら生き残っているかどうか
+	for (int i = 0; i < No1CharaID_.size(); i++) {
+		if (characterStatusList_.at(No1CharaID_.at(i)).dead == false) {
+			No1AllDead = false;
+			break;
+		}
+	}
+
+	//自分が1位だった場合0に固定する（同率でも）or 一位が全員死んでても0に固定
+	if (characterStatusList_.at(ranking_.at(ZERO)).winPoint == characterStatusList_.at(ID).winPoint || No1AllDead == true) {
 
 		targetFrag = 0;
 	}
@@ -49,7 +59,7 @@ int MetaAI::Targeting(int ID)
 		{
 			int targetID = rand() % characterStatusList_.size();
 
-			//狙った相手が自分じゃなければ
+			//狙った相手が自分じゃなく、死んでいなければ
 			if (targetID != ID)
 				return targetID;
 		}

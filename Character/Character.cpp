@@ -76,6 +76,7 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	
 	//ï«Ç…Ç‘Ç¬Ç©Ç¡ÇΩÇÁëOÇ…Ç¢ÇΩç¿ïWÇ…ñﬂÇ∑
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK) {
+
 		SetPosition(prevPos_);
 	}
 

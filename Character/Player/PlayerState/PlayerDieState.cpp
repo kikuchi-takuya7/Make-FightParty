@@ -18,7 +18,6 @@ void PlayerDieState::Enter(Player* player)
 	player->EraseCollider(COLLIDER_ATTACK);
 	player->EraseCollider(COLLIDER_BODY);
 
-	player->Dead();
 	player->TellStatus();
 	
 }

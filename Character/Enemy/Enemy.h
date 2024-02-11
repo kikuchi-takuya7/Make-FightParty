@@ -41,7 +41,7 @@ public:
     /// •Ê‚Ìcollider‚ÉÕ“Ë‚µ‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚éŠÖ”
     /// </summary>
     /// <param name="pTarget">“–‚½‚Á‚½‘Šè</param>
-    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 
     void ResetStatus() override;

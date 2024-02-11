@@ -89,6 +89,11 @@ void CharacterAI::Attack()
 
 void CharacterAI::IsAttack()
 {
+	//‘_‚¨‚¤‚Æ‚µ‚Ä‚é“G‚ªŽ€‚ñ‚Å‚½‚çAƒ^[ƒQƒbƒg‚ð•Ï‚¦‚é
+	if (pMetaAI_->GetCharacterStatus(targetID_).dead) {
+		AskTarget();
+	}
+
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
 	if (distance <= 2.0f) {

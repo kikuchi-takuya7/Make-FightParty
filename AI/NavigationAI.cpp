@@ -115,6 +115,12 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	//マップコストをステージから聞く
 	Graph map = pStage_->GetMap();
 
+	if (Input::IsKeyDown(DIK_1)) {
+		int i = 0;
+	
+	}
+
+
 	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
 	Graph dist;
 

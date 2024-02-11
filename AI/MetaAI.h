@@ -57,6 +57,7 @@ public:
 
 	//////////////アクセス関数 //////////
 
+	Status GetCharacterStatus(int ID) { return characterStatusList_.at(ID); }
 	void PushCharacterStatus(Status status) { characterStatusList_.emplace_back(status); }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void ChangeStatus(int ID, Status status) { characterStatusList_.at(ID) = status; }
@@ -75,6 +76,8 @@ private:
 	NavigationAI* pNavigationAI_;
 
 	CreateMode* pCreateMode_;
+
+
 
 	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;

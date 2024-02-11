@@ -72,6 +72,11 @@ void Stage::Release()
 	//SAFE_DELETE(pCreateMode_);
 }
 
+void Stage::SetStageCost(XMFLOAT3 pos, int cost)
+{
+	map_.at(pos.z).at(pos.x) = cost;
+}
+
 XMFLOAT3 Stage::GetStageSize()
 {
 	return STAGE_SIZE;

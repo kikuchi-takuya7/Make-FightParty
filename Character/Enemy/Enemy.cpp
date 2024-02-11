@@ -35,15 +35,12 @@ void Enemy::ChildInitialize()
 	//pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
 	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
-	
-
 }
 
 //更新
 void Enemy::ChildUpdate()
 {
 
-	//MoveCharacter();
 
 	pState_->Update(this, pCharacterAI_);
 
@@ -68,7 +65,7 @@ void Enemy::ChildRelease()
 }
 
 //何か当たった時の処理
-void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
 	if (pState_->enemyKnockBackState_ == pState_->enemyState_)
@@ -85,9 +82,13 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 		//ノックバックさせる
 		pState_->ChangeState(ENEMY_KNOCKBACK, this, pCharacterAI_);
 
+		//hpが0になっていたら、後でアップデートからdieStateに変える
+		if (status_.hp <= ZERO) {
+			status_.dead = true;
+		}
+
 		//一定の確率で狙いを殴ってきた相手に変える
-		if (rand() % 2 == 0) {
-			
+		if (rand() % 2 == ZERO) {
 			pCharacterAI_->SetTargetID(pTarget->GetObjectID());
 		}
 
@@ -96,8 +97,6 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 	//攻撃を当てた時の処理
 	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
 	{
-
-
 	}
 
 }
