@@ -36,22 +36,14 @@ public:
 
 	void HandleInput(Enemy* enemy, CharacterAI* AI) override;
 
-<<<<<<< HEAD
-	void Enter(Enemy* enemy) override;
-=======
 	void Enter(Enemy* enemy, CharacterAI* AI) override;
->>>>>>> MapEditor_ver.2
 
 	/// <summary>
 	/// 状態を変更する
 	/// </summary>
 	/// <param name="change">変更後の状態</param>
 	/// <param name="enemy">変更するプレイヤーのポインタ</param>
-<<<<<<< HEAD
-	void ChangeState(EnemyStatePattern nextState, Enemy* enemy);
-=======
 	void ChangeState(EnemyStatePattern nextState, Enemy* enemy, CharacterAI* AI);
->>>>>>> MapEditor_ver.2
 
 	//マネージャにAIのインスタンス持たせた所で結局update呼ぶときにはAI引数として必要だからなぁ
 	//いっそのことそれぞれのstate全部のメンバ変数にAIの入れ物作る？それもなんか違う気がする

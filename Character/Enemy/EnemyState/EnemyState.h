@@ -42,11 +42,7 @@ public:
 	/// 状態変化したときに一度だけ呼ばれる関数
 	/// </summary>
 	/// <param name="enemy">Enemyのポインタ</param>
-<<<<<<< HEAD
-	virtual void Enter(Enemy* enemy) {};
-=======
 	virtual void Enter(Enemy* enemy, CharacterAI* AI) {};
->>>>>>> MapEditor_ver.2
 
 };
 

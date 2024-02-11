@@ -92,7 +92,6 @@ public:
 	IntPair FloatToIntPair(float z, float x);
 
 
-	float Distance(int myID, int targetID);
 	
 	//////////////アクセス関数//////////////
 

@@ -8,10 +8,6 @@
 namespace {
 	const int ENEMY_HP = 100;
 	const int ENEMY_ATTACK_POWER = 20;
-	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
-	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
-	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 }
 
 //コンストラクタ
@@ -39,24 +35,12 @@ void Enemy::ChildInitialize()
 	//pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
 	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
-	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER, 0, false};
-
-	//モデルデータのロード
-	hModel_ = Model::Load("PlayerFbx/player.fbx");
-	assert(hModel_ >= 0);
-
-	//pCharacterAI_->Initialize();
-
-	/*AddCollider(pAttackCollision_, COLLIDER_ATTACK);
-	pState_->ChangeState(ENEMY_ATTACK, this);*/
-
 }
 
 //更新
 void Enemy::ChildUpdate()
 {
 
-	//MoveCharacter();
 
 	pState_->Update(this, pCharacterAI_);
 
@@ -140,11 +124,6 @@ void Enemy::ResetStatus()
 void Enemy::MoveCharacter()
 {
 	pCharacterAI_->MoveEnemy();
-}
-
-void Enemy::TellStatus()
-{
-	pCharacterAI_->TellStatus();
 }
 
 void Enemy::ChangeState(EnemyStatePattern nextState)

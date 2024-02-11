@@ -9,7 +9,6 @@ namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
 
-	//コストを1にしたら経路復元の所で無限ループしてしまう。
 	const int STAGE_COST = 1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
@@ -19,10 +18,6 @@ namespace {
 	//上下左右に移動（探索）するための配列
 	const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
 	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
-}
-
-namespace Astar {
-
 }
 
 NavigationAI::NavigationAI(GameObject* parent)
@@ -134,20 +129,8 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < height_; i++) {
-		map.emplace_back(width_);
 		dist.emplace_back(width_);
 		rest.emplace_back(width_);
-	}
-
-	//ステージのコストを入れる。壁は-1.将来的にstageから持ってくる予定
-	for (int i = ZERO; i < height_; i++) {
-		for (int f = ZERO; f < width_; f++) {
-
-			map.at(i).at(f) = STAGE_COST;
-
-			//restにxz座標を入れる
-			rest[i][f] = IntPair(i, f);
-		}
 	}
 
 	//スタート地点の座標
@@ -363,7 +346,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 }
 
-
 int NavigationAI::Heuristic(int z, int x, IntPair target)
 {
 	//絶対値の差をとる
@@ -373,13 +355,6 @@ int NavigationAI::Heuristic(int z, int x, IntPair target)
 	//斜め移動なので大きいほうを返す
 	return max(tmpZ, tmpX);
 }
-
-//XMFLOAT3 NavigationAI::TeachNextPos()
-//{
-//	XMFLOAT3 fMove = { (float)teachPath_.second, ZERO, nextPos_.first };
-//
-//}
-
 
 IntPair NavigationAI::FloatToIntPair(float z, float x)
 {

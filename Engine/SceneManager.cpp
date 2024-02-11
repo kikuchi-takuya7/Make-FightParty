@@ -59,7 +59,6 @@ void SceneManager::Update()
 		case SCENE_ID_MAPEDITOR: Instantiate<MapEditorScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		case SCENE_ID_MAINGAME: Instantiate<MainGameScene>(this); break;
-		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		}
 		Audio::Initialize();
 		currentSceneID_ = nextSceneID_;
