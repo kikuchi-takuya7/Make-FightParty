@@ -4,7 +4,7 @@
 class MetaAI;
 class NavigationAI;
 class Stage;
-class Status;//構造体だけどこれいいの？？？？
+struct Status;//構造体だけどこれいいの？？？？
 
 //■■シーンを管理するクラス
 class MainGameScene : public GameObject
@@ -37,7 +37,7 @@ private:
 	//ゲーム全体のバランスを管理するAI
 	MetaAI* pMetaAI_;
 
-	Stage* stage_;
+	Stage* pStage_;
 
 	/*Player* pPlayer_;
 

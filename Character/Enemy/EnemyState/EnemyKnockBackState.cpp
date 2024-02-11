@@ -32,7 +32,11 @@ void EnemyKnockBackState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
+<<<<<<< HEAD
 void EnemyKnockBackState::Enter(Enemy* enemy)
+=======
+void EnemyKnockBackState::Enter(Enemy* enemy, CharacterAI* AI)
+>>>>>>> MapEditor_ver.2
 {
 	flame_ = 0;
 	enemy->KnockBackEnter(KNOCKBACK_DISTANCE);

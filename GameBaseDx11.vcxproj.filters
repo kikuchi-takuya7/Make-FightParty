@@ -20,9 +20,6 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
-    <Filter Include="01Engine\SaveManager">
-      <UniqueIdentifier>{89b76ae9-3a93-41e3-972f-c6ee48826e3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01Engine\ImGui">
       <UniqueIdentifier>{263ccdcc-3ac7-4815-a58a-4de4eaae9368}</UniqueIdentifier>
     </Filter>
@@ -42,8 +39,11 @@
     <Filter Include="AI">
       <UniqueIdentifier>{eebec4c1-ebf4-40ea-85af-3436dc556568}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MapEditor">
-      <UniqueIdentifier>{5196636c-f92e-4351-8ca0-2bd7dcc299a9}</UniqueIdentifier>
+    <Filter Include="Stage\CreateMode">
+      <UniqueIdentifier>{435a06ef-8e74-4a12-8f89-955bce5e6516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stage\CreateMode\StageSource">
+      <UniqueIdentifier>{ab129971-c84f-4812-9772-eb6eb44c4b0b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Character">
       <UniqueIdentifier>{bf39cfdd-b0d1-4d00-b8f9-52c5cf3aad43}</UniqueIdentifier>
@@ -59,12 +59,6 @@
     </Filter>
     <Filter Include="Character\Enemy\EnemyState">
       <UniqueIdentifier>{849e8960-4041-4acd-9dd4-58657124d5ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Stage\CreateMode">
-      <UniqueIdentifier>{435a06ef-8e74-4a12-8f89-955bce5e6516}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Stage\CreateMode\StageSource">
-      <UniqueIdentifier>{ab129971-c84f-4812-9772-eb6eb44c4b0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,15 +161,6 @@
     <ClCompile Include="Scene\MainGameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Stage.cpp">
-      <Filter>Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="MapEditor\MapController.cpp">
-      <Filter>MapEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="MapEditor\MapEditor.cpp">
-      <Filter>MapEditor</Filter>
-    </ClCompile>
     <ClCompile Include="Character\Enemy\Enemy.cpp">
       <Filter>Character\Enemy</Filter>
     </ClCompile>
@@ -251,14 +236,20 @@
     <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\CreateMode\StageSource\TestWall.cpp">
+    <ClCompile Include="Stage\Stage.cpp">
+      <Filter>Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\StageSourceBase.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\TitleScene.cpp">
-      <Filter>Scene</Filter>
+    <ClCompile Include="Stage\CreateMode\StageSource\OneBrock.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Button.cpp">
-      <Filter>01Engine\ResourceManager</Filter>
+    <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\Needle.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,12 +361,6 @@
     <ClInclude Include="Stage\Stage.h">
       <Filter>Stage</Filter>
     </ClInclude>
-    <ClInclude Include="MapEditor\MapController.h">
-      <Filter>MapEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="MapEditor\MapEditor.h">
-      <Filter>MapEditor</Filter>
-    </ClInclude>
     <ClInclude Include="Character\Player\Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
@@ -407,9 +392,6 @@
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="AI\MetaAI.h">
-      <Filter>AI</Filter>
-    </ClInclude>
-    <ClInclude Include="AI\NavigationAI.h">
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h">
@@ -448,17 +430,23 @@
     <ClInclude Include="Stage\CreateMode\CreateMode.h">
       <Filter>Stage\CreateMode</Filter>
     </ClInclude>
+    <ClInclude Include="AI\NavigationAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\StageSourceBase.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\OneBrock.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\Needle.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClInclude>
-    <ClInclude Include="Stage\CreateMode\StageSource\TestWall.h">
-      <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\TitleScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Button.h">
-      <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

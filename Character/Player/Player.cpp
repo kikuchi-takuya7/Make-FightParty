@@ -30,20 +30,19 @@ Player::~Player()
 void Player::ChildInitialize()
 {
 
+	//開始地点に移動する
+	SetPosition(startPos_);
 
 	//addcolliderしたら勝手に開放されるからね
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
-	
-	
-	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER, 0, false };
+	status_.attackPower = PLAYER_ATTACK_POWER;
 
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
-
+	
 }
 
 //更新
@@ -76,13 +75,13 @@ void Player::ChildRelease()
 }
 
 //何か当たった時の処理
-void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
 	if (pState_->playerKnockBackState_ == pState_->playerState_)
 		return;
 
-	//当たったときの処理
+	//攻撃に当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
@@ -93,28 +92,46 @@ void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
-		
-		
-
+		//HPが0になったら
+		if (status_.hp <= 0) {
+			status_.dead = true;
+		}
 	}
+}
 
-	//攻撃を当てた時の処理
-	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-	{
-		
+void Player::ResetStatus()
+{
 
-	}
+	//コライダーを一旦消す。消さないと勝ってるプレイヤーのコライダーが重なる
+	EraseCollider(COLLIDER_ATTACK);
+	EraseCollider(COLLIDER_BODY);
+
+	//開始地点に移動する
+	SetPosition(startPos_);
+	
+	//addcolliderしたら勝手に開放されるからね
+	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
+	
+	status_.hp = PLAYER_HP;
+	status_.dead = false;
+
+	TellStatus();
+
+	ChangeState(PLAYER_IDLE);
 
 }
 
 void Player::TellStatus()
 {
 	
-	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？
+	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？名前検索しちゃっていい？
 
 	//((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
-	((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
+	//((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
+
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
 }
+
 
 void Player::ChangeState(PlayerStatePattern nextState)
 {

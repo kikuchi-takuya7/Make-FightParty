@@ -37,8 +37,10 @@ void PlayerStateManager::Update(Player* player)
 		return;
 	}
 
-	XMFLOAT3 playerPos = player->GetPosition();
-
+	//Ž€‚Êˆ—
+	if (player->GetStatus().dead) {
+		ChangeState(PLAYER_DIE, player);
+	}
 
 	//ˆÚ“®ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚È‚ç
 	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D)|| Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
@@ -51,10 +53,7 @@ void PlayerStateManager::Update(Player* player)
 
 	playerState_->Update(player);
 
-	//Ž€‚Êˆ—‚Í‚±‚±‚Å‚¢‚¢‚Ì‚©
-	if (player->GetStatus().hp <= 0) {
-		ChangeState(PLAYER_DIE, player);
-	}
+	
 
 }
 
@@ -116,7 +115,7 @@ void PlayerStateManager::MovePlayer(Player* player)
 	XMFLOAT3 playerPos = player->GetPosition();
 
 	//Œ‹‹ÇŒã‚Å³‹K‰»‚µ‚Ä‚é‚©‚ç‚±‚±‚Ì’l‚Í‘å‚«‚­‚Ä‚àˆÓ–¡‚È‚µ
-	if (Input::IsKey(DIK_A) && playerPos.x >= 0)
+	if (Input::IsKey(DIK_A) && playerPos.x >= 1)
 	{
 		fMove.x = -0.01f;
 	}
@@ -128,7 +127,7 @@ void PlayerStateManager::MovePlayer(Player* player)
 	{
 		fMove.z = 0.01f;
 	}
-	if (Input::IsKey(DIK_S) && playerPos.z >= 0)
+	if (Input::IsKey(DIK_S) && playerPos.z >= 1)
 	{
 		fMove.z = -0.01f;
 	}

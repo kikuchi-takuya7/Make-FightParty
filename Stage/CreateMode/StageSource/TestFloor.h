@@ -1,14 +1,11 @@
 #pragma once
 #include "../../GameObject.h"
+#include "StageSourceBase.h"
 
 //◆◆◆を管理するクラス
-class TestFloor : public GameObject
+class TestFloor : public StageSourceBase
 {
-    int hModel_;    //モデル番号
-    //char objectID_; //どのオブジェクトかimguiが判別するためのオブジェクト
-    bool isDelete_;
 
-    bool isClose_;
 
 public:
     //コンストラクタ
@@ -28,15 +25,5 @@ public:
 
     //開放
     void Release() override;
-
-    void Imgui_Window() override;
-
-    void Imgui_Data_Edit() override;
-
-    bool IsKillCheck();
-
-    void DeleteMe();
-
-    void DeleteStop();
 
 };

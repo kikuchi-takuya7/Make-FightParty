@@ -41,7 +41,7 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    virtual void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 
     /////////////////////メンバ関数/////////////////////////////////////
@@ -52,14 +52,13 @@ public:
     /// <param name="damage">食らったダメージ量</param>
     void HitDamage(int damage);
 
-    /// <summary>
-    /// 攻撃用のコライダーをセットする
-    /// </summary>
-    void SetAttackCollider();
+    void StopDraw();
+
+    void StartDraw();
 
     void Dead();
 
-    //////////////////////一部のstateで使う関数/////////////////////////////
+    //////////////////////KnockBackstateで使う関数/////////////////////////////
 
     void KnockBackEnter(float distance);
 
@@ -94,13 +93,20 @@ public:
     /// </summary>
     virtual void MoveCharacter() {};
 
-    virtual void ChildOnCollision() {};
+    virtual void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
+
+    //stateまとめて処理したいけど何とかできないかな
+    virtual void ResetStatus() {};
 
     ///////////////////アクセス関数/////////////////////////////////////
     Status GetStatus() { return status_; }
+    XMFLOAT3 GetStartPos() { return startPos_; }
     void SetStatus(Status status) { status_ = status; }
+    void SetStartPos(XMFLOAT3 pos) { startPos_ = pos; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
     void SetTargetRotate(XMFLOAT3 rot) { targetRot_ = rot; }
+    void SetAttackCollider() { AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK); }
+
 
 protected:
 
@@ -114,6 +120,12 @@ protected:
     //当たり判定
     BoxCollider* pBodyCollision_;
     BoxCollider* pAttackCollision_;
+
+    //それぞれのキャラのスタート地点
+    XMFLOAT3 startPos_;
+
+    //前にいた座標
+    XMFLOAT3 prevPos_;
 
 private:
 
@@ -129,5 +141,8 @@ private:
     XMFLOAT3 targetRot_;
 
     ////////////////////////////////////////////
+
+    bool stopDraw_;
+
 
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "Direct3D.h"
+#include "Transform.h"
 
 //安全にメモリを開放するためのマクロ
 #define SAFE_DELETE(p) {if ((p)!=nullptr) { delete (p); (p)=nullptr;}}
@@ -92,6 +93,39 @@ static bool operator ==(const XMFLOAT3& f1, const XMFLOAT3& f2) {
 	bool ans = false;
 
 	if (f1.x == f2.x && f1.y == f2.y && f1.z == f2.z) {
+		ans = true;
+	}
+
+	return ans;
+}
+
+static bool operator !=(const XMFLOAT3& f1, const XMFLOAT3& f2) {
+
+	bool ans = false;
+
+	if (f1.x != f2.x && f1.y != f2.y && f1.z != f2.z) {
+		ans = true;
+	}
+
+	return ans;
+}
+
+static bool operator ==(const Transform& f1, const Transform& f2) {
+
+	bool ans = false;
+
+	if (f1.position_ == f2.position_ && f1.rotate_ == f2.rotate_ && f1.scale_ == f2.scale_) {
+		ans = true;
+	}
+
+	return ans;
+}
+
+static bool operator !=(const Transform& f1, const Transform& f2) {
+
+	bool ans = false;
+
+	if (f1.position_ != f2.position_ && f1.rotate_ != f2.rotate_ && f1.scale_ != f2.scale_) {
 		ans = true;
 	}
 

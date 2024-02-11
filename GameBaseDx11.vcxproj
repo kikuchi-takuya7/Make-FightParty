@@ -158,7 +158,6 @@
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\BoxCollider.cpp" />
-    <ClCompile Include="Engine\Button.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collider.cpp" />
     <ClCompile Include="Engine\CsvReader.cpp" />
@@ -186,15 +185,15 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="MapEditor\MapController.cpp" />
-    <ClCompile Include="MapEditor\MapEditor.cpp" />
     <ClCompile Include="Scene\DevelopSelectScene.cpp" />
     <ClCompile Include="Scene\MainGameScene.cpp" />
     <ClCompile Include="Scene\MapEditorScene.cpp" />
-    <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Stage\CreateMode\CreateMode.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\Needle.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\OneBrock.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\StageSourceBase.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp" />
-    <ClCompile Include="Stage\CreateMode\StageSource\TestWall.cpp" />
     <ClCompile Include="Stage\Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -224,7 +223,6 @@
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\BoxCollider.h" />
-    <ClInclude Include="Engine\Button.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Collider.h" />
     <ClInclude Include="Engine\CsvReader.h" />
@@ -254,15 +252,15 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
-    <ClInclude Include="MapEditor\MapController.h" />
-    <ClInclude Include="MapEditor\MapEditor.h" />
     <ClInclude Include="Scene\DevelopSelectScene.h" />
     <ClInclude Include="Scene\MainGameScene.h" />
     <ClInclude Include="Scene\MapEditorScene.h" />
-    <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Stage\CreateMode\CreateMode.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\Needle.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\OneBrock.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\StageSourceBase.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h" />
-    <ClInclude Include="Stage\CreateMode\StageSource\TestWall.h" />
     <ClInclude Include="Stage\Stage.h" />
   </ItemGroup>
   <ItemGroup>

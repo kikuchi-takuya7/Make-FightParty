@@ -2,6 +2,8 @@
 #include "../Engine/Input.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
+#include "CharacterAI.h"
+#include "../Stage/Stage.h"
 
 namespace {
 	const int STAGE_HEIGHT = 30;
@@ -43,6 +45,58 @@ void NavigationAI::Release()
 {
 }
 
+Transform NavigationAI::MoveSelectObject(int ID)
+{
+
+	//最大のプレイ人数は4人で、そこから敵の合計数を引いた数が、敵の最初のIDとなるため、それ以下のIDはプレイヤーになる
+	int minEnemyID = 4 - pCharacterAIList_.size();
+
+	//IDから最小の敵IDを引いて照らし合わせる
+	return pCharacterAIList_.at(ID - minEnemyID)->MoveSelectObject();
+	
+
+}
+
+//ステータスをリセットする（winPoint以外）
+void NavigationAI::AllResetStatus()
+{
+
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->ResetStatus();
+	}
+
+}
+
+//全ての描画を止める
+void NavigationAI::AllStopDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDraw();
+	}
+
+}
+
+void NavigationAI::AllStartDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StartDraw();
+	}
+}
+
+//プレイヤーの開始位置と被ってるか
+//引数：比べるXMFLOAT3型の変数
+bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+
+		if (pos == pCharacterList_.at(i)->GetStartPos()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
@@ -63,8 +117,14 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	if (start == target)
 		return ZERO_FLOAT3;
 
-	//マップのコストを入れる。
-	Graph map;
+	//マップコストをステージから聞く
+	Graph map = pStage_->GetMap();
+
+	if (Input::IsKeyDown(DIK_1)) {
+		int i = 0;
+	
+	}
+
 
 	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
 	Graph dist;
@@ -102,6 +162,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	//ありえない値の情報で初期化
 	const int Inf = 9999999;
 	dist.assign(height_, vector<long>(width_, Inf));
+	rest.assign(height_, vector<IntPair>(width_, IntPair(ZERO,ZERO)));
 
 	//スタート地点のコストを入れる
 	dist.at(start.first).at(start.second) = map.at(start.first).at(start.second);
@@ -343,4 +404,9 @@ float NavigationAI::Distance(int myID, int targetID)
 	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
 
 	return distance;
+}
+
+void NavigationAI::SetStatus(int ID, Status status)
+{
+	pCharacterList_.at(ID)->SetStatus(status);
 }

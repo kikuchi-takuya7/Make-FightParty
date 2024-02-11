@@ -13,7 +13,11 @@ using IntPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 
+
 class Character;
+class CharacterAI;
+class Stage;
+struct Status;
 
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
@@ -39,6 +43,23 @@ public:
 
 	//////////メンバ関数///////////////
 
+
+	Transform MoveSelectObject(int ID);
+
+	void AllResetStatus();
+
+	void AllStopDraw();
+
+	void AllStartDraw();
+
+	bool IsOverlapPos(XMFLOAT3 pos);
+	
+	float Distance(int myID, int targetID);
+
+	
+
+	//////////////////Astarアルゴリズムで使う関数//////////////////
+	
 	/// <summary>
 	/// Astarを使い目標地点を探索する
 	/// </summary>
@@ -74,9 +95,12 @@ public:
 	float Distance(int myID, int targetID);
 	
 	//////////////アクセス関数//////////////
-	//void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
-	//void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
-	void PushCharacter(Character* chara) { pCharacterList_.push_back(chara); }
+
+	void SetStatus(int ID, Status status);
+
+	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
+	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }
+	void SetStage(Stage* stage) { pStage_ = stage; }
 
 private:
 
@@ -85,15 +109,14 @@ private:
 	//ステージの縦幅と横幅
 	int height_, width_; 
 	
-	
+	//ステージの情報
+	Stage* pStage_;
 
-	/////////////////////////////位置情報////////////////////////
-
-	//enemyとプレイヤーの位置を覚えておく
-	//vector<Player*> pPlayerList_;
-	//vector<Enemy*> pEnemyList_;
+	/////////////////////////////Characterの情報////////////////////////
 
 	vector<Character*> pCharacterList_;
+
+	vector<CharacterAI*> pCharacterAIList_;
 	
 };
 

@@ -42,7 +42,7 @@ namespace Direct3D
 	int						screenWidth_ = 0;
 	int						screenHeight_ = 0;
 
-
+	//XMVector3Equal
 
 	//‰Šú‰»ˆ—
 	HRESULT Direct3D::Initialize(HWND hWnd, int screenWidth, int screenHeight)

@@ -16,7 +16,7 @@ namespace {
 
 //コンストラクタ
 Enemy::Enemy(GameObject* parent)
-	:Character(parent, "Enemy"), hModel_(-1),pState_(new EnemyStateManager), pCharacterAI_(nullptr)
+	:Character(parent, "Enemy"),pState_(new EnemyStateManager), pCharacterAI_(nullptr)
 
 {
 }
@@ -30,10 +30,13 @@ Enemy::~Enemy()
 void Enemy::ChildInitialize()
 {
 
-	pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), ZERO_FLOAT3);
+	//開始地点に移動する
+	SetPosition(startPos_);
+
+	//pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
+	//pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
 	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
 
 	status_ = { ENEMY_HP,ENEMY_ATTACK_POWER, 0, false};
@@ -78,7 +81,7 @@ void Enemy::ChildRelease()
 }
 
 //何か当たった時の処理
-void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
 	if (pState_->enemyKnockBackState_ == pState_->enemyState_)
@@ -93,11 +96,15 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 		SetTargetRotate(pTarget->GetRotate());
 
 		//ノックバックさせる
-		pState_->ChangeState(ENEMY_KNOCKBACK, this);
+		pState_->ChangeState(ENEMY_KNOCKBACK, this, pCharacterAI_);
+
+		//hpが0になっていたら、後でアップデートからdieStateに変える
+		if (status_.hp <= ZERO) {
+			status_.dead = true;
+		}
 
 		//一定の確率で狙いを殴ってきた相手に変える
-		if (rand() % 2 == 0) {
-			
+		if (rand() % 2 == ZERO) {
 			pCharacterAI_->SetTargetID(pTarget->GetObjectID());
 		}
 
@@ -106,10 +113,28 @@ void Enemy::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collider
 	//攻撃を当てた時の処理
 	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
 	{
-
-
 	}
 
+}
+
+void Enemy::ResetStatus()
+{
+	//コライダーを一旦消す。消さないと勝ってるプレイヤーのコライダーが重なる
+	EraseCollider(COLLIDER_ATTACK);
+	EraseCollider(COLLIDER_BODY);
+
+	//開始地点に移動する
+	SetPosition(startPos_);
+
+	//体の当たり判定を復活させる
+	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
+
+	status_.hp = ENEMY_HP;
+	status_.dead = false;
+
+	pCharacterAI_->TellStatus();
+
+	ChangeState(ENEMY_IDLE);
 }
 
 void Enemy::MoveCharacter()
@@ -124,5 +149,5 @@ void Enemy::TellStatus()
 
 void Enemy::ChangeState(EnemyStatePattern nextState)
 {
-	pState_->ChangeState(nextState, this);
+	pState_->ChangeState(nextState, this, pCharacterAI_);
 }

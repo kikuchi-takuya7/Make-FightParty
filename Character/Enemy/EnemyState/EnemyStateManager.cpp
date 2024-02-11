@@ -21,6 +21,10 @@ EnemyStateManager::EnemyStateManager()
 void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 {
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> MapEditor_ver.2
 	
 	//攻撃してる時に攻撃喰らった時に攻撃判定を消す用。それぞれのEnterに置いた方がいいかな
 	if (enemyState_ != enemyAttackState_) {
@@ -35,6 +39,7 @@ void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 		return;
 	}
 
+<<<<<<< HEAD
 	AI->MoveEnemy();
 	enemyState_->Update(enemy, AI);
 
@@ -43,6 +48,18 @@ void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 
 		ChangeState(ENEMY_DIE, enemy);
 	}
+=======
+	//死ぬ処理
+	if (enemy->GetStatus().dead) {
+
+		ChangeState(ENEMY_DIE, enemy, AI);
+	}
+
+	AI->MoveEnemy();
+	enemyState_->Update(enemy, AI);
+
+	
+>>>>>>> MapEditor_ver.2
 
 }
 
@@ -50,11 +67,19 @@ void EnemyStateManager::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
 }
 
+<<<<<<< HEAD
 void EnemyStateManager::Enter(Enemy* enemy)
 {
 }
 
 void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy)
+=======
+void EnemyStateManager::Enter(Enemy* enemy, CharacterAI* AI)
+{
+}
+
+void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy, CharacterAI* AI)
+>>>>>>> MapEditor_ver.2
 {
 	//状態を変更して、その状態の初期化処理を行う
 	switch (nextState)
@@ -88,6 +113,10 @@ void EnemyStateManager::ChangeState(EnemyStatePattern nextState, Enemy* enemy)
 		break;
 	}
 
+<<<<<<< HEAD
 	enemyState_->Enter(enemy);
+=======
+	enemyState_->Enter(enemy, AI);
+>>>>>>> MapEditor_ver.2
 }
 

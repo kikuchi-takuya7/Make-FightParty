@@ -12,6 +12,10 @@ void EnemyRunState::HandleInput(Enemy* enemy, CharacterAI* AI)
 	AI->IsAttack();
 }
 
+<<<<<<< HEAD
 void EnemyRunState::Enter(Enemy* enemy)
+=======
+void EnemyRunState::Enter(Enemy* enemy, CharacterAI* AI)
+>>>>>>> MapEditor_ver.2
 {
 }

@@ -26,7 +26,11 @@ public:
 	/// 状態変化したときに一度だけ呼ばれる関数
 	/// </summary>
 	/// <param name="enemy">Enemyのポインタ</param>
+<<<<<<< HEAD
 	void Enter(Enemy* enemy) override;
+=======
+	void Enter(Enemy* enemy, CharacterAI* AI) override;
+>>>>>>> MapEditor_ver.2
 
 	void SetPlayerRotate(XMFLOAT3 rot) { playerRot_ = rot; }
 

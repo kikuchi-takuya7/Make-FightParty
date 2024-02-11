@@ -13,6 +13,10 @@ void EnemyIdleState::HandleInput(Enemy* enemy, CharacterAI* AI)
 
 }
 
+<<<<<<< HEAD
 void EnemyIdleState::Enter(Enemy* enemy)
+=======
+void EnemyIdleState::Enter(Enemy* enemy, CharacterAI* AI)
+>>>>>>> MapEditor_ver.2
 {
 }

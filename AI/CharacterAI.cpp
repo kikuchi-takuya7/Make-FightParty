@@ -89,11 +89,30 @@ void CharacterAI::Attack()
 
 void CharacterAI::IsAttack()
 {
+	//狙おうとしてる敵が死んでたら、ターゲットを変える
+	if (pMetaAI_->GetCharacterStatus(targetID_).dead) {
+		AskTarget();
+	}
+
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
 	if (distance <= 2.0f) {
 		pEnemy_->ChangeState(ENEMY_ATTACK);
 	}
+}
+
+Transform CharacterAI::MoveSelectObject()
+{
+	
+	//アイテムの種類によって置くオブジェクトを決める？砲台は端っことか。時間あるか？あと向きもちゃんと買える
+
+	//ステージ内のどこかにランダムで置く
+	Transform objTrans;
+	objTrans.position_.x = rand() % 29;
+	objTrans.position_.z = rand() % 29;
+
+
+	return objTrans;
 }
 
 void CharacterAI::TellStatus()
