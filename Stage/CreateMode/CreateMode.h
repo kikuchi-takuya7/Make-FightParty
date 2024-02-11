@@ -38,6 +38,7 @@ class MetaAI;
 class NavigationAI;
 class Stage;
 class StageSourceBase;
+class Timer;
 
 //オブジェクト追加モードを管理するクラス
 //2つしかモードが無いからまとめたけどstateにした方が良い？
@@ -160,7 +161,7 @@ private:
 	//敵の最初のID
 	int startEnemyID_;
 
-	
+	Timer* timer_;
 
 	//////カメラを滑らかに動かすのに使う変数
 

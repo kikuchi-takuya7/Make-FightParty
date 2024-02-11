@@ -158,6 +158,7 @@
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\BoxCollider.cpp" />
+    <ClCompile Include="Engine\Button.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collider.cpp" />
     <ClCompile Include="Engine\CsvReader.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Model.cpp" />
+    <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\VFX.cpp" />
     <ClCompile Include="Engine\RootObject.cpp" />
     <ClCompile Include="Engine\SceneManager.cpp" />
@@ -224,6 +226,7 @@
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\BoxCollider.h" />
+    <ClInclude Include="Engine\Button.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Collider.h" />
     <ClInclude Include="Engine\CsvReader.h" />
@@ -245,6 +248,7 @@
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\json-develop\include\nlohmann\json.hpp" />
     <ClInclude Include="Engine\Model.h" />
+    <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\VFX.h" />
     <ClInclude Include="Engine\RootObject.h" />
     <ClInclude Include="Engine\SceneManager.h" />

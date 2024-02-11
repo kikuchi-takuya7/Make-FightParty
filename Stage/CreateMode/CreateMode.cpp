@@ -7,6 +7,7 @@
 #include "../../Engine/Camera.h"
 #include "../../Engine/Global.h"
 #include "../../Engine/Debug.h"
+#include "../../Engine/Timer.h"
 #include "../../AI/MetaAI.h"
 #include "../../AI/NavigationAI.h"
 #include "StageSource/OneBrock.h"
@@ -30,14 +31,14 @@ namespace {
     const XMFLOAT3 SETTING_CAM_TAR = XMFLOAT3(15, 0, 15);
     const XMFLOAT3 GAME_CAM_POS = XMFLOAT3(15, 10, -20);
     const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
-    const int WAIT_FLAME = 120;
+    const float WAIT_TIME = 1.5f;
 
     const int INF = 999999;
 }
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), timer_(Instantiate<Timer>(this))
 {
 
 
@@ -78,6 +79,9 @@ void CreateMode::Initialize()
     }
 
     nowState_ = NONE;
+
+    timer_->SetLimit(WAIT_TIME);
+    //timer_->StartDraw();
 }
 
 void CreateMode::ViewInit()
@@ -92,7 +96,8 @@ void CreateMode::ViewInit()
 
     ranking_ = pMetaAI_->GetRanking();
 
-    
+    timer_->Reset();
+
     //前回のセッティングオブジェクトの情報をすべて初期化する
     for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
         Transform objPos;
@@ -116,6 +121,8 @@ void CreateMode::SettingInit()
     flame_ = ZERO;
     selecting_Object_ = INF;
     isCamMoveEnd_ = false;
+
+    timer_->Reset();
 }
 
 //更新
@@ -158,8 +165,9 @@ void CreateMode::Update()
             break;
         }
 
-        flame_++;
-        if (flame_ >= WAIT_FLAME) {
+        //ここまで来たら一連の流れが終わってるのでタイマースタート
+        timer_->Start();
+        if (timer_->IsFinished()) {
             ToSettingMode();
         }
         
@@ -200,18 +208,14 @@ void CreateMode::Update()
                     isAllCreate = false;
                 }
             }
-
-            
+                        
             if (isAllCreate) {
 
                 //選択後に1秒待つ
-                flame_++;
-                if (flame_ <= 60) {
-                    return;
+                timer_->Start();
+                if (timer_->IsFinished()) {
+                    ToGameMode();
                 }
-
-                //ゲームに戻る処理
-                ToGameMode();
             }
         }
 

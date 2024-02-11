@@ -25,15 +25,27 @@ public:
 
 	void Stop();
 
+	void Reset();
+
+	void StartDraw();
+
+	void StopDraw();
+	
 	bool IsFinished();
+
+
 
 private:
 	
-	int frame;
-	bool active;
-	float drawX;
-	float drawY;
-	Text* num;
+	int flame_;
+	int startFlame_;
+	bool activeUpdate_;
+	bool activeDraw_;
+	float drawX_;
+	float drawY_;
+	Text* num_;
+
+	
 
 };
 
