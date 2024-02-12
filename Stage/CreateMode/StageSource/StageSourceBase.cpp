@@ -24,6 +24,9 @@ void StageSourceBase::Initialize()
 
 void StageSourceBase::Update()
 {
+
+	RateMovePosition(transform_.position_, lastPos_, 0.05f);
+
 	ChildUpdate();
 }
 

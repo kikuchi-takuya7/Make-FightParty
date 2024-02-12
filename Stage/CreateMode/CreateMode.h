@@ -34,6 +34,32 @@ struct ModelInfo {
 
 };
 
+struct SettingObjectInfo {
+
+	//モデル番号
+	int hModel;
+
+	//Transform
+	Transform trans;
+
+	//移動し終わっているか
+	bool moved;
+
+	//コンストラクタ
+	SettingObjectInfo() {
+		hModel = -1;
+		Transform t;
+		trans = t;
+		moved = false;
+	}
+
+	SettingObjectInfo(int h, Transform t,bool m) {
+		hModel = h;
+		trans = t;
+		moved = m;
+	}
+};
+
 class MetaAI;
 class NavigationAI;
 class Stage;
@@ -49,7 +75,6 @@ public:
 	//引数：parent  親オブジェクト（SceneManager）
 	CreateMode(GameObject* parent);
 
-	//////////////////オーバーライドした関数///////////////////////
 
 	//初期化
 	void Initialize() override;
@@ -80,6 +105,11 @@ public:
 	//createObjectListに入れる
 	void AddCreateObject(StageSourceBase* object);
 
+	/// <summary>
+	/// マウスカーソルの位置から出るベクトルを取得する
+	/// </summary>
+	/// <param name="front">前のベクトル</param>
+	/// <param name="back">後ろのベクトル</param>
 	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);
 
 	//ディレクトリ内の指定した識別子のファイルネームを獲得	
@@ -99,8 +129,18 @@ public:
 	/// <param name="ID">オブジェクトを選んだ人のID</param>
 	void SelectObject(int ID);
 
+	/// <summary>
+	/// カーソルが浮かんでるオブジェクトに合わさっているか
+	/// </summary>
+	/// <param name="front">飛ばすレイの前方向ベクトル</param>
+	/// <param name="back">後ろ方向のベクトル</param>
+	/// <returns>当たっていたらtrue</returns>
 	bool IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back);
 
+	/// <summary>
+	/// プレイヤー全員がオブジェクトを選び終わったか
+	/// </summary>
+	/// <returns>選び終わっていたらtrue</returns>
 	bool IsAllDecidedObject();
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
@@ -109,12 +149,19 @@ public:
 
 	bool IsOverlapPosition();
 
+	/// <summary>
+	/// Aiが選んだオブジェクトを動かす位置を決める
+	/// </summary>
 	void AIMovingObject();
 
-	///////////////////////////アクセス関数///////////////////////////////
+	////////////////////////モードを切り替える関数///////////////////
+
 	void ToSelectMode();
 	void ToSettingMode();
 	void ToGameMode();
+
+	///////////////////////////アクセス関数///////////////////////////////
+
 	CREATESTATE GetState() { return nowState_; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
@@ -134,28 +181,31 @@ private:
 	NavigationAI* pNavigationAI_;
 	Stage* pStage_;
 
-
-	/////////オブジェクト操作に使う変数////////////
-
+	
+	//////////////////////////オブジェクト操作に使う変数///////////////////////
+	
 	//モデルのデータを保存する配列
 	std::vector<ModelInfo> modelData_;
-
-	//viewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
-	int selecting_Object_;
 
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;
 
+	//viewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
+	int selecting_Object_;
+
 	//プレイヤーが設置するオブジェクト。{モデル番号,そのモデルのTransform}どのプレイヤーが選んでるかは要素番目で示している
-	std::vector<std::pair<int,Transform>> settingObject_;
+	std::vector<SettingObjectInfo> settingObject_;
 
 	//クリエイトモード時のランキング
 	std::vector<int> ranking_;
 
-	//次に選択するプレイヤーのID
+	//次に選択するプレイヤーのID(rankingでビリから順番に選ばせる用)
 	int nextSelectCharacterID_;
 
-	/////////////その他/////////
+	//選択したオブジェクトが移動中か
+	bool isObjectMoving_;
+
+	//////////////////////////その他//////////////////////////////
 
 	//作成したオブジェクトリスト
 	std::list<StageSourceBase*> createObjectList_;
@@ -163,31 +213,36 @@ private:
 	//モデルを回転させる変数
 	float rotateObjectValue_;
 
-	//待機する時間
-	int flame_;
-
 	//敵の最初のID
 	int startEnemyID_;
 
 	//時間を置くのに使う
 	Timer* timer_;
 
-	//AIがオブジェクトを選んだか
-	bool isObjectMoving_;
-
-	//////カメラを滑らかに動かすのに使う変数
-
-	bool isCamMoveEnd_;
 
 	//インスタンスを作成して色々するテンプレート
 	template <class T>
-	T* CreateInstance(int hModel, Transform trans)
+	T* CreateInstance(int hModel, Transform trans, int ID)
 	{
 		T* pObject = Instantiate<T>(this);
 		AddCreateObject(pObject);
 		pStage_->PushStageSource(pObject);
 		pStage_->SetStageCost(trans.position_, pObject->GetStageCost());
-		pObject->SetTransform(trans);
+		
+		//AIが選んだオブジェクトなら真ん中からゆっくり動くように
+		if (ID >= startEnemyID_) {
+			Transform objTrans;
+			objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+			objTrans.rotate_ = trans.rotate_;
+			pObject->SetMoveLastPos(trans.position_);
+			pObject->SetTransform(objTrans);
+		}
+		else {
+			pObject->SetMoveLastPos(trans.position_);
+			pObject->SetTransform(trans);
+		}
+
+		
 		pObject->SetHandle(hModel);
 		return pObject;
 	}
