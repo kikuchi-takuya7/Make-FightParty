@@ -42,11 +42,11 @@ void Timer::Draw()
 	num_->SetScale(1.0f);
 	num_->Draw(drawX_, drawY_, "Time");
 	if (flame_ % FPS < 10)
-		num_->SetScale((flame_%FPS)*0.2f+1.0f);
+		num_->SetScale((flame_ % FPS) * 0.2f + 1.0f);
 	else
 		num_->SetScale(1.0f);
 	int sec = flame_ / FPS;
-	num_->Draw(drawX_+100, drawY_, sec);
+	num_->Draw(drawX_ + 100, drawY_, sec);
 }
 
 void Timer::Release()

@@ -115,19 +115,19 @@ void PlayerStateManager::MovePlayer(Player* player)
 	XMFLOAT3 playerPos = player->GetPosition();
 
 	//Œ‹‹ÇŒã‚Å³‹K‰»‚µ‚Ä‚é‚©‚ç‚±‚±‚Ì’l‚Í‘å‚«‚­‚Ä‚àˆÓ–¡‚È‚µ
-	if (Input::IsKey(DIK_A) && playerPos.x >= 1)
+	if (Input::IsKey(DIK_A) && playerPos.x >= 0.5)
 	{
 		fMove.x = -0.01f;
 	}
-	if (Input::IsKey(DIK_D) && playerPos.x <= 29)
+	if (Input::IsKey(DIK_D) && playerPos.x <= 28.5)
 	{
 		fMove.x = 0.01f;
 	}
-	if (Input::IsKey(DIK_W) && playerPos.z <= 29)
+	if (Input::IsKey(DIK_W) && playerPos.z <= 28.5)
 	{
 		fMove.z = 0.01f;
 	}
-	if (Input::IsKey(DIK_S) && playerPos.z >= 1)
+	if (Input::IsKey(DIK_S) && playerPos.z >= 0.5)
 	{
 		fMove.z = -0.01f;
 	}

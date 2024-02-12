@@ -1,16 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
-enum IMAGE {
-
-	MAKE,
-	AND,
-	FIGHT,
-	NUM
-};
-
-class Button;
-class Text;
+class Title;
 
 //■■シーンを管理するクラス
 class TitleScene : public GameObject
@@ -36,12 +27,6 @@ public:
 
 private:
 
-	int hPict_[3];
-
-	Text* pText_;
-
-	Transform make_Trans_;
-	Transform and_Trans_;
-	Transform fight_Trans_;
+	Title* title_;
 
 };

@@ -60,6 +60,9 @@
     <Filter Include="Character\Enemy\EnemyState">
       <UniqueIdentifier>{849e8960-4041-4acd-9dd4-58657124d5ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{e659bde9-9fac-4db1-ab75-22a82808e294}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -259,6 +262,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Button.cpp">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\CountDown.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Title.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -465,6 +474,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Button.h">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\CountDown.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Title.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

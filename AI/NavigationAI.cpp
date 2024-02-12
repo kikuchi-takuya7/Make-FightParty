@@ -154,8 +154,6 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	//スタート地点のコストを入れる
 	dist.at(start.first).at(start.second) = map.at(start.first).at(start.second);
 
-	int test = 0;
-
 	//targetまでの最短距離を求める
 	while (!que.empty())
 	{
@@ -242,11 +240,6 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			
 		}
 
-		test++;
-
-		if (test >= 10000)
-			test = 0;
-
 		if (isBreak)
 			break;
 
@@ -273,8 +266,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 	//targetから探索するからstackで最後の方に獲得した座標を使うため
 	std::stack <IntPair> searchPos;
-
-	int tes = 0;
 
 	//どの道をたどってきたか思い出す
 	while (true) {
@@ -305,10 +296,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 			nx = x;
 
 			break;
-		}
-
-		if (tes >= 1000) {
-			tes = 0;
 		}
 
 		//次に探索する場所が初期位置に戻ったら止める。

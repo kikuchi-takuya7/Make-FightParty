@@ -198,6 +198,8 @@
     <ClCompile Include="Stage\CreateMode\StageSource\StageSourceBase.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp" />
     <ClCompile Include="Stage\Stage.cpp" />
+    <ClCompile Include="UI\CountDown.cpp" />
+    <ClCompile Include="UI\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI\AI.h" />
@@ -268,6 +270,8 @@
     <ClInclude Include="Stage\CreateMode\StageSource\StageSourceBase.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h" />
     <ClInclude Include="Stage\Stage.h" />
+    <ClInclude Include="UI\CountDown.h" />
+    <ClInclude Include="UI\Title.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
