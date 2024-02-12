@@ -96,7 +96,7 @@ bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
 
-	//探索を始める場所と目標地点
+	//探索を始める場所と目標地点(firstがzでsecondがxなので注意)
 	IntPair start;
 	IntPair target;
 
@@ -113,7 +113,6 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 		return ZERO_FLOAT3;
 	}
 		
-
 	//マップコストをステージから聞く
 	Graph map = pStage_->GetMap();
 
@@ -121,6 +120,10 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 		int i = 0;
 	}
 
+	//対象がなんか壁の中にいたら止まる(壁に体こすりつけるとなりがち)
+	if (map.at(target.first).at(target.second) == -1) {
+		return ZERO_FLOAT3;
+	}
 
 	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
 	Graph dist;
@@ -150,6 +153,8 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	//スタート地点のコストを入れる
 	dist.at(start.first).at(start.second) = map.at(start.first).at(start.second);
+
+	int test = 0;
 
 	//targetまでの最短距離を求める
 	while (!que.empty())
@@ -237,6 +242,11 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			
 		}
 
+		test++;
+
+		if (test >= 10000)
+			test = 0;
+
 		if (isBreak)
 			break;
 
@@ -263,6 +273,8 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 	//targetから探索するからstackで最後の方に獲得した座標を使うため
 	std::stack <IntPair> searchPos;
+
+	int tes = 0;
 
 	//どの道をたどってきたか思い出す
 	while (true) {
@@ -293,6 +305,10 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 			nx = x;
 
 			break;
+		}
+
+		if (tes >= 1000) {
+			tes = 0;
 		}
 
 		//次に探索する場所が初期位置に戻ったら止める。
