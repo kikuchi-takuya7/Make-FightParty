@@ -3,6 +3,7 @@
 #include "../../Engine/Input.h"
 #include "../../Engine/Global.h"
 #include "../../AI/CharacterAI.h"
+#include "../../Stage/CreateMode/StageSource/Bullet.h"
 
 //定数
 namespace {
@@ -76,21 +77,26 @@ void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Col
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
 
-		//敵の方向に向きなおす
+		//後で敵の方向に向きなおす
 		SetTargetRotate(pTarget->GetRotate());
 
 		//ノックバックさせる
 		pState_->ChangeState(ENEMY_KNOCKBACK, this, pCharacterAI_);
 
-		//hpが0になっていたら、後でアップデートからdieStateに変える
-		if (status_.hp <= ZERO) {
-			status_.dead = true;
-		}
-
 		//一定の確率で狙いを殴ってきた相手に変える
 		if (rand() % 2 == ZERO) {
 			pCharacterAI_->SetTargetID(pTarget->GetObjectID());
 		}
+
+	}
+
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
+		SetTargetRotate(pTarget->GetRotate());
+
+		pState_->ChangeState(ENEMY_KNOCKBACK, this, pCharacterAI_);
 
 	}
 

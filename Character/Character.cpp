@@ -2,6 +2,7 @@
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
+#include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 
 namespace {
@@ -75,6 +76,10 @@ void Character::Draw()
 void Character::Release()
 {
 	ChildRelease();
+
+	//試合中以外、Collisionは消しているのでここでDELETEする
+	SAFE_DELETE(pBodyCollision_);
+	SAFE_DELETE(pAttackCollision_);
 }
 
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
@@ -82,8 +87,13 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	
 	//壁にぶつかったら前にいた座標に戻す
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK) {
-
 		SetPosition(prevPos_);
+	}
+
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		//HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
 	}
 
 	ChildOnCollision(pTarget, myType, targetType);
@@ -92,6 +102,11 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 void Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
+
+	//HPが0になったら
+	if (status_.hp <= 0) {
+		status_.dead = true;
+	}
 }
 
 void Character::StopDraw()
@@ -151,28 +166,18 @@ void Character::KnockBackEnter(float distance)
 
 }
 
-void Character::KnockBackUpdate(int rigidityFlame)
+void Character::KnockBackUpdate(float knockBackSpeed)
 {
 
 	//敵の向いている方向が欲しい.できればEnterの時点で飛ばされる座標を取っておいて、そこに着いたら動けるって感じにしたい。緩急付けて
 
 	//プレイヤーの現在の位置をベクトル型に変換
-	XMFLOAT3 playerPos = this->GetPosition();
+	XMFLOAT3 playerPos = GetPosition();
 
-	//レートでぬるぬる動くように
-	if (knockBackRate_ < 1.0f) {
-		knockBackRate_ += 0.05f;
+	RateMovePosition(playerPos, lastPoint_, knockBackSpeed);
 
-		// 変な数字で止まらないように
-		if (knockBackRate_ > 1.0f)
-			knockBackRate_ = 1.0f;
+	SetPosition(playerPos);
 
-		playerPos.x = GetRateValue(playerPos.x, lastPoint_.x, knockBackRate_);
-		playerPos.z = GetRateValue(playerPos.z, lastPoint_.z, knockBackRate_);
-
-		this->SetPosition(playerPos);
-
-	}
 }
 
 float Character::GetRateValue(float begin, float end, float rate)

@@ -35,8 +35,5 @@ public:
 
 private:
 
-    //–C‘ä‚Ì‹…
-    SphereCollider* pBulletCollider_;
-
     Timer* timer_;
 };

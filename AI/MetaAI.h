@@ -4,6 +4,13 @@
 #include "CharacterAI.h"
 #include "../Character/Character.h"
 
+enum TARGETPATTERN {
+	TARGET_RANDAM,
+	TARGET_NO_1,
+	NUM,
+
+};
+
 class Player;
 class Enemy;
 class CreateMode;
@@ -88,5 +95,7 @@ private:
 
 	//Œ»İ‚Ì‡ˆÊ‚ğID‚ÅŠo‚¦‚Ä‚¨‚­
 	vector<int> ranking_;
+
+	bool endGame_;
 };
 

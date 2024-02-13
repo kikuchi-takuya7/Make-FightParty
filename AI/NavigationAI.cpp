@@ -82,7 +82,10 @@ void NavigationAI::AllStopUpdate()
 {
 	for (int i = 0; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->Leave();
+		
 	}
+
+	pStage_->AllStopUpdate();
 }
 
 void NavigationAI::AllStartUpdate()
@@ -90,6 +93,19 @@ void NavigationAI::AllStartUpdate()
 	for (int i = 0; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->Enter();
 	}
+
+	pStage_->AllStartUpdate();
+}
+
+void NavigationAI::AllEraseCollision()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
+	}
+	
+
 }
 
 //プレイヤーの開始位置と被ってるか

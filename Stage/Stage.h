@@ -30,6 +30,9 @@ public:
     //ŠJ•ú
     void Release() override;
 
+    void AllStartUpdate();
+
+    void AllStopUpdate();
 
     ///////////////CreateMode‚Åg‚¤ŠÖ”///////////////////////
 

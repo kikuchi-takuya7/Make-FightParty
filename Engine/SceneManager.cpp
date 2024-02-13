@@ -4,6 +4,7 @@
 #include "../Scene/DevelopSelectScene.h"
 #include "../Scene/MainGameScene.h"
 #include "../Scene/TitleScene.h"
+#include "../Scene/ResultScene.h"
 #include "Model.h"
 #include "Image.h"
 #include "Audio.h"
@@ -59,6 +60,7 @@ void SceneManager::Update()
 		case SCENE_ID_MAPEDITOR: Instantiate<MapEditorScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		case SCENE_ID_MAINGAME: Instantiate<MainGameScene>(this); break;
+		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 		}
 		Audio::Initialize();
 		currentSceneID_ = nextSceneID_;

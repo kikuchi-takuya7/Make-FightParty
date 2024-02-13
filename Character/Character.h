@@ -62,7 +62,7 @@ public:
 
     void KnockBackEnter(float distance);
 
-    void KnockBackUpdate(int rigidityFlame);
+    void KnockBackUpdate(float knockBackSpeed);
 
     float GetRateValue(float begin, float end, float rate);
 

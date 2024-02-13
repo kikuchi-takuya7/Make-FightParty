@@ -3,11 +3,12 @@
 #include "../Character/Player/Player.h"
 #include "../Engine/Camera.h"
 #include "../Stage/CreateMode/CreateMode.h"
-
 #include "../UI/CountDown.h"
+#include "../Engine/SceneManager.h"
 
 MetaAI::MetaAI(GameObject* parent)
-	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),ranking_(0),characterStatusList_(0),countDown_(Instantiate<CountDown>(this))
+	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
+	countDown_(Instantiate<CountDown>(this)),endGame_(false)
 {
 }
 
@@ -22,13 +23,20 @@ void MetaAI::Initialize()
 	No1CharaID_.emplace_back(ZERO);
 
 	//とりあえずでIDだけ入れとく
-	for (int i = 0; i < 4; i++) {
+	for (int i = ZERO; i < 4; i++) {
 		ranking_.emplace_back(i);
 	}
 }
 
 void MetaAI::Update()
 {
+
+	if (endGame_) {
+		pNavigationAI_->AllEraseCollision();
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_RESULT);
+	}
+
 	if (countDown_->IsFinished()) {
 		pNavigationAI_->AllStartUpdate();
 		countDown_->Reset();
@@ -45,12 +53,14 @@ void MetaAI::Release()
 //狙うべき相手を決める関数
 int MetaAI::Targeting(int ID)
 {
-	int targetFrag = rand() % 3;
+	int targetFrag = rand() % NUM;
+
+	TARGETPATTERN target = (TARGETPATTERN)targetFrag;
 
 	bool No1AllDead = true;
 
 	//１位が誰かしら生き残っているかどうか
-	for (int i = 0; i < No1CharaID_.size(); i++) {
+	for (int i = ZERO; i < No1CharaID_.size(); i++) {
 		if (characterStatusList_.at(No1CharaID_.at(i)).dead == false) {
 			No1AllDead = false;
 			break;
@@ -60,15 +70,14 @@ int MetaAI::Targeting(int ID)
 	//自分が1位だった場合0に固定する（同率でも）or 一位が全員死んでても0に固定
 	if (characterStatusList_.at(ranking_.at(ZERO)).winPoint == characterStatusList_.at(ID).winPoint || No1AllDead == true) {
 
-		targetFrag = 0;
+		target = TARGET_RANDAM;
 	}
 
 	//全体を見て一位のプレイヤーを優先的に狙うように
-	switch (targetFrag)
+	switch (target)
 	{
-
 	//キャラクターの中からランダムで狙う	
-	case 0:
+	case TARGET_RANDAM:
 		while (true)
 		{
 			int targetID = rand() % characterStatusList_.size();
@@ -80,8 +89,7 @@ int MetaAI::Targeting(int ID)
 		break;
 	
 	//一位の中から誰かを狙う
-	case 1:
-	case 2:
+	case TARGET_NO_1:
 		while (true)
 		{
 			//狙った相手が自分じゃなければ
@@ -91,6 +99,7 @@ int MetaAI::Targeting(int ID)
 		}
 		break;
 
+	case NUM:
 	default:
 		break;
 	}
@@ -177,21 +186,38 @@ void MetaAI::ToCreateMode()
 		//キャラクタークラスにも教える
 		pNavigationAI_->SetStatus(winPlayer, characterStatusList_.at(winPlayer));
 		CheckNo1Chara();
+
+		//優勝者が決まったらリザルトシーンに
+		if (characterStatusList_.at(winPlayer).winPoint >= 4) {
+			
+
+			endGame_ = true;
+		}
+
 		pCreateMode_->ToSelectMode();
 	}
 
 	//デバック用
 	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
+		
+		characterStatusList_.at(ZERO).winPoint++;
+		pNavigationAI_->SetStatus(ZERO, characterStatusList_.at(ZERO));
+		CheckNo1Chara();
+
+		if (characterStatusList_.at(ZERO).winPoint >= 4) {
+			endGame_ = true;
+		}
 		pCreateMode_->ToSelectMode();
 	}
 }
 
 void MetaAI::ResetGame()
 {
-
+	pNavigationAI_->AllEraseCollision();
 	pNavigationAI_->AllResetStatus();
 	pNavigationAI_->AllStartDraw();
 	pNavigationAI_->AllStopUpdate();
+	
 	countDown_->Start();
 	GameCameraSet();
 

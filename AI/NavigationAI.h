@@ -56,6 +56,8 @@ public:
 
 	void AllStartUpdate();
 
+	void AllEraseCollision();
+
 	bool IsOverlapPos(XMFLOAT3 pos);
 	
 	float Distance(int myID, int targetID);

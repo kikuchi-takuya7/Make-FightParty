@@ -72,6 +72,20 @@ void Stage::Release()
 	//SAFE_DELETE(pCreateMode_);
 }
 
+void Stage::AllStartUpdate()
+{
+	for (auto it = pStageSourceList_.begin(); it != pStageSourceList_.end(); it++) {
+		(*it)->Enter();
+	}
+}
+
+void Stage::AllStopUpdate()
+{
+	for (auto it = pStageSourceList_.begin(); it != pStageSourceList_.end(); it++) {
+		(*it)->Leave();
+	}
+}
+
 void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 {
 	map_.at(pos.z).at(pos.x) = cost;

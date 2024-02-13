@@ -28,7 +28,7 @@ namespace {
     const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
     const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
-    const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 15, -15);
+    const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 20, -20);
     const XMFLOAT3 SETTING_CAM_TAR = XMFLOAT3(15, 0, 15);
     const XMFLOAT3 GAME_CAM_POS = XMFLOAT3(15, 10, -20);
     const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
@@ -140,16 +140,7 @@ void CreateMode::Update()
         
         if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
             break;
-        }
-
-        /*timer_->Start();
-        if (timer_->IsFinished()) {
-            timer_->Reset();
-        }
-        else {
-            break;
-        }*/
-        
+        }        
 
         //オブジェクトがプレイヤー分選択されていなかったら
         if (!IsAllDecidedObject()) {
@@ -245,10 +236,6 @@ void CreateMode::Update()
     default:
         return;
     }
-
-    
-
-    
 }
 
 //描画

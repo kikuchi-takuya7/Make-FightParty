@@ -91,7 +91,6 @@ public:
 	void Release() override;
 
 
-	////////////////////オブジェクトを操る関数/////////////////////
 
 	/// <summary>
 	/// オブジェクトを作成する
@@ -242,7 +241,7 @@ private:
 			pObject->SetTransform(trans);
 		}
 
-		
+		pObject->Leave();
 		pObject->SetHandle(hModel);
 		return pObject;
 	}

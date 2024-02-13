@@ -4,6 +4,7 @@
 #include "../../Engine/Global.h"
 #include "../../AI/MetaAI.h"
 #include "../../Scene/MainGameScene.h"
+#include "../../Stage/CreateMode/StageSource/Bullet.h"
 
 //’è”
 namespace {
@@ -85,17 +86,22 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
-
-		XMFLOAT3 rotate = pTarget->GetRotate();
 		
-		SetTargetRotate(rotate);
+		//Œã‚Å“G‚Ì•ûŒü‚ÉŒü‚«‚È‚¨‚·
+		SetTargetRotate(pTarget->GetRotate());
+
+		pState_->ChangeState(PLAYER_KNOCKBACK, this);
+	}
+
+	//‹…‚É“–‚½‚Á‚½‚Ìˆ—
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
+		SetTargetRotate(pTarget->GetRotate());
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
-		//HP‚ª0‚É‚È‚Á‚½‚ç
-		if (status_.hp <= 0) {
-			status_.dead = true;
-		}
 	}
 }
 

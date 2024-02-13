@@ -128,7 +128,7 @@ void MainGameScene::Release()
 {
 	/*SAFE_RELEASE(pPlayer);
 	SAFE_RELEASE(pEnemy);*/
-	//SAFE_RELEASE(pMetaAI_);//RELEASE‚¶‚á‚È‚­‚ÄDELETE‚Ì‰Â”\«ƒƒ“ƒ^ƒ“
+	//SAFE_RELEASE(pMetaAI_);
 	//SAFE_RELEASE(pNavigationAI_);
 	/*SAFE_DELETE(pMetaAI_);
 	SAFE_DELETE(pNavigationAI_);*/
