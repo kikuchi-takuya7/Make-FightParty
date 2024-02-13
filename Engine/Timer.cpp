@@ -4,7 +4,7 @@
 static const int FPS = 60;
 
 Timer::Timer(GameObject* obj)
-	: GameObject(obj, "Timer"), flame_(0), startFlame_(0), activeUpdate_(false), activeDraw_(false), drawX_(0), drawY_(0)
+	: GameObject(obj, "Timer"), flame_(0), startFlame_(0), drawX_(0), drawY_(0)
 {
 	num_ = new Text;
 	num_->Initialize();
@@ -19,13 +19,13 @@ void Timer::Initialize()
 {
 	flame_ = 0;
 	startFlame_ = 0;
-	activeUpdate_ = false;
-	activeDraw_ = false;
+	Leave();
+	Visible();
 }
 
 void Timer::Update()
 {
-	if (activeUpdate_) {
+	if (IsEntered()) {
 		if (flame_ > 0) {
 			flame_--;
 		}
@@ -35,7 +35,7 @@ void Timer::Update()
 void Timer::Draw()
 {
 
-	if (!activeDraw_) {
+	if (IsVisibled()) {
 		return;
 	}
 
@@ -61,28 +61,28 @@ void Timer::SetLimit(float seconds)
 
 void Timer::Start()
 {
-	activeUpdate_ = true;
+	Enter();
 }
 
 void Timer::Stop()
 {
-	activeUpdate_ = false;
+	Leave();
 }
 
 void Timer::Reset()
 {
 	flame_ = startFlame_;
-	activeUpdate_ = false;
+	Leave();
 }
 
 void Timer::StartDraw()
 {
-	activeDraw_ = true;
+	Invisible();
 }
 
 void Timer::StopDraw()
 {
-	activeDraw_ = false;
+	Visible();
 }
 
 bool Timer::IsFinished()

@@ -52,6 +52,10 @@ public:
 
 	void AllStartDraw();
 
+	void AllStopUpdate();
+
+	void AllStartUpdate();
+
 	bool IsOverlapPos(XMFLOAT3 pos);
 	
 	float Distance(int myID, int targetID);

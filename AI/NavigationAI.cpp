@@ -78,6 +78,20 @@ void NavigationAI::AllStartDraw()
 	}
 }
 
+void NavigationAI::AllStopUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Leave();
+	}
+}
+
+void NavigationAI::AllStartUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Enter();
+	}
+}
+
 //プレイヤーの開始位置と被ってるか
 //引数：比べるXMFLOAT3型の変数
 bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)

@@ -2,9 +2,12 @@
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
 #include "../Engine/Camera.h"
+#include "../Stage/CreateMode/CreateMode.h"
+
+#include "../UI/CountDown.h"
 
 MetaAI::MetaAI(GameObject* parent)
-	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),ranking_(0),characterStatusList_(0)
+	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(0),ranking_(0),characterStatusList_(0),countDown_(Instantiate<CountDown>(this))
 {
 }
 
@@ -22,6 +25,17 @@ void MetaAI::Initialize()
 	for (int i = 0; i < 4; i++) {
 		ranking_.emplace_back(i);
 	}
+}
+
+void MetaAI::Update()
+{
+	if (countDown_->IsFinished()) {
+		pNavigationAI_->AllStartUpdate();
+		countDown_->Reset();
+	}
+
+	ToCreateMode();
+
 }
 
 void MetaAI::Release()
@@ -177,6 +191,8 @@ void MetaAI::ResetGame()
 
 	pNavigationAI_->AllResetStatus();
 	pNavigationAI_->AllStartDraw();
+	pNavigationAI_->AllStopUpdate();
+	countDown_->Start();
 	GameCameraSet();
 
 }

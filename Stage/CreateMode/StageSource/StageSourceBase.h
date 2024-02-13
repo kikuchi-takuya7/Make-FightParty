@@ -1,7 +1,6 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
 
-class CreateMode;
 
 //StageSource‚ÌŒ³‚Æ‚È‚éƒNƒ‰ƒX
 class StageSourceBase : public GameObject

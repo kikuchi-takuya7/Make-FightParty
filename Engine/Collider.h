@@ -23,7 +23,7 @@ enum ColliderAttackType
 {
 	COLLIDER_BODY,			//体
 	COLLIDER_ATTACK,		//体での攻撃(殴るとか)
-	COLLIDER_WEAPON,		//武器での攻撃
+	COLLIDER_WEAPON,		//武器での攻撃(砲台の球等もこれ)
 	COLLIDER_BROCK,			//ブロックのオブジェクト
 	COLLIDER_OBSTRYCTION,	//トゲ等のオブジェクト
 

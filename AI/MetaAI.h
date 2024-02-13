@@ -2,13 +2,13 @@
 #include "AI.h"
 #include "NavigationAI.h"
 #include "CharacterAI.h"
-#include "../Stage/CreateMode/CreateMode.h"
 #include "../Character/Character.h"
 
 class Player;
 class Enemy;
 class CreateMode;
 class NavigationAI;
+class CountDown;
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
@@ -28,6 +28,9 @@ public:
 
 	//初期化
 	void Initialize() override;
+
+	//更新
+	void Update() override;
 
 	//解放
 	void Release() override;
@@ -78,6 +81,7 @@ private:
 	CreateMode* pCreateMode_;
 
 
+	CountDown* countDown_;
 
 	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;

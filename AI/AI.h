@@ -18,15 +18,6 @@ public:
 	//デストラクタ
 	~AI();//virtual付けたほうがいい？後で調べよう
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	virtual void Initialize() override;
-
-	/// <summary>
-	/// 解放
-	/// </summary>
-	virtual void Release() override;
 
 private:
 

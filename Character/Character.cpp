@@ -44,11 +44,17 @@ void Character::Initialize()
 //更新
 void Character::Update()
 {
+	//動いてほしくないとき
+	if (IsEntered() == false) {
+		return;
+	}
+
 
 	//今いる位置をprevPosに置いておく
 	prevPos_ = transform_.position_;
 
-	//死んでる時とかアップデートしたくないときにここで止めちゃえばいい
+	
+
 
 	ChildUpdate();
 

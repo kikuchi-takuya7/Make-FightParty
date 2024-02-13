@@ -4,7 +4,7 @@
 class MetaAI;
 class NavigationAI;
 class Stage;
-struct Status;//構造体だけどこれいいの？？？？
+struct Status;
 
 //■■シーンを管理するクラス
 class MainGameScene : public GameObject

@@ -38,6 +38,12 @@ public:
     //ŠJ•ú
     void Release() override;
 
+    void Reset();
+
+    void Start();
+
+    bool IsFinished();
+
 private:
 
     int hPict_[COUNT_NUM];
