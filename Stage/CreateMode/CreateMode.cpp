@@ -666,6 +666,8 @@ void CreateMode::ToSelectMode()
     nowState_ = SELECT_MODE;
 
     pNavigationAI_->AllStopDraw();
+    pNavigationAI_->AllStopUpdate();
+    pNavigationAI_->AllEraseCollision();
 }
 
 void CreateMode::ToSettingMode()
