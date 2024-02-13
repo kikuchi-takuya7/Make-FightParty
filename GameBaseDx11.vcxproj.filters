@@ -191,9 +191,6 @@
     <ClCompile Include="Character\Player\PlayerState\PlayerStateManager.cpp">
       <Filter>Character\Player\PlayerState</Filter>
     </ClCompile>
-    <ClCompile Include="Character\Character.cpp">
-      <Filter>Character</Filter>
-    </ClCompile>
     <ClCompile Include="AI\AI.cpp">
       <Filter>AI</Filter>
     </ClCompile>
@@ -268,6 +265,11 @@
     </ClCompile>
     <ClCompile Include="UI\Title.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp" />
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -481,6 +483,8 @@
     <ClInclude Include="UI\Title.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\ResultScene.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

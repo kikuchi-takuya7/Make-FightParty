@@ -104,7 +104,7 @@ void MainGameScene::Initialize()
 	//SAFE_DELETE(charaAI);
 
 
-	pMetaAI_->ResetGame();
+	pMetaAI_->StartGame();
 
 	
 

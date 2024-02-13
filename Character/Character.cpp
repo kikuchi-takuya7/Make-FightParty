@@ -77,14 +77,20 @@ void Character::Release()
 {
 	ChildRelease();
 
-	//試合中以外、Collisionは消しているのでここでDELETEする
-	SAFE_DELETE(pBodyCollision_);
+	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
+	//ていうかnullptr入れてるはずなのになぜ例外が出るのか
 	SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);
+	
 }
 
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	
+	if (status_.dead) {
+		return;
+	}
+
 	//壁にぶつかったら前にいた座標に戻す
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK) {
 		SetPosition(prevPos_);

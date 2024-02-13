@@ -211,8 +211,19 @@ void MetaAI::ToCreateMode()
 	}
 }
 
+void MetaAI::StartGame()
+{
+	
+	pNavigationAI_->AllStartDraw();
+	pNavigationAI_->AllStopUpdate();
+
+	countDown_->Start();
+	GameCameraSet();
+}
+
 void MetaAI::ResetGame()
 {
+	//もろもろ初期化して、カウントダウンが終わるまで動かさない
 	pNavigationAI_->AllEraseCollision();
 	pNavigationAI_->AllResetStatus();
 	pNavigationAI_->AllStartDraw();

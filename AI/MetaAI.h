@@ -59,6 +59,8 @@ public:
 
 	void ToCreateMode();
 
+	void StartGame();
+
 	void ResetGame();
 
 	void GameCameraSet();

@@ -667,7 +667,7 @@ void CreateMode::ToSelectMode()
 
     pNavigationAI_->AllStopDraw();
     pNavigationAI_->AllStopUpdate();
-    pNavigationAI_->AllEraseCollision();
+    //pNavigationAI_->AllEraseCollision();
 }
 
 void CreateMode::ToSettingMode()

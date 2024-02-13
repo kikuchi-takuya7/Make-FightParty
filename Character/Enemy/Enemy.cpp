@@ -68,6 +68,7 @@ void Enemy::ChildRelease()
 //何か当たった時の処理
 void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
+
 	//ノックバック中は当たり判定を無くす
 	if (pState_->enemyKnockBackState_ == pState_->enemyState_)
 		return;

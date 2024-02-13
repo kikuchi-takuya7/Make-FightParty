@@ -108,7 +108,6 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 void Player::ResetStatus()
 {
 
-	//コライダーを一旦消す。消さないと勝ってるプレイヤーのコライダーが重なる
 	EraseCollider(COLLIDER_ATTACK);
 	EraseCollider(COLLIDER_BODY);
 

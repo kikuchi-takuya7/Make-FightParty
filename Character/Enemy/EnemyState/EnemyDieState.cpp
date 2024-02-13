@@ -12,7 +12,7 @@ void EnemyDieState::HandleInput(Enemy* enemy, CharacterAI* AI)
 
 void EnemyDieState::Enter(Enemy* enemy, CharacterAI* AI)
 {
-	//死ぬときにコライダーをすべて消す
+
 	enemy->EraseCollider(COLLIDER_ATTACK);
 	enemy->EraseCollider(COLLIDER_BODY);
 
