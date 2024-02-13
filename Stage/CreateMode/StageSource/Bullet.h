@@ -47,4 +47,6 @@ private:
 	//球のスピード
 	float bulletSpeed_;
 
+	SphereCollider* collider_;
+
 };

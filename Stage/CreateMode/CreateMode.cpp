@@ -206,6 +206,14 @@ void CreateMode::Update()
                 //ひとまずプレイヤーは1人目だけだから
                 CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
             }
+
+            if (Input::IsKeyDown(DIK_LEFT)) {
+                settingObject_.at(ZERO).trans.rotate_.y -= 90;
+            }
+
+            if (Input::IsKeyDown(DIK_RIGHT)) {
+                settingObject_.at(ZERO).trans.rotate_.y += 90;
+            }
         }
 
         //全てのオブジェクトを設置し終わったらゲームに戻る
@@ -571,6 +579,8 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
             //当たってたら即終了　
             if (data.hit) {
 
+                //回転の情報だけは残しておく
+                objTrans.rotate_ = settingObject_.at(ZERO).trans.rotate_;
                 settingObject_.at(ZERO).trans = objTrans;
                 selecting_Object_ = ZERO;
                 return true;

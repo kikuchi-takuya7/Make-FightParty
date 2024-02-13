@@ -7,7 +7,7 @@ namespace {
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),attackPower_(10),bulletSpeed_(0.4f)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),attackPower_(10),bulletSpeed_(0.4f), collider_(nullptr)
 {
 }
 
@@ -55,7 +55,8 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed)
 {
-	AddCollider(collider, type);
+	collider_ = collider;
+	AddCollider(collider_, type);
 	attackPower_ = attackPower;
 	bulletSpeed_ = speed;
 }
