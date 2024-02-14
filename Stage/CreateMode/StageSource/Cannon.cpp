@@ -36,18 +36,19 @@ void Cannon::ChildInitialize()
 
 	//球を打つ間隔
 	timer_->SetLimit(BULLET_INTERVAL);
-	timer_->Start();
+	
 }
 
 void Cannon::ChildUpdate()
 {
 
+	timer_->Start();
+
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
 		Bullet* pBullet = Instantiate<Bullet>(this);
-		pBullet->SetRotateY(transform_.position_.y);
+		//pBullet->SetRotateY(transform_.position_.y);
 		pBullet->SetScale(BULLET_SIZE);
-		pBullet->SetPosition(ZERO, ZERO, 1.0f);
 		
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);

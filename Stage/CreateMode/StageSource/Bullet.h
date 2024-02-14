@@ -49,4 +49,6 @@ private:
 
 	SphereCollider* collider_;
 
+	XMFLOAT3 bulletPos_;
+
 };

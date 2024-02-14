@@ -207,12 +207,20 @@ void CreateMode::Update()
                 CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
             }
 
-            if (Input::IsKeyDown(DIK_LEFT)) {
-                settingObject_.at(ZERO).trans.rotate_.y -= 90;
+            if (Input::IsKeyDown(DIK_UP)) {
+                settingObject_.at(ZERO).trans.rotate_.y = 0;
             }
 
             if (Input::IsKeyDown(DIK_RIGHT)) {
-                settingObject_.at(ZERO).trans.rotate_.y += 90;
+                settingObject_.at(ZERO).trans.rotate_.y = 90;
+            }
+
+            if (Input::IsKeyDown(DIK_DOWN)) {
+                settingObject_.at(ZERO).trans.rotate_.y = 180;
+            }
+
+            if (Input::IsKeyDown(DIK_LEFT)) {
+                settingObject_.at(ZERO).trans.rotate_.y = 270;
             }
         }
 

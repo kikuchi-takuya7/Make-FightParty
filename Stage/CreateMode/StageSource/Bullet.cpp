@@ -19,6 +19,9 @@ void Bullet::Initialize()
 {
 	hModel_ = Model::Load("Others/Bullet.fbx");
 	assert(hModel_ >= 0);
+
+	transform_.rotate_.y = GetParent()->GetRotate().y;
+	
 }
 
 void Bullet::Update()
@@ -29,14 +32,46 @@ void Bullet::Update()
 		KillMe();
 	}
 
-	transform_.position_.z += bulletSpeed_;
+	int rotate = abs(GetParent()->GetRotate().y);
+
+	bulletPos_.z += bulletSpeed_;
+
+	if (rotate == 0) {
+		transform_.position_.z += bulletSpeed_;
+	}
+	if (rotate == 90) {
+		transform_.position_.z += bulletSpeed_;
+	}
+	if (rotate == 180) {
+		transform_.position_.z -= bulletSpeed_;
+	}
+	if (rotate == 270) {
+		transform_.position_.z -= bulletSpeed_;
+	}
+
+	/*rotate = rotate % 360;
+	
+	if (rotate == 360) {
+		transform_.position_.z += bulletSpeed_;
+	}
+	if (rotate == 270) {
+		transform_.position_.x += bulletSpeed_;
+	}
+	if (rotate == 180) {
+		transform_.position_.z -= bulletSpeed_;
+	}
+	if (rotate == 90) {
+		transform_.position_.x -= bulletSpeed_;
+	}*/
 
 }
 
 void Bullet::Draw()
 {
+	Transform bulletTrans = transform_;
+	bulletTrans.position_ = bulletPos_;
 
-	Model::SetTransform(hModel_, transform_);
+	Model::SetTransform(hModel_, bulletTrans);
 	Model::Draw(hModel_);
 
 	CollisionDraw();
@@ -48,7 +83,11 @@ void Bullet::Release()
 
 void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
-	if (targetType == COLLIDER_BROCK) {
+	if (targetType == COLLIDER_BROCK && pTarget != this->GetParent()) {
+		KillMe();
+	}
+
+	if (targetType == COLLIDER_BODY) {
 		KillMe();
 	}
 }
