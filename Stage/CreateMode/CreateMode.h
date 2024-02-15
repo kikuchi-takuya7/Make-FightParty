@@ -78,11 +78,13 @@ public:
 
 	//‰Šú‰»
 	void Initialize() override;
-	void ViewInit();
+	void SelectInit();
 	void SettingInit();
 
 	//XV
 	void Update() override;
+	void SelectUpdate();
+	void SettingUpdate();
 
 	//•`‰æ
 	void Draw() override;

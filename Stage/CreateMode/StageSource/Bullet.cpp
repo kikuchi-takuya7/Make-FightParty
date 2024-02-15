@@ -17,11 +17,12 @@ Bullet::~Bullet()
 
 void Bullet::Initialize()
 {
-	hModel_ = Model::Load("Others/Bullet.fbx");
-	assert(hModel_ >= 0);
+	bulletModel_ = Model::Load("Others/Bullet.fbx");
+	assert(bulletModel_ >= 0);
+
+	//Initializeを呼び出してからSetSizeしてるから真ん中に出る謎の球体はでかい。つまり
 
 	transform_.rotate_.y = GetParent()->GetRotate().y;
-	
 }
 
 void Bullet::Update()
@@ -32,7 +33,11 @@ void Bullet::Update()
 		KillMe();
 	}
 
-	int rotate = abs(GetParent()->GetRotate().y);
+	int rotate = GetParent()->GetRotate().y;
+
+
+	//transform_.positionでコリジョンの動きで、bulletPosでモデルの動き
+	//collisionはrotateを考慮してないので、別々に作る必要がある
 
 	bulletPos_.z += bulletSpeed_;
 
@@ -40,13 +45,13 @@ void Bullet::Update()
 		transform_.position_.z += bulletSpeed_;
 	}
 	if (rotate == 90) {
-		transform_.position_.z += bulletSpeed_;
+		transform_.position_.x += bulletSpeed_;
 	}
 	if (rotate == 180) {
 		transform_.position_.z -= bulletSpeed_;
 	}
 	if (rotate == 270) {
-		transform_.position_.z -= bulletSpeed_;
+		transform_.position_.x -= bulletSpeed_;
 	}
 
 	/*rotate = rotate % 360;
@@ -68,11 +73,12 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
-	Transform bulletTrans = transform_;
-	bulletTrans.position_ = bulletPos_;
+	Transform bulletTrans;
+	bulletTrans.scale_ = transform_.scale_;
+	bulletTrans.position_ = Float3Add(transform_.position_,GetParent()->GetPosition());
 
-	Model::SetTransform(hModel_, bulletTrans);
-	Model::Draw(hModel_);
+	Model::SetTransform(bulletModel_, bulletTrans);
+	Model::Draw(bulletModel_);
 
 	CollisionDraw();
 }

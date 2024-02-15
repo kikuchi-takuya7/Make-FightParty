@@ -47,7 +47,6 @@ void Cannon::ChildUpdate()
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
 		Bullet* pBullet = Instantiate<Bullet>(this);
-		//pBullet->SetRotateY(transform_.position_.y);
 		pBullet->SetScale(BULLET_SIZE);
 		
 		//球の当たり判定を作る

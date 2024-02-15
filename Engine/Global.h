@@ -29,6 +29,15 @@ static XMFLOAT3 Float3Sub(XMFLOAT3 a, XMFLOAT3 b)
 	return XMFLOAT3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
+static Transform TransAdd(Transform a, Transform b) 
+{
+	Transform t;
+	t.position_ = Float3Add(a.position_, b.position_);
+	t.rotate_ = Float3Add(a.rotate_, b.rotate_);
+	t.scale_ = Float3Add(a.scale_, b.scale_);
+	return t;
+}
+
 //XMVECTORå^ÇÃí∑Ç≥(X)ÇfloatÇ≈èoÇµÇƒÇ≠ÇÍÇÈ
 static float Length(XMVECTOR v) {
 	XMVECTOR lenVec = XMVector3Length(v);

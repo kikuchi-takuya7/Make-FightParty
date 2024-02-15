@@ -39,7 +39,7 @@ private:
 	float moveLen_;
 
 	//ƒ‚ƒfƒ‹”Ô†
-	int hModel_;
+	int bulletModel_;
 
 	//UŒ‚—Í
 	int attackPower_;
