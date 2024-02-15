@@ -42,8 +42,7 @@ void MetaAI::Update()
 		countDown_->Reset();
 	}
 
-	ToCreateMode();
-
+	
 }
 
 void MetaAI::Release()
@@ -223,7 +222,7 @@ void MetaAI::StartGame()
 
 void MetaAI::ResetGame()
 {
-	//もろもろ初期化して、カウントダウンが終わるまで動かさない
+	//もろもろ初期化して、カウントダウンが終わるまで動かさない。
 	pNavigationAI_->AllEraseCollision();
 	pNavigationAI_->AllResetStatus();
 	pNavigationAI_->AllStartDraw();

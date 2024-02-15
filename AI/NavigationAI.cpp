@@ -277,9 +277,9 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
-	//残り1マスとかの時中途半端に止まるのでその分を補完する
+	//残り小数点以下の時中途半端に止まるのでその分を補完する
 	if (nextPos == ZERO_FLOAT3) {
-		return Float3Sub(targetPos, startPos) * 0.08f;
+		return Float3Sub(targetPos, startPos) * 0.05f;
 	}
 	
 	return nextPos;
@@ -338,6 +338,8 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 	XMFLOAT3 fMove = ZERO_FLOAT3;
 
+	pStage_->SetStageModel(searchPos);
+
 	//一番上には開始位置が入ってるからそれを取り除く
 	searchPos.pop();
 
@@ -348,15 +350,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 	//stackのtopは一番最後の要素を取ってくる
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
-
-	//ごり押しで修正することもできるけど良くない気がする
-	if (start.first == target.first) {
-		checkVecZ = 0;
-	}
-	if (start.second == target.second) {
-		checkVecX = 0;
-	}
-
 
 	if (checkVecX == 1) {
 		

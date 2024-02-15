@@ -11,7 +11,7 @@ namespace {
 }
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent, "Stage"),hModel_(-1),pCreateMode_(nullptr), pStageSourceList_(0)
+	:GameObject(parent, "Stage"),hModel_(-1),debugModel_(-1), pCreateMode_(nullptr), pStageSourceList_(0)
 {
 }
 
@@ -26,20 +26,25 @@ void Stage::Initialize()
 	hModel_ = Model::Load("Stage/StageBrock.fbx");
 	assert(hModel_ >= 0);
 
+	//debug用のモデルデータのロード
+	debugModel_ = Model::Load("Stage/StageBrock.fbx");
+	assert(hModel_ >= 0);
+
 	transform_.position_.x = ZERO;
 	transform_.position_.z = ZERO;
 
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < STAGE_SIZE.z; i++) {
-		map_.emplace_back(STAGE_SIZE.x);
+		stageCost_.emplace_back(STAGE_SIZE.x);
+		stageModel_.emplace_back(STAGE_SIZE.x);
 	}
 
-	//ステージの初期コストを入れる
+	//ステージの諸々を初期化
 	for (int z = ZERO; z < STAGE_SIZE.z; z++) {
 		for (int x = ZERO; x < STAGE_SIZE.x; x++) {
 
-			map_.at(z).at(x) = STAGE_COST;
-
+			stageCost_.at(z).at(x) = STAGE_COST;
+			stageModel_.at(z).at(x) = hModel_;
 		}
 	}
 
@@ -59,8 +64,8 @@ void Stage::Draw()
 		for (int x = 0; x < STAGE_SIZE.x; x++) {
 			blockTrans.position_.z = z;
 			blockTrans.position_.x = x;
-			Model::SetTransform(hModel_, blockTrans);
-			Model::Draw(hModel_);
+			Model::SetTransform(stageModel_.at(z).at(x), blockTrans);
+			Model::Draw(stageModel_.at(z).at(x));
 		}
 	}
 
@@ -88,7 +93,24 @@ void Stage::AllStopUpdate()
 
 void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 {
-	map_.at(pos.z).at(pos.x) = cost;
+	stageCost_.at(pos.z).at(pos.x) = cost;
+}
+
+void Stage::SetStageModel(std::stack<std::pair<int, int>> pair)
+{
+
+	//モデルを全て初期化する
+	for (int z = 0; z < STAGE_SIZE.z; z++) {
+		for (int x = 0; x < STAGE_SIZE.x; x++) {
+			stageModel_.at(z).at(x) = hModel_;
+		}
+	}
+
+	//Astarの経路探索で出た場所のモデルを変える
+	while (pair.empty())
+	{
+		stageModel_.at(pair.top().first).at(pair.top().second) = debugModel_;
+	}
 }
 
 XMFLOAT3 Stage::GetStageSize()
