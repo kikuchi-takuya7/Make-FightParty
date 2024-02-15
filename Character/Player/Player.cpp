@@ -135,6 +135,7 @@ void Player::TellStatus()
 	//((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
 
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ToCreateMode();
 }
 
 

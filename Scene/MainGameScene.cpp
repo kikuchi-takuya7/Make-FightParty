@@ -115,7 +115,7 @@ void MainGameScene::Update()
 {
 
 	//一試合が終わったらクリエイトモードに移動する
-	pMetaAI_->ToCreateMode();
+	//pMetaAI_->ToCreateMode();
 }
 
 //描画

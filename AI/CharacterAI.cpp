@@ -119,4 +119,5 @@ Transform CharacterAI::MoveSelectObject()
 void CharacterAI::TellStatus()
 {
 	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
+	pMetaAI_->ToCreateMode();
 }

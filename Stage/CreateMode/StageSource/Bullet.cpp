@@ -73,6 +73,8 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
+
+	//親の位置（大砲）に移動させて、移動させる。親のTransformから見てzに移動させてもモデル自体はそう動くけどcollisionはワールドでのz方向に行ってしまう
 	Transform bulletTrans;
 	bulletTrans.scale_ = transform_.scale_;
 	bulletTrans.position_ = Float3Add(transform_.position_,GetParent()->GetPosition());

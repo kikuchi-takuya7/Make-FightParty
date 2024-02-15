@@ -79,8 +79,10 @@ void Character::Release()
 
 	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
 	//ていうかnullptr入れてるはずなのになぜ例外が出るのか
-	/*SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);*/
+	//nullptr入れても
+
+	SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);
 	
 }
 
