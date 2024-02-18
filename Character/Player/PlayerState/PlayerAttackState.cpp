@@ -6,7 +6,7 @@
 namespace {
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
-	const int ATTACK_RIGIDITYFLAME = 60;//攻撃硬直フレーム
+	const int ATTACK_RIGIDITYFLAME = 60;//攻撃持続フレーム
 
 }
 
