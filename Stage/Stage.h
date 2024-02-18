@@ -53,7 +53,7 @@ public:
     /// Astarアルゴリズムで出た経路を表示する為にモデルを変える為の関数
     /// </summary>
     /// <param name="pair">経路探索で出た経路</param>
-    void SetStageModel(std::stack<std::pair<int,int>> pair);
+    void SetDebugModel(std::stack<std::pair<int,int>> pair);
 
     void SetCreateMode(CreateMode* createMode) { pCreateMode_ = createMode; }
     void PushStageSource(StageSourceBase* source) { pStageSourceList_.emplace_back(source); }

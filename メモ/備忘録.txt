@@ -26,4 +26,5 @@ Transformについて：GameObjectのコンストラクタで、そのクラス�
 CollisionのTranformについて：そのcollisionを付けたオブジェクトのTranformと親のTransformでローカル座標にして、
 事前に入れてたcenter分だけずらして描画してる。尚、collisionのdrawはrotateを考慮してない(当たり判定を回す機能が無いため)
 
+無名namespaceについて：他のファイルから参照できない変数にできる。みたいな感じで良いかな
 

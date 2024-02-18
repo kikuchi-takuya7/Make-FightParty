@@ -8,6 +8,8 @@
 namespace {
 	XMFLOAT3 STAGE_SIZE = XMFLOAT3(30.0f, ZERO, 30.0f);
 	const int STAGE_COST = 1;
+	const int moveZ[4] = { ZERO,ZERO,   1,  -1};
+	const int moveX[4] = { 1,   -1,  ZERO,ZERO};
 }
 
 Stage::Stage(GameObject* parent)
@@ -27,7 +29,7 @@ void Stage::Initialize()
 	assert(hModel_ >= 0);
 
 	//debug用のモデルデータのロード
-	debugModel_ = Model::Load("Stage/StageBrock.fbx");
+	debugModel_ = Model::Load("Stage/OneBrock.fbx");
 	assert(hModel_ >= 0);
 
 	transform_.position_.x = ZERO;
@@ -69,6 +71,12 @@ void Stage::Draw()
 		}
 	}
 
+	//描画し終わったら次のAstar経路を表示する為にモデルを全て初期化する
+	for (int z = 0; z < STAGE_SIZE.z; z++) {
+		for (int x = 0; x < STAGE_SIZE.x; x++) {
+			stageModel_.at(z).at(x) = hModel_;
+		}
+	}
 
 }
 
@@ -94,22 +102,24 @@ void Stage::AllStopUpdate()
 void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 {
 	stageCost_.at(pos.z).at(pos.x) = cost;
-}
 
-void Stage::SetStageModel(std::stack<std::pair<int, int>> pair)
-{
-
-	//モデルを全て初期化する
-	for (int z = 0; z < STAGE_SIZE.z; z++) {
-		for (int x = 0; x < STAGE_SIZE.x; x++) {
-			stageModel_.at(z).at(x) = hModel_;
-		}
+	//一マスだけ壁にすると斜め移動するときに引っかかるから上下もコストを反映させてみる
+	for (int i = 0; i < 4; i++) {
+		stageCost_.at(pos.z + moveZ[i]).at(pos.x + moveX[i]) = cost;
 	}
 
+}
+
+void Stage::SetDebugModel(std::stack<std::pair<int, int>> pair)
+{
+
+	
+
 	//Astarの経路探索で出た場所のモデルを変える
-	while (pair.empty())
+	while (!pair.empty())
 	{
 		stageModel_.at(pair.top().first).at(pair.top().second) = debugModel_;
+		pair.pop();
 	}
 }
 

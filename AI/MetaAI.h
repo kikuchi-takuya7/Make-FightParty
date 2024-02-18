@@ -56,15 +56,35 @@ public:
 	/// 1位のキャラIDは誰か、何人いるかを確認
 	/// </summary>
 	void CheckNo1Chara();
+	
 
+	/////////ゲームの流れを管理する関数///////////
+
+	/// <summary>
+	/// 勝敗が決まっていた場合、クリエイトモードに移行する
+	/// </summary>
 	void ToCreateMode();
 
+	/// <summary>
+	/// ゲームを開始する
+	/// </summary>
 	void StartGame();
 
+	/// <summary>
+	/// ゲームの状態をリセットする
+	/// </summary>
 	void ResetGame();
 
+	/// <summary>
+	/// ゲーム用のカメラに切り替える（その位置にセットする）
+	/// </summary>
 	void GameCameraSet();
 
+	/// <summary>
+	/// クリエイトモードで表示されたオブジェクトを選択する
+	/// </summary>
+	/// <param name="model">表示されているオブジェクト一覧</param>
+	/// <returns>どのモデルを選んだか</returns>
 	int SelectObject(vector<int> model);
 
 	//////////////アクセス関数 //////////

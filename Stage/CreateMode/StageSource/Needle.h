@@ -31,7 +31,11 @@ public:
 
     void OnCollision(GameObject* pTarget) override;
 
+
+    int GetNeedlePower() { return needlePower_;}
+
 private:
 
+    int needlePower_;
 
 };

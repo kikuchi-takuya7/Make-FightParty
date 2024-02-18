@@ -42,6 +42,19 @@ void MetaAI::Update()
 		countDown_->Reset();
 	}
 
+	//デバック用
+	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
+
+		characterStatusList_.at(ZERO).winPoint++;
+		pNavigationAI_->SetStatus(ZERO, characterStatusList_.at(ZERO));
+		CheckNo1Chara();
+
+		if (characterStatusList_.at(ZERO).winPoint >= 4) {
+			endGame_ = true;
+		}
+		pCreateMode_->ToSelectMode();
+	}
+
 	
 }
 
@@ -196,18 +209,7 @@ void MetaAI::ToCreateMode()
 		pCreateMode_->ToSelectMode();
 	}
 
-	//デバック用
-	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
-		
-		characterStatusList_.at(ZERO).winPoint++;
-		pNavigationAI_->SetStatus(ZERO, characterStatusList_.at(ZERO));
-		CheckNo1Chara();
-
-		if (characterStatusList_.at(ZERO).winPoint >= 4) {
-			endGame_ = true;
-		}
-		pCreateMode_->ToSelectMode();
-	}
+	
 }
 
 void MetaAI::StartGame()

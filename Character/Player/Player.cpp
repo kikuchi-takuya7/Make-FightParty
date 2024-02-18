@@ -6,6 +6,7 @@
 #include "../../Scene/MainGameScene.h"
 #include "../../Stage/CreateMode/StageSource/Bullet.h"
 
+
 //’è”
 namespace {
 	const int PLAYER_HP = 100;
@@ -103,6 +104,9 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
 	}
+
+	
+
 }
 
 void Player::ResetStatus()

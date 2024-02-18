@@ -3,6 +3,7 @@
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
 #include "../Stage/CreateMode/StageSource/Bullet.h"
+#include "../../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 
 namespace {
@@ -82,8 +83,8 @@ void Character::Release()
 	
 	//Åˆ«¡‚Ìstate‚Ìó‘Ô‚É‚æ‚Á‚Ädelete‚·‚é‚©‚µ‚È‚¢‚©‚ğŒˆ‚ß‚éB
 
-	SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);
+	/*SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);*/
 	
 }
 
@@ -103,6 +104,11 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 
 		//HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
 
+	}
+
+	//ƒgƒQ‚É“–‚½‚Á‚½‚Ìˆ—
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBSTRYCTION) {
+		HitDamage(static_cast<Needle*>(pTarget)->GetNeedlePower());
 	}
 
 	ChildOnCollision(pTarget, myType, targetType);
