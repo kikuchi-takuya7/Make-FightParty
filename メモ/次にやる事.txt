@@ -79,5 +79,5 @@ Navigation内のプレイヤーposはmetaAIから支持されたプレイヤー�
 
 2/16~2/18：javaと卒展見学
 
-2/19:デバック用ステージモデルの作成、deleteのバグ解決、photoshopでUIの作成
+2/19:デバック用ステージモデルの作成、deleteのバグ解決、photoshopでUIの作成,アニメーション
 
