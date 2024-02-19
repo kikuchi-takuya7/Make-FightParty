@@ -9,6 +9,8 @@
 #include "../AI/CharacterAI.h"
 #include "../Engine/Global.h"
 
+#include "../UI/PlayerUI.h"
+
 namespace {
 	const int PLAYER_NUM = 1;
 	const int ENEMY_NUM = 3;
@@ -25,6 +27,8 @@ MainGameScene::MainGameScene(GameObject* parent)
 //èâä˙âª
 void MainGameScene::Initialize()
 {
+
+	Instantiate<PlayerUI>(this);
 
 	pNavigationAI_ = Instantiate<NavigationAI>(this);
 	pMetaAI_ = Instantiate<MetaAI>(this);

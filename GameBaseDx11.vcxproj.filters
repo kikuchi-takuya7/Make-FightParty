@@ -275,6 +275,12 @@
     <ClCompile Include="Scene\ResultScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="UI\PlayerUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Gauge.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -492,6 +498,12 @@
     </ClInclude>
     <ClInclude Include="Scene\ResultScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PlayerUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Gauge.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

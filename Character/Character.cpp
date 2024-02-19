@@ -24,8 +24,6 @@ Character::Character(GameObject* parent,std::string name)
 //デストラクタ
 Character::~Character()
 {
-	SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);
 }
 
 //初期化
@@ -85,8 +83,9 @@ void Character::Release()
 	
 	//最悪今のstateの状態によってdeleteするかしないかを決める。
 	//pAttackCollision_ = nullptr;
-	SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);
+
+	/*SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);*/
 	
 }
 

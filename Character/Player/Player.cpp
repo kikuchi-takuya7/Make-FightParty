@@ -26,8 +26,6 @@ Player::Player(GameObject* parent)
 //デストラクタ
 Player::~Player()
 {
-	SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);
 }
 
 //初期化
