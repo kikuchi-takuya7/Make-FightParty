@@ -4,9 +4,19 @@
 #include "../Engine/Text.h"
 #include "../Engine/Input.h"
 
+namespace {
+	const float TEXT_SIZE = 0.65f;
+	const XMFLOAT3 GAUGE_SIZE = XMFLOAT3(0.7f, 0.2f, 1);
+	const XMFLOAT3 PLAYERUI_SIZE = XMFLOAT3(0.7f, 0.5f, 1);
+
+	const int GAUGE_DIFF = 80;
+	const int TEXT_DIFF_Y = 40;
+	const int TEXT_DIFF_X = 85;
+}
+
 //コンストラクタ
 PlayerUI::PlayerUI(GameObject* parent)
-	:GameObject(parent, "PlayerUI"),pGauge_(nullptr)
+	:GameObject(parent, "PlayerUI"),pHpGauge_(nullptr)
 {
 }
 
@@ -21,24 +31,27 @@ void PlayerUI::Initialize()
 
 	hPict_ = Image::Load("Image/PlayerUI/PlayerUI2.png");
 
-	playerUITrans_.position_ = XMFLOAT3(-0.7, -0.8, 0);
-	playerUITrans_.scale_ = XMFLOAT3(0.7, 0.5, 1);
+	playerUITrans_.position_ = XMFLOAT3(SpriteToFloatX(185), SpriteToFloatY(650), ZERO);
+	playerUITrans_.scale_ = PLAYERUI_SIZE;
 
-	pGauge_ = Instantiate<Gauge>(this);
-	pGauge_->SetPosition(XMFLOAT3(-0.7, -0.8, 0));
+	pHpGauge_ = Instantiate<Gauge>(this);
+	pHpGauge_ ->SetPosition(SpriteToFloatX(105), SpriteToFloatY(650), ZERO);
+	pHpGauge_ ->SetScale(GAUGE_SIZE);
 
-	pGauge_->SetGauge(100, 100);
+	pHpGauge_ ->SetGauge(100, 100);
 
 	pText_ = new Text;
 	pText_->Initialize();
+
+	pText_->SetScale(TEXT_SIZE);
 }
 
 //更新
 void PlayerUI::Update()
 {
 
-	if (Input::IsKey(DIK_L)) {
-		pGauge_->AddValue(-1);
+	if (Input::IsKeyDown(DIK_L)) {
+		pHpGauge_ ->AddValue(-10);
 	}
 
 }
@@ -49,10 +62,9 @@ void PlayerUI::Draw()
 	Image::SetTransform(hPict_, playerUITrans_);
 	Image::Draw(hPict_);
 
-	float textX = Direct3D::screenWidth_ / 2;
-	float textY = Direct3D::screenHeight_ / 2 + 200;
+	std::string player = "Player1";
 
-	pText_->Draw(500, 600, "Player1");
+	pText_->Draw(playerUITrans_.position_.x - TEXT_DIFF_X, playerUITrans_.position_.y - TEXT_DIFF_Y, player.c_str());
 }
 
 //開放
@@ -60,7 +72,19 @@ void PlayerUI::Release()
 {
 }
 
+void PlayerUI::SetMaxHp(int nowHp, int maxHp)
+{
+	pHpGauge_->SetGauge(nowHp, maxHp);
+}
+
 void PlayerUI::SetNowHp(int nowHp)
 {
-	pGauge_->SetNowGauge(nowHp);
+	pHpGauge_->SetNowGauge(nowHp);
+}
+
+void PlayerUI::SetPlayerUIPos(XMFLOAT3 pos)
+{
+	playerUITrans_.position_ = pos;
+	pHpGauge_->SetPosition(playerUITrans_.position_.x - GAUGE_DIFF, playerUITrans_.position_.y, ZERO);
+
 }

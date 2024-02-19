@@ -2,13 +2,19 @@
 #include "../Engine/Image.h"
 #include<assert.h>
 
+namespace {
+
+	const float MIN = ZERO;
+	const float MAX = 1.0f;
+
+}
+
+
 //コンストラクタ
 Gauge::Gauge(GameObject* parent)
 	: GameObject(parent, "Gauge"), hPictGauge_(-1), hPictFrame_(-1),
 	maxHp_(0), nowHp_(0)
 {
-	transform_.position_.x = -0.95f;
-	transform_.position_.y = 0.7f;
 }
 
 //デストラクタ
@@ -22,9 +28,6 @@ void Gauge::Initialize()
 	hPictGauge_ = Image::Load("Image/PlayerUI/HPGauge5.png");
 	assert(hPictGauge_ >= 0);
 
-	ImageWidth_ = 256;
-	ImageHeight_ = 64;
-
 	hPictFrame_ = Image::Load("Image/PlayerUI/HPFlame2.png");
 	assert(hPictFrame_ >= 0);
 
@@ -35,19 +38,15 @@ void Gauge::Initialize()
 //更新
 void Gauge::Update()
 {
+	animHp_ = (animHp_ * 9 + nowHp_) / 10;
 }
 
 //描画
 void Gauge::Draw()
 {
-	//同じ変数で管理するとフレームまで伸び縮みして見栄えが悪い
+	//同じ変数で管理するとフレームまで伸び縮みしてしまう
 	Transform transGauge = transform_;
-	transGauge.scale_.x = (float)nowHp_ / (float)maxHp_;
-
-	//int left = ImageWidth_ / 2 - ImageWidth_ / 2 * nowHp_; //画像的に左端じゃなくて真ん中から
-	//int width = ImageWidth_ * nowHp_;
-	//Image::SetRect(hPictGauge_, left, 0, width, ImageHeight_);
-	
+	transGauge.scale_.x = ((float)animHp_ / (float)maxHp_) * transform_.scale_.x;
 
 	Image::SetTransform(hPictFrame_, transform_);
 	Image::Draw(hPictFrame_);
@@ -80,19 +79,19 @@ void Gauge::SetNowGauge(int nowGauge)
 void Gauge::AddValue(float v)
 {
 	nowHp_ += v;
-	if (nowHp_ < 0.0f)
-		nowHp_ = 0.0f;
+	if (nowHp_ < ZERO)
+		nowHp_ = ZERO;
 	else if (nowHp_ > maxHp_)
 		nowHp_ = maxHp_;
 }
 
 void Gauge::SetValue(float v)
 {
-	assert(v >= 0.0f && v <= 1.0f);
+	assert(v >= MIN && v <= MAX);
 
 	nowHp_ = v;
-	if (nowHp_ < 0.0f)
-		nowHp_ = 0.0f;
+	if (nowHp_ < ZERO)
+		nowHp_ = ZERO;
 	else if (nowHp_ > maxHp_)
 		nowHp_ = maxHp_;
 }

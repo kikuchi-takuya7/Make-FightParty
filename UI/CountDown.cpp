@@ -36,7 +36,7 @@ void CountDown::Initialize()
 		assert(hPict_[i] >= 0);
 	}
 
-	transform_.position_ = XMFLOAT3(ZERO, 0.5f, ZERO);
+	transform_.position_ = XMFLOAT3(ZERO, SpriteToFloatY(200), ZERO);
 
 	timer_->SetLimit(COUNT);
 	timer_->StopDraw();

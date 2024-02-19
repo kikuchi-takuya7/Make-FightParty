@@ -13,8 +13,7 @@ class Gauge : public GameObject
 
 public:
 
-    static constexpr float MIN = 0.0f;
-    static constexpr float MAX = 1.0f;
+    
 
     //コンストラクタ
     Gauge(GameObject* parent);
@@ -67,6 +66,4 @@ private:
     float nowHp_; //今の値
     int maxHp_; //最大値
     float animHp_; //アニメーション上のHP
-    int ImageWidth_;
-    int ImageHeight_;
 };

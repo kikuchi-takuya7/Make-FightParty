@@ -17,7 +17,7 @@ TitleScene::TitleScene(GameObject* parent)
 void TitleScene::Initialize()
 {
 	title_ = Instantiate<Title>(this);
-	Instantiate<PlayerUI>(this);
+	//Instantiate<PlayerUI>(this);
 }
 
 //XV

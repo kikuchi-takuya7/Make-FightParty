@@ -8,6 +8,7 @@ struct Status {
     bool dead;
 };
 
+class PlayerUI;
 
 /// <summary>
 /// キャラクターの基底クラス
@@ -110,6 +111,7 @@ public:
 
 protected:
 
+    //モデル番号
     int hModel_;
 
     //HP等のステータス
@@ -129,7 +131,6 @@ protected:
 
 private:
 
-
     //////ノックバック関数で使うやつ/////////
 
     //緩急を付けるレート
@@ -144,5 +145,7 @@ private:
 
     bool stopDraw_;
 
+    //キャラクターがそれぞれで持つUI
+    PlayerUI* pPlayerUI_;
 
 };

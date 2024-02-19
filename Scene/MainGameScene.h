@@ -26,9 +26,6 @@ public:
 	//ŠJ•ú
 	void Release() override;
 
-
-	void CallStatus(int ID, Status status);
-
 private:
 
 	//

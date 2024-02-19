@@ -29,17 +29,28 @@ public:
     //開放
     void Release() override;
 
+    
 
+    //////////////アクセス関数/////////////
+
+    void SetMaxHp(int nowHp, int maxHp);
     void SetNowHp(int nowHp);
+    void SetPlayerUIPos(XMFLOAT3 pos);
 
 private:
-
+    
+    //PlayerUIの画像ハンドル
     int hPict_;
 
+    //プレイヤー名
     Text* pText_;
 
-    Gauge* pGauge_;
+    //HPゲージ
+    Gauge* pHpGauge_;
 
     Transform playerUITrans_;
+
+    //隣のUIとの距離
+    int diff_;
 
 };

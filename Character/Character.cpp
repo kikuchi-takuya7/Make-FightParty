@@ -5,6 +5,7 @@
 #include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
+#include "../UI/PlayerUI.h"
 
 namespace {
 	const int CHARACTER_HP = 100;
@@ -17,7 +18,7 @@ namespace {
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),pBodyCollision_(nullptr),pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3),stopDraw_(false)
+	:GameObject(parent, name), hModel_(-1),pBodyCollision_(nullptr),pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3),stopDraw_(false),pPlayerUI_(nullptr)
 {
 }
 
@@ -118,6 +119,8 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 void Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
+
+	pPlayerUI_->SetNowHp(status_.hp);
 
 	//HPが0になったら
 	if (status_.hp <= 0) {

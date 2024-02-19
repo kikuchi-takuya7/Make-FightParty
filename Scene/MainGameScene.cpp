@@ -14,7 +14,10 @@
 namespace {
 	const int PLAYER_NUM = 1;
 	const int ENEMY_NUM = 3;
+	const int MAXPLAYER = 4;
 	const XMFLOAT3 CHARA_POS[4] = { XMFLOAT3(5,ZERO,5),XMFLOAT3(25,ZERO,5) ,XMFLOAT3(5,ZERO,25) ,XMFLOAT3(25,ZERO,25) };
+
+	
 }
 
 //コンストラクタ
@@ -27,8 +30,9 @@ MainGameScene::MainGameScene(GameObject* parent)
 //初期化
 void MainGameScene::Initialize()
 {
-
-	Instantiate<PlayerUI>(this);
+	//Direct3Dを呼び出す前にglobal.hを呼び出すから値がバグる。ので一旦ここで定数宣言しちゃう
+	const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(SpriteToFloatX(185), SpriteToFloatY(650), ZERO);
+	const float UI_DIFF = SpriteToFloatX(200.0f);
 
 	pNavigationAI_ = Instantiate<NavigationAI>(this);
 	pMetaAI_ = Instantiate<MetaAI>(this);
@@ -58,11 +62,15 @@ void MainGameScene::Initialize()
 		pNavigationAI_->PushCharacter(pPlayer);
 		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
 
+		PlayerUI* pPlayerUI = Instantiate<PlayerUI>(this);
+		pPlayerUI->SetMaxHp(pPlayer->GetStatus().hp, pPlayer->GetStatus().hp);
+
+		XMFLOAT3 UIPos = XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, PLAYERUI_FIRST_POS.z);
+		pPlayerUI->SetPlayerUIPos(UIPos);
+
 		pPlayer->SetPosition(CHARA_POS[objectID]);
 		pPlayer->SetStartPos(CHARA_POS[objectID]);
 		objectID++;
-
-		
 	}
 	
 	//敵の最初のIDを覚えて後で使う
@@ -75,6 +83,12 @@ void MainGameScene::Initialize()
 
 		pEnemy[i] = Instantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
+
+		PlayerUI* pPlayerUI = Instantiate<PlayerUI>(this);
+		pPlayerUI->SetMaxHp(pEnemy[i]->GetStatus().hp, pEnemy[i]->GetStatus().hp);
+
+		XMFLOAT3 UIPos = XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, PLAYERUI_FIRST_POS.z);
+		pPlayerUI->SetPlayerUIPos(UIPos);
 
 		pNavigationAI_->PushCharacter(pEnemy[i]);
 		
@@ -101,12 +115,7 @@ void MainGameScene::Initialize()
 		pEnemy[i]->SetCharacterAI(charaAI);
 
 		charaAI->AskTarget();
-		
-
 	}
-	
-	//SAFE_DELETE(charaAI);
-
 
 	pMetaAI_->StartGame();
 
@@ -135,9 +144,4 @@ void MainGameScene::Release()
 	SAFE_DELETE(pNavigationAI_);*/
 	
 	
-}
-
-void MainGameScene::CallStatus(int ID, Status status)
-{
-	pMetaAI_->ChangeStatus(ID, status);
 }
