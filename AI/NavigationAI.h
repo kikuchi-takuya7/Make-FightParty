@@ -137,6 +137,8 @@ private:
 	vector<Character*> pCharacterList_;
 
 	vector<CharacterAI*> pCharacterAIList_;
+
+
 	
 };
 

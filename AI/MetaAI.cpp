@@ -30,7 +30,7 @@ void MetaAI::Initialize()
 
 void MetaAI::Update()
 {
-
+	
 	if (endGame_) {
 		pNavigationAI_->AllEraseCollision();
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
@@ -201,8 +201,6 @@ void MetaAI::ToCreateMode()
 
 		//優勝者が決まったらリザルトシーンに
 		if (characterStatusList_.at(winPlayer).winPoint >= 4) {
-			
-
 			endGame_ = true;
 		}
 
@@ -214,7 +212,6 @@ void MetaAI::ToCreateMode()
 
 void MetaAI::StartGame()
 {
-	
 	pNavigationAI_->AllStartDraw();
 	pNavigationAI_->AllStopUpdate();
 

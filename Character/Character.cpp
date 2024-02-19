@@ -131,11 +131,13 @@ void Character::HitDamage(int damage)
 void Character::StopDraw()
 {
 	stopDraw_ = true;
+	pPlayerUI_->Visible();
 }
 
 void Character::StartDraw()
 {
 	stopDraw_ = false;
+	pPlayerUI_->Invisible();
 }
 
 void Character::Dead()

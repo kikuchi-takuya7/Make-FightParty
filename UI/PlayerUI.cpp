@@ -9,9 +9,9 @@ namespace {
 	const XMFLOAT3 GAUGE_SIZE = XMFLOAT3(0.7f, 0.2f, 1);
 	const XMFLOAT3 PLAYERUI_SIZE = XMFLOAT3(0.7f, 0.5f, 1);
 
-	const int GAUGE_DIFF = 80;
-	const int TEXT_DIFF_Y = 40;
-	const int TEXT_DIFF_X = 85;
+	const float GAUGE_DIFF = 80;
+	const float TEXT_DIFF_Y = 40;
+	const float TEXT_DIFF_X = 85;
 }
 
 //コンストラクタ
@@ -59,7 +59,18 @@ void PlayerUI::Update()
 //描画
 void PlayerUI::Draw()
 {
-	Image::SetTransform(hPict_, playerUITrans_);
+
+	if (IsVisibled()) {
+		return;
+	}
+
+	Transform imageTrans_;
+	imageTrans_.position_.x = SpriteToFloatX(playerUITrans_.position_.x);
+	imageTrans_.position_.y = SpriteToFloatY(playerUITrans_.position_.y);
+
+	imageTrans_.scale_ = playerUITrans_.scale_;
+
+	Image::SetTransform(hPict_, imageTrans_);
 	Image::Draw(hPict_);
 
 	std::string player = "Player1";
@@ -85,6 +96,17 @@ void PlayerUI::SetNowHp(int nowHp)
 void PlayerUI::SetPlayerUIPos(XMFLOAT3 pos)
 {
 	playerUITrans_.position_ = pos;
-	pHpGauge_->SetPosition(playerUITrans_.position_.x - GAUGE_DIFF, playerUITrans_.position_.y, ZERO);
+	pHpGauge_->SetPosition(SpriteToFloatX(playerUITrans_.position_.x - GAUGE_DIFF), SpriteToFloatY(playerUITrans_.position_.y), ZERO);
+}
 
+void PlayerUI::StopDraw()
+{
+	Visible();
+	pHpGauge_->Visible();
+}
+
+void PlayerUI::StartDraw()
+{
+	Invisible();
+	pHpGauge_->Invisible();
 }

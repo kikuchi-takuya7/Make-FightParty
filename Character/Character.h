@@ -107,6 +107,7 @@ public:
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
     void SetTargetRotate(XMFLOAT3 rot) { targetRot_ = rot; }
     void SetAttackCollider() { AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK); }
+    void SetCharacterUI(PlayerUI* ui) { pPlayerUI_ = ui; }
 
 
 protected:
@@ -129,6 +130,9 @@ protected:
     //前にいた座標
     XMFLOAT3 prevPos_;
 
+    //キャラクターがそれぞれで持つUI
+    PlayerUI* pPlayerUI_;
+
 private:
 
     //////ノックバック関数で使うやつ/////////
@@ -145,7 +149,6 @@ private:
 
     bool stopDraw_;
 
-    //キャラクターがそれぞれで持つUI
-    PlayerUI* pPlayerUI_;
+    
 
 };

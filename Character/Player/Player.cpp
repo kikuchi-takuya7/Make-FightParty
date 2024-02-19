@@ -5,6 +5,7 @@
 #include "../../AI/MetaAI.h"
 #include "../../Scene/MainGameScene.h"
 #include "../../Stage/CreateMode/StageSource/Bullet.h"
+#include "../../UI/PlayerUI.h"
 
 
 //’è”
@@ -123,6 +124,8 @@ void Player::ResetStatus()
 	
 	status_.hp = PLAYER_HP;
 	status_.dead = false;
+
+	pPlayerUI_->SetMaxHp(status_.hp, PLAYER_HP);
 
 	TellStatus();
 

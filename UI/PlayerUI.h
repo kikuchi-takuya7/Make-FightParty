@@ -37,6 +37,9 @@ public:
     void SetNowHp(int nowHp);
     void SetPlayerUIPos(XMFLOAT3 pos);
 
+    void StopDraw();
+    void StartDraw();
+
 private:
     
     //PlayerUI‚Ì‰æ‘œƒnƒ“ƒhƒ‹

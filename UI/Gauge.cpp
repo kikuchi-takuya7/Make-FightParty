@@ -44,6 +44,11 @@ void Gauge::Update()
 //•`‰æ
 void Gauge::Draw()
 {
+
+	if (IsVisibled()) {
+		return;
+	}
+
 	//“¯‚¶•Ï”‚ÅŠÇ—‚·‚é‚ÆƒtƒŒ[ƒ€‚Ü‚ÅL‚Ñk‚İ‚µ‚Ä‚µ‚Ü‚¤
 	Transform transGauge = transform_;
 	transGauge.scale_.x = ((float)animHp_ / (float)maxHp_) * transform_.scale_.x;
