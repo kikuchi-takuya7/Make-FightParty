@@ -3,7 +3,7 @@
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
 #include "../Stage/CreateMode/StageSource/Bullet.h"
-#include "../../Stage/CreateMode/StageSource/Needle.h"
+#include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 
 namespace {
@@ -24,6 +24,8 @@ Character::Character(GameObject* parent,std::string name)
 //デストラクタ
 Character::~Character()
 {
+	SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);
 }
 
 //初期化

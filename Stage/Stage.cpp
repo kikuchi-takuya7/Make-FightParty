@@ -29,7 +29,7 @@ void Stage::Initialize()
 	assert(hModel_ >= 0);
 
 	//debug用のモデルデータのロード
-	debugModel_ = Model::Load("Stage/OneBrock.fbx");
+	debugModel_ = Model::Load("Stage/DebugBrock.fbx");
 	assert(hModel_ >= 0);
 
 	transform_.position_.x = ZERO;
