@@ -8,11 +8,3 @@ AI::AI(GameObject* parent, std::string name)
 AI::~AI()
 {
 }
-
-void AI::Initialize()
-{
-}
-
-void AI::Release()
-{
-}
