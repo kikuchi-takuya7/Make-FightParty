@@ -13,8 +13,7 @@ namespace {
 
 //コンストラクタ
 Gauge::Gauge(GameObject* parent)
-	: GameObject(parent, "Gauge"), hPictGauge_(-1), hPictFrame_(-1),
-	maxHp_(0), nowHp_(0)
+	: GameObject(parent, "Gauge"),maxHp_(ZERO), nowHp_(ZERO)
 {
 }
 
@@ -26,14 +25,21 @@ Gauge::~Gauge()
 //初期化
 void Gauge::Initialize()
 {
-	hPictGauge_ = Image::Load("Image/PlayerUI/HPGauge.png");
-	assert(hPictGauge_ >= 0);
 
-	hPictGaugeLow_ = Image::Load("Image/PlayerUI/HPGaugeLow.png");
-	assert(hPictGaugeLow_ >= 0);
+	std::string str[HPIMAGE_NUM] = { "HPFlame","HPGauge","HPGaugeLow", "HPGaugeLowWhite"};
 
-	hPictFrame_ = Image::Load("Image/PlayerUI/HPFlame.png");
-	assert(hPictFrame_ >= 0);
+	//画像データのロード
+	for (int i = 0; i < HPIMAGE_NUM; i++) {
+
+		std::string dir = "Image/PlayerUI/";
+		std::string extention = ".png";
+
+		std::string fileName = dir + str[i] + extention;
+
+		hPict_[i] = Image::Load(fileName);
+		assert(hPict_[i] >= 0);
+	}
+
 }
 
 //更新
@@ -55,20 +61,20 @@ void Gauge::Draw()
 	transFlame.position_.y -= 0.01f;
 	transFlame.scale_.y += 0.05f;
 
-	Image::SetTransform(hPictFrame_, transFlame);
-	Image::Draw(hPictFrame_);
+	Image::SetTransform(hPict_[FLAME], transFlame);
+	Image::Draw(hPict_[FLAME]);
 
 
 	Transform transGauge = transform_;
 	transGauge.scale_.x = ((float)animHp_ / (float)maxHp_) * transform_.scale_.x;
 
 	if (nowHp_ <= PINCH) {
-		Image::SetTransform(hPictGaugeLow_, transGauge);
-		Image::Draw(hPictGaugeLow_);
+		Image::SetTransform(hPict_[GAUGELOW], transGauge);
+		Image::Draw(hPict_[GAUGELOW]);
 	}
 	else {
-		Image::SetTransform(hPictGauge_, transGauge);
-		Image::Draw(hPictGauge_);
+		Image::SetTransform(hPict_[GAUGEMAIN], transGauge);
+		Image::Draw(hPict_[GAUGEMAIN]);
 	}
 }
 

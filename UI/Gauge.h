@@ -1,6 +1,14 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+enum HPIMAGE {
+    FLAME,
+    GAUGEMAIN,
+    GAUGELOW,
+    GAUGEWHITE,
+    HPIMAGE_NUM
+};
+
 
 //ゲージクラスはゲージの最大を100%（つまり1.0）となるように作る。
 //表示の大きさによって表示サイズを変えられるように作る
@@ -61,9 +69,9 @@ public:
     float GetValue();
 
 private:
-    int hPictGauge_;    //画像番号（ゲージの中身）
-    int hPictGaugeLow_;
-    int hPictFrame_;    //画像番号（フレーム）
+
+    int hPict_[HPIMAGE_NUM];
+
     float nowHp_; //今の値
     int maxHp_; //最大値
     float animHp_; //アニメーション上のHP

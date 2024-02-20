@@ -20,7 +20,7 @@ void Title::Initialize()
 
 
 	//画像データのロード
-	for (int i = 0; i < ARRAYSIZE(hPict_); i++) {
+	for (int i = 0; i < NUM; i++) {
 
 		std::string dir = "Image/Title/";
 		std::string extention = ".png";
