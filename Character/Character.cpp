@@ -2,6 +2,7 @@
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
+#include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 
 namespace {
@@ -44,11 +45,17 @@ void Character::Initialize()
 //更新
 void Character::Update()
 {
+	//動いてほしくないとき
+	if (IsEntered() == false) {
+		return;
+	}
+
 
 	//今いる位置をprevPosに置いておく
 	prevPos_ = transform_.position_;
 
-	//死んでる時とかアップデートしたくないときにここで止めちゃえばいい
+	
+
 
 	ChildUpdate();
 
@@ -69,15 +76,30 @@ void Character::Draw()
 void Character::Release()
 {
 	ChildRelease();
+
+	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
+	//ていうかnullptr入れてるはずなのになぜ例外が出るのか
+	SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);
+	
 }
 
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	
+	if (status_.dead) {
+		return;
+	}
+
 	//壁にぶつかったら前にいた座標に戻す
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK) {
-
 		SetPosition(prevPos_);
+	}
+
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		//HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
 	}
 
 	ChildOnCollision(pTarget, myType, targetType);
@@ -86,6 +108,11 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 void Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
+
+	//HPが0になったら
+	if (status_.hp <= 0) {
+		status_.dead = true;
+	}
 }
 
 void Character::StopDraw()
@@ -130,43 +157,33 @@ void Character::KnockBackEnter(float distance)
 
 	lastPoint_ = VectorToFloat3(pos);
 
-	if (lastPoint_.x <= 0) {
+	if (lastPoint_.x <= 0.5) {
 		lastPoint_.x = 0;
 	}
-	if (lastPoint_.x >= 29) {
-		lastPoint_.x = 29;
+	if (lastPoint_.x >= 28.5) {
+		lastPoint_.x = 28.5;
 	}
-	if (lastPoint_.z <= 0) {
-		lastPoint_.z = 0;
+	if (lastPoint_.z <= 0.5) {
+		lastPoint_.z = 0.5;
 	}
-	if (lastPoint_.z >= 29) {
-		lastPoint_.z = 29;
+	if (lastPoint_.z >= 28.5) {
+		lastPoint_.z = 28.5;
 	}
 
 }
 
-void Character::KnockBackUpdate(int rigidityFlame)
+void Character::KnockBackUpdate(float knockBackSpeed)
 {
 
 	//敵の向いている方向が欲しい.できればEnterの時点で飛ばされる座標を取っておいて、そこに着いたら動けるって感じにしたい。緩急付けて
 
 	//プレイヤーの現在の位置をベクトル型に変換
-	XMFLOAT3 playerPos = this->GetPosition();
+	XMFLOAT3 playerPos = GetPosition();
 
-	//レートでぬるぬる動くように
-	if (knockBackRate_ < 1.0f) {
-		knockBackRate_ += 0.05f;
+	RateMovePosition(playerPos, lastPoint_, knockBackSpeed);
 
-		// 変な数字で止まらないように
-		if (knockBackRate_ > 1.0f)
-			knockBackRate_ = 1.0f;
+	SetPosition(playerPos);
 
-		playerPos.x = GetRateValue(playerPos.x, lastPoint_.x, knockBackRate_);
-		playerPos.z = GetRateValue(playerPos.z, lastPoint_.z, knockBackRate_);
-
-		this->SetPosition(playerPos);
-
-	}
 }
 
 float Character::GetRateValue(float begin, float end, float rate)

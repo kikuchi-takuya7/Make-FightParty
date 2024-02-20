@@ -60,6 +60,9 @@
     <Filter Include="Character\Enemy\EnemyState">
       <UniqueIdentifier>{849e8960-4041-4acd-9dd4-58657124d5ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{e659bde9-9fac-4db1-ab75-22a82808e294}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -188,9 +191,6 @@
     <ClCompile Include="Character\Player\PlayerState\PlayerStateManager.cpp">
       <Filter>Character\Player\PlayerState</Filter>
     </ClCompile>
-    <ClCompile Include="Character\Character.cpp">
-      <Filter>Character</Filter>
-    </ClCompile>
     <ClCompile Include="AI\AI.cpp">
       <Filter>AI</Filter>
     </ClCompile>
@@ -259,6 +259,17 @@
     </ClCompile>
     <ClCompile Include="Engine\Button.cpp">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\CountDown.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Title.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp" />
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -466,6 +477,14 @@
     <ClInclude Include="Engine\Button.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
+    <ClInclude Include="UI\CountDown.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Title.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ResultScene.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

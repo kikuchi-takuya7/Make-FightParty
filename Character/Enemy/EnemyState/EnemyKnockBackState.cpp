@@ -6,6 +6,7 @@ namespace {
 
 	const float KNOCKBACK_DISTANCE = 3.0f;
 	const int KNOCKBACK_RIGIDITYFLAME = 30;//喰らい硬直フレーム
+	const float KNOCKBACK_SPEED = 0.05f;//どのくらいの速度でノックバックするか
 }
 
 void EnemyKnockBackState::Update(Enemy* enemy, CharacterAI* AI)
@@ -13,7 +14,7 @@ void EnemyKnockBackState::Update(Enemy* enemy, CharacterAI* AI)
 
 	flame_++;
 
-	enemy->KnockBackUpdate(KNOCKBACK_RIGIDITYFLAME);
+	enemy->KnockBackUpdate(KNOCKBACK_SPEED);
 
 	/*if (enemyPos == lastPoint_) {
 		enemy->ChangeState(PLAYER_IDLE);

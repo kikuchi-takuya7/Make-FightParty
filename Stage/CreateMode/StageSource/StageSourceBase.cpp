@@ -3,6 +3,8 @@
 namespace {
 	const XMFLOAT3 BOX_COLLISION_CENTER = XMFLOAT3(ZERO, 0.5f, ZERO);
 	const XMFLOAT3 BOX_COLLISION_SIZE = XMFLOAT3(1, 1, 1);
+
+	const float MOVE_SPEED = 0.05f;
 }
 
 StageSourceBase::StageSourceBase(GameObject* parent, std::string name)
@@ -24,7 +26,14 @@ void StageSourceBase::Initialize()
 
 void StageSourceBase::Update()
 {
-	ChildUpdate();
+
+	RateMovePosition(transform_.position_, lastPos_, MOVE_SPEED);
+
+	if (IsEntered()) {
+		ChildUpdate();
+	}
+
+	
 }
 
 void StageSourceBase::Draw()

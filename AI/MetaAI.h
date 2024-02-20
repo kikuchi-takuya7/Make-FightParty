@@ -2,13 +2,20 @@
 #include "AI.h"
 #include "NavigationAI.h"
 #include "CharacterAI.h"
-#include "../Stage/CreateMode/CreateMode.h"
 #include "../Character/Character.h"
+
+enum TARGETPATTERN {
+	TARGET_RANDAM,
+	TARGET_NO_1,
+	NUM,
+
+};
 
 class Player;
 class Enemy;
 class CreateMode;
 class NavigationAI;
+class CountDown;
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
@@ -29,6 +36,9 @@ public:
 	//初期化
 	void Initialize() override;
 
+	//更新
+	void Update() override;
+
 	//解放
 	void Release() override;
 
@@ -48,6 +58,8 @@ public:
 	void CheckNo1Chara();
 
 	void ToCreateMode();
+
+	void StartGame();
 
 	void ResetGame();
 
@@ -78,11 +90,14 @@ private:
 	CreateMode* pCreateMode_;
 
 
+	CountDown* countDown_;
 
 	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;
 
 	//現在の順位をIDで覚えておく
 	vector<int> ranking_;
+
+	bool endGame_;
 };
 

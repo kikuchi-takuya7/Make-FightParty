@@ -1,15 +1,16 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
-class Title;
 
-//■■シーンを管理するクラス
-class TitleScene : public GameObject
+/// <summary>
+/// 対戦のリザルト結果を表示するシーン
+/// </summary>
+class ResultScene : public GameObject
 {
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	TitleScene(GameObject* parent);
+	ResultScene(GameObject* parent);
 
 	//初期化
 	void Initialize() override;
@@ -23,10 +24,7 @@ public:
 	//開放
 	void Release() override;
 
-	void Imgui_Window() override;
-
 private:
 
-	Title* title_;
 
 };

@@ -1,7 +1,6 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
 
-class CreateMode;
 
 //StageSourceの元となるクラス
 class StageSourceBase : public GameObject
@@ -63,15 +62,18 @@ public:
     /// </summary>
     virtual void ChildRelease() {};
 
+    //////////////////メンバ関数/////////////////////////
+    
 
     
+
 
     ////////////////アクセス関数//////////////////
 
     int GetHandle() { return hModel_; }
     int GetStageCost() { return cost_; }
     void SetHandle(int handle) { hModel_ = handle; }
-
+    void SetMoveLastPos(XMFLOAT3 lastPos) { lastPos_ = lastPos; }
     
 protected:
 
@@ -79,7 +81,7 @@ protected:
 
 private:
 
-    
+    XMFLOAT3 lastPos_;
 
 
 };

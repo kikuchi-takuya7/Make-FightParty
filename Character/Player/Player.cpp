@@ -4,6 +4,7 @@
 #include "../../Engine/Global.h"
 #include "../../AI/MetaAI.h"
 #include "../../Scene/MainGameScene.h"
+#include "../../Stage/CreateMode/StageSource/Bullet.h"
 
 //定数
 namespace {
@@ -85,24 +86,28 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
-
-		XMFLOAT3 rotate = pTarget->GetRotate();
 		
-		SetTargetRotate(rotate);
+		//後で敵の方向に向きなおす
+		SetTargetRotate(pTarget->GetRotate());
+
+		pState_->ChangeState(PLAYER_KNOCKBACK, this);
+	}
+
+	//球に当たった時の処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
+		SetTargetRotate(pTarget->GetRotate());
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
-		//HPが0になったら
-		if (status_.hp <= 0) {
-			status_.dead = true;
-		}
 	}
 }
 
 void Player::ResetStatus()
 {
 
-	//コライダーを一旦消す。消さないと勝ってるプレイヤーのコライダーが重なる
 	EraseCollider(COLLIDER_ATTACK);
 	EraseCollider(COLLIDER_BODY);
 

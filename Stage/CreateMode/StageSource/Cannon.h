@@ -3,6 +3,8 @@
 #include "../../Model.h"
 #include "StageSourceBase.h"
 
+class Timer;
+
 /// <summary>
 /// ˆê’èŠÔŠu‚ÅUŒ‚‚·‚é–C‘ä
 /// </summary>
@@ -33,5 +35,5 @@ public:
 
 private:
 
-
+    Timer* timer_;
 };

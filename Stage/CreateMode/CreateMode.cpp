@@ -20,6 +20,7 @@ namespace {
     const int MAX_CHARACTER_NUM = 4;
     const int MAX_VIEW_OBJECT = 8;
     const float CAM_MOVE_RATE = 0.05f;
+    const float OBJ_MOVE_RATE = 0.05f;
 
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
@@ -27,7 +28,7 @@ namespace {
     const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
     const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
-    const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 15, -15);
+    const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 20, -20);
     const XMFLOAT3 SETTING_CAM_TAR = XMFLOAT3(15, 0, 15);
     const XMFLOAT3 GAME_CAM_POS = XMFLOAT3(15, 10, -20);
     const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
@@ -74,25 +75,24 @@ void CreateMode::Initialize()
     //事前にプレイヤーの数だけ要素を用意して初期化しておく
     for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
 
-        Transform objPos;
-        settingObject_.emplace_back(std::make_pair(-1, objPos));
+        SettingObjectInfo obj;
+        settingObject_.emplace_back(obj);
     }
 
     nowState_ = NONE;
 
     timer_->SetLimit(WAIT_TIME);
-    //timer_->StartDraw();
+    
 }
 
 void CreateMode::ViewInit()
 {
 
-    flame_ = ZERO;
     rotateObjectValue_ = ZERO;
     selecting_Object_ = INF;
     nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
 
-    isCamMoveEnd_ = false;
+    isObjectMoving_ = false;
 
     ranking_ = pMetaAI_->GetRanking();
 
@@ -101,26 +101,31 @@ void CreateMode::ViewInit()
     //前回のセッティングオブジェクトの情報をすべて初期化する
     for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
         Transform objPos;
-        settingObject_.at(i).first = -1;
-        settingObject_.at(i).second = objPos;
+        settingObject_.at(i).hModel = -1;
+        settingObject_.at(i).trans = objPos;
+        settingObject_.at(i).moved = false;
     }
 
     //hModelの中からランダムで表示させるオブジェクトを決める
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
         viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
     }
-
-
-    
-
 }
 
 void CreateMode::SettingInit()
 {
 
-    flame_ = ZERO;
     selecting_Object_ = INF;
-    isCamMoveEnd_ = false;
+
+    //settingObjectの位置をステージの真ん中に設定する
+    for (int i = 0; i < settingObject_.size(); i++) {
+        
+        Transform objPos;
+        objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+
+        settingObject_.at(i).trans = objPos;
+        settingObject_.at(i).moved = false;
+    }
 
     timer_->Reset();
 }
@@ -133,18 +138,23 @@ void CreateMode::Update()
     {
     case SELECT_MODE:
         
-        if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false && isCamMoveEnd_ == false) {
-            isCamMoveEnd_ = true;
+        if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
             break;
-        }
+        }        
 
         //オブジェクトがプレイヤー分選択されていなかったら
         if (!IsAllDecidedObject()) {
 
+            //オブジェクトが移動中なら更新しない
+            if (isObjectMoving_) {
+                break;
+            }
+
             //次にオブジェクトを選ぶ人がAIならAI用の処理をする
-            if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
+            if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {    
                 AISelectObject(ranking_.at(nextSelectCharacterID_));
                 nextSelectCharacterID_--;
+                isObjectMoving_ = true;
                 break;
             }
 
@@ -152,13 +162,14 @@ void CreateMode::Update()
             XMVECTOR front;
             XMVECTOR back;
             GetCursorRay(front, back);
-            //レイキャストするたびにレイのstartが変わってる？
+            //memo.レイキャストするたびにレイのstartが変わってる
 
             //オブジェクトにカーソルがあってる状態でクリックされたら
             if (IsSelectingOverlapCursor(front, back)) {
                 if (Input::IsMouseButtonDown(0)) {
                     SelectObject(ranking_.at(nextSelectCharacterID_));
                     nextSelectCharacterID_--;
+                    isObjectMoving_ = true;
                 }
             }
 
@@ -175,13 +186,12 @@ void CreateMode::Update()
     
     case SETTING_MODE:
 
-        if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false && isCamMoveEnd_ == false) {
-            isCamMoveEnd_ = true;
+        if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
             break;
         }
 
         //移動する処理。
-        if (Input::IsKeyDown(DIK_0)) {
+        if (settingObject_.at(ZERO).moved) {
             AIMovingObject();
         }
 
@@ -194,7 +204,7 @@ void CreateMode::Update()
             if (Input::IsMouseButtonDown(0) && IsOverlapPosition() == false) {
 
                 //ひとまずプレイヤーは1人目だけだから
-                CreateObject(settingObject_.at(ZERO).first, settingObject_.at(ZERO).second, ZERO);
+                CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
             }
         }
 
@@ -204,7 +214,7 @@ void CreateMode::Update()
             for (int i = 0; i < settingObject_.size(); i++) {
 
                 //モデル番号が-1じゃないなら
-                if (settingObject_.at(i).first != -1) {
+                if (settingObject_.at(i).hModel != -1) {
                     isAllCreate = false;
                 }
             }
@@ -226,10 +236,6 @@ void CreateMode::Update()
     default:
         return;
     }
-
-    
-
-    
 }
 
 //描画
@@ -261,16 +267,26 @@ void CreateMode::Draw()
 
         //既に選ばれたオブジェクトを表示する
         for (int i = 0; i < settingObject_.size(); i++) {
+
+            //-1なら更新しない。これが無いと勝手に動いちゃう
+            if (settingObject_.at(i).hModel == -1) {
+                continue;
+            }
+
+            //移動し終わってないオブジェクトを滑らかに動かす
+            if (settingObject_.at(i).moved == false) {
+                if (RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE)) {
+                    settingObject_.at(i).moved = true;
+                    isObjectMoving_ = false;
+                }
+            }
+
             
-            //最下位からオブジェクトを選択するため、選んだ人の位置から置く
-            Transform objTrans;
 
-            //settingObjectはすでに順位順になってるからそのまま表示しようとして大丈夫なはず
-            objTrans.position_ = PLAYER_UI_POS[i];
-            objTrans.rotate_.y = rotateObjectValue_;
+            settingObject_.at(i).trans.rotate_.y = rotateObjectValue_;
 
-            Model::SetTransform(settingObject_.at(i).first, objTrans);
-            Model::Draw(settingObject_.at(i).first);
+            Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
+            Model::Draw(settingObject_.at(i).hModel);
         }
 
         rotateObjectValue_++;
@@ -280,8 +296,8 @@ void CreateMode::Draw()
         
         for (int i = 0; i < settingObject_.size(); i++) {
 
-            Model::SetTransform(settingObject_.at(i).first, settingObject_.at(i).second);
-            Model::Draw(settingObject_.at(i).first);
+            Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
+            Model::Draw(settingObject_.at(i).hModel);
         }
         break;
 
@@ -314,15 +330,15 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     switch (pattern)
     {
     case CANNON:
-        CreateInstance<Cannon>(hModel, trans);
+        CreateInstance<Cannon>(hModel, trans, element);
         break;
 
     case NEEDLE:
-        CreateInstance<Needle>(hModel, trans);
+        CreateInstance<Needle>(hModel, trans, element);
         break;
 
     case ONEBROCK:
-        CreateInstance<OneBrock>(hModel, trans);
+        CreateInstance<OneBrock>(hModel, trans, element);
         break;
 
     case PATTERN_END:
@@ -332,10 +348,10 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
 
     Graph test = pStage_->GetMap();
 
-
+    settingObject_.at(element).moved = true;
 
     //クリックしたらそのオブジェクトを消す（モデル番号を無くして処理しなくする）
-    settingObject_.at(element).first = -1;
+    settingObject_.at(element).hModel = -1;
 }
 
 
@@ -469,14 +485,13 @@ void CreateMode::SelectObject(int ID)
 {
   
     Transform objPos;
-    objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
-
+    objPos.position_ = OBJECT_POS[selecting_Object_];
   
     //選択したオブジェクトを入れてく
-    settingObject_.at(ID).first = viewObjectList_.at(selecting_Object_);
-    settingObject_.at(ID).second = objPos;
+    settingObject_.at(ID).hModel = viewObjectList_.at(selecting_Object_);
+    settingObject_.at(ID).trans = objPos;
 
-    //選択されたオブジェクトは消す
+    //選択された位置のオブジェクトは消す
     viewObjectList_.at(selecting_Object_) = -1;
 
 }
@@ -524,7 +539,7 @@ bool CreateMode::IsAllDecidedObject()
     for (int i = ZERO; i < settingObject_.size(); i++) {
 
         //まだ選択されていないオブジェクトがあったら
-        if (settingObject_.at(i).first == -1) {
+        if (settingObject_.at(i).hModel == -1) {
             return false;
         }
     }
@@ -556,7 +571,7 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
             //当たってたら即終了　
             if (data.hit) {
 
-                settingObject_.at(ZERO).second = objTrans;
+                settingObject_.at(ZERO).trans = objTrans;
                 selecting_Object_ = ZERO;
                 return true;
             }
@@ -571,7 +586,7 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
 bool CreateMode::IsOverlapPosition()
 {
 
-    Transform pos = settingObject_.at(selecting_Object_).second;
+    Transform pos = settingObject_.at(selecting_Object_).trans;
 
     //既に作成されたオブジェクトと被った位置か確認する
     for (auto it = createObjectList_.begin(); it != createObjectList_.end(); it++) {
@@ -588,7 +603,7 @@ bool CreateMode::IsOverlapPosition()
             continue;
         }
 
-        if (settingObject_.at(i).second == pos) {
+        if (settingObject_.at(i).trans == pos) {
             return true;
         }
     }
@@ -614,10 +629,10 @@ void CreateMode::AIMovingObject()
         while (true) {
                         
             //NavigationAIを経由してどこに置くかを決める
-            settingObject_.at(i).second = pNavigationAI_->MoveSelectObject(i);
+            settingObject_.at(i).trans = pNavigationAI_->MoveSelectObject(i);
         
             //プレイヤーの位置と被っていたらもう一度
-            if (pNavigationAI_->IsOverlapPos(settingObject_.at(i).second.position_)) {
+            if (pNavigationAI_->IsOverlapPos(settingObject_.at(i).trans.position_)) {
                 srand(time(NULL));
                 continue;
             }
@@ -626,10 +641,10 @@ void CreateMode::AIMovingObject()
 
             //モデルの位置が他と被っていたら、もう一度
             for (int f = 0; f < pos.size(); f++) {
-                if (pos.at(f) == settingObject_.at(i).second.position_) {
+                if (pos.at(f) == settingObject_.at(i).trans.position_) {
                     isBreak = false;
                     srand(time(NULL));
-                    break;
+                    continue;
                 }
             }
             
@@ -638,7 +653,7 @@ void CreateMode::AIMovingObject()
         
         }
         
-        CreateObject(settingObject_.at(i).first, settingObject_.at(i).second, i);
+        CreateObject(settingObject_.at(i).hModel, settingObject_.at(i).trans, i);
     }
 
     
@@ -651,6 +666,8 @@ void CreateMode::ToSelectMode()
     nowState_ = SELECT_MODE;
 
     pNavigationAI_->AllStopDraw();
+    pNavigationAI_->AllStopUpdate();
+    //pNavigationAI_->AllEraseCollision();
 }
 
 void CreateMode::ToSettingMode()

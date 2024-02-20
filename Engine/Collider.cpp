@@ -109,7 +109,7 @@ XMFLOAT3 Collider::CalclationSize()
 {
 	//‹…‘Ì‚¾‚Á‚½ê‡‚µ‚È‚¢‚æ‚¤‚É
 	if (type_ == COLLIDER_CIRCLE)
-		return XMFLOAT3(1,1,1);
+		return size_;
 
 	//‰ñ“]s—ñ
 	XMMATRIX rotateX, rotateY, rotateZ, rotMatrix;

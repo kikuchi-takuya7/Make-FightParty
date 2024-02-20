@@ -78,6 +78,36 @@ void NavigationAI::AllStartDraw()
 	}
 }
 
+void NavigationAI::AllStopUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Leave();
+		
+	}
+
+	pStage_->AllStopUpdate();
+}
+
+void NavigationAI::AllStartUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Enter();
+	}
+
+	pStage_->AllStartUpdate();
+}
+
+void NavigationAI::AllEraseCollision()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
+	}
+	
+
+}
+
 //プレイヤーの開始位置と被ってるか
 //引数：比べるXMFLOAT3型の変数
 bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
@@ -96,7 +126,7 @@ bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
 
-	//探索を始める場所と目標地点
+	//探索を始める場所と目標地点(firstがzでsecondがxなので注意)
 	IntPair start;
 	IntPair target;
 
@@ -109,17 +139,21 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	target = FloatToIntPair(targetPos.z, targetPos.x);
 
 	//既に目標地点にいるならば移動しない
-	if (start == target)
+	if (start == target) {
 		return ZERO_FLOAT3;
-
+	}
+		
 	//マップコストをステージから聞く
 	Graph map = pStage_->GetMap();
 
 	if (Input::IsKeyDown(DIK_1)) {
 		int i = 0;
-	
 	}
 
+	//対象がなんか壁の中にいたら止まる(壁に体こすりつけるとなりがち)
+	if (map.at(target.first).at(target.second) == -1) {
+		return ZERO_FLOAT3;
+	}
 
 	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
 	Graph dist;
@@ -243,6 +277,11 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
+	//残り1マスとかの時中途半端に止まるのでその分を補完する
+	if (nextPos == ZERO_FLOAT3) {
+		return Float3Sub(targetPos, startPos) * 0.08f;
+	}
+	
 	return nextPos;
 
 }

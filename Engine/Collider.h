@@ -26,7 +26,7 @@ enum ColliderAttackType
 	COLLIDER_WEAPON,		//武器での攻撃
 	COLLIDER_BROCK,			//ブロックのオブジェクト
 	COLLIDER_OBSTRYCTION,	//トゲ等のオブジェクト
-
+	COLLIDER_BULLET			//球での攻撃
 };
 
 //-----------------------------------------------------------
