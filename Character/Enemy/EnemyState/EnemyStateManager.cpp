@@ -45,6 +45,7 @@ void EnemyStateManager::Update(Enemy* enemy, CharacterAI* AI)
 	AI->MoveEnemy();
 	enemyState_->Update(enemy, AI);
 
+	//”X‚Ìˆ—‚ªI‚í‚Á‚ÄAUŒ‚”ÍˆÍ“à‚È‚çUŒ‚‚·‚é
 	AI->IsAttack();
 
 }
