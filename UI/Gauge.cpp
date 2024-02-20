@@ -7,6 +7,7 @@ namespace {
 	const float MIN = ZERO;
 	const float MAX = 1.0f;
 
+	const float PINCH = 20.0f;
 }
 
 
@@ -25,14 +26,14 @@ Gauge::~Gauge()
 //初期化
 void Gauge::Initialize()
 {
-	hPictGauge_ = Image::Load("Image/PlayerUI/HPGauge5.png");
+	hPictGauge_ = Image::Load("Image/PlayerUI/HPGauge.png");
 	assert(hPictGauge_ >= 0);
 
-	hPictFrame_ = Image::Load("Image/PlayerUI/HPFlame2.png");
+	hPictGaugeLow_ = Image::Load("Image/PlayerUI/HPGaugeLow.png");
+	assert(hPictGaugeLow_ >= 0);
+
+	hPictFrame_ = Image::Load("Image/PlayerUI/HPFlame.png");
 	assert(hPictFrame_ >= 0);
-
-	
-
 }
 
 //更新
@@ -49,15 +50,26 @@ void Gauge::Draw()
 		return;
 	}
 
-	//同じ変数で管理するとフレームまで伸び縮みしてしまう
+	//フレームの位置を微調整
+	Transform transFlame = transform_;
+	transFlame.position_.y -= 0.01f;
+	transFlame.scale_.y += 0.05f;
+
+	Image::SetTransform(hPictFrame_, transFlame);
+	Image::Draw(hPictFrame_);
+
+
 	Transform transGauge = transform_;
 	transGauge.scale_.x = ((float)animHp_ / (float)maxHp_) * transform_.scale_.x;
 
-	Image::SetTransform(hPictFrame_, transform_);
-	Image::Draw(hPictFrame_);
-
-	Image::SetTransform(hPictGauge_, transGauge);
-	Image::Draw(hPictGauge_);
+	if (nowHp_ <= PINCH) {
+		Image::SetTransform(hPictGaugeLow_, transGauge);
+		Image::Draw(hPictGaugeLow_);
+	}
+	else {
+		Image::SetTransform(hPictGauge_, transGauge);
+		Image::Draw(hPictGauge_);
+	}
 }
 
 //開放

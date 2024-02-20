@@ -62,6 +62,7 @@ public:
 
 private:
     int hPictGauge_;    //画像番号（ゲージの中身）
+    int hPictGaugeLow_;
     int hPictFrame_;    //画像番号（フレーム）
     float nowHp_; //今の値
     int maxHp_; //最大値

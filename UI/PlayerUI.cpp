@@ -31,14 +31,11 @@ void PlayerUI::Initialize()
 
 	hPict_ = Image::Load("Image/PlayerUI/PlayerUI2.png");
 
-	playerUITrans_.position_ = XMFLOAT3(SpriteToFloatX(185), SpriteToFloatY(650), ZERO);
 	playerUITrans_.scale_ = PLAYERUI_SIZE;
 
 	pHpGauge_ = Instantiate<Gauge>(this);
-	pHpGauge_ ->SetPosition(SpriteToFloatX(105), SpriteToFloatY(650), ZERO);
 	pHpGauge_ ->SetScale(GAUGE_SIZE);
-
-	pHpGauge_ ->SetGauge(100, 100);
+	//pHpGauge_ ->SetGauge(100, 100);
 
 	pText_ = new Text;
 	pText_->Initialize();
