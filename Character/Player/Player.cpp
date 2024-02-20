@@ -5,6 +5,8 @@
 #include "../../AI/MetaAI.h"
 #include "../../Scene/MainGameScene.h"
 #include "../../Stage/CreateMode/StageSource/Bullet.h"
+#include "../../UI/PlayerUI.h"
+
 
 //’è”
 namespace {
@@ -103,6 +105,9 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
 	}
+
+	
+
 }
 
 void Player::ResetStatus()
@@ -120,6 +125,8 @@ void Player::ResetStatus()
 	status_.hp = PLAYER_HP;
 	status_.dead = false;
 
+	pPlayerUI_->SetMaxHp(status_.hp, PLAYER_HP);
+
 	TellStatus();
 
 	ChangeState(PLAYER_IDLE);
@@ -135,6 +142,7 @@ void Player::TellStatus()
 	//((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
 
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ToCreateMode();
 }
 
 

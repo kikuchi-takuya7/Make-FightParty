@@ -21,6 +21,10 @@ BoxCollider::BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate)
 #endif
 }
 
+BoxCollider::~BoxCollider()
+{
+}
+
 //ÚG”»’è
 //ˆø”Ftarget	‘Šè‚Ì“–‚½‚è”»’è
 //–ß’lFÚG‚µ‚Ä‚ê‚Îtrue

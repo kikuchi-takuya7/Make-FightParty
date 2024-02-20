@@ -30,7 +30,7 @@ void MetaAI::Initialize()
 
 void MetaAI::Update()
 {
-
+	
 	if (endGame_) {
 		pNavigationAI_->AllEraseCollision();
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
@@ -42,8 +42,20 @@ void MetaAI::Update()
 		countDown_->Reset();
 	}
 
-	ToCreateMode();
+	//デバック用
+	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
 
+		characterStatusList_.at(ZERO).winPoint++;
+		pNavigationAI_->SetStatus(ZERO, characterStatusList_.at(ZERO));
+		CheckNo1Chara();
+
+		if (characterStatusList_.at(ZERO).winPoint >= 4) {
+			endGame_ = true;
+		}
+		pCreateMode_->ToSelectMode();
+	}
+
+	
 }
 
 void MetaAI::Release()
@@ -189,31 +201,17 @@ void MetaAI::ToCreateMode()
 
 		//優勝者が決まったらリザルトシーンに
 		if (characterStatusList_.at(winPlayer).winPoint >= 4) {
-			
-
 			endGame_ = true;
 		}
 
 		pCreateMode_->ToSelectMode();
 	}
 
-	//デバック用
-	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
-		
-		characterStatusList_.at(ZERO).winPoint++;
-		pNavigationAI_->SetStatus(ZERO, characterStatusList_.at(ZERO));
-		CheckNo1Chara();
-
-		if (characterStatusList_.at(ZERO).winPoint >= 4) {
-			endGame_ = true;
-		}
-		pCreateMode_->ToSelectMode();
-	}
+	
 }
 
 void MetaAI::StartGame()
 {
-	
 	pNavigationAI_->AllStartDraw();
 	pNavigationAI_->AllStopUpdate();
 
@@ -223,7 +221,7 @@ void MetaAI::StartGame()
 
 void MetaAI::ResetGame()
 {
-	//もろもろ初期化して、カウントダウンが終わるまで動かさない
+	//もろもろ初期化して、カウントダウンが終わるまで動かさない。
 	pNavigationAI_->AllEraseCollision();
 	pNavigationAI_->AllResetStatus();
 	pNavigationAI_->AllStartDraw();

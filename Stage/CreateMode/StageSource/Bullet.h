@@ -39,12 +39,16 @@ private:
 	float moveLen_;
 
 	//モデル番号
-	int hModel_;
+	int bulletModel_;
 
 	//攻撃力
 	int attackPower_;
 	
 	//球のスピード
 	float bulletSpeed_;
+
+	SphereCollider* collider_;
+
+	XMFLOAT3 bulletPos_;
 
 };

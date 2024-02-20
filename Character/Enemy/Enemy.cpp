@@ -4,6 +4,8 @@
 #include "../../Engine/Global.h"
 #include "../../AI/CharacterAI.h"
 #include "../../Stage/CreateMode/StageSource/Bullet.h"
+#include "../../UI/PlayerUI.h"
+
 
 //’è”
 namespace {
@@ -122,6 +124,8 @@ void Enemy::ResetStatus()
 
 	status_.hp = ENEMY_HP;
 	status_.dead = false;
+
+	pPlayerUI_->SetMaxHp(status_.hp, ENEMY_HP);
 
 	pCharacterAI_->TellStatus();
 

@@ -8,6 +8,7 @@ struct Status {
     bool dead;
 };
 
+class PlayerUI;
 
 /// <summary>
 /// キャラクターの基底クラス
@@ -106,10 +107,12 @@ public:
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
     void SetTargetRotate(XMFLOAT3 rot) { targetRot_ = rot; }
     void SetAttackCollider() { AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK); }
+    void SetCharacterUI(PlayerUI* ui) { pPlayerUI_ = ui; }
 
 
 protected:
 
+    //モデル番号
     int hModel_;
 
     //HP等のステータス
@@ -127,8 +130,10 @@ protected:
     //前にいた座標
     XMFLOAT3 prevPos_;
 
-private:
+    //キャラクターがそれぞれで持つUI
+    PlayerUI* pPlayerUI_;
 
+private:
 
     //////ノックバック関数で使うやつ/////////
 
@@ -144,5 +149,6 @@ private:
 
     bool stopDraw_;
 
+    
 
 };

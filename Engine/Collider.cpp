@@ -133,8 +133,10 @@ void Collider::Draw(XMFLOAT3 position)
 	Transform transform;
 	XMFLOAT3 center = CalclationCenter();
 	XMFLOAT3 size = CalclationSize();
+	//transform.rotate_ = rotate_;
 	transform.position_ = XMFLOAT3(position.x + center.x, position.y + center.y, position.z + center.z);
 	transform.scale_ = size;
+	
 	transform.Calclation();
 	Model::SetTransform(hDebugModel_, transform);
 	Model::Draw(hDebugModel_);

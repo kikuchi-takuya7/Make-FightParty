@@ -17,6 +17,8 @@ public:
 	//引数：rotate	当たり判定を回転させる角度（まだ回ってない）
 	BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate);
 
+	~BoxCollider();
+
 private:
 	//接触判定
 	//引数：target	相手の当たり判定

@@ -17,6 +17,28 @@ const XMFLOAT3 ZERO_FLOAT3 = XMFLOAT3(ZERO, ZERO, ZERO);
 
 //staticにしないとエラー。global.hが何度も呼び出されるから多重定義になっちゃう的な？とにかくプロジェクト動いてからいつでも使うから静的に取っておku
 
+//Direct3Dが読まれる前にこれ読んじゃうとscreenWidthが0だから値おかしくなる。
+
+//Xの座標をピクセル単位に変換(主に画像を操作する場面で使用)
+static float SpriteToFloatX(float x) {
+
+	float px = ZERO;
+
+	px = (float)(x - Direct3D::screenWidth_ / 2);
+	px /= (float)(Direct3D::screenWidth_ / 2.0f);
+	return px;
+}
+
+//Yの座標をピクセル単位に変換(主に画像を操作する場面で使用)
+static float SpriteToFloatY(float y) {
+
+	float py = ZERO;
+
+	py = (float)(-y + Direct3D::screenHeight_ / 2);	//Y軸は+-反転
+	py /= (float)(Direct3D::screenHeight_ / 2.0f);
+	return py;
+}
+
 //XMFLOAT3型2つを足し算する
 static XMFLOAT3 Float3Add(XMFLOAT3 a, XMFLOAT3 b)
 {
@@ -27,6 +49,15 @@ static XMFLOAT3 Float3Add(XMFLOAT3 a, XMFLOAT3 b)
 static XMFLOAT3 Float3Sub(XMFLOAT3 a, XMFLOAT3 b)
 {
 	return XMFLOAT3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+static Transform TransAdd(Transform a, Transform b) 
+{
+	Transform t;
+	t.position_ = Float3Add(a.position_, b.position_);
+	t.rotate_ = Float3Add(a.rotate_, b.rotate_);
+	t.scale_ = Float3Add(a.scale_, b.scale_);
+	return t;
 }
 
 //XMVECTOR型の長さ(X)をfloatで出してくれる

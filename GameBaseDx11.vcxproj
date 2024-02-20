@@ -201,6 +201,8 @@
     <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp" />
     <ClCompile Include="Stage\Stage.cpp" />
     <ClCompile Include="UI\CountDown.cpp" />
+    <ClCompile Include="UI\PlayerUI.cpp" />
+    <ClCompile Include="UI\Gauge.cpp" />
     <ClCompile Include="UI\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +277,8 @@
     <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h" />
     <ClInclude Include="Stage\Stage.h" />
     <ClInclude Include="UI\CountDown.h" />
+    <ClInclude Include="UI\PlayerUI.h" />
+    <ClInclude Include="UI\Gauge.h" />
     <ClInclude Include="UI\Title.h" />
   </ItemGroup>
   <ItemGroup>

@@ -111,6 +111,7 @@ Transform CharacterAI::MoveSelectObject()
 	objTrans.position_.x = rand() % 29;
 	objTrans.position_.z = rand() % 29;
 
+	objTrans.rotate_.y = rand() % 4 * 90;
 
 	return objTrans;
 }
@@ -118,4 +119,5 @@ Transform CharacterAI::MoveSelectObject()
 void CharacterAI::TellStatus()
 {
 	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
+	pMetaAI_->ToCreateMode();
 }

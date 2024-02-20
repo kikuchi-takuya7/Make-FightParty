@@ -266,10 +266,20 @@
     <ClCompile Include="UI\Title.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\ResultScene.cpp" />
-    <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp" />
     <ClCompile Include="Character\Character.cpp">
       <Filter>Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PlayerUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Gauge.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -483,8 +493,18 @@
     <ClInclude Include="UI\Title.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\ResultScene.h" />
-    <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ResultScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PlayerUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Gauge.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

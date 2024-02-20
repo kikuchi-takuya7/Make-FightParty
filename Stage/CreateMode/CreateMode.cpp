@@ -85,7 +85,7 @@ void CreateMode::Initialize()
     
 }
 
-void CreateMode::ViewInit()
+void CreateMode::SelectInit()
 {
 
     rotateObjectValue_ = ZERO;
@@ -137,105 +137,128 @@ void CreateMode::Update()
     switch (nowState_)
     {
     case SELECT_MODE:
-        
-        if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
-            break;
-        }        
-
-        //オブジェクトがプレイヤー分選択されていなかったら
-        if (!IsAllDecidedObject()) {
-
-            //オブジェクトが移動中なら更新しない
-            if (isObjectMoving_) {
-                break;
-            }
-
-            //次にオブジェクトを選ぶ人がAIならAI用の処理をする
-            if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {    
-                AISelectObject(ranking_.at(nextSelectCharacterID_));
-                nextSelectCharacterID_--;
-                isObjectMoving_ = true;
-                break;
-            }
-
-            //マウスからレイを飛ばす用のベクトルを獲得
-            XMVECTOR front;
-            XMVECTOR back;
-            GetCursorRay(front, back);
-            //memo.レイキャストするたびにレイのstartが変わってる
-
-            //オブジェクトにカーソルがあってる状態でクリックされたら
-            if (IsSelectingOverlapCursor(front, back)) {
-                if (Input::IsMouseButtonDown(0)) {
-                    SelectObject(ranking_.at(nextSelectCharacterID_));
-                    nextSelectCharacterID_--;
-                    isObjectMoving_ = true;
-                }
-            }
-
-            break;
-        }
-
-        //ここまで来たら一連の流れが終わってるのでタイマースタート
-        timer_->Start();
-        if (timer_->IsFinished()) {
-            ToSettingMode();
-        }
-        
+        SelectUpdate();
         break;
     
     case SETTING_MODE:
-
-        if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
-            break;
-        }
-
-        //移動する処理。
-        if (settingObject_.at(ZERO).moved) {
-            AIMovingObject();
-        }
-
-        //マウスからレイを飛ばす用のベクトルを獲得
-        XMVECTOR front;
-        XMVECTOR back;
-        GetCursorRay(front, back);
-
-        if (IsStageOverlapCursor(front, back)) {
-            if (Input::IsMouseButtonDown(0) && IsOverlapPosition() == false) {
-
-                //ひとまずプレイヤーは1人目だけだから
-                CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
-            }
-        }
-
-        //全てのオブジェクトを設置し終わったらゲームに戻る
-        {
-            bool isAllCreate = true;
-            for (int i = 0; i < settingObject_.size(); i++) {
-
-                //モデル番号が-1じゃないなら
-                if (settingObject_.at(i).hModel != -1) {
-                    isAllCreate = false;
-                }
-            }
-                        
-            if (isAllCreate) {
-
-                //選択後に1秒待つ
-                timer_->Start();
-                if (timer_->IsFinished()) {
-                    ToGameMode();
-                }
-            }
-        }
-
-
+        SettingUpdate();
         break;
 
     case NONE:
     default:
         return;
     }
+}
+
+void CreateMode::SelectUpdate()
+{
+    if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
+        return;
+    }
+
+    //オブジェクトがプレイヤー分選択されていなかったら
+    if (!IsAllDecidedObject()) {
+
+        //オブジェクトが移動中なら更新しない
+        if (isObjectMoving_) {
+            return;
+        }
+
+        //次にオブジェクトを選ぶ人がAIならAI用の処理をする
+        if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
+            AISelectObject(ranking_.at(nextSelectCharacterID_));
+            nextSelectCharacterID_--;
+            isObjectMoving_ = true;
+            return;
+        }
+
+        //マウスからレイを飛ばす用のベクトルを獲得
+        XMVECTOR front;
+        XMVECTOR back;
+        GetCursorRay(front, back);
+        //memo.レイキャストするたびにレイのstartが変わってる
+
+        //オブジェクトにカーソルがあってる状態でクリックされたら
+        if (IsSelectingOverlapCursor(front, back)) {
+            if (Input::IsMouseButtonDown(0)) {
+                SelectObject(ranking_.at(nextSelectCharacterID_));
+                nextSelectCharacterID_--;
+                isObjectMoving_ = true;
+            }
+        }
+
+        return;
+    }
+
+    //ここまで来たら一連の流れが終わってるのでタイマースタート
+    timer_->Start();
+    if (timer_->IsFinished()) {
+        ToSettingMode();
+    }
+}
+
+void CreateMode::SettingUpdate()
+{
+    if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
+        return;
+    }
+
+    //移動する処理。
+    if (settingObject_.at(ZERO).moved) {
+        AIMovingObject();
+    }
+
+    //マウスからレイを飛ばす用のベクトルを獲得
+    XMVECTOR front;
+    XMVECTOR back;
+    GetCursorRay(front, back);
+
+    if (IsStageOverlapCursor(front, back)) {
+        if (Input::IsMouseButtonDown(0) && IsOverlapPosition() == false) {
+
+            //ひとまずプレイヤーは1人目だけだから
+            CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
+        }
+
+        if (Input::IsKeyDown(DIK_UP)) {
+            settingObject_.at(ZERO).trans.rotate_.y = 0;
+        }
+
+        if (Input::IsKeyDown(DIK_RIGHT)) {
+            settingObject_.at(ZERO).trans.rotate_.y = 90;
+        }
+
+        if (Input::IsKeyDown(DIK_DOWN)) {
+            settingObject_.at(ZERO).trans.rotate_.y = 180;
+        }
+
+        if (Input::IsKeyDown(DIK_LEFT)) {
+            settingObject_.at(ZERO).trans.rotate_.y = 270;
+        }
+    }
+
+    //全てのオブジェクトを設置し終わったらゲームに戻る
+    {
+        bool isAllCreate = true;
+        for (int i = 0; i < settingObject_.size(); i++) {
+
+            //モデル番号が-1じゃないなら
+            if (settingObject_.at(i).hModel != -1) {
+                isAllCreate = false;
+            }
+        }
+
+        if (isAllCreate) {
+
+            //選択後に1秒待つ
+            timer_->Start();
+            if (timer_->IsFinished()) {
+                ToGameMode();
+            }
+        }
+    }
+
+
 }
 
 //描画
@@ -571,6 +594,8 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
             //当たってたら即終了　
             if (data.hit) {
 
+                //回転の情報だけは残しておく
+                objTrans.rotate_ = settingObject_.at(ZERO).trans.rotate_;
                 settingObject_.at(ZERO).trans = objTrans;
                 selecting_Object_ = ZERO;
                 return true;
@@ -662,7 +687,7 @@ void CreateMode::AIMovingObject()
 void CreateMode::ToSelectMode()
 {
 
-    ViewInit();
+    SelectInit();
     nowState_ = SELECT_MODE;
 
     pNavigationAI_->AllStopDraw();

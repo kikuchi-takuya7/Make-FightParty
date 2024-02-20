@@ -52,61 +52,6 @@ Transform NavigationAI::MoveSelectObject(int ID)
 
 }
 
-//ステータスをリセットする（winPoint以外）
-void NavigationAI::AllResetStatus()
-{
-
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->ResetStatus();
-	}
-
-}
-
-//全ての描画を止める
-void NavigationAI::AllStopDraw()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->StopDraw();
-	}
-
-}
-
-void NavigationAI::AllStartDraw()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->StartDraw();
-	}
-}
-
-void NavigationAI::AllStopUpdate()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->Leave();
-		
-	}
-
-	pStage_->AllStopUpdate();
-}
-
-void NavigationAI::AllStartUpdate()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->Enter();
-	}
-
-	pStage_->AllStartUpdate();
-}
-
-void NavigationAI::AllEraseCollision()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
-		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
-		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
-	}
-	
-
-}
 
 //プレイヤーの開始位置と被ってるか
 //引数：比べるXMFLOAT3型の変数
@@ -120,6 +65,20 @@ bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 	}
 
 	return false;
+}
+
+//引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
+float NavigationAI::Distance(int myID, int targetID)
+{
+
+	//将来的にMetaAIに狙うべき敵を聞きたい
+	XMFLOAT3 eP = pCharacterList_.at(myID)->GetPosition();
+	XMFLOAT3 pP = pCharacterList_.at(targetID)->GetPosition();
+
+	//ピタゴラスの定理で距離を求められるらしい
+	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
+
+	return distance;
 }
 
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
@@ -145,10 +104,6 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 		
 	//マップコストをステージから聞く
 	Graph map = pStage_->GetMap();
-
-	if (Input::IsKeyDown(DIK_1)) {
-		int i = 0;
-	}
 
 	//対象がなんか壁の中にいたら止まる(壁に体こすりつけるとなりがち)
 	if (map.at(target.first).at(target.second) == -1) {
@@ -277,9 +232,9 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
-	//残り1マスとかの時中途半端に止まるのでその分を補完する
+	//残り小数点以下の時中途半端に止まるのでその分を補完する
 	if (nextPos == ZERO_FLOAT3) {
-		return Float3Sub(targetPos, startPos) * 0.08f;
+		return Float3Sub(targetPos, startPos) * 0.05f;
 	}
 	
 	return nextPos;
@@ -338,6 +293,8 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 	XMFLOAT3 fMove = ZERO_FLOAT3;
 
+	pStage_->SetDebugModel(searchPos);
+
 	//一番上には開始位置が入ってるからそれを取り除く
 	searchPos.pop();
 
@@ -348,15 +305,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 	//stackのtopは一番最後の要素を取ってくる
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
-
-	//ごり押しで修正することもできるけど良くない気がする
-	if (start.first == target.first) {
-		checkVecZ = 0;
-	}
-	if (start.second == target.second) {
-		checkVecX = 0;
-	}
-
 
 	if (checkVecX == 1) {
 		
@@ -406,19 +354,64 @@ IntPair NavigationAI::FloatToIntPair(float z, float x)
 	return pair;
 }
 
-//引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
-float NavigationAI::Distance(int myID, int targetID)
+//ステータスをリセットする（winPoint以外）
+void NavigationAI::AllResetStatus()
 {
-	
-	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 eP = pCharacterList_.at(myID)->GetPosition();
-	XMFLOAT3 pP = pCharacterList_.at(targetID)->GetPosition();
 
-	//ピタゴラスの定理で距離を求められるらしい
-	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->ResetStatus();
+	}
 
-	return distance;
 }
+
+//全ての描画を止める
+void NavigationAI::AllStopDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDraw();
+	}
+
+}
+
+void NavigationAI::AllStartDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StartDraw();
+	}
+}
+
+void NavigationAI::AllStopUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Leave();
+
+	}
+
+	pStage_->AllStopUpdate();
+}
+
+void NavigationAI::AllStartUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Enter();
+	}
+
+	pStage_->AllStartUpdate();
+}
+
+void NavigationAI::AllEraseCollision()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
+	}
+
+
+}
+
+
+
 
 void NavigationAI::SetStatus(int ID, Status status)
 {

@@ -6,9 +6,11 @@
 #include <queue>
 #include <stack>
 
-//z,xの位置関係がパッと見やすいからpairにしたけど、structにした方がいい？
+
 using std::vector;
 using std::pair;
+
+//structにした方がいい？
 using IntPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
@@ -43,29 +45,30 @@ public:
 
 	//////////メンバ関数///////////////
 
-
+	/// <summary>
+	/// 引数のIDのキャラクターAIにどこにオブジェクトを置くか聞く
+	/// </summary>
+	/// <param name="ID">オブジェクトを置く敵のID</param>
+	/// <returns>オブジェクトを置く場所</returns>
 	Transform MoveSelectObject(int ID);
 
-	void AllResetStatus();
-
-	void AllStopDraw();
-
-	void AllStartDraw();
-
-	void AllStopUpdate();
-
-	void AllStartUpdate();
-
-	void AllEraseCollision();
-
+	/// <summary>
+	/// 引数の値がプレイヤーの開始位置と被っているかを判断する
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns></returns>
 	bool IsOverlapPos(XMFLOAT3 pos);
-	
+
+	/// <summary>
+	/// 引数の二人の距離を測る
+	/// </summary>
+	/// <param name="myID">自分のID</param>
+	/// <param name="targetID">狙っている相手のID</param>
+	/// <returns></returns>
 	float Distance(int myID, int targetID);
 
-	
-
 	//////////////////Astarアルゴリズムで使う関数//////////////////
-	
+
 	/// <summary>
 	/// Astarを使い目標地点を探索する
 	/// </summary>
@@ -97,7 +100,19 @@ public:
 	/// <returns>整数にしたIntPair</returns>
 	IntPair FloatToIntPair(float z, float x);
 
+	///////////////キャラクターすべてに指示を出す関数/////////////////////
 
+	void AllResetStatus();
+
+	void AllStopDraw();
+
+	void AllStartDraw();
+
+	void AllStopUpdate();
+
+	void AllStartUpdate();
+
+	void AllEraseCollision();
 	
 	//////////////アクセス関数//////////////
 
@@ -122,6 +137,8 @@ private:
 	vector<Character*> pCharacterList_;
 
 	vector<CharacterAI*> pCharacterAIList_;
+
+
 	
 };
 

@@ -3,7 +3,9 @@
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
 #include "../Stage/CreateMode/StageSource/Bullet.h"
+#include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
+#include "../UI/PlayerUI.h"
 
 namespace {
 	const int CHARACTER_HP = 100;
@@ -16,7 +18,7 @@ namespace {
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),pBodyCollision_(nullptr),pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3),stopDraw_(false)
+	:GameObject(parent, name), hModel_(-1),pBodyCollision_(nullptr),pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3),stopDraw_(false),pPlayerUI_(nullptr)
 {
 }
 
@@ -79,8 +81,12 @@ void Character::Release()
 
 	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
 	//ていうかnullptr入れてるはずなのになぜ例外が出るのか
-	SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);
+	
+	//最悪今のstateの状態によってdeleteするかしないかを決める。
+	//pAttackCollision_ = nullptr;
+
+	/*SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);*/
 	
 }
 
@@ -102,12 +108,19 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 
 	}
 
+	//トゲに当たった時の処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBSTRYCTION) {
+		HitDamage(static_cast<Needle*>(pTarget)->GetNeedlePower());
+	}
+
 	ChildOnCollision(pTarget, myType, targetType);
 }
 
 void Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
+
+	pPlayerUI_->SetNowHp(status_.hp);
 
 	//HPが0になったら
 	if (status_.hp <= 0) {
@@ -118,11 +131,13 @@ void Character::HitDamage(int damage)
 void Character::StopDraw()
 {
 	stopDraw_ = true;
+	pPlayerUI_->StopDraw();
 }
 
 void Character::StartDraw()
 {
 	stopDraw_ = false;
+	pPlayerUI_->StartDraw();
 }
 
 void Character::Dead()

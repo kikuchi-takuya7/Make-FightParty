@@ -5,6 +5,8 @@
 #include "../Engine/Text.h"
 #include "../UI/Title.h"
 
+#include "../UI/PlayerUI.h"
+
 //コンストラクタ
 TitleScene::TitleScene(GameObject* parent)
 	: GameObject(parent, "TitleScene"), title_(nullptr)
@@ -15,6 +17,7 @@ TitleScene::TitleScene(GameObject* parent)
 void TitleScene::Initialize()
 {
 	title_ = Instantiate<Title>(this);
+	//Instantiate<PlayerUI>(this);
 }
 
 //更新
