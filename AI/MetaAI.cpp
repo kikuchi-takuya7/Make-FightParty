@@ -3,12 +3,12 @@
 #include "../Character/Player/Player.h"
 #include "../Engine/Camera.h"
 #include "../Stage/CreateMode/CreateMode.h"
-#include "../UI/CountDown.h"
+#include "../UI/CountDownUI.h"
 #include "../Engine/SceneManager.h"
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
-	countDown_(Instantiate<CountDown>(this)),endGame_(false)
+	countDown_(Instantiate<CountDownUI>(this)),endGame_(false)
 {
 }
 

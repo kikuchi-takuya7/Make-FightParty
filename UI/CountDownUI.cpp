@@ -1,4 +1,4 @@
-#include "CountDown.h"
+#include "CountDownUI.h"
 #include "../Engine/Timer.h"
 #include "../Engine/Image.h"
 
@@ -8,18 +8,18 @@ namespace {
 }
 
 //コンストラクタ
-CountDown::CountDown(GameObject* parent)
-    :GameObject(parent, "CountDown"), timer_(Instantiate<Timer>(this))
+CountDownUI::CountDownUI(GameObject* parent)
+    :GameObject(parent, "CountDownUI"), timer_(Instantiate<Timer>(this))
 {
 }
 
 //デストラクタ
-CountDown::~CountDown()
+CountDownUI::~CountDownUI()
 {
 }
 
 //初期化
-void CountDown::Initialize()
+void CountDownUI::Initialize()
 {
 	std::string str[COUNT_NUM] = { "Count-GO","Count-1","Count-2","Count-3" };
 
@@ -27,7 +27,7 @@ void CountDown::Initialize()
 	//画像データのロード
 	for (int i = 0; i < ARRAYSIZE(hPict_); i++) {
 
-		std::string dir = "Image/CountDown/";
+		std::string dir = "Image/CountDownUI/";
 		std::string extention = ".png";
 
 		std::string fileName = dir + str[i] + extention;
@@ -43,12 +43,12 @@ void CountDown::Initialize()
 }
 
 //更新
-void CountDown::Update()
+void CountDownUI::Update()
 {
 }
 
 //描画
-void CountDown::Draw()
+void CountDownUI::Draw()
 {
 
 	int flame = timer_->GetNowFlame();
@@ -90,22 +90,22 @@ void CountDown::Draw()
 }
 
 //開放
-void CountDown::Release()
+void CountDownUI::Release()
 {
 }
 
-void CountDown::Reset()
+void CountDownUI::Reset()
 {
 	timer_->Reset();
 
 }
 
-void CountDown::Start()
+void CountDownUI::Start()
 {
 	timer_->Start();
 }
 
-bool CountDown::IsFinished()
+bool CountDownUI::IsFinished()
 {
 	return timer_->IsFinished();
 }

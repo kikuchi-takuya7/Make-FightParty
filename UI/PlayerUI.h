@@ -2,7 +2,7 @@
 #include "../Engine/GameObject.h"
 
 class Text;
-class Gauge;
+class HpGaugeUI;
 
 /// <summary>
 /// タイトルのロゴを管理するシーン
@@ -50,7 +50,7 @@ private:
     Text* pText_;
 
     //HPゲージ
-    Gauge* pHpGauge_;
+    HpGaugeUI* pHpGauge_;
 
     Transform playerUITrans_;
 

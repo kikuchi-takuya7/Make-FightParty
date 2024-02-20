@@ -65,9 +65,14 @@ void MainGameScene::Initialize()
 		pNavigationAI_->PushCharacter(pPlayer);
 		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
 
+		//UI‚ğì¬
 		PlayerUI* pPlayerUI = Instantiate<PlayerUI>(this);
 		pPlayerUI->SetMaxHp(pPlayer->GetStatus().hp, pPlayer->GetStatus().hp);
 		pPlayerUI->SetPlayerUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, PLAYERUI_FIRST_POS.z));
+		
+		std::string name = "Player" + std::to_string(objectID + 1);
+		pPlayerUI->SetPlayerName(name);
+		
 		pPlayer->SetCharacterUI(pPlayerUI);
 
 		pPlayer->SetPosition(CHARA_POS[objectID]);
@@ -86,10 +91,15 @@ void MainGameScene::Initialize()
 		pEnemy[i] = Instantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
 
+		//UI‚ğì¬
 		PlayerUI* pPlayerUI = Instantiate<PlayerUI>(this);
 		pPlayerUI->SetMaxHp(pEnemy[i]->GetStatus().hp, pEnemy[i]->GetStatus().hp);
 		XMFLOAT3 UIPos = XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, PLAYERUI_FIRST_POS.z);
 		pPlayerUI->SetPlayerUIPos(UIPos);
+
+		std::string name = "CP" + std::to_string(objectID + 1 - PLAYER_NUM);
+		pPlayerUI->SetPlayerName(name);
+
 		pEnemy[i]->SetCharacterUI(pPlayerUI);
 
 		pNavigationAI_->PushCharacter(pEnemy[i]);

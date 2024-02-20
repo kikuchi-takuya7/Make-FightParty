@@ -1,5 +1,5 @@
 #include "PlayerUI.h"
-#include "Gauge.h"
+#include "HpGaugeUI.h"
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
 #include "../Engine/Input.h"
@@ -33,7 +33,7 @@ void PlayerUI::Initialize()
 
 	playerUITrans_.scale_ = PLAYERUI_SIZE;
 
-	pHpGauge_ = Instantiate<Gauge>(this);
+	pHpGauge_ = Instantiate<HpGaugeUI>(this);
 	pHpGauge_ ->SetScale(GAUGE_SIZE);
 	//pHpGauge_ ->SetGauge(100, 100);
 

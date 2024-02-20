@@ -14,15 +14,15 @@ class Text;
 /// <summary>
 /// タイトルのロゴを管理するシーン
 /// </summary>
-class Title : public GameObject
+class TitleUI : public GameObject
 {
 
 public:
     //コンストラクタ
-    Title(GameObject* parent);
+    TitleUI(GameObject* parent);
 
     //デストラクタ
-    ~Title();
+    ~TitleUI();
 
     //初期化
     void Initialize() override;

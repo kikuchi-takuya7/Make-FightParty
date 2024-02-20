@@ -15,7 +15,7 @@ class Player;
 class Enemy;
 class CreateMode;
 class NavigationAI;
-class CountDown;
+class CountDownUI;
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
@@ -110,7 +110,7 @@ private:
 	CreateMode* pCreateMode_;
 
 
-	CountDown* countDown_;
+	CountDownUI* countDown_;
 
 	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;

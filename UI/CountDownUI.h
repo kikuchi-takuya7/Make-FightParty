@@ -16,15 +16,15 @@ class Timer;
 /// <summary>
 /// カウントダウンのUIを管理するクラス
 /// </summary>
-class CountDown : public GameObject
+class CountDownUI : public GameObject
 {
 
 public:
     //コンストラクタ
-    CountDown(GameObject* parent);
+    CountDownUI(GameObject* parent);
 
     //デストラクタ
-    ~CountDown();
+    ~CountDownUI();
 
     //初期化
     void Initialize() override;

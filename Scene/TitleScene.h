@@ -1,7 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
-class Title;
+class TitleUI;
 
 //■■シーンを管理するクラス
 class TitleScene : public GameObject
@@ -27,6 +27,6 @@ public:
 
 private:
 
-	Title* title_;
+	TitleUI* title_;
 
 };

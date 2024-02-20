@@ -43,7 +43,7 @@ void Player::ChildInitialize()
 	status_.attackPower = PLAYER_ATTACK_POWER;
 
 	//モデルデータのロード
-	hModel_ = Model::Load("PlayerFbx/player.fbx");
+	hModel_ = Model::Load("PlayerFbx/playerTest2.fbx");
 	assert(hModel_ >= 0);
 	
 }
