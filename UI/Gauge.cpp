@@ -13,7 +13,7 @@ namespace {
 
 //コンストラクタ
 Gauge::Gauge(GameObject* parent)
-	: GameObject(parent, "Gauge"),maxHp_(ZERO), nowHp_(ZERO)
+	: GameObject(parent, "Gauge"),maxGauge_(ZERO), nowGauge_(ZERO)
 {
 }
 
@@ -45,7 +45,7 @@ void Gauge::Initialize()
 //更新
 void Gauge::Update()
 {
-	animHp_ = (animHp_ * 9 + nowHp_) / 10;
+	animGauge_ = (animGauge_ * 9 + nowGauge_) / 10;
 }
 
 //描画
@@ -66,9 +66,9 @@ void Gauge::Draw()
 
 
 	Transform transGauge = transform_;
-	transGauge.scale_.x = ((float)animHp_ / (float)maxHp_) * transform_.scale_.x;
+	transGauge.scale_.x = ((float)animGauge_ / (float)maxGauge_) * transform_.scale_.x;
 
-	if (nowHp_ <= PINCH) {
+	if (nowGauge_ <= PINCH) {
 		Image::SetTransform(hPict_[GAUGELOW], transGauge);
 		Image::Draw(hPict_[GAUGELOW]);
 	}
@@ -85,41 +85,41 @@ void Gauge::Release()
 
 void Gauge::SetGauge(int nowGauge, int maxGauge)
 {
-	nowHp_ = nowGauge;
-	maxHp_ = maxGauge;
-	animHp_ = (animHp_ * 9 + nowGauge) / 10; //animHpが9とnowHpが1だから足して10で割る
+	nowGauge_ = nowGauge;
+	maxGauge_ = maxGauge;
+	animGauge_ = (animGauge_ * 9 + nowGauge) / 10; //animHpが9とnowHpが1だから足して10で割る
 }
 
 void Gauge::SetNowGauge(int nowGauge)
 {
-	nowHp_ = nowGauge;
+	nowGauge_ = nowGauge;
 	
 	//滑らかにHPを動かすために徐々に値を変える
-	animHp_ = (animHp_ * 9 + nowGauge) / 10; //animHpが9とnowHpが1だから足して10で割る
+	animGauge_ = (animGauge_ * 9 + nowGauge) / 10; //animHpが9とnowHpが1だから足して10で割る
 
 }
 
 void Gauge::AddValue(float v)
 {
-	nowHp_ += v;
-	if (nowHp_ < ZERO)
-		nowHp_ = ZERO;
-	else if (nowHp_ > maxHp_)
-		nowHp_ = maxHp_;
+	nowGauge_ += v;
+	if (nowGauge_ < ZERO)
+		nowGauge_ = ZERO;
+	else if (nowGauge_ > maxGauge_)
+		nowGauge_ = maxGauge_;
 }
 
 void Gauge::SetValue(float v)
 {
 	assert(v >= MIN && v <= MAX);
 
-	nowHp_ = v;
-	if (nowHp_ < ZERO)
-		nowHp_ = ZERO;
-	else if (nowHp_ > maxHp_)
-		nowHp_ = maxHp_;
+	nowGauge_ = v;
+	if (nowGauge_ < ZERO)
+		nowGauge_ = ZERO;
+	else if (nowGauge_ > maxGauge_)
+		nowGauge_ = maxGauge_;
 }
 
 float Gauge::GetValue()
 {
-	return nowHp_;
+	return nowGauge_;
 }

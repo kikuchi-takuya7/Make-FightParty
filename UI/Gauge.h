@@ -72,7 +72,7 @@ private:
 
     int hPict_[HPIMAGE_NUM];
 
-    float nowHp_; //今の値
-    int maxHp_; //最大値
-    float animHp_; //アニメーション上のHP
+    float nowGauge_; //今の値
+    int maxGauge_; //最大値
+    float animGauge_; //アニメーション上のHP
 };

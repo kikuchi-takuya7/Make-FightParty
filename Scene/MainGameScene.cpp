@@ -12,6 +12,7 @@
 #include "../UI/PlayerUI.h"
 
 namespace {
+
 	const int PLAYER_NUM = 1;
 	const int ENEMY_NUM = 3;
 	const int MAXPLAYER = 4;
@@ -24,7 +25,7 @@ namespace {
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
-	: GameObject(parent, "MainGameScene"), pNavigationAI_(nullptr), pMetaAI_(nullptr),pStage_(nullptr)
+	:GameObject(parent, "MainGameScene"), pNavigationAI_(nullptr), pMetaAI_(nullptr),pStage_(nullptr)
 {
 
 }

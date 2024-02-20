@@ -36,6 +36,7 @@ public:
     void SetMaxHp(int nowHp, int maxHp);
     void SetNowHp(int nowHp);
     void SetPlayerUIPos(XMFLOAT3 pos);
+    void SetPlayerName(std::string name) { playerName_ = name; }
 
     void StopDraw();
     void StartDraw();
@@ -55,5 +56,8 @@ private:
 
     //隣のUIとの距離
     int diff_;
+
+    //プレイヤーの名前
+    std::string playerName_;
 
 };

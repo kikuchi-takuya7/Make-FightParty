@@ -79,7 +79,6 @@ void CharacterAI::MoveEnemy()
 		//pEnemy_->ChangeState(ENEMY_RUN);
 
 	}
-
 }
 
 void CharacterAI::Attack()

@@ -41,6 +41,8 @@ void PlayerUI::Initialize()
 	pText_->Initialize();
 
 	pText_->SetScale(TEXT_SIZE);
+
+	playerName_ = "NONE";
 }
 
 //XV
@@ -70,9 +72,9 @@ void PlayerUI::Draw()
 	Image::SetTransform(hPict_, imageTrans_);
 	Image::Draw(hPict_);
 
-	std::string player = "Player1";
+	
 
-	pText_->Draw(playerUITrans_.position_.x - TEXT_DIFF_X, playerUITrans_.position_.y - TEXT_DIFF_Y, player.c_str());
+	pText_->Draw(playerUITrans_.position_.x - TEXT_DIFF_X, playerUITrans_.position_.y - TEXT_DIFF_Y, playerName_.c_str());
 }
 
 //ŠJ•ú
