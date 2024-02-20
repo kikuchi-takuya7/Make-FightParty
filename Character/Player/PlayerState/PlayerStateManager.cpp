@@ -25,15 +25,11 @@ PlayerStateManager::PlayerStateManager()
 void PlayerStateManager::Update(Player* player)
 {
 
-	
-
 	//攻撃してる時に攻撃喰らった時に攻撃判定を消す用。それぞれのEnterに置いた方がいいかな
 	if (playerState_ != playerAttackState_) {
 
 		player->EraseCollider(COLLIDER_ATTACK);
 	}
-
-	
 
 	//行動不能状態なら移動はしない
 	if (playerState_ == playerKnockBackState_ || playerState_ == playerDieState_) {
@@ -41,8 +37,10 @@ void PlayerStateManager::Update(Player* player)
 		return;
 	}
 
-	XMFLOAT3 playerPos = player->GetPosition();
-
+	//死ぬ処理
+	if (player->GetStatus().dead) {
+		ChangeState(PLAYER_DIE, player);
+	}
 
 	//移動キーが押されているなら
 	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D)|| Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
@@ -55,10 +53,7 @@ void PlayerStateManager::Update(Player* player)
 
 	playerState_->Update(player);
 
-	//死ぬ処理はここでいいのか
-	if (player->GetStatus().hp <= 0) {
-		ChangeState(PLAYER_DIE, player);
-	}
+	
 
 }
 
@@ -120,19 +115,19 @@ void PlayerStateManager::MovePlayer(Player* player)
 	XMFLOAT3 playerPos = player->GetPosition();
 
 	//結局後で正規化してるからここの値は大きくても意味なし
-	if (Input::IsKey(DIK_A) && playerPos.x >= 0)
+	if (Input::IsKey(DIK_A) && playerPos.x >= 0.5)
 	{
 		fMove.x = -0.01f;
 	}
-	if (Input::IsKey(DIK_D) && playerPos.x <= 29)
+	if (Input::IsKey(DIK_D) && playerPos.x <= 28.5)
 	{
 		fMove.x = 0.01f;
 	}
-	if (Input::IsKey(DIK_W) && playerPos.z <= 29)
+	if (Input::IsKey(DIK_W) && playerPos.z <= 28.5)
 	{
 		fMove.z = 0.01f;
 	}
-	if (Input::IsKey(DIK_S) && playerPos.z >= 0)
+	if (Input::IsKey(DIK_S) && playerPos.z >= 0.5)
 	{
 		fMove.z = -0.01f;
 	}

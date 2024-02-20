@@ -7,8 +7,10 @@ enum SCENE_ID
 {
 	SCENE_ID_DEVELOP_SELECT = 0,
 	SCENE_ID_MAPEDITOR,
+	SCENE_ID_TITLE,
 	SCENE_ID_MAINGAME,
-
+	SCENE_ID_RESULT,
+	
 };
 
 //-----------------------------------------------------------

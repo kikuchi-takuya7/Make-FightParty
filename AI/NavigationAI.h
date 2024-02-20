@@ -6,25 +6,31 @@
 #include <queue>
 #include <stack>
 
-//z,xの位置関係がパッと見やすいからpairにしたけど、structにした方がいい？
+
 using std::vector;
 using std::pair;
+
+//structにした方がいい？
 using IntPair = pair<int, int>; // 座標を示す{ z,x }
 using Graph = vector<vector<long>>; //二次元配列でマップやコストを表す
 using PP = pair<long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 
+
 class Character;
+class CharacterAI;
+class Stage;
+struct Status;
 
 /// <summary>
 /// キャラクターAIとメタAIに情報を提供する
 /// </summary>
-class NavigationAI : AI
+class NavigationAI : public AI
 {
 	//
 public:
 
 	//コンストラクタ
-	NavigationAI();
+	NavigationAI(GameObject* parent);
 
 	//デストラクタ
 	~NavigationAI();
@@ -38,6 +44,30 @@ public:
 	void Release() override;
 
 	//////////メンバ関数///////////////
+
+	/// <summary>
+	/// 引数のIDのキャラクターAIにどこにオブジェクトを置くか聞く
+	/// </summary>
+	/// <param name="ID">オブジェクトを置く敵のID</param>
+	/// <returns>オブジェクトを置く場所</returns>
+	Transform MoveSelectObject(int ID);
+
+	/// <summary>
+	/// 引数の値がプレイヤーの開始位置と被っているかを判断する
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns></returns>
+	bool IsOverlapPos(XMFLOAT3 pos);
+
+	/// <summary>
+	/// 引数の二人の距離を測る
+	/// </summary>
+	/// <param name="myID">自分のID</param>
+	/// <param name="targetID">狙っている相手のID</param>
+	/// <returns></returns>
+	float Distance(int myID, int targetID);
+
+	//////////////////Astarアルゴリズムで使う関数//////////////////
 
 	/// <summary>
 	/// Astarを使い目標地点を探索する
@@ -70,13 +100,27 @@ public:
 	/// <returns>整数にしたIntPair</returns>
 	IntPair FloatToIntPair(float z, float x);
 
+	///////////////キャラクターすべてに指示を出す関数/////////////////////
 
-	float Distance(int myID, int targetID);
+	void AllResetStatus();
+
+	void AllStopDraw();
+
+	void AllStartDraw();
+
+	void AllStopUpdate();
+
+	void AllStartUpdate();
+
+	void AllEraseCollision();
 	
 	//////////////アクセス関数//////////////
-	//void PushEnemy(Enemy* enemy) { pEnemyList_.push_back(enemy); }
-	//void PushPlayer(Player* player) { pPlayerList_.push_back(player); }
-	void PushCharacter(Character* chara) { pCharacterList_.push_back(chara); }
+
+	void SetStatus(int ID, Status status);
+
+	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
+	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }
+	void SetStage(Stage* stage) { pStage_ = stage; }
 
 private:
 
@@ -85,15 +129,16 @@ private:
 	//ステージの縦幅と横幅
 	int height_, width_; 
 	
-	
+	//ステージの情報
+	Stage* pStage_;
 
-	/////////////////////////////位置情報////////////////////////
-
-	//enemyとプレイヤーの位置を覚えておく
-	//vector<Player*> pPlayerList_;
-	//vector<Enemy*> pEnemyList_;
+	/////////////////////////////Characterの情報////////////////////////
 
 	vector<Character*> pCharacterList_;
+
+	vector<CharacterAI*> pCharacterAIList_;
+
+
 	
 };
 

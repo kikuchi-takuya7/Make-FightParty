@@ -37,10 +37,13 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
+    void ResetStatus() override;
 
     /////////////////////メンバ関数/////////////////////////////////////
+
+    void TellStatus();
 
     ///////////////////アクセス関数/////////////////////////////////////
     void ChangeState(PlayerStatePattern nextState);
@@ -52,6 +55,8 @@ private:
 
     ////HP等のステータス
     //Status status_;
+
+    
 
     PlayerStateManager* pState_; //プレイヤーの状態を表す
 };

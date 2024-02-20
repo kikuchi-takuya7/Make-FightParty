@@ -1,0 +1,1 @@
+visual studioでpowerなんちゃらって調べて開発用パワーシェルをクリックして、treeって打つ

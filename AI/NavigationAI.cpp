@@ -2,12 +2,13 @@
 #include "../Engine/Input.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
+#include "CharacterAI.h"
+#include "../Stage/Stage.h"
 
 namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
 
-	//コストを1にしたら経路復元の所で無限ループしてしまう。
 	const int STAGE_COST = 1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
@@ -19,11 +20,8 @@ namespace {
 	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
 }
 
-namespace Astar {
-
-}
-
-NavigationAI::NavigationAI():height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
+NavigationAI::NavigationAI(GameObject* parent)
+	:AI(parent, "NavigationAI"), height_(STAGE_HEIGHT),width_(STAGE_WIDTH)
 {
 	//targetPos = { 15,0,15 };
 }
@@ -42,11 +40,52 @@ void NavigationAI::Release()
 {
 }
 
+Transform NavigationAI::MoveSelectObject(int ID)
+{
+
+	//最大のプレイ人数は4人で、そこから敵の合計数を引いた数が、敵の最初のIDとなるため、それ以下のIDはプレイヤーになる
+	int minEnemyID = 4 - pCharacterAIList_.size();
+
+	//IDから最小の敵IDを引いて照らし合わせる
+	return pCharacterAIList_.at(ID - minEnemyID)->MoveSelectObject();
+	
+
+}
+
+
+//プレイヤーの開始位置と被ってるか
+//引数：比べるXMFLOAT3型の変数
+bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+
+		if (pos == pCharacterList_.at(i)->GetStartPos()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
+float NavigationAI::Distance(int myID, int targetID)
+{
+
+	//将来的にMetaAIに狙うべき敵を聞きたい
+	XMFLOAT3 eP = pCharacterList_.at(myID)->GetPosition();
+	XMFLOAT3 pP = pCharacterList_.at(targetID)->GetPosition();
+
+	//ピタゴラスの定理で距離を求められるらしい
+	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
+
+	return distance;
+}
+
 //グリッド上でAstarアルゴリズムを使い最短距離を探す
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
 
-	//探索を始める場所と目標地点
+	//探索を始める場所と目標地点(firstがzでsecondがxなので注意)
 	IntPair start;
 	IntPair target;
 
@@ -59,11 +98,17 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	target = FloatToIntPair(targetPos.z, targetPos.x);
 
 	//既に目標地点にいるならば移動しない
-	if (start == target)
+	if (start == target) {
 		return ZERO_FLOAT3;
+	}
+		
+	//マップコストをステージから聞く
+	Graph map = pStage_->GetMap();
 
-	//マップのコストを入れる。
-	Graph map;
+	//対象がなんか壁の中にいたら止まる(壁に体こすりつけるとなりがち)
+	if (map.at(target.first).at(target.second) == -1) {
+		return ZERO_FLOAT3;
+	}
 
 	//マップの位置に連動してその頂点までどのぐらいの歩数で行けるか追加する
 	Graph dist;
@@ -73,20 +118,8 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	
 	//width分の行を先にheight列分だけ確保しておく
 	for (int i = ZERO; i < height_; i++) {
-		map.emplace_back(width_);
 		dist.emplace_back(width_);
 		rest.emplace_back(width_);
-	}
-
-	//ステージのコストを入れる。壁は-1.将来的にstageから持ってくる予定
-	for (int i = ZERO; i < height_; i++) {
-		for (int f = ZERO; f < width_; f++) {
-
-			map.at(i).at(f) = STAGE_COST;
-
-			//restにxz座標を入れる
-			rest[i][f] = IntPair(i, f);
-		}
 	}
 
 	//スタート地点の座標
@@ -101,6 +134,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	//ありえない値の情報で初期化
 	const int Inf = 9999999;
 	dist.assign(height_, vector<long>(width_, Inf));
+	rest.assign(height_, vector<IntPair>(width_, IntPair(ZERO,ZERO)));
 
 	//スタート地点のコストを入れる
 	dist.at(start.first).at(start.second) = map.at(start.first).at(start.second);
@@ -198,6 +232,11 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
+	//残り小数点以下の時中途半端に止まるのでその分を補完する
+	if (nextPos == ZERO_FLOAT3) {
+		return Float3Sub(targetPos, startPos) * 0.05f;
+	}
+	
 	return nextPos;
 
 }
@@ -254,6 +293,8 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 	XMFLOAT3 fMove = ZERO_FLOAT3;
 
+	pStage_->SetDebugModel(searchPos);
+
 	//一番上には開始位置が入ってるからそれを取り除く
 	searchPos.pop();
 
@@ -264,15 +305,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 	//stackのtopは一番最後の要素を取ってくる
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
-
-	//ごり押しで修正することもできるけど良くない気がする
-	if (start.first == target.first) {
-		checkVecZ = 0;
-	}
-	if (start.second == target.second) {
-		checkVecX = 0;
-	}
-
 
 	if (checkVecX == 1) {
 		
@@ -301,7 +333,6 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 }
 
-
 int NavigationAI::Heuristic(int z, int x, IntPair target)
 {
 	//絶対値の差をとる
@@ -311,13 +342,6 @@ int NavigationAI::Heuristic(int z, int x, IntPair target)
 	//斜め移動なので大きいほうを返す
 	return max(tmpZ, tmpX);
 }
-
-//XMFLOAT3 NavigationAI::TeachNextPos()
-//{
-//	XMFLOAT3 fMove = { (float)teachPath_.second, ZERO, nextPos_.first };
-//
-//}
-
 
 IntPair NavigationAI::FloatToIntPair(float z, float x)
 {
@@ -330,16 +354,66 @@ IntPair NavigationAI::FloatToIntPair(float z, float x)
 	return pair;
 }
 
-//引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
-float NavigationAI::Distance(int myID, int targetID)
+//ステータスをリセットする（winPoint以外）
+void NavigationAI::AllResetStatus()
 {
-	
-	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 eP = pCharacterList_.at(myID)->GetPosition();
-	XMFLOAT3 pP = pCharacterList_.at(targetID)->GetPosition();
 
-	//ピタゴラスの定理で距離を求められるらしい
-	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->ResetStatus();
+	}
 
-	return distance;
+}
+
+//全ての描画を止める
+void NavigationAI::AllStopDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDraw();
+	}
+
+}
+
+void NavigationAI::AllStartDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StartDraw();
+	}
+}
+
+void NavigationAI::AllStopUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Leave();
+
+	}
+
+	pStage_->AllStopUpdate();
+}
+
+void NavigationAI::AllStartUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Enter();
+	}
+
+	pStage_->AllStartUpdate();
+}
+
+void NavigationAI::AllEraseCollision()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
+	}
+
+
+}
+
+
+
+
+void NavigationAI::SetStatus(int ID, Status status)
+{
+	pCharacterList_.at(ID)->SetStatus(status);
 }

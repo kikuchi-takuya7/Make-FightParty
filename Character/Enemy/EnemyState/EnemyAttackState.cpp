@@ -18,7 +18,7 @@ void EnemyAttackState::HandleInput(Enemy* enemy, CharacterAI* AI)
 
 }
 
-void EnemyAttackState::Enter(Enemy* enemy)
+void EnemyAttackState::Enter(Enemy* enemy, CharacterAI* AI)
 {
 	time_ = 0;
 	enemy->SetAttackCollider();

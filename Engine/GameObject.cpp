@@ -17,10 +17,11 @@ GameObject::GameObject(GameObject* parent) :
 
 //コンストラクタ（標準）
 GameObject::GameObject(GameObject* parent, const std::string& name)
-	: pParent_(parent), objectName_(name), objectID_('N')
+	: pParent_(parent), objectName_(name), objectID_(-1), moveRate_(ZERO)
 {
 	childList_.clear();
 	state_ = { 0, 1, 1, 0 };
+
 
 	if (parent)
 		transform_.pParent_ = &parent->transform_;
@@ -35,6 +36,33 @@ GameObject::~GameObject()
 		SAFE_DELETE(*it);
 	}
 	colliderList_.clear();
+}
+
+bool GameObject::RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float moveRate)
+{
+	//レートでぬるぬる動くように
+	if (moveRate_ < 1.0f) {
+		moveRate_ += moveRate;
+
+		// 変な数字で止まらないように
+		if (moveRate_ > 1.0f)
+			moveRate_ = 1.0f;
+
+		//ターゲットとポジションが同じだとエラー起きるから注意
+
+		position.x = GetRateValue(position.x, lastPos.x, moveRate_);
+		position.y = GetRateValue(position.y, lastPos.y, moveRate_);
+		position.z = GetRateValue(position.z, lastPos.z, moveRate_);
+
+	}
+
+	//目標地点に着いたら、変数を初期化しておしまい
+	if (lastPos == position) {
+		moveRate_ = ZERO;
+		return true;
+	}
+
+	return false;
 }
 
 // 削除するかどうか
@@ -207,6 +235,11 @@ void GameObject::KillObjectSub(GameObject* obj)
 	obj->Release();
 }
 
+float GameObject::GetRateValue(float begin, float end, float rate)
+{
+	return (end - begin) * rate + begin;
+}
+
 
 
 //コライダー（衝突判定）を追加する
@@ -304,9 +337,6 @@ GameObject* GameObject::GetRootJob()
 	}
 	else return GetParent()->GetRootJob();
 }
-
-
-
 
 void GameObject::UpdateSub()
 {

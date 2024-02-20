@@ -2,6 +2,11 @@
 #include "../../Engine/Model.h"
 #include "../../Engine/Input.h"
 #include "../../Engine/Global.h"
+#include "../../AI/MetaAI.h"
+#include "../../Scene/MainGameScene.h"
+#include "../../Stage/CreateMode/StageSource/Bullet.h"
+#include "../../UI/PlayerUI.h"
+
 
 //定数
 namespace {
@@ -28,20 +33,19 @@ Player::~Player()
 void Player::ChildInitialize()
 {
 
+	//開始地点に移動する
+	SetPosition(startPos_);
 
 	//addcolliderしたら勝手に開放されるからね
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
-	
-	
-	status_ = { PLAYER_HP,PLAYER_ATTACK_POWER, 0, false };
+	status_.attackPower = PLAYER_ATTACK_POWER;
 
 	//モデルデータのロード
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
-
+	
 }
 
 //更新
@@ -74,36 +78,73 @@ void Player::ChildRelease()
 }
 
 //何か当たった時の処理
-void Player::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//ノックバック中は当たり判定を無くす
 	if (pState_->playerKnockBackState_ == pState_->playerState_)
 		return;
 
-	//当たったときの処理
+	//攻撃に当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
-
-		XMFLOAT3 rotate = pTarget->GetRotate();
 		
-		pState_->SetEnemyRot(rotate);
+		//後で敵の方向に向きなおす
+		SetTargetRotate(pTarget->GetRotate());
+
+		pState_->ChangeState(PLAYER_KNOCKBACK, this);
+	}
+
+	//球に当たった時の処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
+		SetTargetRotate(pTarget->GetRotate());
 
 		pState_->ChangeState(PLAYER_KNOCKBACK, this);
 
-		
-		
-
 	}
 
-	//攻撃を当てた時の処理
-	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-	{
-		
-
-	}
+	
 
 }
+
+void Player::ResetStatus()
+{
+
+	EraseCollider(COLLIDER_ATTACK);
+	EraseCollider(COLLIDER_BODY);
+
+	//開始地点に移動する
+	SetPosition(startPos_);
+	
+	//addcolliderしたら勝手に開放されるからね
+	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
+	
+	status_.hp = PLAYER_HP;
+	status_.dead = false;
+
+	pPlayerUI_->SetMaxHp(status_.hp, PLAYER_HP);
+
+	TellStatus();
+
+	ChangeState(PLAYER_IDLE);
+
+}
+
+void Player::TellStatus()
+{
+	
+	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？名前検索しちゃっていい？
+
+	//((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
+	//((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
+
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ToCreateMode();
+}
+
 
 void Player::ChangeState(PlayerStatePattern nextState)
 {

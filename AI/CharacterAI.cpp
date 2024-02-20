@@ -3,11 +3,13 @@
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
 
-CharacterAI::CharacterAI() :pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
+CharacterAI::CharacterAI(GameObject* parent)
+	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
 {
 }
 
-CharacterAI::CharacterAI(Enemy* enemy, NavigationAI* naviAI) :pNavigationAI_(naviAI),pMetaAI_(nullptr), pEnemy_(enemy)
+CharacterAI::CharacterAI(GameObject* parent, Enemy* enemy, NavigationAI* naviAI)
+	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy)
 {
 }
 
@@ -17,14 +19,19 @@ CharacterAI::~CharacterAI()
 
 void CharacterAI::Initialize()
 {
-	//最初に狙う敵のIDを決めてもらう
-	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
+	
 
 }
 
 void CharacterAI::Release()
 {
 
+}
+
+void CharacterAI::AskTarget()
+{
+	//狙う敵のIDを決めてもらう
+	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
 }
 
 //動かす
@@ -82,9 +89,35 @@ void CharacterAI::Attack()
 
 void CharacterAI::IsAttack()
 {
+	//狙おうとしてる敵が死んでたら、ターゲットを変える
+	if (pMetaAI_->GetCharacterStatus(targetID_).dead) {
+		AskTarget();
+	}
+
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
-	if (distance <= 2.5f) {
+	if (distance <= 2.0f) {
 		pEnemy_->ChangeState(ENEMY_ATTACK);
 	}
+}
+
+Transform CharacterAI::MoveSelectObject()
+{
+	
+	//アイテムの種類によって置くオブジェクトを決める？砲台は端っことか。時間あるか？あと向きもちゃんと買える
+
+	//ステージ内のどこかにランダムで置く
+	Transform objTrans;
+	objTrans.position_.x = rand() % 29;
+	objTrans.position_.z = rand() % 29;
+
+	objTrans.rotate_.y = rand() % 4 * 90;
+
+	return objTrans;
+}
+
+void CharacterAI::TellStatus()
+{
+	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
+	pMetaAI_->ToCreateMode();
 }

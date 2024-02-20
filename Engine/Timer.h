@@ -19,21 +19,40 @@ public:
 
 	void Release() override;
 
+	//タイマーセット
 	void SetLimit(float seconds);
 
+	//タイマースタート
 	void Start();
 
+	//タイマーストップ
 	void Stop();
 
+	//タイマーリセット（ストップもされる）
+	void Reset();
+
+	//Drawする
+	void StartDraw();
+
+	//Drawしない
+	void StopDraw();
+	
+	//終わったらtrue
 	bool IsFinished();
+
+	/////////////アクセス関数///////////////////
+
+	int GetNowFlame() { return flame_; }
 
 private:
 	
-	int frame;
-	bool active;
-	float drawX;
-	float drawY;
-	Text* num;
+	int flame_;
+	int startFlame_;
+	float drawX_;
+	float drawY_;
+	Text* num_;
+
+	
 
 };
 

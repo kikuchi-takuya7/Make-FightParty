@@ -3,6 +3,8 @@
 
 class MetaAI;
 class NavigationAI;
+class Stage;
+struct Status;
 
 //■■シーンを管理するクラス
 class MainGameScene : public GameObject
@@ -31,6 +33,8 @@ private:
 
 	//ゲーム全体のバランスを管理するAI
 	MetaAI* pMetaAI_;
+
+	Stage* pStage_;
 
 	/*Player* pPlayer_;
 

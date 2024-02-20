@@ -41,7 +41,10 @@ public:
     /// 別のcolliderに衝突したときに呼ばれる関数
     /// </summary>
     /// <param name="pTarget">当たった相手</param>
-    void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+
+
+    void ResetStatus() override;
 
     /////////////////////メンバ関数/////////////////////////////////////
 
@@ -50,9 +53,12 @@ public:
     /// </summary>
     void MoveCharacter() override;
 
+    /////////////////////AIに伝える関数/////////////////////////////
+
+
+
     ///////////////////アクセス関数/////////////////////////////////////
     void SetCharacterAI(CharacterAI* AI) { pCharacterAI_ = AI; }
-    
 
     void ChangeState(EnemyStatePattern nextState);
     
@@ -61,8 +67,6 @@ public:
 
 
 private:
-
-    int hModel_;
 
     //HP等のステータス
     //Status status_;

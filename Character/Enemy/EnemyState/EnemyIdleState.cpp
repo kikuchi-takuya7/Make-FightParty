@@ -13,6 +13,6 @@ void EnemyIdleState::HandleInput(Enemy* enemy, CharacterAI* AI)
 
 }
 
-void EnemyIdleState::Enter(Enemy* enemy)
+void EnemyIdleState::Enter(Enemy* enemy, CharacterAI* AI)
 {
 }

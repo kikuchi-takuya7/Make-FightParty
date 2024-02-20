@@ -19,6 +19,10 @@ SphereCollider::SphereCollider(XMFLOAT3 center, float size)
 #endif
 }
 
+SphereCollider::~SphereCollider()
+{
+}
+
 //ÚG”»’è
 //ˆø”Ftarget	‘Šè‚Ì“–‚½‚è”»’è
 //–ß’lFÚG‚µ‚Ä‚ê‚Îtrue

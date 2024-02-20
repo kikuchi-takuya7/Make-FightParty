@@ -28,7 +28,9 @@ namespace Model
 				{
 					pData->pFbx = _datas[i]->pFbx;
 					isExist = true;
-					break;
+
+					//ˆê”Ô‰º‚Ü‚Ås‚­‚ÆV‚µ‚­push_back‚³‚ê‚¿‚á‚¤‚©‚ç‚±‚±‚Å~‚ß‚½
+					return i;
 				}
 			}
 
