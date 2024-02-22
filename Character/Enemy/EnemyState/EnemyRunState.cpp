@@ -9,7 +9,6 @@ void EnemyRunState::Update(Enemy* enemy, CharacterAI* AI)
 
 void EnemyRunState::HandleInput(Enemy* enemy, CharacterAI* AI)
 {
-	AI->IsAttack();
 }
 
 void EnemyRunState::Enter(Enemy* enemy, CharacterAI* AI)

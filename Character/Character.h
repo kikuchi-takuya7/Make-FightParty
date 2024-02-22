@@ -118,8 +118,6 @@ protected:
     //HP等のステータス
     Status status_;
 
-    //CharacterStateManager* pState_; //プレイヤーの状態を表す
-
     //当たり判定
     BoxCollider* pBodyCollision_;
     BoxCollider* pAttackCollision_;
@@ -132,6 +130,8 @@ protected:
 
     //キャラクターがそれぞれで持つUI
     PlayerUI* pPlayerUI_;
+
+
 
 private:
 

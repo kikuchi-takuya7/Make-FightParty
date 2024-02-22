@@ -50,7 +50,7 @@ void PlayerUI::Update()
 {
 
 	if (Input::IsKeyDown(DIK_L)) {
-		pHpGauge_ ->AddValue(-10);
+		pHpGauge_->AddValue(-10);
 	}
 
 }

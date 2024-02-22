@@ -64,5 +64,3 @@ private:
 
 };
 
-//æ”y‚Í‚±‚±state‚ðŒp³‚µ‚Ä‚½‚¯‚ÇŒp³‚µ‚½——R‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çŒp³‚µ‚È‚©‚Á‚½B‚Á‚Ä‚¢‚¤ƒƒ‚
-//ŠÖ”‚ª‹¤’Ê‚µ‚Ä‚é‚©‚ç‚È‚Ì‚©‚È‚Ÿ

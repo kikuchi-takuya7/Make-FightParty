@@ -6,7 +6,7 @@
 #include "../UI/TitleUI.h"
 
 #include "../UI/PlayerUI.h"
-#include "../UI/GameUI.h"
+#include "../UI/RankingUI.h"
 
 //コンストラクタ
 TitleScene::TitleScene(GameObject* parent)
