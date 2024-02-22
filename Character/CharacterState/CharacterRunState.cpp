@@ -1,32 +1,32 @@
-#include "PlayerRunState.h"
+#include "CharacterRunState.h"
 #include "../../../Engine/Input.h"
-#include "../Player.h"
+#include "../Character.h"
 
-void PlayerRunState::Update(Player* player)
+void CharacterRunState::Update(Character* character)
 {
 
 
-	//MoveCharacter(player);
+	//Movecharacter(character);
 
-	HandleInput(player);
+	HandleInput(character);
 }
 
-void PlayerRunState::HandleInput(Player* player)
+void CharacterRunState::HandleInput(Character* character)
 {
 	if (Input::IsKeyDown(DIK_F)) {
-		player->ChangeState(PLAYER_ATTACK);
+		character->ChangeState(ATTACK);
 	}
 
 	if (Input::IsKeyDown(DIK_SPACE)) {
-		player->ChangeState(PLAYER_JUMP);
+		character->ChangeState(JUMP);
 	}
 }
 
-void PlayerRunState::Enter(Player* player)
+void CharacterRunState::Enter(Character* character)
 {
 }
 
-void PlayerRunState::MoveCharacter(Player* player)
+void CharacterRunState::MoveCharacter(Character* character)
 {
 
 	XMFLOAT3 fMove = ZERO_FLOAT3;
@@ -35,7 +35,7 @@ void PlayerRunState::MoveCharacter(Player* player)
 	//fMove.x = Input::GetPadStickL(0).x;
 	//fMove.z = Input::GetPadStickL(0).y;
 
-	XMFLOAT3 playerPos = player->GetPosition();
+	XMFLOAT3 characterPos = character->GetPosition();
 
 	//Œ‹‹ÇŒã‚Å³‹K‰»‚µ‚Ä‚é‚©‚ç‚±‚±‚Ì’l‚Í‘å‚«‚­‚Ä‚àˆÓ–¡‚È‚µ
 	if (Input::IsKey(DIK_A))
@@ -66,10 +66,10 @@ void PlayerRunState::MoveCharacter(Player* player)
 	fMove.x *= 0.5;
 	fMove.z *= 0.5;
 
-	playerPos.x += fMove.x;
-	playerPos.z += fMove.z;
+	characterPos.x += fMove.x;
+	characterPos.z += fMove.z;
 
-	player->SetPosition(playerPos);
+	character->SetPosition(characterPos);
 
 	float length = Length(vMove);
 
@@ -93,9 +93,9 @@ void PlayerRunState::MoveCharacter(Player* player)
 
 		float degree = XMConvertToDegrees(angle);
 
-		player->SetRotateY(degree);
+		character->SetRotateY(degree);
 
-		player->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
+		character->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
 
 	}
 

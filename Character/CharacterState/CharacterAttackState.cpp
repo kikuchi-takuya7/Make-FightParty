@@ -1,6 +1,6 @@
-#include "PlayerAttackState.h"
+#include "CharacterAttackState.h"
 #include "../../BoxCollider.h"
-#include "../Player.h"
+#include "../Character.h"
 
 //定数
 namespace {
@@ -10,7 +10,7 @@ namespace {
 
 }
 
-void PlayerAttackState::Update(Player* player)
+void CharacterAttackState::Update(Character* character)
 {
 
 	//攻撃アニメーションを始めて一定時間立ったらIdleに戻す
@@ -20,19 +20,19 @@ void PlayerAttackState::Update(Player* player)
 
 	//攻撃が終わったら攻撃用のコライダーを破棄してstateを戻す
 	if (flame_ >= ATTACK_RIGIDITYFLAME) {
-		player->EraseCollider(ColliderAttackType::COLLIDER_ATTACK);
-		player->ChangeState(PLAYER_IDLE);
+		character->EraseCollider(ColliderAttackType::COLLIDER_ATTACK);
+		character->ChangeState(IDLE);
 	}
 
-	HandleInput(player);
+	HandleInput(character);
 }
 
-void PlayerAttackState::HandleInput(Player* player)
+void CharacterAttackState::HandleInput(Character* character)
 {
 }
 
-void PlayerAttackState::Enter(Player* player)
+void CharacterAttackState::Enter(Character* character)
 {
 	flame_ = ZERO;
-	player->SetAttackCollider();
+	character->SetAttackCollider();
 }

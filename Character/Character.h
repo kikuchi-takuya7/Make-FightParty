@@ -9,6 +9,7 @@ struct Status {
 };
 
 class PlayerUI;
+class CharacterStateManager;
 
 /// <summary>
 /// キャラクターの基底クラス
@@ -117,6 +118,9 @@ protected:
 
     //HP等のステータス
     Status status_;
+
+    //キャラクタークラスのステート
+    CharacterStateManager* state_;
 
     //当たり判定
     BoxCollider* pBodyCollision_;
