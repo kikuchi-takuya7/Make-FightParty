@@ -1,4 +1,5 @@
 #include "RankingUI.h"
+#include "RankingGaugeUI.h"
 #include "../Engine/Image.h"
 #include<assert.h>
 
@@ -17,6 +18,8 @@ RankingUI::~RankingUI()
 void RankingUI::Initialize()
 {
 	hPict_ = Image::Load("Image/RankingUI/RankingPaper.png");
+
+
 
 }
 
