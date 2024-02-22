@@ -2,7 +2,7 @@
 #include "../Engine/GameObject.h"
 
 class Text;
-class Gauge;
+class HpGaugeUI;
 
 /// <summary>
 /// タイトルのロゴを管理するシーン
@@ -36,6 +36,7 @@ public:
     void SetMaxHp(int nowHp, int maxHp);
     void SetNowHp(int nowHp);
     void SetPlayerUIPos(XMFLOAT3 pos);
+    void SetPlayerName(std::string name) { playerName_ = name; }
 
     void StopDraw();
     void StartDraw();
@@ -49,11 +50,14 @@ private:
     Text* pText_;
 
     //HPゲージ
-    Gauge* pHpGauge_;
+    HpGaugeUI* pHpGauge_;
 
     Transform playerUITrans_;
 
     //隣のUIとの距離
     int diff_;
+
+    //プレイヤーの名前
+    std::string playerName_;
 
 };

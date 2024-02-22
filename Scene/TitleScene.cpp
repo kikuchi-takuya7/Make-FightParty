@@ -3,9 +3,10 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Input.h"
 #include "../Engine/Text.h"
-#include "../UI/Title.h"
+#include "../UI/TitleUI.h"
 
 #include "../UI/PlayerUI.h"
+#include "../UI/RankingUI.h"
 
 //コンストラクタ
 TitleScene::TitleScene(GameObject* parent)
@@ -16,8 +17,9 @@ TitleScene::TitleScene(GameObject* parent)
 //初期化
 void TitleScene::Initialize()
 {
-	title_ = Instantiate<Title>(this);
+	title_ = Instantiate<TitleUI>(this);
 	//Instantiate<PlayerUI>(this);
+	//Instantiate<GameUI>(this);
 }
 
 //更新

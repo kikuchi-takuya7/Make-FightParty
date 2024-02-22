@@ -1,5 +1,5 @@
 #include "PlayerUI.h"
-#include "Gauge.h"
+#include "HpGaugeUI.h"
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
 #include "../Engine/Input.h"
@@ -33,7 +33,7 @@ void PlayerUI::Initialize()
 
 	playerUITrans_.scale_ = PLAYERUI_SIZE;
 
-	pHpGauge_ = Instantiate<Gauge>(this);
+	pHpGauge_ = Instantiate<HpGaugeUI>(this);
 	pHpGauge_ ->SetScale(GAUGE_SIZE);
 	//pHpGauge_ ->SetGauge(100, 100);
 
@@ -41,6 +41,8 @@ void PlayerUI::Initialize()
 	pText_->Initialize();
 
 	pText_->SetScale(TEXT_SIZE);
+
+	playerName_ = "NONE";
 }
 
 //XV
@@ -48,7 +50,7 @@ void PlayerUI::Update()
 {
 
 	if (Input::IsKeyDown(DIK_L)) {
-		pHpGauge_ ->AddValue(-10);
+		pHpGauge_->AddValue(-10);
 	}
 
 }
@@ -70,9 +72,9 @@ void PlayerUI::Draw()
 	Image::SetTransform(hPict_, imageTrans_);
 	Image::Draw(hPict_);
 
-	std::string player = "Player1";
+	
 
-	pText_->Draw(playerUITrans_.position_.x - TEXT_DIFF_X, playerUITrans_.position_.y - TEXT_DIFF_Y, player.c_str());
+	pText_->Draw(playerUITrans_.position_.x - TEXT_DIFF_X, playerUITrans_.position_.y - TEXT_DIFF_Y, playerName_.c_str());
 }
 
 //ŠJ•ú

@@ -1,20 +1,20 @@
-#include "Title.h"
+#include "TitleUI.h"
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
 
 //コンストラクタ
-Title::Title(GameObject* parent)
-    :GameObject(parent, "Title")
+TitleUI::TitleUI(GameObject* parent)
+    :GameObject(parent, "TitleUI")
 {
 }
 
 //デストラクタ
-Title::~Title()
+TitleUI::~TitleUI()
 {
 }
 
 //初期化
-void Title::Initialize()
+void TitleUI::Initialize()
 {
 	std::string str[NUM] = { "Make","&","Fight Party" };
 
@@ -22,7 +22,7 @@ void Title::Initialize()
 	//画像データのロード
 	for (int i = 0; i < NUM; i++) {
 
-		std::string dir = "Image/Title/";
+		std::string dir = "Image/TitleUI/";
 		std::string extention = ".png";
 
 		std::string fileName = dir + str[i] + extention;
@@ -40,12 +40,12 @@ void Title::Initialize()
 }
 
 //更新
-void Title::Update()
+void TitleUI::Update()
 {
 }
 
 //描画
-void Title::Draw()
+void TitleUI::Draw()
 {
 	Image::SetTransform(hPict_[MAKE], make_Trans_);
 	Image::Draw(hPict_[MAKE]);
@@ -63,6 +63,6 @@ void Title::Draw()
 }
 
 //開放
-void Title::Release()
+void TitleUI::Release()
 {
 }
