@@ -1,15 +1,6 @@
 #include "PlayerStateManager.h"
 #include "../Player.h"
 
-//各static変数を初期化する。staticだからグローバルな位置で最初に初期化しないとダメ
-//PlayerAttackState* PlayerStateManager::playerAttackState_ = new PlayerAttackState;
-//PlayerDieState* PlayerStateManager::playerDieState_ = new PlayerDieState;
-//PlayerIdleState* PlayerStateManager::playerIdleState_ = new PlayerIdleState;
-//PlayerJumpState* PlayerStateManager::playerJumpState_ = new PlayerJumpState;
-//PlayerRunState* PlayerStateManager::playerRunState_ = new PlayerRunState;
-
-//PlayerState* PlayerStateManager::playerState_ = playerIdleState_;
-
 PlayerStateManager::PlayerStateManager()
 {
 	playerAttackState_ = new PlayerAttackState;
@@ -27,7 +18,6 @@ void PlayerStateManager::Update(Player* player)
 
 	//攻撃してる時に攻撃喰らった時に攻撃判定を消す用。それぞれのEnterに置いた方がいいかな
 	if (playerState_ != playerAttackState_) {
-
 		player->EraseCollider(COLLIDER_ATTACK);
 	}
 
@@ -43,18 +33,13 @@ void PlayerStateManager::Update(Player* player)
 	}
 
 	//移動キーが押されているなら
-	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D)|| Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
-	{
-
+	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D)|| Input::IsKey(DIK_W) || Input::IsKey(DIK_S)){
 		//Runstateで移動中なら速度早くして、他のstateなら移動速度遅くするとかが良い気がする
 		MovePlayer(player);
 		//ChangeState(PLAYER_RUN, player);
 	}
 
 	playerState_->Update(player);
-
-	
-
 }
 
 void PlayerStateManager::HandleInput(Player* player)

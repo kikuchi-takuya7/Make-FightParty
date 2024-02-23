@@ -413,6 +413,11 @@ void NavigationAI::AllEraseCollision()
 
 
 
+Character* NavigationAI::GetCaracter(int ID)
+{
+	return pCharacterList_.at(ID);
+}
+
 void NavigationAI::SetStatus(int ID, Status status)
 {
 	pCharacterList_.at(ID)->SetStatus(status);

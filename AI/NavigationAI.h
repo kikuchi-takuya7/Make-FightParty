@@ -116,11 +116,24 @@ public:
 	
 	//////////////アクセス関数//////////////
 
+	/// <summary>
+	/// 指定したIDのキャラのインスタンスを獲得する
+	/// </summary>
+	/// <param name="ID">欲しいキャラのID</param>
+	/// <returns>指定したキャラ</returns>
+	Character* GetCaracter(int ID);
+
+	/// <summary>
+	/// 指定したキャラにステータスをセットする
+	/// </summary>
+	/// <param name="ID">セットしたいキャラのID</param>
+	/// <param name="status">新しいステータス</param>
 	void SetStatus(int ID, Status status);
 
 	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
 	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }
 	void SetStage(Stage* stage) { pStage_ = stage; }
+
 
 private:
 

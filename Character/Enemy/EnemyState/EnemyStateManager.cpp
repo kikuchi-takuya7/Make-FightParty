@@ -2,8 +2,6 @@
 #include "../../../AI/CharacterAI.h"
 #include "../Enemy.h"
 
-//各static変数を初期化する。staticだからグローバルな位置で最初に初期化しないとダメ
-
 
 EnemyStateManager::EnemyStateManager()
 {
