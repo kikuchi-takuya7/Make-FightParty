@@ -45,7 +45,7 @@ void Enemy::ChildUpdate()
 {
 
 
-	pState_->Update(this, pCharacterAI_);
+	pCharacterAI_->MoveEnemy();
 
 }
 

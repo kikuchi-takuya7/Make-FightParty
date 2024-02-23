@@ -45,9 +45,6 @@ public:
 
     void TellStatus();
 
-    ///////////////////アクセス関数/////////////////////////////////////
-    void ChangeState(PlayerStatePattern nextState);
-
 
 private:
 
@@ -56,7 +53,4 @@ private:
     ////HP等のステータス
     //Status status_;
 
-    
-
-    PlayerStateManager* pState_; //プレイヤーの状態を表す
 };

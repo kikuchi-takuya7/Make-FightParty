@@ -22,7 +22,7 @@ namespace {
 
 //コンストラクタ
 Player::Player(GameObject* parent)
-	:Character(parent, "Player"),pState_(new PlayerStateManager)
+	:Character(parent, "Player")
 {
 }
 
@@ -57,9 +57,14 @@ void Player::ChildInitialize()
 //更新
 void Player::ChildUpdate()
 {
+	//移動キーが押されているなら
+	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D) || Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
+	{
 
-    pState_->Update(this);
-
+		//Runstateで移動中なら速度早くして、他のstateなら移動速度遅くするとかが良い気がする
+		MoveCharacter();
+		//ChangeState(Character_RUN, Character);
+	}
 }
 
 //描画

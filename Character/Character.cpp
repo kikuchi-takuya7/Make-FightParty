@@ -6,6 +6,7 @@
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 #include "../UI/PlayerUI.h"
+#include "CharacterState/CharacterStateManager.h"
 
 namespace {
 	const int CHARACTER_HP = 100;
@@ -18,7 +19,7 @@ namespace {
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),pBodyCollision_(nullptr),pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3),stopDraw_(false),pPlayerUI_(nullptr)
+	:GameObject(parent, name), hModel_(-1),pState_(new CharacterStateManager), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false), pPlayerUI_(nullptr)
 {
 }
 
@@ -102,9 +103,29 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 		SetPosition(prevPos_);
 	}
 
+	//ノックバック中は当たり判定を無くす
+	if (pState_->characterKnockBackState_ == pState_->characterState_)
+		return;
+
+	//攻撃に当たったときの処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+	{
+		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
+
+		//後で敵の方向に向きなおす
+		SetTargetRotate(pTarget->GetRotate());
+
+		pState_->ChangeState(KNOCKBACK, this);
+	}
+
+	//球に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
 
-		//HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+
+		SetTargetRotate(pTarget->GetRotate());
+
+		pState_->ChangeState(KNOCKBACK, this);
 
 	}
 
@@ -204,6 +225,10 @@ void Character::KnockBackUpdate(float knockBackSpeed)
 float Character::GetRateValue(float begin, float end, float rate)
 {
 	return (end - begin) * rate + begin;
+}
+
+void Character::MoveCharacter()
+{
 }
 
 

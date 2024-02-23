@@ -44,7 +44,7 @@ void CharacterAI::MoveEnemy()
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
 	if (fMove == ZERO_FLOAT3) {
-		pEnemy_->ChangeState(ENEMY_IDLE);
+		pEnemy_->ChangeState(IDLE);
 	}
 
 	//向かう方向ベクトルを確認

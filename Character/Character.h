@@ -93,7 +93,7 @@ public:
     /// <summary>
     /// キャラクターの移動処理
     /// </summary>
-    virtual void MoveCharacter() {};
+    void MoveCharacter();
 
     virtual void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
 
@@ -120,7 +120,7 @@ protected:
     Status status_;
 
     //キャラクタークラスのステート
-    CharacterStateManager* state_;
+    CharacterStateManager* pState_;
 
     //当たり判定
     BoxCollider* pBodyCollision_;
