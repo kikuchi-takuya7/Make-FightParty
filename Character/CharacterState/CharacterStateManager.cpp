@@ -22,6 +22,17 @@ CharacterStateManager::CharacterStateManager()
 	characterState_ = characterIdleState_;
 }
 
+CharacterStateManager::~CharacterStateManager()
+{
+	SAFE_DELETE(characterState_);
+	
+	SAFE_DELETE(characterRunState_);
+	SAFE_DELETE(characterKnockBackState_);
+	SAFE_DELETE(characterJumpState_);
+	SAFE_DELETE(characterIdleState_);
+	SAFE_DELETE(characterAttackState_);
+}
+
 void CharacterStateManager::Update(Character* character)
 {
 

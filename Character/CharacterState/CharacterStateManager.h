@@ -24,9 +24,10 @@ public:
 
 	
 	
-	//いちいちstateをnewして変えるより事前に静的に保持しておけばメモリの節約になるっていう予想
-	//staticにしちゃうとクラス別でstateの変数持てないじゃんね
-	//enum使えばstatic使わなくても行けそうだけど、どっちがいいか
+	//いちいちstateをnewして変えるより事前に事前に保持しておけば負荷がかからないっていう予想
+	
+	CharacterState* characterState_;
+
 	CharacterAttackState* characterAttackState_;
 	CharacterDieState* characterDieState_;
 	CharacterIdleState* characterIdleState_;
@@ -34,9 +35,8 @@ public:
 	CharacterKnockBackState* characterKnockBackState_;
 	CharacterRunState* characterRunState_;
 
-	CharacterState* characterState_;
-
 	CharacterStateManager();
+	~CharacterStateManager();
 
 	void Update(Character* character) override;
 
