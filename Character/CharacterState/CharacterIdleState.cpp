@@ -20,13 +20,7 @@ void CharacterIdleState::HandleInput()
 
 	
 
-	if (Input::IsKeyDown(DIK_F)) {
-		pCharacter_->ChangeState(ATTACK);
-	}
 	
-	if (Input::IsKeyDown(DIK_SPACE)) {
-		pCharacter_->ChangeState(JUMP);
-	}
 
 }
 

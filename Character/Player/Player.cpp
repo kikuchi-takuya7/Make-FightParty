@@ -65,6 +65,15 @@ void Player::ChildUpdate()
 		MoveCharacter();
 		//ChangeState(Character_RUN, Character);
 	}
+
+	if (Input::IsKeyDown(DIK_F)) {
+		ChangeState(ATTACK);
+	}
+
+	if (Input::IsKeyDown(DIK_SPACE)) {
+		ChangeState(JUMP);
+	}
+
 }
 
 //•`‰æ

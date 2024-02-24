@@ -20,6 +20,8 @@ void CharacterDieState::Enter()
 	pCharacter_->EraseCollider(COLLIDER_BODY);
 
 	pCharacter_->TellStatus();
+
+	pCharacter_->Leave();
 	
 }
 

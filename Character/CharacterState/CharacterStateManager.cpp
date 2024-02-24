@@ -25,32 +25,28 @@ CharacterStateManager::CharacterStateManager(Character* character):CharacterStat
 
 CharacterStateManager::~CharacterStateManager()
 {
-	SAFE_DELETE(characterState_);
+	
 	
 	for (int i = 0; i < STATE_NUM; i++) {
 		SAFE_DELETE(pCharacterStateList_.at(i));
 	}
+
+	//子の中身はnewしてたわけじゃ無いからdeleteする必要はない
+	//SAFE_DELETE(characterState_);
 
 	pCharacterStateList_.clear();
 }
 
 void CharacterStateManager::Update()
 {
-
-	//行動不能状態なら移動はしない
-	if (characterState_ == pCharacterStateList_.at(KNOCKBACK)) {
-		characterState_->Update();
-		return;
-	}
-
-	//死ぬ処理
-	if (pCharacter_->GetStatus().dead) {
-		ChangeState(DIE);
-	}
+	
 
 	characterState_->Update();
 
-	
+	//ノックバックが終わってから死ぬ処理.
+	if (pCharacter_->GetStatus().dead && characterState_ != pCharacterStateList_.at(KNOCKBACK)) {
+		ChangeState(DIE);
+	}
 
 }
 

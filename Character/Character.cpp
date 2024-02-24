@@ -49,16 +49,23 @@ void Character::Initialize()
 void Character::Update()
 {
 	//動いてほしくないとき
-	if (IsEntered() == false || status_.dead == true) {
+	if (IsEntered() == false) {
 		return;
 	}
 
 	//今いる位置をprevPosに置いておく
 	prevPos_ = transform_.position_;
 
+	
+
 	pState_->Update();
 
-	ChildUpdate();
+	
+
+	//ノックバック中は移動の処理をしない
+	if (pState_->characterState_ != pState_->pCharacterStateList_.at(KNOCKBACK) && pState_->characterState_ != pState_->pCharacterStateList_.at(ATTACK)) {
+		ChildUpdate();
+	}
 
 
 }
@@ -106,17 +113,6 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	//ノックバック中は当たり判定を無くす
 	if (pState_->pCharacterStateList_.at(KNOCKBACK) == pState_->characterState_)
 		return;
-
-	//攻撃に当たったときの処理
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-	{
-		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
-
-		//後で敵の方向に向きなおす
-		SetTargetRotate(pTarget->GetRotate());
-
-		pState_->ChangeState(KNOCKBACK);
-	}
 
 	//球に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {

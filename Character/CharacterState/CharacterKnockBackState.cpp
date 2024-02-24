@@ -4,7 +4,7 @@
 
 namespace {
 
-	const float KNOCKBACK_DISTANCE = 3.0f;
+	const float KNOCKBACK_DISTANCE = 4.0f;
 	const int KNOCKBACK_RIGIDITYFLAME = 30;//喰らい硬直フレーム
 	const float KNOCKBACK_SPEED = 0.05f;//どのくらいの速度でノックバックするか
 }

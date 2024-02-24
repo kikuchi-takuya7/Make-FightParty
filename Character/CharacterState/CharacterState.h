@@ -12,8 +12,8 @@ enum CharacterStateList {
 	ATTACK,
 	JUMP,
 	KNOCKBACK,
-	DIE,
 	RUN,
+	DIE,
 	STATE_NUM
 };
 

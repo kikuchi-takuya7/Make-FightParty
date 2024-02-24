@@ -105,9 +105,16 @@ void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 
 	//一マスだけ壁にすると斜め移動するときに引っかかるから上下もコストを反映させてみる
 	for (int i = 0; i < 4; i++) {
+
+		int sz = pos.z + moveZ[i];
+		int sx = pos.x + moveX[i];
+
+		//画面外だったらやめる
+		if (sx >= STAGE_SIZE.x || sx < 0 || sz >= STAGE_SIZE.y || sz < 0) {
+			continue;
+		}
 		stageCost_.at(pos.z + moveZ[i]).at(pos.x + moveX[i]) = cost;
 	}
-
 }
 
 void Stage::SetDebugModel(std::stack<std::pair<int, int>> pair)
