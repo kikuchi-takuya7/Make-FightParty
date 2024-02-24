@@ -16,6 +16,7 @@ class Enemy;
 class CreateMode;
 class NavigationAI;
 class CountDownUI;
+class RankingUI;
 class Timer;
 
 /// <summary>
@@ -100,6 +101,7 @@ public:
 
 private:
 	
+	void MoveChampionCam();
 
 	//vector<Status> enemyStatusList_;
 	//vector<Status> playerStatusList_;
@@ -110,9 +112,7 @@ private:
 
 	CreateMode* pCreateMode_;
 
-	CountDownUI* pCountDown_;
-
-	Timer* pTimer_;
+	Timer* pWaitTimer_;
 
 	//åªç›1à ÇÃêlÇÃIDÇäoÇ¶ÇƒÇ®Ç≠
 	vector<int> No1CharaID_;
@@ -121,5 +121,13 @@ private:
 	vector<int> ranking_;
 
 	bool endGame_;
+
+
+	////////////////////UI/////////////////////
+
+	CountDownUI* pCountDown_;
+
+	RankingUI* pRankingUI_;
+
 };
 

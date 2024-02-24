@@ -29,6 +29,9 @@ void GaugeBase::Initialize()
 //XV
 void GaugeBase::Update()
 {
+	/*if (IsEntered()) {
+		return;
+	}*/
 
 	ChildUpdate();
 

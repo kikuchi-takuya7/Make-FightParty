@@ -16,7 +16,7 @@ WinPlayerUI::~WinPlayerUI()
 //‰Šú‰»
 void WinPlayerUI::Initialize()
 {
-	hPict_ = Image::Load("Image/WinPlayerUI/RankingPaper.png");
+	hPict_ = Image::Load("Image/RankingUI/RankingPaper.png");
 
 }
 

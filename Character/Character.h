@@ -4,8 +4,33 @@
 struct Status {
     int hp;
     int attackPower;
-    int winPoint;
     bool dead;
+
+    int winPoint;
+    int killPoint;
+    int objectKillPoint;
+    std::string playerName;
+
+    Status() {
+        hp = ZERO;
+        attackPower = ZERO;
+        dead = false;
+        winPoint = ZERO;
+        killPoint = ZERO;
+        objectKillPoint = ZERO;
+        playerName = "noname";
+    }
+
+    Status(int h, int p, bool d, int win, int kill, int obj, std::string n) {
+        hp = h;
+        attackPower = p;
+        dead = d;
+        winPoint = win;
+        killPoint = kill;
+        objectKillPoint = obj;
+        playerName = n;
+    }
+
 };
 
 class PlayerUI;
@@ -116,8 +141,9 @@ public:
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
     void SetTargetRotate(XMFLOAT3 rot) { targetRot_ = rot; }
     void SetAttackCollider() { AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK); }
-    void SetCharacterUI(PlayerUI* ui) { pPlayerUI_ = ui; }
+    void SetUIPos(XMFLOAT3 pos);
 
+    void SetCharacterName(std::string name);
 
 protected:
 

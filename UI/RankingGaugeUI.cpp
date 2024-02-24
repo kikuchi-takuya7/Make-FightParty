@@ -1,6 +1,8 @@
 #include "RankingGaugeUI.h"
 #include "../Engine/Image.h"
+#include "../Engine/Text.h"
 #include<assert.h>
+
 
 namespace {
 
@@ -26,8 +28,8 @@ RankingGaugeUI::~RankingGaugeUI()
 void RankingGaugeUI::ChildInitialize()
 {
 
-	
-
+	pText_ = new Text;
+	pText_->Initialize();
 }
 
 //更新
@@ -40,30 +42,18 @@ void RankingGaugeUI::ChildUpdate()
 void RankingGaugeUI::ChildDraw()
 {
 
-	////フレームの位置を微調整
-	//Transform transFlame = transform_;
-	//transFlame.position_.y -= 0.01f;
-	//transFlame.scale_.y += 0.05f;
+	Image::SetTransform(hPict_, transform_);
+	Image::Draw(hPict_);
 
-	//Image::SetTransform(hPict_[FLAME], transFlame);
-	//Image::Draw(hPict_[FLAME]);
-
-	//Transform transRankingGaugeUI = transform_;
-	//transRankingGaugeUI.scale_.x = ((float)animGauge_ / (float)maxGauge_) * transform_.scale_.x;
-
-	//if (nowGauge_ <= PINCH) {
-	//	Image::SetTransform(hPict_[GaugeLOW], transRankingGaugeUI);
-	//	Image::Draw(hPict_[GaugeLOW]);
-	//}
-	//else {
-	//	Image::SetTransform(hPict_[GaugeMAIN], transRankingGaugeUI);
-	//	Image::Draw(hPict_[GaugeMAIN]);
-	//}
-
-
+	pText_->Draw(transform_.position_.x, transform_.position_.y, "test");
 }
 
 //開放
 void RankingGaugeUI::ChildRelease()
 {
+}
+
+bool RankingGaugeUI::IsEndAnim()
+{
+	return (animGauge_ == nowGauge_);
 }

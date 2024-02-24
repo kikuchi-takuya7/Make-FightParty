@@ -2,6 +2,8 @@
 #include "../Engine/GameObject.h"
 #include "GaugeBase.h"
 
+class Text;
+
 class RankingGaugeUI : public GaugeBase
 {
 
@@ -28,7 +30,18 @@ public:
     //開放
     void ChildRelease() override;
 
+
+    /// <summary>
+    /// アニメーションが終わったか
+    /// </summary>
+    /// <returns>終わってたらtrue</returns>
+    bool IsEndAnim();
+
 private:
 
     int hPict_;
+
+    //プレイヤー名
+    Text* pText_;
+
 };

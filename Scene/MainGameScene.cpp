@@ -61,24 +61,20 @@ void MainGameScene::Initialize()
 		Player* pPlayer;
 		pPlayer = Instantiate<Player>(this);
 		pPlayer->SetObjectID(objectID);
+		
+		std::string name = "Player" + std::to_string(objectID + 1);
+		pPlayer->SetCharacterName(name);
+		pPlayer->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
 
 		pNavigationAI_->PushCharacter(pPlayer);
 		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
-
-		//UI‚ğì¬
-		PlayerUI* pPlayerUI = Instantiate<PlayerUI>(this);
-		pPlayerUI->SetMaxHp(pPlayer->GetStatus().hp, pPlayer->GetStatus().hp);
-		pPlayerUI->SetPlayerUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, PLAYERUI_FIRST_POS.z));
-		
-		std::string name = "Player" + std::to_string(objectID + 1);
-		pPlayerUI->SetPlayerName(name);
-		
-		pPlayer->SetCharacterUI(pPlayerUI);
 
 		pPlayer->SetPosition(CHARA_POS[objectID]);
 		pPlayer->SetStartPos(CHARA_POS[objectID]);
 		objectID++;
 	}
+
+	//XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO)
 	
 	//“G‚ÌÅ‰‚ÌID‚ğŠo‚¦‚ÄŒã‚Åg‚¤
 	createMode->SetStartEnemyID(objectID);
@@ -91,19 +87,11 @@ void MainGameScene::Initialize()
 		pEnemy[i] = Instantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
 
-		//UI‚ğì¬
-		PlayerUI* pPlayerUI = Instantiate<PlayerUI>(this);
-		pPlayerUI->SetMaxHp(pEnemy[i]->GetStatus().hp, pEnemy[i]->GetStatus().hp);
-		XMFLOAT3 UIPos = XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, PLAYERUI_FIRST_POS.z);
-		pPlayerUI->SetPlayerUIPos(UIPos);
-
 		std::string name = "CP" + std::to_string(objectID + 1 - PLAYER_NUM);
-		pPlayerUI->SetPlayerName(name);
-
-		pEnemy[i]->SetCharacterUI(pPlayerUI);
+		pEnemy[i]->SetCharacterName(name);
+		pEnemy[i]->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
 
 		pNavigationAI_->PushCharacter(pEnemy[i]);
-		
 		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
 
 		pEnemy[i]->SetPosition(CHARA_POS[objectID]);

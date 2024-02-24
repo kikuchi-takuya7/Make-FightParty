@@ -39,10 +39,9 @@ void PlayerUI::Initialize()
 
 	pText_ = new Text;
 	pText_->Initialize();
-
 	pText_->SetScale(TEXT_SIZE);
 
-	playerName_ = "NONE";
+
 }
 
 //XV

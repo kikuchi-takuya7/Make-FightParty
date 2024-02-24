@@ -19,7 +19,9 @@ namespace {
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),pState_(new CharacterStateManager(this)), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false), pPlayerUI_(nullptr)
+	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, false, ZERO, ZERO, ZERO, "NONE")),
+	pState_(new CharacterStateManager(this)), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false)
+	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
 }
 
@@ -38,9 +40,8 @@ void Character::Initialize()
 	hModel_ = Model::Load("PlayerFbx/player.fbx");
 	assert(hModel_ >= 0);
 
-	status_ = { CHARACTER_HP,CHARACTER_ATTACK_POWER, 0, false };
-
-
+	//status_ = { CHARACTER_HP,CHARACTER_ATTACK_POWER, false ,ZERO,ZERO,ZERO,"NONE" };
+	pPlayerUI_->SetMaxHp(status_.hp, status_.hp);
 
 	ChildInitialize();
 }
@@ -192,6 +193,17 @@ void Character::ResetStatus()
 void Character::ChangeState(CharacterStateList nextState)
 {
 	pState_->ChangeState(nextState);
+}
+
+void Character::SetUIPos(XMFLOAT3 pos)
+{
+	pPlayerUI_->SetPlayerUIPos(pos);
+}
+
+void Character::SetCharacterName(std::string name)
+{
+	status_.playerName = name;
+	pPlayerUI_->SetPlayerName(name);
 }
 
 

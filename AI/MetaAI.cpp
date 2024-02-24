@@ -3,19 +3,31 @@
 #include "../Character/Player/Player.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
-#include "../Stage/CreateMode/CreateMode.h"
-#include "../UI/CountDownUI.h"
 #include "../Engine/SceneManager.h"
 #include "../Engine/Timer.h"
+#include "../UI/CountDownUI.h"
+#include "../UI/RankingUI.h"
+#include "../Stage/CreateMode/CreateMode.h"
 
 namespace {
+
+	const XMFLOAT3 MAIN_GAME_CAM = XMFLOAT3(15, 10, -20);
+	const XMFLOAT3 MAIN_GAME_CAMTAR = XMFLOAT3(15, 0, 15);
 	const XMFLOAT3 CHAMPION_CAM_DIFF = { ZERO,4,-5 };
 	const float CHAMPION_CAM_RATE = 0.1f;
+
+	const float WAIT_WINNER_TIME = 1.0f;
+	const float WAIT_CHAMPION_TIME = 1.0f;
+
+
+	const int WIN_POINT = 20;
+	const int KILL_POINT = 10;
+	const int OBJECT_KILL_POINT = 5;
 }
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
-	pCountDown_(Instantiate<CountDownUI>(this)),endGame_(false),pTimer_(Instantiate<Timer>(this))
+	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this))
 {
 }
 
@@ -34,10 +46,12 @@ void MetaAI::Initialize()
 		ranking_.emplace_back(i);
 	}
 
-	pTimer_->StopDraw();
-	pTimer_->Stop();
-	pTimer_->SetLimit(1);
+	pWaitTimer_->StopDraw();
+	pWaitTimer_->Stop();
+	pWaitTimer_->SetLimit(WAIT_WINNER_TIME);
 
+	pRankingUI_->StopDraw();
+	pRankingUI_->StopUpdate();
 }
 
 void MetaAI::Update()
@@ -47,23 +61,27 @@ void MetaAI::Update()
 	//優勝者が決まったら試合を止める
 	if (endGame_) {
 		pNavigationAI_->AllEraseCollision();
-		pTimer_->Start();
+		pWaitTimer_->Start();
 
 		//一定時間待ったら優勝者にカメラを向ける
-		if (pTimer_->IsFinished()) {
-			Character* Champion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
-			XMFLOAT3 charaPos = Champion->GetPosition();
-			XMFLOAT3 camPos = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_DIFF.y, charaPos.z + CHAMPION_CAM_DIFF.z);
-
-			//優勝者も合わせて前に向かせる
-			XMFLOAT3 rot = Champion->GetRotate();
-			RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
-			Champion->SetRotateY(rot.y);
-
-			Camera::MoveCam(camPos, charaPos, CHAMPION_CAM_RATE);
+		if (pWaitTimer_->IsFinished()) {
+			MoveChampionCam();
 		}
 
 		return;
+	}
+
+	//優勝者が決まってる場合は上で、決まってないならこっちでタイマーを使う。
+	if (pWaitTimer_->IsFinished()) {
+		//pCreateMode_->ToSelectMode();
+
+		pRankingUI_->StartDraw();
+		pRankingUI_->StartUpdate();
+		
+		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {
+			pCreateMode_->ToSelectMode();
+		}
+
 	}
 
 	//カウントダウンが終わったら動く許可を出す
@@ -205,7 +223,6 @@ void MetaAI::ToCreateMode()
 
 	//死んでる人数を数える
 	for (int i = 0; i < characterStatusList_.size(); i++) {
-		
 		if (characterStatusList_.at(i).dead) {
 			deadNum++;
 		}
@@ -213,8 +230,6 @@ void MetaAI::ToCreateMode()
 			//勝ったやつのプレイヤーIDを覚えておく
 			winPlayer = i;
 		}
-
-		
 	}
 
 	//相打ちだった場合
@@ -231,7 +246,9 @@ void MetaAI::ToCreateMode()
 		//優勝者が決まったらリザルトシーンに
 		if (characterStatusList_.at(winPlayer).winPoint >= 4) {
 			endGame_ = true;
-			pNavigationAI_->AllStopUpdate();
+			//pNavigationAI_->AllStopUpdate();
+			pWaitTimer_->SetLimit(WAIT_CHAMPION_TIME);
+			pWaitTimer_->Start();
 			return;
 		}
 
@@ -239,12 +256,11 @@ void MetaAI::ToCreateMode()
 		pNavigationAI_->SetStatus(winPlayer, characterStatusList_.at(winPlayer));
 		CheckNo1Chara();
 
+		pWaitTimer_->Start();
+
+		pRankingUI_->AddGaugeValue(winPlayer,WIN_POINT);
 		
-
-		pCreateMode_->ToSelectMode();
 	}
-
-	
 }
 
 void MetaAI::StartGame()
@@ -271,8 +287,8 @@ void MetaAI::ResetGame()
 
 void MetaAI::GameCameraSet()
 {
-	Camera::SetPosition(XMFLOAT3(15, 10, -20));
-	Camera::SetTarget(XMFLOAT3(15, 0, 15));
+	Camera::SetPosition(MAIN_GAME_CAM);
+	Camera::SetTarget(MAIN_GAME_CAMTAR);
 }
 
 int MetaAI::SelectObject(vector<int> model)
@@ -282,4 +298,18 @@ int MetaAI::SelectObject(vector<int> model)
 	return model.at(rand() % model.size());
 
 
+}
+
+void MetaAI::MoveChampionCam()
+{
+	Character* pChampion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
+	XMFLOAT3 charaPos = pChampion->GetPosition();
+	XMFLOAT3 camPos = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_DIFF.y, charaPos.z + CHAMPION_CAM_DIFF.z);
+
+	//優勝者も合わせて前に向かせる
+	XMFLOAT3 rot = pChampion->GetRotate();
+	RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
+	pChampion->SetRotateY(rot.y);
+
+	Camera::MoveCam(camPos, charaPos, CHAMPION_CAM_RATE);
 }
