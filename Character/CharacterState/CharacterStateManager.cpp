@@ -31,7 +31,7 @@ CharacterStateManager::~CharacterStateManager()
 		SAFE_DELETE(pCharacterStateList_.at(i));
 	}
 
-	//子の中身はnewしてたわけじゃ無いからdeleteする必要はない
+	//この中身はnewしてたわけじゃ無いからdeleteする必要はない
 	//SAFE_DELETE(characterState_);
 
 	pCharacterStateList_.clear();

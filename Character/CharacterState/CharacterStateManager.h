@@ -23,12 +23,10 @@ class CharacterStateManager : public CharacterState
 
 public:
 	
-	//いちいちstateをnewして変えるより事前に事前に保持しておけば負荷がかからないっていう予想
-	
-	
-
+	//いちいちstateをnewして変えるより事前に保持しておけば負荷がかからない
 	CharacterState* characterState_;
 
+	//CharacterStateListのenum型順に入っている
 	std::vector<CharacterState*> pCharacterStateList_;
 
 	CharacterStateManager(Character* character);

@@ -61,10 +61,6 @@ public:
 
     void Dead();
 
-    //////////////////////KnockBackstateで使う関数/////////////////////////////
-
-    
-
     //////////////////子供に継承させる関数//////////////////////////////
 
     /// <summary>
@@ -92,9 +88,8 @@ public:
     /// </summary>
     virtual void MoveCharacter();
 
+    //子供の当たり判定（EnemyとPlayerで若干処理が違う）
     virtual void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
-
-    
 
     //メタAIに情報を教える関数
     virtual void TellStatus() {};
