@@ -51,20 +51,17 @@
     <Filter Include="Character\Player">
       <UniqueIdentifier>{5795ce21-3ca5-4bf7-8d6e-cf8241045dad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Character\Player\PlayerState">
-      <UniqueIdentifier>{5a12f476-cfab-4cea-ac68-ddf5f17c1f4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Character\Enemy">
       <UniqueIdentifier>{3429db39-b625-49ec-a2f9-49d6c39ef3bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Character\Enemy\EnemyState">
-      <UniqueIdentifier>{849e8960-4041-4acd-9dd4-58657124d5ac}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{e659bde9-9fac-4db1-ab75-22a82808e294}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\GaugeUI">
       <UniqueIdentifier>{98c2eb70-2f55-4b32-88ff-037235374a4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\CharacterState">
+      <UniqueIdentifier>{0ec3dda4-267c-4f7f-87a0-4cad042a9cbf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -173,27 +170,6 @@
     <ClCompile Include="Character\Player\Player.cpp">
       <Filter>Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerAttackState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerDieState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerIdleState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerJumpState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerRunState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerStateManager.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
     <ClCompile Include="AI\AI.cpp">
       <Filter>AI</Filter>
     </ClCompile>
@@ -205,33 +181,6 @@
     </ClCompile>
     <ClCompile Include="AI\NavigationAI.cpp">
       <Filter>AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Player\PlayerState\PlayerKnockBackState.cpp">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyAttackState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyDieState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyIdleState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyJumpState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyKnockBackState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyRunState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyState.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Character\Enemy\EnemyState\EnemyStateManager.cpp">
-      <Filter>Character\Enemy\EnemyState</Filter>
     </ClCompile>
     <ClCompile Include="Stage\CreateMode\CreateMode.cpp">
       <Filter>Stage\CreateMode</Filter>
@@ -295,6 +244,30 @@
     </ClCompile>
     <ClCompile Include="UI\GaugeBase.cpp">
       <Filter>UI\GaugeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterAttackState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterDieState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterIdleState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterJumpState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterKnockBackState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterRunState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterState.cpp">
+      <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterState\CharacterStateManager.cpp">
+      <Filter>Character\CharacterState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -409,27 +382,6 @@
     <ClInclude Include="Character\Player\Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerAttackState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerDieState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerIdleState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerJumpState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerRunState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Character.h">
-      <Filter>Character</Filter>
-    </ClInclude>
     <ClInclude Include="AI\AI.h">
       <Filter>AI</Filter>
     </ClInclude>
@@ -439,38 +391,8 @@
     <ClInclude Include="AI\MetaAI.h">
       <Filter>AI</Filter>
     </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerStateManager.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Player\PlayerState\PlayerKnockBackState.h">
-      <Filter>Character\Player\PlayerState</Filter>
-    </ClInclude>
     <ClInclude Include="Character\Enemy\Enemy.h">
       <Filter>Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyAttackState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyDieState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyIdleState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyJumpState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyKnockBackState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyRunState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyState.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Character\Enemy\EnemyState\EnemyStateManager.h">
-      <Filter>Character\Enemy\EnemyState</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\CreateMode.h">
       <Filter>Stage\CreateMode</Filter>
@@ -531,6 +453,33 @@
     </ClInclude>
     <ClInclude Include="UI\GaugeBase.h">
       <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterAttackState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterDieState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterIdleState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterJumpState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterKnockBackState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterRunState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterState.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterState\CharacterStateManager.h">
+      <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
+      <Filter>Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

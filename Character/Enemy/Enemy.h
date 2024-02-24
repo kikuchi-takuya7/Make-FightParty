@@ -1,7 +1,5 @@
 #pragma once
 #include "../../Engine/GameObject.h"
-#include "EnemyState/EnemyStateManager.h"
-#include "EnemyState/EnemyState.h"
 #include "../Character.h"
 
 class EnemyStateManager;
@@ -43,9 +41,6 @@ public:
     /// <param name="pTarget">当たった相手</param>
     void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
-
-    void ResetStatus() override;
-
     /////////////////////メンバ関数/////////////////////////////////////
 
     /// <summary>
@@ -55,12 +50,10 @@ public:
 
     /////////////////////AIに伝える関数/////////////////////////////
 
-
+    void TellStatus() override;
 
     ///////////////////アクセス関数/////////////////////////////////////
     void SetCharacterAI(CharacterAI* AI) { pCharacterAI_ = AI; }
-
-    void ChangeState(EnemyStatePattern nextState);
     
     //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
     //void SetNavi(NavigationAI* naviAI) { pCharacterAI_->SetNavigationAI(naviAI); }
@@ -68,14 +61,7 @@ public:
 
 private:
 
-    //HP等のステータス
-    //Status status_;
-
-    EnemyStateManager* pState_; //敵の状態を表す
 
     CharacterAI* pCharacterAI_;//色んな判断をしてくれるAIのつもり
-
-    //当たり判定
-    //BoxCollider* pBodyCollision_;
 
 };

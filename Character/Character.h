@@ -9,6 +9,8 @@ struct Status {
 };
 
 class PlayerUI;
+class CharacterStateManager;
+enum CharacterStateList;
 
 /// <summary>
 /// キャラクターの基底クラス
@@ -61,11 +63,7 @@ public:
 
     //////////////////////KnockBackstateで使う関数/////////////////////////////
 
-    void KnockBackEnter(float distance);
-
-    void KnockBackUpdate(float knockBackSpeed);
-
-    float GetRateValue(float begin, float end, float rate);
+    
 
     //////////////////子供に継承させる関数//////////////////////////////
 
@@ -92,16 +90,32 @@ public:
     /// <summary>
     /// キャラクターの移動処理
     /// </summary>
-    virtual void MoveCharacter() {};
+    virtual void MoveCharacter();
 
     virtual void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
 
+    
+
+    //メタAIに情報を教える関数
+    virtual void TellStatus() {};
+
+
     //stateまとめて処理したいけど何とかできないかな
-    virtual void ResetStatus() {};
+    void ResetStatus();
+    
 
     ///////////////////アクセス関数/////////////////////////////////////
+
+    /// <summary>
+    /// 現在のstateを変える
+    /// </summary>
+    /// <param name="nextState">次のstate</param>
+    void ChangeState(CharacterStateList nextState);
+
+
     Status GetStatus() { return status_; }
     XMFLOAT3 GetStartPos() { return startPos_; }
+    XMFLOAT3 GetTargetRot() { return targetRot_; }
     void SetStatus(Status status) { status_ = status; }
     void SetStartPos(XMFLOAT3 pos) { startPos_ = pos; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }
@@ -117,6 +131,9 @@ protected:
 
     //HP等のステータス
     Status status_;
+
+    //キャラクタークラスのステート
+    CharacterStateManager* pState_;
 
     //当たり判定
     BoxCollider* pBodyCollision_;
@@ -135,20 +152,13 @@ protected:
 
 private:
 
-    //////ノックバック関数で使うやつ/////////
-
-    //緩急を付けるレート
-    float knockBackRate_;
-
-    //最終的な位置
-    XMFLOAT3 lastPoint_;
-
-    XMFLOAT3 targetRot_;
+    
 
     ////////////////////////////////////////////
 
     bool stopDraw_;
 
-    
+    //攻撃を食らった時に回転するのに使う
+    XMFLOAT3 targetRot_;
 
 };

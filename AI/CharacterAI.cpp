@@ -2,6 +2,7 @@
 #include "NavigationAI.h"
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
+#include "../Character/CharacterState/CharacterState.h"
 
 CharacterAI::CharacterAI(GameObject* parent)
 	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
@@ -44,7 +45,7 @@ void CharacterAI::MoveEnemy()
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
 	if (fMove == ZERO_FLOAT3) {
-		pEnemy_->ChangeState(ENEMY_IDLE);
+		pEnemy_->ChangeState(IDLE);
 	}
 
 	//向かう方向ベクトルを確認
@@ -96,7 +97,7 @@ void CharacterAI::IsAttack()
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
 	if (distance <= 2.0f) {
-		pEnemy_->ChangeState(ENEMY_ATTACK);
+		pEnemy_->ChangeState(ATTACK);
 	}
 }
 

@@ -115,7 +115,6 @@ void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 		}
 		stageCost_.at(pos.z + moveZ[i]).at(pos.x + moveX[i]) = cost;
 	}
-
 }
 
 void Stage::SetDebugModel(std::stack<std::pair<int, int>> pair)

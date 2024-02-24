@@ -7,7 +7,8 @@
 enum TARGETPATTERN {
 	TARGET_RANDAM,
 	TARGET_NO_1,
-	NUM,
+	TARGET_NUM,
+
 };
 
 class Player;

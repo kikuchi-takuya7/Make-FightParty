@@ -1,7 +1,5 @@
 #pragma once
 #include "../../Engine/GameObject.h"
-//#include "PlayerState/PlayerState.h"
-#include "PlayerState/PlayerStateManager.h"
 #include "../Character.h"
 
 class PlayerStateManager;
@@ -39,14 +37,11 @@ public:
     /// <param name="pTarget">当たった相手</param>
     void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
-    void ResetStatus() override;
-
     /////////////////////メンバ関数/////////////////////////////////////
 
-    void TellStatus();
+    void MoveCharacter() override;
 
-    ///////////////////アクセス関数/////////////////////////////////////
-    void ChangeState(PlayerStatePattern nextState);
+    void TellStatus() override;
 
 
 private:
@@ -56,7 +51,4 @@ private:
     ////HP等のステータス
     //Status status_;
 
-    
-
-    PlayerStateManager* pState_; //プレイヤーの状態を表す
 };
