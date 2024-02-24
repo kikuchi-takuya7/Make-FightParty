@@ -8,7 +8,6 @@ enum TARGETPATTERN {
 	TARGET_RANDAM,
 	TARGET_NO_1,
 	NUM,
-
 };
 
 class Player;
@@ -16,6 +15,7 @@ class Enemy;
 class CreateMode;
 class NavigationAI;
 class CountDownUI;
+class Timer;
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
@@ -109,8 +109,9 @@ private:
 
 	CreateMode* pCreateMode_;
 
+	CountDownUI* pCountDown_;
 
-	CountDownUI* countDown_;
+	Timer* pTimer_;
 
 	//現在1位の人のIDを覚えておく
 	vector<int> No1CharaID_;
