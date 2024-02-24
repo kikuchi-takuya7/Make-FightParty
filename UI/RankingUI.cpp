@@ -18,6 +18,7 @@ void RankingUI::Initialize()
 {
 	hPict_ = Image::Load("Image/RankingUI/RankingPaper.png");
 
+	//誰が勝ったか、誰のオブジェクトが敵をキルしたか、誰かをキルしたか、相打ちならどうするか
 }
 
 //更新
