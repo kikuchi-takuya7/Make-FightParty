@@ -9,34 +9,91 @@ namespace {
 	const float KNOCKBACK_SPEED = 0.05f;//どのくらいの速度でノックバックするか
 }
 
-void CharacterKnockBackState::Update(Character* character)
+CharacterKnockBackState::CharacterKnockBackState(Character* character):CharacterState(character)
+{
+}
+
+void CharacterKnockBackState::Update()
 {
 
 	flame_++;
 
-	character->KnockBackUpdate(KNOCKBACK_SPEED);
+	//敵の向いている方向が欲しい.できればEnterの時点で飛ばされる座標を取っておいて、そこに着いたら動けるって感じにしたい。緩急付けて
+
+	//プレイヤーの現在の位置をベクトル型に変換
+	XMFLOAT3 playerPos = pCharacter_->GetPosition();
+
+	pCharacter_->RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
+
+	pCharacter_->SetPosition(playerPos);
+
 
 	/*if (characterPos == lastPoint_) {
-		character->ChangeState(character_IDLE);
-		character->ChangeKnockBack(false);
+		pCharacter_->ChangeState(character_IDLE);
+		pCharacter_->ChangeKnockBack(false);
 	}*/
 
 	//喰らい硬直が終わったら
 	if (flame_ >= KNOCKBACK_RIGIDITYFLAME) {
-		character->ChangeState(character_IDLE);
+		pCharacter_->ChangeState(IDLE);
 	}
 
-	HandleInput(character);
+	HandleInput();
 }
 
-void CharacterKnockBackState::HandleInput(Character* character)
+void CharacterKnockBackState::HandleInput()
 {
 }
 
-void CharacterKnockBackState::Enter(Character* character)
+void CharacterKnockBackState::Enter()
 {
 	flame_ = 0;
-	character->KnockBackEnter(KNOCKBACK_DISTANCE);
+	//色々初期化
+	knockBackRate_ = 0.0f;
+
+	XMFLOAT3 targetRot = pCharacter_->GetTargetRot();
+
+	//敵の向いてる方向に回転させるため回転を逆にする
+	targetRot.y = targetRot.y - 180;
+	pCharacter_->SetRotateY(targetRot.y);
+
+
+	//プレイヤーの現在の位置をベクトル型に変換
+	XMFLOAT3 floatPos = pCharacter_->GetPosition();
+	XMVECTOR pos = XMLoadFloat3(&floatPos);
+
+	//最初に最終的な位置を確認しておく
+	XMVECTOR move = { ZERO, ZERO, KNOCKBACK_DISTANCE, ZERO };
+
+	//移動ベクトルを変形 (敵と同じ向きに回転) させる
+	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(targetRot.y));
+	move = XMVector3TransformCoord(move, rotY);
+
+	//プレイヤーを敵と反対方向に移動させる
+	pos -= move;
+
+	lastPoint_ = VectorToFloat3(pos);
+
+	if (lastPoint_.x <= 0.5) {
+		lastPoint_.x = 0;
+	}
+	if (lastPoint_.x >= 28.5) {
+		lastPoint_.x = 28.5;
+	}
+	if (lastPoint_.z <= 0.5) {
+		lastPoint_.z = 0.5;
+	}
+	if (lastPoint_.z >= 28.5) {
+		lastPoint_.z = 28.5;
+	}
 
 }
 
+void CharacterKnockBackState::Leave()
+{
+}
+
+float CharacterKnockBackState::GetRateValue(float begin, float end, float rate)
+{
+	return (end - begin) * rate + begin;
+}

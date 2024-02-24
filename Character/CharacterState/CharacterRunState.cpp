@@ -2,31 +2,39 @@
 #include "../../../Engine/Input.h"
 #include "../Character.h"
 
-void CharacterRunState::Update(Character* character)
+CharacterRunState::CharacterRunState(Character* character):CharacterState(character)
+{
+}
+
+void CharacterRunState::Update()
 {
 
 
 	//Movecharacter(character);
 
-	HandleInput(character);
+	HandleInput();
 }
 
-void CharacterRunState::HandleInput(Character* character)
+void CharacterRunState::HandleInput()
 {
 	if (Input::IsKeyDown(DIK_F)) {
-		character->ChangeState(ATTACK);
+		pCharacter_->ChangeState(ATTACK);
 	}
 
 	if (Input::IsKeyDown(DIK_SPACE)) {
-		character->ChangeState(JUMP);
+		pCharacter_->ChangeState(JUMP);
 	}
 }
 
-void CharacterRunState::Enter(Character* character)
+void CharacterRunState::Enter()
 {
 }
 
-void CharacterRunState::MoveCharacter(Character* character)
+void CharacterRunState::Leave()
+{
+}
+
+void CharacterRunState::MoveCharacter()
 {
 
 	XMFLOAT3 fMove = ZERO_FLOAT3;
@@ -35,7 +43,7 @@ void CharacterRunState::MoveCharacter(Character* character)
 	//fMove.x = Input::GetPadStickL(0).x;
 	//fMove.z = Input::GetPadStickL(0).y;
 
-	XMFLOAT3 characterPos = character->GetPosition();
+	XMFLOAT3 characterPos = pCharacter_->GetPosition();
 
 	//Œ‹‹ÇŒã‚Å³‹K‰»‚µ‚Ä‚é‚©‚ç‚±‚±‚Ì’l‚Í‘å‚«‚­‚Ä‚àˆÓ–¡‚È‚µ
 	if (Input::IsKey(DIK_A))
@@ -69,7 +77,7 @@ void CharacterRunState::MoveCharacter(Character* character)
 	characterPos.x += fMove.x;
 	characterPos.z += fMove.z;
 
-	character->SetPosition(characterPos);
+	pCharacter_->SetPosition(characterPos);
 
 	float length = Length(vMove);
 
@@ -93,9 +101,9 @@ void CharacterRunState::MoveCharacter(Character* character)
 
 		float degree = XMConvertToDegrees(angle);
 
-		character->SetRotateY(degree);
+		pCharacter_->SetRotateY(degree);
 
-		character->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
+		pCharacter_->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
 
 	}
 

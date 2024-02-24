@@ -6,13 +6,15 @@
 //前方宣言
 class Character;
 
-enum CharacterStatePattern {
-	ATTACK,
-	DIE,
+//この順番でManagerのリストに入っている
+enum CharacterStateList {
 	IDLE,
+	ATTACK,
 	JUMP,
 	KNOCKBACK,
-	RUN
+	DIE,
+	RUN,
+	STATE_NUM
 };
 
 /// <summary>
@@ -23,26 +25,34 @@ class CharacterState
 
 public:
 
-	
+	//コンストラクタ
+	CharacterState(Character* character);
+
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="Character">Characterのポインタ</param>
-	virtual void Update(Character* character) {};
+	virtual void Update() {};
 
 
 	/// <summary>
 	/// 入力によって状態を変化する
 	/// </summary>
-	/// <param name="Character">Characterのポインタ</param>
-	virtual void HandleInput(Character* character) {};
+	virtual void HandleInput() {};
 
 	/// <summary>
 	/// 状態変化したときに一度だけ呼ばれる関数
 	/// </summary>
-	/// <param name="Character">Characterのポインタ</param>
-	virtual void Enter(Character* character) {};
+	virtual void Enter() {};
+
+	/// <summary>
+	/// 今のstateから離れる時に一度だけ呼ばれる関数
+	/// </summary>
+	virtual void Leave() {};
+
+protected:
+
+	Character* pCharacter_;
 
 };
 

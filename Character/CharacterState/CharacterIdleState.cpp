@@ -2,31 +2,39 @@
 #include "CharacterStateManager.h"
 #include "../Character.h"
 
-void CharacterIdleState::Update(Character* character)
+CharacterIdleState::CharacterIdleState(Character* character) :CharacterState(character)
+{
+}
+
+void CharacterIdleState::Update()
 {
 
 
 
-	HandleInput(character);
+	HandleInput();
 }
 
 
-void CharacterIdleState::HandleInput(Character* character)
+void CharacterIdleState::HandleInput()
 {
 
 	
 
 	if (Input::IsKeyDown(DIK_F)) {
-		character->ChangeState(ATTACK);
+		pCharacter_->ChangeState(ATTACK);
 	}
 	
 	if (Input::IsKeyDown(DIK_SPACE)) {
-		character->ChangeState(JUMP);
+		pCharacter_->ChangeState(JUMP);
 	}
 
 }
 
-void CharacterIdleState::Enter(Character* character)
+void CharacterIdleState::Enter()
 {
 
+}
+
+void CharacterIdleState::Leave()
+{
 }

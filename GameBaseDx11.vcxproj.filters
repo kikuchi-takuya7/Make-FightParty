@@ -382,9 +382,6 @@
     <ClInclude Include="Character\Player\Player.h">
       <Filter>Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Character\Character.h">
-      <Filter>Character</Filter>
-    </ClInclude>
     <ClInclude Include="AI\AI.h">
       <Filter>AI</Filter>
     </ClInclude>
@@ -480,6 +477,9 @@
     </ClInclude>
     <ClInclude Include="Character\CharacterState\CharacterStateManager.h">
       <Filter>Character\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
+      <Filter>Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@ namespace {
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),pState_(new CharacterStateManager), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false), pPlayerUI_(nullptr)
+	:GameObject(parent, name), hModel_(-1),pState_(new CharacterStateManager(this)), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false), pPlayerUI_(nullptr)
 {
 }
 
@@ -49,16 +49,14 @@ void Character::Initialize()
 void Character::Update()
 {
 	//動いてほしくないとき
-	if (IsEntered() == false) {
+	if (IsEntered() == false || status_.dead == true) {
 		return;
 	}
-
 
 	//今いる位置をprevPosに置いておく
 	prevPos_ = transform_.position_;
 
-	
-
+	pState_->Update();
 
 	ChildUpdate();
 
@@ -79,6 +77,8 @@ void Character::Draw()
 void Character::Release()
 {
 	ChildRelease();
+
+	SAFE_DELETE(pState_);
 
 	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
 	//ていうかnullptr入れてるはずなのになぜ例外が出るのか
@@ -104,7 +104,7 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	}
 
 	//ノックバック中は当たり判定を無くす
-	if (pState_->characterKnockBackState_ == pState_->characterState_)
+	if (pState_->pCharacterStateList_.at(KNOCKBACK) == pState_->characterState_)
 		return;
 
 	//攻撃に当たったときの処理
@@ -115,7 +115,7 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 		//後で敵の方向に向きなおす
 		SetTargetRotate(pTarget->GetRotate());
 
-		pState_->ChangeState(KNOCKBACK, this);
+		pState_->ChangeState(KNOCKBACK);
 	}
 
 	//球に当たった時の処理
@@ -125,7 +125,7 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 
 		SetTargetRotate(pTarget->GetRotate());
 
-		pState_->ChangeState(KNOCKBACK, this);
+		pState_->ChangeState(KNOCKBACK);
 
 	}
 
@@ -166,69 +166,36 @@ void Character::Dead()
 	status_.dead = true;
 }
 
-void Character::KnockBackEnter(float distance)
-{
-	//色々初期化
-	knockBackRate_ = 0.0f;
 
-
-	//敵の向いてる方向に回転させるため回転を逆にする
-	targetRot_.y = targetRot_.y - 180;
-	this->SetRotateY(targetRot_.y);
-
-
-	//プレイヤーの現在の位置をベクトル型に変換
-	XMFLOAT3 floatPos = this->GetPosition();
-	XMVECTOR pos = XMLoadFloat3(&floatPos);
-
-	//最初に最終的な位置を確認しておく
-	XMVECTOR move = { ZERO, ZERO, distance, ZERO };
-
-	//移動ベクトルを変形 (敵と同じ向きに回転) させる
-	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(targetRot_.y));
-	move = XMVector3TransformCoord(move, rotY);
-
-	//プレイヤーを敵と反対方向に移動させる
-	pos -= move;
-
-	lastPoint_ = VectorToFloat3(pos);
-
-	if (lastPoint_.x <= 0.5) {
-		lastPoint_.x = 0;
-	}
-	if (lastPoint_.x >= 28.5) {
-		lastPoint_.x = 28.5;
-	}
-	if (lastPoint_.z <= 0.5) {
-		lastPoint_.z = 0.5;
-	}
-	if (lastPoint_.z >= 28.5) {
-		lastPoint_.z = 28.5;
-	}
-
-}
-
-void Character::KnockBackUpdate(float knockBackSpeed)
-{
-
-	//敵の向いている方向が欲しい.できればEnterの時点で飛ばされる座標を取っておいて、そこに着いたら動けるって感じにしたい。緩急付けて
-
-	//プレイヤーの現在の位置をベクトル型に変換
-	XMFLOAT3 playerPos = GetPosition();
-
-	RateMovePosition(playerPos, lastPoint_, knockBackSpeed);
-
-	SetPosition(playerPos);
-
-}
-
-float Character::GetRateValue(float begin, float end, float rate)
-{
-	return (end - begin) * rate + begin;
-}
 
 void Character::MoveCharacter()
 {
+}
+
+void Character::ResetStatus()
+{
+	EraseCollider(COLLIDER_ATTACK);
+	EraseCollider(COLLIDER_BODY);
+
+	//開始地点に移動する
+	SetPosition(startPos_);
+
+	//addcolliderしたら勝手に開放されるからね
+	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
+
+	status_.hp = CHARACTER_HP;
+	status_.dead = false;
+
+	pPlayerUI_->SetMaxHp(status_.hp, CHARACTER_HP);
+
+	TellStatus();
+
+	ChangeState(IDLE);
+}
+
+void Character::ChangeState(CharacterStateList nextState)
+{
+	pState_->ChangeState(nextState);
 }
 
 

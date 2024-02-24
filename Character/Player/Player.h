@@ -1,7 +1,5 @@
 #pragma once
 #include "../../Engine/GameObject.h"
-//#include "PlayerState/PlayerState.h"
-#include "PlayerState/PlayerStateManager.h"
 #include "../Character.h"
 
 class PlayerStateManager;
@@ -39,11 +37,11 @@ public:
     /// <param name="pTarget">“–‚½‚Á‚½‘Šè</param>
     void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
-    void ResetStatus() override;
-
     /////////////////////ƒƒ“ƒoŠÖ”/////////////////////////////////////
 
-    void TellStatus();
+    void MoveCharacter() override;
+
+    void TellStatus() override;
 
 
 private:

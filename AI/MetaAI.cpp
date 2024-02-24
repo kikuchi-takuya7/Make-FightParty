@@ -2,6 +2,7 @@
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
 #include "../Engine/Camera.h"
+#include "../Engine/Input.h"
 #include "../Stage/CreateMode/CreateMode.h"
 #include "../UI/CountDownUI.h"
 #include "../Engine/SceneManager.h"
@@ -65,7 +66,7 @@ void MetaAI::Release()
 //‘_‚¤‚×‚«‘Šè‚ğŒˆ‚ß‚éŠÖ”
 int MetaAI::Targeting(int ID)
 {
-	int targetFrag = rand() % NUM;
+	int targetFrag = rand() % TARGET_NUM;
 
 	TARGETPATTERN target = (TARGETPATTERN)targetFrag;
 
@@ -111,7 +112,7 @@ int MetaAI::Targeting(int ID)
 		}
 		break;
 
-	case NUM:
+	case TARGET_NUM:
 	default:
 		break;
 	}

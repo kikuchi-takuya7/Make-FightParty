@@ -6,7 +6,7 @@
 #include "../../Scene/MainGameScene.h"
 #include "../../Stage/CreateMode/StageSource/Bullet.h"
 #include "../../UI/PlayerUI.h"
-
+#include "../CharacterState/CharacterStateManager.h"
 
 //定数
 namespace {
@@ -84,64 +84,96 @@ void Player::ChildDraw()
 //開放
 void Player::ChildRelease()
 {
-	SAFE_DELETE(pState_);
 
 }
 
 //何か当たった時の処理
 void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
-	//ノックバック中は当たり判定を無くす
-	if (pState_->playerKnockBackState_ == pState_->playerState_)
-		return;
-
 	//攻撃に当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
-		
+
 		//後で敵の方向に向きなおす
 		SetTargetRotate(pTarget->GetRotate());
 
-		pState_->ChangeState(PLAYER_KNOCKBACK, this);
+		pState_->ChangeState(KNOCKBACK);
 	}
-
-	//球に当たった時の処理
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
-
-		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
-
-		SetTargetRotate(pTarget->GetRotate());
-
-		pState_->ChangeState(PLAYER_KNOCKBACK, this);
-
-	}
-
-	
 
 }
 
-void Player::ResetStatus()
+void Player::MoveCharacter()
 {
+	XMFLOAT3 fMove = ZERO_FLOAT3;
 
-	EraseCollider(COLLIDER_ATTACK);
-	EraseCollider(COLLIDER_BODY);
+	////ここの引数でプレイヤー数を指定する
+	//fMove.x = Input::GetPadStickL(0).x;
+	//fMove.z = Input::GetPadStickL(0).y;
 
-	//開始地点に移動する
-	SetPosition(startPos_);
-	
-	//addcolliderしたら勝手に開放されるからね
-	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
-	
-	status_.hp = PLAYER_HP;
-	status_.dead = false;
+	XMFLOAT3 characterPos = GetPosition();
 
-	pPlayerUI_->SetMaxHp(status_.hp, PLAYER_HP);
+	//結局後で正規化してるからここの値は大きくても意味なし
+	if (Input::IsKey(DIK_A) && characterPos.x >= 0.5)
+	{
+		fMove.x = -0.01f;
+	}
+	if (Input::IsKey(DIK_D) && characterPos.x <= 28.5)
+	{
+		fMove.x = 0.01f;
+	}
+	if (Input::IsKey(DIK_W) && characterPos.z <= 28.5)
+	{
+		fMove.z = 0.01f;
+	}
+	if (Input::IsKey(DIK_S) && characterPos.z >= 0.5)
+	{
+		fMove.z = -0.01f;
+	}
 
-	TellStatus();
+	XMVECTOR vMove = XMLoadFloat3(&fMove);
 
-	ChangeState(PLAYER_IDLE);
+	//斜めの移動でも早くならないように(必要か？)
+	vMove = XMVector3Normalize(vMove);
 
+	fMove = VectorToFloat3(vMove);
+
+	//速度調整
+	fMove.x *= 0.5;
+	fMove.z *= 0.5;
+
+	characterPos.x += fMove.x;
+	characterPos.z += fMove.z;
+
+	SetPosition(characterPos);
+
+	float length = Length(vMove);
+
+	//動いているなら角度を求めて回転する
+	if (length != ZERO) {
+
+		XMVECTOR vFront = { 0,0,1,0 };
+		vMove = XMVector3Normalize(vMove);
+
+		//内積から角度を求める
+		XMVECTOR vDot = XMVector3Dot(vFront, vMove);
+		float dot = XMVectorGetX(vDot);
+		float angle = acos(dot);
+
+		//外積が-になる角度なら
+		XMVECTOR vCross = XMVector3Cross(vFront, vMove);
+		if (XMVectorGetY(vCross) < ZERO) {
+
+			angle *= -1;
+		}
+
+		float degree = XMConvertToDegrees(angle);
+
+		SetRotateY(degree);
+
+		SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
+
+	}
 }
 
 void Player::TellStatus()
@@ -154,10 +186,4 @@ void Player::TellStatus()
 
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ToCreateMode();
-}
-
-
-void Player::ChangeState(PlayerStatePattern nextState)
-{
-	pState_->ChangeState(nextState, this);
 }

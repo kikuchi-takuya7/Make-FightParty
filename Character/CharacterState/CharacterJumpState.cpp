@@ -7,10 +7,14 @@ namespace {
 	const float GRAVITY = 0.1f;
 }
 
-void CharacterJumpState::Update(Character* character)
+CharacterJumpState::CharacterJumpState(Character* character):CharacterState(character)
+{
+}
+
+void CharacterJumpState::Update()
 {
 	//ƒWƒƒƒ“ƒv‚³‚¹‚é
-	XMFLOAT3 characterPos = character->GetPosition();
+	XMFLOAT3 characterPos = pCharacter_->GetPosition();
 	characterPos.y += velocity_;
 	velocity_ -= GRAVITY;
 
@@ -18,32 +22,36 @@ void CharacterJumpState::Update(Character* character)
 	if (characterPos.y <= ZERO) {
 		characterPos.y = 0;
 
-		character->ChangeState(character_IDLE);
+		pCharacter_->ChangeState(IDLE);
 	}
 
-	character->SetPosition(characterPos);
+	pCharacter_->SetPosition(characterPos);
 
 	
 
-	HandleInput(character);
+	HandleInput();
 }
 
-void CharacterJumpState::HandleInput(Character* character)
+void CharacterJumpState::HandleInput()
 {
 	/*if (Input::IsKeyDown(DIK_Q)) {
 		characterStateManager::characterState_ = characterStateManager::characterDieState_;
-		characterStateManager::characterState_->Enter(character);
+		characterStateManager::characterState_->Enter(pCharacter_);
 	}*/
 
 	if (Input::IsKeyDown(DIK_F)) {
-		character->ChangeState(ATTACK);
+		pCharacter_->ChangeState(ATTACK);
 	}
 }
 
-void CharacterJumpState::Enter(Character* character)
+void CharacterJumpState::Enter()
 {
 
 	//ƒƒ“ƒo•Ï”‚ğ‰Šú‰»‚·‚é
 	velocity_ = JUMP_VELOCITY;
 
+}
+
+void CharacterJumpState::Leave()
+{
 }

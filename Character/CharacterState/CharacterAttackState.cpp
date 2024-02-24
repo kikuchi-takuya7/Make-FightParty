@@ -10,7 +10,11 @@ namespace {
 
 }
 
-void CharacterAttackState::Update(Character* character)
+CharacterAttackState::CharacterAttackState(Character* character) :CharacterState(character)
+{
+}
+
+void CharacterAttackState::Update()
 {
 
 	//攻撃アニメーションを始めて一定時間立ったらIdleに戻す
@@ -20,19 +24,24 @@ void CharacterAttackState::Update(Character* character)
 
 	//攻撃が終わったら攻撃用のコライダーを破棄してstateを戻す
 	if (flame_ >= ATTACK_RIGIDITYFLAME) {
-		character->EraseCollider(ColliderAttackType::COLLIDER_ATTACK);
-		character->ChangeState(IDLE);
+		pCharacter_->EraseCollider(ColliderAttackType::COLLIDER_ATTACK);
+		pCharacter_->ChangeState(IDLE);
 	}
 
-	HandleInput(character);
+	HandleInput();
 }
 
-void CharacterAttackState::HandleInput(Character* character)
+void CharacterAttackState::HandleInput()
 {
 }
 
-void CharacterAttackState::Enter(Character* character)
+void CharacterAttackState::Enter()
 {
 	flame_ = ZERO;
-	character->SetAttackCollider();
+	pCharacter_->SetAttackCollider();
+}
+
+void CharacterAttackState::Leave()
+{
+	pCharacter_->EraseCollider(COLLIDER_ATTACK);
 }

@@ -1,23 +1,28 @@
 #include "CharacterDieState.h"
 #include "../Character.h"
 
-void CharacterDieState::Update(Character* character)
-{
-
-	//Character->SetPosition(1, 1, 0);
-	
-	//HandleInput(Character);
-}
-
-void CharacterDieState::HandleInput(Character* character)
+CharacterDieState::CharacterDieState(Character* character) :CharacterState(character)
 {
 }
 
-void CharacterDieState::Enter(Character* character)
+void CharacterDieState::Update()
 {
-	character->EraseCollider(ATTACK);
-	character->EraseCollider(BODY);
 
-	character->TellStatus();
+}
+
+void CharacterDieState::HandleInput()
+{
+}
+
+void CharacterDieState::Enter()
+{
+	pCharacter_->EraseCollider(COLLIDER_ATTACK);
+	pCharacter_->EraseCollider(COLLIDER_BODY);
+
+	pCharacter_->TellStatus();
 	
+}
+
+void CharacterDieState::Leave()
+{
 }

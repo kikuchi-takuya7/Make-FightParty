@@ -6,6 +6,7 @@
 #include "CharacterKnockBackState.h"
 #include "CharacterRunState.h"
 #include "CharacterState.h"
+#include <vector>
 
 //class Character;
 
@@ -21,37 +22,45 @@ class CharacterStateManager : public CharacterState
 {
 
 public:
-
-	
 	
 	//いちいちstateをnewして変えるより事前に事前に保持しておけば負荷がかからないっていう予想
 	
+	
+
 	CharacterState* characterState_;
 
-	CharacterAttackState* characterAttackState_;
-	CharacterDieState* characterDieState_;
-	CharacterIdleState* characterIdleState_;
-	CharacterJumpState* characterJumpState_;
-	CharacterKnockBackState* characterKnockBackState_;
-	CharacterRunState* characterRunState_;
+	std::vector<CharacterState*> pCharacterStateList_;
 
-	CharacterStateManager();
+	CharacterStateManager(Character* character);
 	~CharacterStateManager();
 
-	void Update(Character* character) override;
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update() override;
 
-	void HandleInput(Character* character) override;
 
-	void Enter(Character* character) override;
+	/// <summary>
+	/// 入力によって状態を変化する
+	/// </summary>
+	void HandleInput() override;
+
+	/// <summary>
+	/// 状態変化した最初に一度だけ呼ばれる関数
+	/// </summary>
+	void Enter() override;
+
+	/// <summary>
+	/// 今のstateから離れる時に一度だけ呼ばれる関数
+	/// </summary>
+	void Leave() override;
 
 	/// <summary>
 	/// 状態を変更する
 	/// </summary>
 	/// <param name="change">変更後の状態</param>
 	/// <param name="Character">変更するプレイヤーのポインタ</param>
-	void ChangeState(CharacterStatePattern nextState, Character* character);
-
-	void MoveCharacter(Character* character);
+	void ChangeState(CharacterStateList nextState);
 
 	
 	//////////////////////////アクセス関数/////////////////////////////////

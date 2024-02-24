@@ -2,6 +2,7 @@
 #include "NavigationAI.h"
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
+#include "../Character/CharacterState/CharacterState.h"
 
 CharacterAI::CharacterAI(GameObject* parent)
 	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
@@ -96,7 +97,7 @@ void CharacterAI::IsAttack()
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
 	
 	if (distance <= 2.0f) {
-		pEnemy_->ChangeState(ENEMY_ATTACK);
+		pEnemy_->ChangeState(ATTACK);
 	}
 }
 
