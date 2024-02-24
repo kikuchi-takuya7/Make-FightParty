@@ -5,10 +5,16 @@
 #include "../Stage/CreateMode/CreateMode.h"
 #include "../UI/CountDownUI.h"
 #include "../Engine/SceneManager.h"
+#include "../Engine/Timer.h"
+
+namespace {
+	const XMFLOAT3 CHAMPION_CAM_DIFF = { ZERO,4,-5 };
+	const float CHAMPION_CAM_RATE = 0.1f;
+}
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
-	countDown_(Instantiate<CountDownUI>(this)),endGame_(false)
+	pCountDown_(Instantiate<CountDownUI>(this)),endGame_(false),pTimer_(Instantiate<Timer>(this))
 {
 }
 
@@ -26,20 +32,43 @@ void MetaAI::Initialize()
 	for (int i = ZERO; i < 4; i++) {
 		ranking_.emplace_back(i);
 	}
+
+	pTimer_->StopDraw();
+	pTimer_->Stop();
+	pTimer_->SetLimit(1);
+
 }
 
 void MetaAI::Update()
 {
 	
+
+	//優勝者が決まったら試合を止める
 	if (endGame_) {
 		pNavigationAI_->AllEraseCollision();
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_RESULT);
+		pTimer_->Start();
+
+		//一定時間待ったら優勝者にカメラを向ける
+		if (pTimer_->IsFinished()) {
+			Character* Champion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
+			XMFLOAT3 charaPos = Champion->GetPosition();
+			XMFLOAT3 camPos = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_DIFF.y, charaPos.z + CHAMPION_CAM_DIFF.z);
+
+			//優勝者も合わせて前に向かせる
+			XMFLOAT3 rot = Champion->GetRotate();
+			RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
+			Champion->SetRotateY(rot.y);
+
+			Camera::MoveCam(camPos, charaPos, CHAMPION_CAM_RATE);
+		}
+
+		return;
 	}
 
-	if (countDown_->IsFinished()) {
+	//カウントダウンが終わったら動く許可を出す
+	if (pCountDown_->IsFinished()) {
 		pNavigationAI_->AllStartUpdate();
-		countDown_->Reset();
+		pCountDown_->Reset();
 	}
 
 	//デバック用
@@ -187,7 +216,10 @@ void MetaAI::ToCreateMode()
 		
 	}
 
-	//勝ったプレイヤーのwinPointを増やしてクリエイトモードへ
+	//相打ちだった場合
+	if (deadNum == 4) {
+
+	}
 
 	//3人以上死んでいたら
 	if (deadNum >= 3 && pCreateMode_->GetState() == NONE) {
@@ -195,14 +227,18 @@ void MetaAI::ToCreateMode()
 		//勝ったプレイヤーのwinPointを増やして、現在の順位を確認する
 		characterStatusList_.at(winPlayer).winPoint++;
 
+		//優勝者が決まったらリザルトシーンに
+		if (characterStatusList_.at(winPlayer).winPoint >= 4) {
+			endGame_ = true;
+			pNavigationAI_->AllStopUpdate();
+			return;
+		}
+
 		//キャラクタークラスにも教える
 		pNavigationAI_->SetStatus(winPlayer, characterStatusList_.at(winPlayer));
 		CheckNo1Chara();
 
-		//優勝者が決まったらリザルトシーンに
-		if (characterStatusList_.at(winPlayer).winPoint >= 4) {
-			endGame_ = true;
-		}
+		
 
 		pCreateMode_->ToSelectMode();
 	}
@@ -215,7 +251,7 @@ void MetaAI::StartGame()
 	pNavigationAI_->AllStartDraw();
 	pNavigationAI_->AllStopUpdate();
 
-	countDown_->Start();
+	pCountDown_->Start();
 	GameCameraSet();
 }
 
@@ -227,7 +263,7 @@ void MetaAI::ResetGame()
 	pNavigationAI_->AllStartDraw();
 	pNavigationAI_->AllStopUpdate();
 	
-	countDown_->Start();
+	pCountDown_->Start();
 	GameCameraSet();
 
 }
