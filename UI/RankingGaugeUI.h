@@ -2,6 +2,13 @@
 #include "../Engine/GameObject.h"
 #include "GaugeBase.h"
 
+enum SCOREGAUGELIST {
+    WIN_GAUGE,
+    KILL_GAUGE,
+    TRAP_KILL_GAUGE,
+    GAUGE_NUM
+};
+
 class Text;
 
 class RankingGaugeUI : public GaugeBase
@@ -37,11 +44,15 @@ public:
     /// <returns>終わってたらtrue</returns>
     bool IsEndAnim();
 
+
+    void SetName(std::string name) { name_ = name; }
+
 private:
 
-    int hPict_;
+    int hPict_[GAUGE_NUM];
 
     //プレイヤー名
     Text* pText_;
+    std::string name_;
 
 };

@@ -28,6 +28,20 @@ RankingGaugeUI::~RankingGaugeUI()
 void RankingGaugeUI::ChildInitialize()
 {
 
+	std::string str[GAUGE_NUM] = { "WinGauge","KillGauge","TrapKillGauge"};
+
+	//画像データのロード
+	for (int i = 0; i < GAUGE_NUM; i++) {
+
+		std::string dir = "Image/RankingUI/";
+		std::string extention = ".png";
+
+		std::string fileName = dir + str[i] + extention;
+
+		hPict_[i] = Image::Load(fileName);
+		assert(hPict_[i] >= 0);
+	}
+
 	pText_ = new Text;
 	pText_->Initialize();
 }
@@ -42,10 +56,10 @@ void RankingGaugeUI::ChildUpdate()
 void RankingGaugeUI::ChildDraw()
 {
 
-	Image::SetTransform(hPict_, transform_);
-	Image::Draw(hPict_);
+	Image::SetTransform(hPict_[0], transform_);
+	Image::Draw(hPict_[0]);
 
-	pText_->Draw(transform_.position_.x, transform_.position_.y, "test");
+	pText_->Draw(transform_.position_.x, transform_.position_.y, name_.c_str());
 }
 
 //開放

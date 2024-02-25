@@ -90,6 +90,8 @@ protected:
     int maxGauge_; //最大値
     float animGauge_; //アニメーション上のHP
 
+    Transform transGaugeUI_;
+
 private:
 
     

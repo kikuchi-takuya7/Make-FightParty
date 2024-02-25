@@ -46,6 +46,9 @@ void GaugeBase::Draw()
 		return;
 	}
 
+	transGaugeUI_ = transform_;
+	transGaugeUI_.scale_.x = ((float)animGauge_ / (float)maxGauge_) * transform_.scale_.x;
+
 	ChildDraw();
 
 

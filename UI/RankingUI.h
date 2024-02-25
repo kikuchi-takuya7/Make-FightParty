@@ -32,12 +32,17 @@ public:
 
     bool IsAllEndAnim();
 
+    void ResetPos();
 
     ///////////ランキングゲージも一緒に操る関数/////////////
     void StopDraw();
     void StartDraw();
     void StopUpdate();
     void StartUpdate();
+
+    ////////////////アクセス関数///////////////
+
+    void SetPlayerName(int ID, std::string str);
 
 private:
 

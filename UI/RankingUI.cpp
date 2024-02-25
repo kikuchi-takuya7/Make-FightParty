@@ -8,6 +8,9 @@ namespace {
 	const XMFLOAT3 FIRST_GAUGE_POS = { 200,100,ZERO };
 	const float GAUGE_Y_DIFF = 100;
 	const int VICTORY_POINT = 100;
+
+	const XMFLOAT3 START_POS = { ZERO, -5,ZERO };
+	const float MOVE_RATE = 0.1f;
 }
 
 //コンストラクタ
@@ -33,8 +36,7 @@ void RankingUI::Initialize()
 		pGaugeList_.emplace_back(pGauge);
 	}
 
-
-
+	transform_.position_ = START_POS;
 
 	//誰が勝ったか、誰のオブジェクトが敵をキルしたか、誰かをキルしたか、相打ちならどうするか
 }
@@ -53,6 +55,8 @@ void RankingUI::Draw()
 		return;
 	}
 
+	RateMovePosition(transform_.position_, ZERO_FLOAT3, MOVE_RATE);
+
 	SetScale(XMFLOAT3(0.8f,0.6f,1));
 
 	Image::SetTransform(hPict_, transform_);
@@ -63,6 +67,7 @@ void RankingUI::Draw()
 //開放
 void RankingUI::Release()
 {
+	
 }
 
 void RankingUI::AddGaugeValue(int ID, int value)
@@ -77,6 +82,11 @@ bool RankingUI::IsAllEndAnim()
 			return false;
 	}
 	return true;
+}
+
+void RankingUI::ResetPos()
+{
+	transform_.position_ = START_POS;
 }
 
 void RankingUI::StopDraw()
@@ -109,4 +119,9 @@ void RankingUI::StartUpdate()
 		pGaugeList_.at(i)->Enter();
 	}
 	Enter();
+}
+
+void RankingUI::SetPlayerName(int ID, std::string str)
+{
+	pGaugeList_.at(ID)->SetName(str);
 }

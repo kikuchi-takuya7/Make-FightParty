@@ -11,10 +11,14 @@
 
 namespace {
 
-	const XMFLOAT3 MAIN_GAME_CAM = XMFLOAT3(15, 10, -20);
-	const XMFLOAT3 MAIN_GAME_CAMTAR = XMFLOAT3(15, 0, 15);
+	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -20);
+	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
 	const XMFLOAT3 CHAMPION_CAM_DIFF = { ZERO,4,-5 };
 	const float CHAMPION_CAM_RATE = 0.1f;
+
+	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
+	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
+	const float RANKING_CAM_RATE = 0.1f;
 
 	const float WAIT_WINNER_TIME = 1.0f;
 	const float WAIT_CHAMPION_TIME = 1.0f;
@@ -77,6 +81,7 @@ void MetaAI::Update()
 
 		pRankingUI_->StartDraw();
 		pRankingUI_->StartUpdate();
+		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 		
 		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {
 			pCreateMode_->ToSelectMode();
@@ -260,6 +265,8 @@ void MetaAI::ToCreateMode()
 
 		pRankingUI_->AddGaugeValue(winPlayer,WIN_POINT);
 		
+		pNavigationAI_->AllStopUpdate();
+
 	}
 }
 
@@ -287,8 +294,8 @@ void MetaAI::ResetGame()
 
 void MetaAI::GameCameraSet()
 {
-	Camera::SetPosition(MAIN_GAME_CAM);
-	Camera::SetTarget(MAIN_GAME_CAMTAR);
+	Camera::SetPosition(MAIN_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);
 }
 
 int MetaAI::SelectObject(vector<int> model)
@@ -298,6 +305,12 @@ int MetaAI::SelectObject(vector<int> model)
 	return model.at(rand() % model.size());
 
 
+}
+
+void MetaAI::PushCharacterStatus(Status status)
+{
+	characterStatusList_.emplace_back(status);
+	pRankingUI_->SetPlayerName(characterStatusList_.size() - 1, status.playerName);
 }
 
 void MetaAI::MoveChampionCam()

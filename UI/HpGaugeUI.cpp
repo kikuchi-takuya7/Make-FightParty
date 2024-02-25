@@ -60,15 +60,14 @@ void HpGaugeUI::ChildDraw()
 	Image::SetTransform(hPict_[FLAME], transFlame);
 	Image::Draw(hPict_[FLAME]);
 
-	Transform transHpGaugeUI = transform_;
-	transHpGaugeUI.scale_.x = ((float)animGauge_ / (float)maxGauge_) * transform_.scale_.x;
+	
 
 	if (nowGauge_ <= PINCH) {
-		Image::SetTransform(hPict_[GaugeLOW], transHpGaugeUI);
+		Image::SetTransform(hPict_[GaugeLOW], transGaugeUI_);
 		Image::Draw(hPict_[GaugeLOW]);
 	}
 	else {
-		Image::SetTransform(hPict_[GaugeMAIN], transHpGaugeUI);
+		Image::SetTransform(hPict_[GaugeMAIN], transGaugeUI_);
 		Image::Draw(hPict_[GaugeMAIN]);
 	}
 

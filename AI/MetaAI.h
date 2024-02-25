@@ -91,8 +91,10 @@ public:
 
 	//////////////アクセス関数 //////////
 
+	//ステータスをプッシュすると同時に、名前もRankingUIにセットする
+	void PushCharacterStatus(Status status);
+
 	Status GetCharacterStatus(int ID) { return characterStatusList_.at(ID); }
-	void PushCharacterStatus(Status status) { characterStatusList_.emplace_back(status); }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void ChangeStatus(int ID, Status status) { characterStatusList_.at(ID) = status; }
 	void SetCreateMode(CreateMode* create) { pCreateMode_ = create; }

@@ -21,11 +21,12 @@ namespace {
     const int MAX_VIEW_OBJECT = 8;
     const float CAM_MOVE_RATE = 0.05f;
     const float OBJ_MOVE_RATE = 0.05f;
-
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
     //参加するプレイヤーの最大人数分
     const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
+
+    //カメラの位置
     const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
     const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 20, -20);
