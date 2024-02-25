@@ -114,6 +114,10 @@ public:
 	void SetInitialized();	// 初期化済みにする
 	bool IsEntered();		// Update実行していいか
 	bool IsVisibled();		// Draw実行していいか
+	void AllChildEnter();
+	void AllChildLeave();
+	void AllChildVisible();
+	void AllChildInvisible();
 
 
 	//子オブジェクトリストを取得

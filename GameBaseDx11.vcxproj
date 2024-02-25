@@ -193,11 +193,14 @@
     <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp" />
     <ClCompile Include="Stage\Stage.cpp" />
     <ClCompile Include="UI\CountDownUI.cpp" />
+    <ClCompile Include="UI\GaugeUI\GaugeBase.cpp" />
+    <ClCompile Include="UI\GaugeUI\HpGaugeUI.cpp" />
+    <ClCompile Include="UI\GaugeUI\KillScore.cpp" />
+    <ClCompile Include="UI\GaugeUI\RankingGaugeUI.cpp" />
+    <ClCompile Include="UI\GaugeUI\TrapKillScore.cpp" />
+    <ClCompile Include="UI\GaugeUI\WinScore.cpp" />
     <ClCompile Include="UI\RankingUI.cpp" />
-    <ClCompile Include="UI\GaugeBase.cpp" />
     <ClCompile Include="UI\PlayerUI.cpp" />
-    <ClCompile Include="UI\HpGaugeUI.cpp" />
-    <ClCompile Include="UI\RankingGaugeUI.cpp" />
     <ClCompile Include="UI\TitleUI.cpp" />
     <ClCompile Include="UI\WinPlayerUI.cpp" />
   </ItemGroup>
@@ -265,11 +268,14 @@
     <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h" />
     <ClInclude Include="Stage\Stage.h" />
     <ClInclude Include="UI\CountDownUI.h" />
+    <ClInclude Include="UI\GaugeUI\GaugeBase.h" />
+    <ClInclude Include="UI\GaugeUI\HpGaugeUI.h" />
+    <ClInclude Include="UI\GaugeUI\KillScore.h" />
+    <ClInclude Include="UI\GaugeUI\RankingGaugeUI.h" />
+    <ClInclude Include="UI\GaugeUI\TrapKillScore.h" />
+    <ClInclude Include="UI\GaugeUI\WinScore.h" />
     <ClInclude Include="UI\RankingUI.h" />
-    <ClInclude Include="UI\GaugeBase.h" />
     <ClInclude Include="UI\PlayerUI.h" />
-    <ClInclude Include="UI\HpGaugeUI.h" />
-    <ClInclude Include="UI\RankingGaugeUI.h" />
     <ClInclude Include="UI\TitleUI.h" />
     <ClInclude Include="UI\WinPlayerUI.h" />
   </ItemGroup>

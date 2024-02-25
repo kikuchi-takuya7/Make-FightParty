@@ -27,7 +27,8 @@ namespace Image
 			{
 				pData->pSprite = _datas[i]->pSprite;
 				isExist = true;
-				break;
+
+				return i;
 			}
 		}
 

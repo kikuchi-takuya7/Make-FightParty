@@ -7,6 +7,7 @@
 #include "../Engine/Timer.h"
 #include "../UI/CountDownUI.h"
 #include "../UI/RankingUI.h"
+#include "../UI/GaugeUI/RankingGaugeUI.h"
 #include "../Stage/CreateMode/CreateMode.h"
 
 namespace {
@@ -54,8 +55,8 @@ void MetaAI::Initialize()
 	pWaitTimer_->Stop();
 	pWaitTimer_->SetLimit(WAIT_WINNER_TIME);
 
-	pRankingUI_->StopDraw();
-	pRankingUI_->StopUpdate();
+	pRankingUI_->AllChildLeave();
+	pRankingUI_->AllChildVisible();
 }
 
 void MetaAI::Update()
@@ -76,11 +77,12 @@ void MetaAI::Update()
 	}
 
 	//優勝者が決まってる場合は上で、決まってないならこっちでタイマーを使う。
-	if (pWaitTimer_->IsFinished()) {
+	if (pWaitTimer_->IsFinished() || Input::IsKey(DIK_K)) {
 		//pCreateMode_->ToSelectMode();
 
-		pRankingUI_->StartDraw();
-		pRankingUI_->StartUpdate();
+		pNavigationAI_->AllStopDraw();
+		pRankingUI_->AllChildInvisible();
+		pRankingUI_->AllChildEnter();
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 		
 		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {
@@ -263,9 +265,9 @@ void MetaAI::ToCreateMode()
 
 		pWaitTimer_->Start();
 
-		pRankingUI_->AddGaugeValue(winPlayer,WIN_POINT);
-		
+		pRankingUI_->SetScore(winPlayer, WIN_GAUGE);
 		pNavigationAI_->AllStopUpdate();
+		
 
 	}
 }

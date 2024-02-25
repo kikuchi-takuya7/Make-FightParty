@@ -1,13 +1,14 @@
 #include "RankingUI.h"
-#include "RankingGaugeUI.h"
+#include "GaugeUI/RankingGaugeUI.h"
 #include "../Engine/Image.h"
 #include <assert.h>
 
 namespace {
 	const int MAX_PLAYER = 4;
-	const XMFLOAT3 FIRST_GAUGE_POS = { 200,100,ZERO };
-	const float GAUGE_Y_DIFF = 100;
+	const XMFLOAT3 FIRST_GAUGE_POS = { 263,170,ZERO };
+	const float GAUGE_Y_DIFF = 150;
 	const int VICTORY_POINT = 100;
+	const XMFLOAT3 GAUGE_SIZE = { 2.85f,0.5f,ZERO };
 
 	const XMFLOAT3 START_POS = { ZERO, -5,ZERO };
 	const float MOVE_RATE = 0.1f;
@@ -31,8 +32,9 @@ void RankingUI::Initialize()
 
 	for (int i = 0; i < MAX_PLAYER; i++) {
 		RankingGaugeUI* pGauge = Instantiate<RankingGaugeUI>(this);
-		pGauge->SetPosition(XMFLOAT3(FIRST_GAUGE_POS.x, FIRST_GAUGE_POS.y + GAUGE_Y_DIFF * i, ZERO));
+		pGauge->SetPosition(XMFLOAT3(FIRST_GAUGE_POS.x, FIRST_GAUGE_POS.y + (GAUGE_Y_DIFF * i), ZERO));
 		pGauge->SetGauge(ZERO, VICTORY_POINT);
+		//pGauge->SetScale(GAUGE_SIZE);
 		pGaugeList_.emplace_back(pGauge);
 	}
 
@@ -70,11 +72,6 @@ void RankingUI::Release()
 	
 }
 
-void RankingUI::AddGaugeValue(int ID, int value)
-{
-	pGaugeList_.at(ID)->AddValue(value);
-}
-
 bool RankingUI::IsAllEndAnim()
 {
 	for (int i = 0; i < pGaugeList_.size(); i++) {
@@ -89,39 +86,12 @@ void RankingUI::ResetPos()
 	transform_.position_ = START_POS;
 }
 
-void RankingUI::StopDraw()
-{
-	for (int i = 0; i < pGaugeList_.size(); i++) {
-		pGaugeList_.at(i)->Visible();
-	}
-	Visible();
-}
-
-void RankingUI::StartDraw()
-{
-	for (int i = 0; i < pGaugeList_.size(); i++) {
-		pGaugeList_.at(i)->Invisible();
-	}
-	Invisible();
-}
-
-void RankingUI::StopUpdate()
-{
-	for (int i = 0; i < pGaugeList_.size(); i++) {
-		pGaugeList_.at(i)->Leave();
-	}
-	Leave();
-}
-
-void RankingUI::StartUpdate()
-{
-	for (int i = 0; i < pGaugeList_.size(); i++) {
-		pGaugeList_.at(i)->Enter();
-	}
-	Enter();
-}
-
 void RankingUI::SetPlayerName(int ID, std::string str)
 {
 	pGaugeList_.at(ID)->SetName(str);
+}
+
+void RankingUI::SetScore(int ID, SCOREGAUGELIST score)
+{
+	pGaugeList_.at(ID)->PushScore(score);
 }

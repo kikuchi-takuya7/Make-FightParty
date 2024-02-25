@@ -62,7 +62,7 @@ void MainGameScene::Initialize()
 		pPlayer = Instantiate<Player>(this);
 		pPlayer->SetObjectID(objectID);
 		
-		std::string name = "Player" + std::to_string(objectID + 1);
+		std::string name = " Player" + std::to_string(objectID + 1);
 		pPlayer->SetCharacterName(name);
 		pPlayer->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
 
@@ -87,7 +87,7 @@ void MainGameScene::Initialize()
 		pEnemy[i] = Instantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
 
-		std::string name = "CP" + std::to_string(objectID + 1 - PLAYER_NUM);
+		std::string name = "     CP" + std::to_string(objectID + 1 - PLAYER_NUM);
 		pEnemy[i]->SetCharacterName(name);
 		pEnemy[i]->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
 

@@ -1,5 +1,5 @@
 #include "HpGaugeUI.h"
-#include "../Engine/Image.h"
+#include "../../Engine/Image.h"
 #include<assert.h>
 
 namespace {
@@ -40,6 +40,7 @@ void HpGaugeUI::ChildInitialize()
 		assert(hPict_[i] >= 0);
 	}
 
+	Enter();
 }
 
 //XV

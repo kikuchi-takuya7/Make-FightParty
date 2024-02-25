@@ -125,6 +125,46 @@ bool GameObject::IsVisibled()
 	return (state_.visible != 0);
 }
 
+void GameObject::AllChildEnter()
+{
+	Enter();
+
+	for (auto it = childList_.begin(); it != childList_.end(); it++)
+	{
+		(*it)->AllChildEnter();
+	}
+}
+
+void GameObject::AllChildLeave()
+{
+	Leave();
+
+	for (auto it = childList_.begin(); it != childList_.end(); it++)
+	{
+		(*it)->AllChildLeave();
+	}
+}
+
+void GameObject::AllChildVisible()
+{
+	Visible();
+
+	for (auto it = childList_.begin(); it != childList_.end(); it++)
+	{
+		(*it)->AllChildVisible();
+	}
+}
+
+void GameObject::AllChildInvisible()
+{
+	Invisible();
+
+	for (auto it = childList_.begin(); it != childList_.end(); it++)
+	{
+		(*it)->AllChildInvisible();
+	}
+}
+
 //子オブジェクトリストを取得
 std::list<GameObject*>* GameObject::GetChildList()
 {

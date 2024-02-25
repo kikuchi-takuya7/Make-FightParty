@@ -1,5 +1,5 @@
 #pragma once
-#include "../Engine/GameObject.h"
+#include "../../Engine/GameObject.h"
 
 
 //ゲージクラスはゲージの最大を100%（つまり1.0）となるように作る。
@@ -83,6 +83,8 @@ public:
     void SetValue(float v);
 
     float GetValue();
+
+    bool IsEndAnim();
 
 protected:
 

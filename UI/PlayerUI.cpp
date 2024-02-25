@@ -1,5 +1,5 @@
 #include "PlayerUI.h"
-#include "HpGaugeUI.h"
+#include "GaugeUI/HpGaugeUI.h"
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
 #include "../Engine/Input.h"

@@ -1,17 +1,9 @@
 #pragma once
-#include "../Engine/GameObject.h"
+#include "../../Engine/GameObject.h"
 #include "GaugeBase.h"
+#include <stack>
 
-enum SCOREGAUGELIST {
-    WIN_GAUGE,
-    KILL_GAUGE,
-    TRAP_KILL_GAUGE,
-    GAUGE_NUM
-};
-
-class Text;
-
-class RankingGaugeUI : public GaugeBase
+class KillScore : public GaugeBase
 {
 
 
@@ -20,10 +12,10 @@ public:
 
 
     //コンストラクタ
-    RankingGaugeUI(GameObject* parent);
+    KillScore(GameObject* parent);
 
     //デストラクタ
-    ~RankingGaugeUI();
+    ~KillScore();
 
     //初期化
     void ChildInitialize() override;
@@ -44,15 +36,8 @@ public:
     /// <returns>終わってたらtrue</returns>
     bool IsEndAnim();
 
-
-    void SetName(std::string name) { name_ = name; }
-
 private:
 
-    int hPict_[GAUGE_NUM];
-
-    //プレイヤー名
-    Text* pText_;
-    std::string name_;
+    int hPict_;
 
 };

@@ -236,15 +236,6 @@
     <ClCompile Include="UI\WinPlayerUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\RankingGaugeUI.cpp">
-      <Filter>UI\GaugeUI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\HpGaugeUI.cpp">
-      <Filter>UI\GaugeUI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\GaugeBase.cpp">
-      <Filter>UI\GaugeUI</Filter>
-    </ClCompile>
     <ClCompile Include="Character\CharacterState\CharacterAttackState.cpp">
       <Filter>Character\CharacterState</Filter>
     </ClCompile>
@@ -268,6 +259,24 @@
     </ClCompile>
     <ClCompile Include="Character\CharacterState\CharacterStateManager.cpp">
       <Filter>Character\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GaugeUI\GaugeBase.cpp">
+      <Filter>UI\GaugeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GaugeUI\HpGaugeUI.cpp">
+      <Filter>UI\GaugeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GaugeUI\RankingGaugeUI.cpp">
+      <Filter>UI\GaugeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GaugeUI\WinScore.cpp">
+      <Filter>UI\GaugeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GaugeUI\KillScore.cpp">
+      <Filter>UI\GaugeUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GaugeUI\TrapKillScore.cpp">
+      <Filter>UI\GaugeUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -445,15 +454,6 @@
     <ClInclude Include="UI\WinPlayerUI.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\RankingGaugeUI.h">
-      <Filter>UI\GaugeUI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\HpGaugeUI.h">
-      <Filter>UI\GaugeUI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\GaugeBase.h">
-      <Filter>UI\GaugeUI</Filter>
-    </ClInclude>
     <ClInclude Include="Character\CharacterState\CharacterAttackState.h">
       <Filter>Character\CharacterState</Filter>
     </ClInclude>
@@ -480,6 +480,24 @@
     </ClInclude>
     <ClInclude Include="Character\Character.h">
       <Filter>Character</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GaugeUI\GaugeBase.h">
+      <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GaugeUI\HpGaugeUI.h">
+      <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GaugeUI\RankingGaugeUI.h">
+      <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GaugeUI\WinScore.h">
+      <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GaugeUI\KillScore.h">
+      <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GaugeUI\TrapKillScore.h">
+      <Filter>UI\GaugeUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

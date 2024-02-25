@@ -1,5 +1,6 @@
 #include "GaugeBase.h"
-#include "../Engine/Image.h"
+#include "../../Engine/Image.h"
+#include "../../Engine/Input.h"
 #include<assert.h>
 
 namespace {
@@ -29,13 +30,17 @@ void GaugeBase::Initialize()
 //更新
 void GaugeBase::Update()
 {
-	/*if (IsEntered()) {
+	if (!IsEntered()) {
 		return;
-	}*/
+	}
 
 	ChildUpdate();
 
 	animGauge_ = (animGauge_ * 9 + nowGauge_) / 10;
+
+	if (Input::IsKeyDown(DIK_P)) {
+		nowGauge_ = maxGauge_;
+	}
 }
 
 //描画
@@ -50,29 +55,6 @@ void GaugeBase::Draw()
 	transGaugeUI_.scale_.x = ((float)animGauge_ / (float)maxGauge_) * transform_.scale_.x;
 
 	ChildDraw();
-
-
-
-	//フレームの位置を微調整
-	/*Transform transFlame = transform_;
-	transFlame.position_.y -= 0.01f;
-	transFlame.scale_.y += 0.05f;
-
-	Image::SetTransform(hPict_[FLAME], transFlame);
-	Image::Draw(hPict_[FLAME]);
-
-	Transform transGaugeBase = transform_;
-	transGaugeBase.scale_.x = ((float)animGauge_ / (float)maxGauge_) * transform_.scale_.x;
-
-	if (nowGauge_ <= PINCH) {
-		Image::SetTransform(hPict_[GaugeLOW], transGaugeBase);
-		Image::Draw(hPict_[GaugeLOW]);
-	}
-	else {
-		Image::SetTransform(hPict_[GaugeMAIN], transGaugeBase);
-		Image::Draw(hPict_[GaugeMAIN]);
-	}*/
-
 
 }
 
@@ -120,4 +102,9 @@ void GaugeBase::SetValue(float v)
 float GaugeBase::GetValue()
 {
 	return nowGauge_;
+}
+
+bool GaugeBase::IsEndAnim()
+{
+	return (animGauge_ == nowGauge_);
 }
