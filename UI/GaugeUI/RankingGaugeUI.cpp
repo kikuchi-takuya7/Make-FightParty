@@ -14,10 +14,12 @@ namespace {
 	const float MAX = 1.0f;
 
 	//スコア毎のゲージの大きさを入れる
-	const float SCORE_DIFF[GAUGE_NUM] = {100,50,20};
+	const float SCORE_DIFF[GAUGE_NUM] = {185,50,20};
 
 	//これいみねぇや
 	const int TEST_SCORE = 100;
+
+	const XMFLOAT3 GAUGE_SIZE = { 0.75f,0.5f,ZERO };
 }
 
 
@@ -91,6 +93,7 @@ void RankingGaugeUI::PushScore(SCOREGAUGELIST score)
 
 	gauge_.back().first->SetGauge(TEST_SCORE, TEST_SCORE);
 	gauge_.back().first->Leave();
-	gauge_.back().first->SetPosition(SpriteToFloatX(transGaugeUI_.position_.x + gaugePos_.x), SpriteToFloatY(transGaugeUI_.position_.y), ZERO);
+	gauge_.back().first->SetScale(GAUGE_SIZE);
+	gauge_.back().first->SetPosition(SpriteToFloatX(transform_.position_.x + gaugePos_.x), SpriteToFloatY(transform_.position_.y), ZERO);
 
 }

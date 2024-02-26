@@ -5,7 +5,7 @@
 
 namespace {
 	const int MAX_PLAYER = 4;
-	const XMFLOAT3 FIRST_GAUGE_POS = { 263,170,ZERO };
+	const XMFLOAT3 FIRST_GAUGE_POS = { 266.5f,170,ZERO };
 	const float GAUGE_Y_DIFF = 150;
 	const int VICTORY_POINT = 100;
 	const XMFLOAT3 GAUGE_SIZE = { 2.85f,0.5f,ZERO };
@@ -32,9 +32,10 @@ void RankingUI::Initialize()
 
 	for (int i = 0; i < MAX_PLAYER; i++) {
 		RankingGaugeUI* pGauge = Instantiate<RankingGaugeUI>(this);
+		float tes = FIRST_GAUGE_POS.y + (GAUGE_Y_DIFF * i);
 		pGauge->SetPosition(XMFLOAT3(FIRST_GAUGE_POS.x, FIRST_GAUGE_POS.y + (GAUGE_Y_DIFF * i), ZERO));
 		pGauge->SetGauge(ZERO, VICTORY_POINT);
-		//pGauge->SetScale(GAUGE_SIZE);
+		pGauge->SetScale(GAUGE_SIZE);
 		pGaugeList_.emplace_back(pGauge);
 	}
 
