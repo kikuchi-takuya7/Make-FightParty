@@ -86,6 +86,8 @@ public:
 
     bool IsEndAnim();
 
+    void EndAnim();
+
 protected:
 
     float nowGauge_; //ç°ÇÃíl

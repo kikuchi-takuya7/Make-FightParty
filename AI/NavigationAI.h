@@ -103,16 +103,14 @@ public:
 	///////////////キャラクターすべてに指示を出す関数/////////////////////
 
 	void AllResetStatus();
-
 	void AllStopDraw();
-
 	void AllStartDraw();
-
 	void AllStopUpdate();
-
 	void AllStartUpdate();
-
+	void AllStopDrawPlayerUI();
+	
 	void AllEraseCollision();
+
 	
 	//////////////アクセス関数//////////////
 

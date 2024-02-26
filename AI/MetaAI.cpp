@@ -15,7 +15,7 @@ namespace {
 	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -20);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
 	const XMFLOAT3 CHAMPION_CAM_DIFF = { ZERO,4,-5 };
-	const float CHAMPION_CAM_RATE = 0.1f;
+	const float CHAMPION_CAM_RATE = 0.05f;
 
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
@@ -68,14 +68,12 @@ void MetaAI::Update()
 
 	//—DŸŽÒ‚ªŒˆ‚Ü‚Á‚½‚çŽŽ‡‚ðŽ~‚ß‚é
 	if (endGame_) {
-		pNavigationAI_->AllEraseCollision();
-		
-		pWaitTimer_->Start();
 
 		//ˆê’èŽžŠÔ‘Ò‚Á‚½‚ç—DŸŽÒ‚ÉƒJƒƒ‰‚ðŒü‚¯‚é
 		if (pWaitTimer_->IsFinished()) {
+			pRankingUI_->AllChildVisible();
+			pRankingUI_->AllChildLeave();
 			MoveChampionCam();
-
 		}
 
 		return;
@@ -83,7 +81,7 @@ void MetaAI::Update()
 
 	//—DŸŽÒ‚ªŒˆ‚Ü‚Á‚Ä‚éê‡‚Íã‚ÅAŒˆ‚Ü‚Á‚Ä‚È‚¢‚È‚ç‚±‚Á‚¿‚Åƒ^ƒCƒ}[‚ðŽg‚¤B
 	if (pWaitTimer_->IsFinished()) {
-		pNavigationAI_->AllStopDraw();
+		pNavigationAI_->AllStopDrawPlayerUI();
 		pRankingUI_->AllChildInvisible();
 		pRankingUI_->AllChildEnter();
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
@@ -93,13 +91,20 @@ void MetaAI::Update()
 			score_.at(ZERO) += SCORE[WIN_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_3)) {
-			pRankingUI_->SetScore(ZERO, KILL_GAUGE,1);
+			pRankingUI_->SetScore(1, KILL_GAUGE,1);
+			score_.at(1) += SCORE[KILL_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(ZERO, TRAP_KILL_GAUGE, 1);
+			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE, 1);
+			score_.at(2) += SCORE[TRAP_KILL_GAUGE];
 		}
 		
-		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {
+		if (Input::IsKeyDown(DIK_SPACE)) {
+
+			if (pRankingUI_->IsAllEndAnim() == false) {
+				pRankingUI_->EndAnim();
+				return;
+			}
 
 			pWaitTimer_->Reset();
 
@@ -113,6 +118,7 @@ void MetaAI::Update()
 			}
 
 			pCreateMode_->ToSelectMode();
+			pNavigationAI_->AllStopDraw();
 			pRankingUI_->AllChildVisible();
 			pRankingUI_->AllChildLeave();
 

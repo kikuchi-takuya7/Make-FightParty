@@ -160,6 +160,11 @@ void Character::StartDraw()
 	pPlayerUI_->StartDraw();
 }
 
+void Character::StopDrawUI()
+{
+	pPlayerUI_->StopDraw();
+}
+
 void Character::Dead()
 {
 	status_.dead = true;

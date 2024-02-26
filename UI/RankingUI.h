@@ -32,6 +32,8 @@ public:
 
     bool IsAllEndAnim();
 
+    void EndAnim();
+
     void ResetPos();
 
     ////////////////アクセス関数///////////////
@@ -45,5 +47,5 @@ private:
     int hPict_;
 
     //{ゲージのインスタンス、スコア}
-    std::vector<std::pair<RankingGaugeUI*,int>> pGaugeList_;
+    std::vector<RankingGaugeUI*> pGaugeList_;
 };

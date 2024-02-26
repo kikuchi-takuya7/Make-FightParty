@@ -85,6 +85,8 @@ public:
 
     void StartDraw();
 
+    void StopDrawUI();
+
     void Dead();
 
     //////////////////éqãüÇ…åpè≥Ç≥ÇπÇÈä÷êî//////////////////////////////

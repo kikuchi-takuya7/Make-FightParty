@@ -384,7 +384,6 @@ void NavigationAI::AllStopUpdate()
 {
 	for (int i = 0; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->Leave();
-
 	}
 
 	pStage_->AllStopUpdate();
@@ -397,6 +396,13 @@ void NavigationAI::AllStartUpdate()
 	}
 
 	pStage_->AllStartUpdate();
+}
+
+void NavigationAI::AllStopDrawPlayerUI()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDrawUI();
+	}
 }
 
 void NavigationAI::AllEraseCollision()

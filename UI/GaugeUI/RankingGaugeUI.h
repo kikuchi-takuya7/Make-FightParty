@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Engine/GameObject.h"
 #include "GaugeBase.h"
-#include <stack>
+#include <queue>
 #include <vector>
 #include <utility>
 
@@ -43,7 +43,9 @@ public:
 
     void PushScore(SCOREGAUGELIST score);
 
-    
+    bool IsAllEndAnim();
+
+    void AllEndAnim();
 
     void SetName(std::string name) { name_ = name; }
 
@@ -57,7 +59,7 @@ private:
     std::vector<std::pair<GaugeBase*,SCOREGAUGELIST>> gauge_;
     
     //順番に表示させるためのスタック
-    std::stack<SCOREGAUGELIST> nextScore_;
+    std::queue<SCOREGAUGELIST> nextScore_;
 
     //次のゲージの位置
     XMFLOAT3 gaugePos_;

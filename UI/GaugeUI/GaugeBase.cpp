@@ -112,3 +112,9 @@ bool GaugeBase::IsEndAnim()
 {
 	return (animGauge_ == nowGauge_);
 }
+
+void GaugeBase::EndAnim()
+{
+	nowGauge_ = maxGauge_;
+	animGauge_ = maxGauge_;
+}

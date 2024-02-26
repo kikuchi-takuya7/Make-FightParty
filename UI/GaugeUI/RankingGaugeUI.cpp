@@ -57,7 +57,7 @@ void RankingGaugeUI::ChildUpdate()
 	}
 
 	if (gauge_.back().first->IsEndAnim() == true && nextScore_.empty() == false) {
-		SetScore(nextScore_.top());
+		SetScore(nextScore_.front());
 		nextScore_.pop();
 	}
 }
@@ -84,6 +84,27 @@ void RankingGaugeUI::PushScore(SCOREGAUGELIST score)
 	}
 
 	nextScore_.push(score);
+}
+
+bool RankingGaugeUI::IsAllEndAnim()
+{
+	for (int i = 0; i < gauge_.size(); i++) {
+		if (gauge_.at(i).first->IsEndAnim() == false) {
+			return false;
+		}
+	}
+
+	if (nextScore_.empty() == false)
+		return false;
+
+	return true;
+}
+
+void RankingGaugeUI::AllEndAnim()
+{
+	for (int i = ZERO; i < gauge_.size(); i++) {
+		gauge_.at(i).first->EndAnim();
+	}
 }
 
 void RankingGaugeUI::SetScore(SCOREGAUGELIST score)

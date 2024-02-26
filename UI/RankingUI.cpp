@@ -38,7 +38,7 @@ void RankingUI::Initialize()
 		pGauge->SetPosition(XMFLOAT3(FIRST_GAUGE_POS.x, FIRST_GAUGE_POS.y + (GAUGE_Y_DIFF * i), ZERO));
 		pGauge->SetGauge(ZERO, VICTORY_POINT);
 		pGauge->SetScale(GAUGE_SIZE);
-		pGaugeList_.emplace_back(std::make_pair(pGauge,ZERO));
+		pGaugeList_.emplace_back(pGauge);
 	}
 
 	transform_.position_ = START_POS;
@@ -78,10 +78,17 @@ void RankingUI::Release()
 bool RankingUI::IsAllEndAnim()
 {
 	for (int i = ZERO; i < pGaugeList_.size(); i++) {
-		if(pGaugeList_.at(i).first->IsEndAnim() == false)
+		if(pGaugeList_.at(i)->IsAllEndAnim() == false)
 			return false;
 	}
 	return true;
+}
+
+void RankingUI::EndAnim()
+{
+	for (int i = ZERO; i < pGaugeList_.size(); i++) {
+		pGaugeList_.at(i)->AllEndAnim();
+	}
 }
 
 void RankingUI::ResetPos()
@@ -91,7 +98,7 @@ void RankingUI::ResetPos()
 
 void RankingUI::SetPlayerName(int ID, std::string str)
 {
-	pGaugeList_.at(ID).first->SetName(str);
+	pGaugeList_.at(ID)->SetName(str);
 }
 
 void RankingUI::SetScore(int ID, SCOREGAUGELIST score, int num)
@@ -100,9 +107,7 @@ void RankingUI::SetScore(int ID, SCOREGAUGELIST score, int num)
 	
 
 	for (int i = ZERO; i < num; i++) {
-		pGaugeList_.at(ID).first->PushScore(score);
-		pGaugeList_.at(ID).second += SCORE[score];
-		
+		pGaugeList_.at(ID)->PushScore(score);
 	}
 }
 
