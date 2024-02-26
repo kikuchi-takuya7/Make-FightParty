@@ -65,7 +65,6 @@ void RankingGaugeUI::ChildUpdate()
 //•`‰æ
 void RankingGaugeUI::ChildDraw()
 {
-
 	XMFLOAT3 textPos = transform_.position_;
 	textPos.x -= 130;
 	pText_->Draw(textPos.x, textPos.y, name_.c_str());

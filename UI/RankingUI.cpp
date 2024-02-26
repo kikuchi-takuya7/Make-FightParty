@@ -12,6 +12,8 @@ namespace {
 
 	const XMFLOAT3 START_POS = { ZERO, -5,ZERO };
 	const float MOVE_RATE = 0.2f;
+
+	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 }
 
 //コンストラクタ
@@ -96,4 +98,6 @@ void RankingUI::SetScore(int ID, SCOREGAUGELIST score, int num)
 {
 	for (int i = ZERO; i < num; i++)
 		pGaugeList_.at(ID)->PushScore(score);
+
+
 }

@@ -77,7 +77,7 @@ void MetaAI::Update()
 	}
 
 	//優勝者が決まってる場合は上で、決まってないならこっちでタイマーを使う。
-	if (pWaitTimer_->IsFinished() || Input::IsKey(DIK_K)) {
+	if (pWaitTimer_->IsFinished()) {
 		//pCreateMode_->ToSelectMode();
 
 		pNavigationAI_->AllStopDraw();
@@ -85,18 +85,23 @@ void MetaAI::Update()
 		pRankingUI_->AllChildEnter();
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 
-		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(ZERO, TRAP_KILL_GAUGE,1);
-		}
+		
 		if (Input::IsKeyDown(DIK_2)) {
 			pRankingUI_->SetScore(ZERO, WIN_GAUGE,1);
 		}
 		if (Input::IsKeyDown(DIK_3)) {
 			pRankingUI_->SetScore(ZERO, KILL_GAUGE,1);
 		}
+		if (Input::IsKeyDown(DIK_4)) {
+			pRankingUI_->SetScore(ZERO, TRAP_KILL_GAUGE, 1);
+		}
 		
 		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {
 			pCreateMode_->ToSelectMode();
+			pWaitTimer_->Reset();
+			pRankingUI_->AllChildVisible();
+			pRankingUI_->AllChildLeave();
+
 		}
 
 	}
