@@ -13,13 +13,17 @@ namespace {
 	const float MIN = ZERO;
 	const float MAX = 1.0f;
 
+	const float ONE_GAUGE_LENGTH = 184;
+
 	//スコア毎のゲージの大きさを入れる
-	const float SCORE_DIFF[GAUGE_NUM] = {185,50,20};
+	const float SCORE_DIFF[GAUGE_NUM] = { ONE_GAUGE_LENGTH,ONE_GAUGE_LENGTH / 2,ONE_GAUGE_LENGTH / 4 };
+
+	const float START_DIFF[GAUGE_NUM] = { ZERO,ONE_GAUGE_LENGTH / 2,ONE_GAUGE_LENGTH - ONE_GAUGE_LENGTH / 4 };
 
 	//これいみねぇや
 	const int TEST_SCORE = 100;
 
-	const XMFLOAT3 GAUGE_SIZE = { 0.75f,0.5f,ZERO };
+	const XMFLOAT3 GAUGE_SIZE = { 0.72f,0.5f,ZERO };
 }
 
 
@@ -70,7 +74,9 @@ void RankingGaugeUI::ChildRelease()
 void RankingGaugeUI::PushScore(SCOREGAUGELIST score)
 {
 
-	if (!gauge_.empty())
+	if (gauge_.empty())
+		gaugePos_.x -= START_DIFF[score];
+	else
 		gaugePos_.x += SCORE_DIFF[score];
 
 	switch (score)

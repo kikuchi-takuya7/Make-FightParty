@@ -85,17 +85,14 @@ void MetaAI::Update()
 		pRankingUI_->AllChildEnter();
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 
-		if (Input::IsKeyDown(DIK_5)) {
-			pRankingUI_->SetScore(ZERO, WIN_GAUGE);
+		if (Input::IsKeyDown(DIK_4)) {
+			pRankingUI_->SetScore(ZERO, TRAP_KILL_GAUGE);
 		}
 		if (Input::IsKeyDown(DIK_2)) {
-			pRankingUI_->SetScore(1, WIN_GAUGE);
+			pRankingUI_->SetScore(ZERO, WIN_GAUGE);
 		}
 		if (Input::IsKeyDown(DIK_3)) {
-			pRankingUI_->SetScore(2, WIN_GAUGE);
-		}
-		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(3, WIN_GAUGE);
+			pRankingUI_->SetScore(ZERO, KILL_GAUGE);
 		}
 		
 		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {

@@ -12,7 +12,7 @@ TrapKillScore::~TrapKillScore()
 
 void TrapKillScore::ChildInitialize()
 {
-	hPict_ = Image::Load("Image/RankingUI/TrapKillGauge.png");
+	hPict_ = Image::Load("Image/RankingUI/TrapKillGauge2.png");
 	assert(hPict_ >= 0);
 }
 

@@ -14,7 +14,7 @@ WinScore::~WinScore()
 
 void WinScore::ChildInitialize()
 {
-	hPict_ = Image::Load("Image/RankingUI/WinGauge.png");
+	hPict_ = Image::Load("Image/RankingUI/WinGauge2.png");
 	assert(hPict_ >= 0);
 }
 

@@ -14,7 +14,7 @@ KillScore::~KillScore()
 
 void KillScore::ChildInitialize()
 {
-	hPict_ = Image::Load("Image/RankingUI/KillGauge.png");
+	hPict_ = Image::Load("Image/RankingUI/KillGauge2.png");
 	assert(hPict_ >= 0);
 
 }
