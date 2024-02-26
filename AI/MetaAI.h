@@ -105,6 +105,8 @@ private:
 	
 	void MoveChampionCam();
 
+	int VictoryPlayer();
+
 	//vector<Status> enemyStatusList_;
 	//vector<Status> playerStatusList_;
 
@@ -121,6 +123,8 @@ private:
 
 	//Œ»İ‚Ì‡ˆÊ‚ğID‚ÅŠo‚¦‚Ä‚¨‚­
 	vector<int> ranking_;
+
+	vector<int> score_;
 
 	bool endGame_;
 

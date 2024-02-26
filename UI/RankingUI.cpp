@@ -84,12 +84,6 @@ bool RankingUI::IsAllEndAnim()
 	return true;
 }
 
-int RankingUI::VictoryPlayer()
-{
-
-	return ZERO;
-}
-
 void RankingUI::ResetPos()
 {
 	transform_.position_ = START_POS;
@@ -102,14 +96,13 @@ void RankingUI::SetPlayerName(int ID, std::string str)
 
 void RankingUI::SetScore(int ID, SCOREGAUGELIST score, int num)
 {
+
+	
+
 	for (int i = ZERO; i < num; i++) {
 		pGaugeList_.at(ID).first->PushScore(score);
 		pGaugeList_.at(ID).second += SCORE[score];
 		
-		if (pGaugeList_.at(ID).second >= VICTORY_POINT) {
-			victoryPlayer_.emplace_back(ID);
-		}
 	}
-
 }
 

@@ -32,9 +32,6 @@ public:
 
     bool IsAllEndAnim();
 
-    
-    int VictoryPlayer();
-
     void ResetPos();
 
     ////////////////アクセス関数///////////////
@@ -49,7 +46,4 @@ private:
 
     //{ゲージのインスタンス、スコア}
     std::vector<std::pair<RankingGaugeUI*,int>> pGaugeList_;
-
-    std::priority_queue<int> victoryPlayer_;
-
 };
