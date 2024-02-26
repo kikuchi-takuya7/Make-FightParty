@@ -51,10 +51,15 @@ void RankingGaugeUI::ChildInitialize()
 //XV
 void RankingGaugeUI::ChildUpdate()
 {
-	
-	/*if (gauge_.back().first->IsEndAnim()) {
 
-	}*/
+	if (gauge_.empty()) {
+		return;
+	}
+
+	if (gauge_.back().first->IsEndAnim() == true && nextScore_.empty() == false) {
+		SetScore(nextScore_.top());
+		nextScore_.pop();
+	}
 }
 
 //•`‰æ
@@ -73,7 +78,18 @@ void RankingGaugeUI::ChildRelease()
 
 void RankingGaugeUI::PushScore(SCOREGAUGELIST score)
 {
+	//Å‰‚¾‚¯‘¦Žž‚É“ü‚ê‚é
+	if (gauge_.empty()) {
+		SetScore(score);
+		return;
+	}
 
+	nextScore_.push(score);
+}
+
+void RankingGaugeUI::SetScore(SCOREGAUGELIST score)
+{
+	//Å‰‚ÌƒQ[ƒW‚¾‚¯‰æ‘œ‚ÌŒ„ŠÔ•ª‚ð–„‚ß‚é
 	if (gauge_.empty())
 		gaugePos_.x -= START_DIFF[score];
 	else
@@ -98,8 +114,7 @@ void RankingGaugeUI::PushScore(SCOREGAUGELIST score)
 	}
 
 	gauge_.back().first->SetGauge(TEST_SCORE, TEST_SCORE);
-	gauge_.back().first->Leave();
+	gauge_.back().first->Enter();
 	gauge_.back().first->SetScale(GAUGE_SIZE);
 	gauge_.back().first->SetPosition(SpriteToFloatX(transform_.position_.x + gaugePos_.x), SpriteToFloatY(transform_.position_.y), ZERO);
-
 }

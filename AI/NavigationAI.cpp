@@ -57,7 +57,7 @@ Transform NavigationAI::MoveSelectObject(int ID)
 //ˆø”F”ä‚×‚éXMFLOAT3Œ^‚Ì•Ï”
 bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 
 		if (pos == pCharacterList_.at(i)->GetStartPos()) {
 			return true;

@@ -102,7 +102,13 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 	//UŒ‚‚É“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
-		HitDamage(((Character*)pTarget)->GetStatus().attackPower);
+		//‚»‚ÌUŒ‚‚Å‚â‚ç‚ê‚½‚çA‘ŠŽè‚ÌƒLƒ‹ƒ|ƒCƒ“ƒg‚ð‘‚â‚·
+		if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
+			Status status = ((Character*)pTarget)->GetStatus();
+			status.killPoint++;
+			((Character*)pTarget)->SetStatus(status);
+			((Character*)pTarget)->TellStatus();
+		}
 
 		//Œã‚Å“G‚Ì•ûŒü‚ÉŒü‚«‚È‚¨‚·
 		SetTargetRotate(pTarget->GetRotate());

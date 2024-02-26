@@ -8,7 +8,7 @@ struct Status {
 
     int winPoint;
     int killPoint;
-    int objectKillPoint;
+    int trapKillPoint;
     std::string playerName;
 
     Status() {
@@ -17,7 +17,7 @@ struct Status {
         dead = false;
         winPoint = ZERO;
         killPoint = ZERO;
-        objectKillPoint = ZERO;
+        trapKillPoint = ZERO;
         playerName = "noname";
     }
 
@@ -27,7 +27,7 @@ struct Status {
         dead = d;
         winPoint = win;
         killPoint = kill;
-        objectKillPoint = obj;
+        trapKillPoint = obj;
         playerName = n;
     }
 
@@ -78,7 +78,8 @@ public:
     /// 攻撃に当たった時
     /// </summary>
     /// <param name="damage">食らったダメージ量</param>
-    void HitDamage(int damage);
+    /// <returns>そのダメージで死亡したらtrue</returns>
+    bool HitDamage(int damage);
 
     void StopDraw();
 

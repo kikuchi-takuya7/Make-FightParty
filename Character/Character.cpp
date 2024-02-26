@@ -134,7 +134,7 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	ChildOnCollision(pTarget, myType, targetType);
 }
 
-void Character::HitDamage(int damage)
+bool Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
 
@@ -144,6 +144,8 @@ void Character::HitDamage(int damage)
 	if (status_.hp <= 0) {
 		status_.dead = true;
 	}
+
+	return status_.dead;
 }
 
 void Character::StopDraw()
@@ -182,6 +184,8 @@ void Character::ResetStatus()
 
 	status_.hp = CHARACTER_HP;
 	status_.dead = false;
+	status_.killPoint = ZERO;
+	status_.trapKillPoint = ZERO;
 
 	pPlayerUI_->SetMaxHp(status_.hp, CHARACTER_HP);
 

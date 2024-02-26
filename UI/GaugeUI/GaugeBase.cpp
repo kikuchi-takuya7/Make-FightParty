@@ -37,6 +37,9 @@ void GaugeBase::Update()
 	ChildUpdate();
 
 	animGauge_ = (animGauge_ * 9 + nowGauge_) / 10;
+	if (animGauge_ >= nowGauge_ - 0.1f && animGauge_ <= nowGauge_) {
+		animGauge_ = nowGauge_;
+	}
 
 	if (Input::IsKeyDown(DIK_P)) {
 		nowGauge_ = maxGauge_;
@@ -68,6 +71,7 @@ void GaugeBase::SetGauge(int nowGaugeBase, int maxGaugeBase)
 	nowGauge_ = nowGaugeBase;
 	maxGauge_ = maxGaugeBase;
 	animGauge_ = (animGauge_ * 9 + nowGaugeBase) / 10; //animHp‚ª9‚ÆnowHp‚ª1‚¾‚©‚ç‘«‚µ‚Ä10‚ÅŠ„‚é
+	
 }
 
 void GaugeBase::SetNowGauge(int nowGaugeBase)

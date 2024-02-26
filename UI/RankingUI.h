@@ -37,7 +37,7 @@ public:
 
     void SetPlayerName(int ID, std::string str);
 
-    void SetScore(int ID, SCOREGAUGELIST score);
+    void SetScore(int ID, SCOREGAUGELIST score, int num);
 
 private:
 

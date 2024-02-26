@@ -11,7 +11,7 @@ namespace {
 	const XMFLOAT3 GAUGE_SIZE = { 2.85f,0.5f,ZERO };
 
 	const XMFLOAT3 START_POS = { ZERO, -5,ZERO };
-	const float MOVE_RATE = 0.1f;
+	const float MOVE_RATE = 0.2f;
 }
 
 //コンストラクタ
@@ -30,7 +30,7 @@ void RankingUI::Initialize()
 {
 	hPict_ = Image::Load("Image/RankingUI/RankingPaper.png");
 
-	for (int i = 0; i < MAX_PLAYER; i++) {
+	for (int i = ZERO; i < MAX_PLAYER; i++) {
 		RankingGaugeUI* pGauge = Instantiate<RankingGaugeUI>(this);
 		float tes = FIRST_GAUGE_POS.y + (GAUGE_Y_DIFF * i);
 		pGauge->SetPosition(XMFLOAT3(FIRST_GAUGE_POS.x, FIRST_GAUGE_POS.y + (GAUGE_Y_DIFF * i), ZERO));
@@ -75,7 +75,7 @@ void RankingUI::Release()
 
 bool RankingUI::IsAllEndAnim()
 {
-	for (int i = 0; i < pGaugeList_.size(); i++) {
+	for (int i = ZERO; i < pGaugeList_.size(); i++) {
 		if(pGaugeList_.at(i)->IsEndAnim() == false)
 			return false;
 	}
@@ -92,7 +92,8 @@ void RankingUI::SetPlayerName(int ID, std::string str)
 	pGaugeList_.at(ID)->SetName(str);
 }
 
-void RankingUI::SetScore(int ID, SCOREGAUGELIST score)
+void RankingUI::SetScore(int ID, SCOREGAUGELIST score, int num)
 {
-	pGaugeList_.at(ID)->PushScore(score);
+	for (int i = ZERO; i < num; i++)
+		pGaugeList_.at(ID)->PushScore(score);
 }

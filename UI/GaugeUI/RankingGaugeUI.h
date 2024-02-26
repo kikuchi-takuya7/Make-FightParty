@@ -43,6 +43,8 @@ public:
 
     void PushScore(SCOREGAUGELIST score);
 
+    
+
     void SetName(std::string name) { name_ = name; }
 
 private:
@@ -53,6 +55,9 @@ private:
 
     //表示するスコア
     std::vector<std::pair<GaugeBase*,SCOREGAUGELIST>> gauge_;
+    
+    //順番に表示させるためのスタック
+    std::stack<SCOREGAUGELIST> nextScore_;
 
     //次のゲージの位置
     XMFLOAT3 gaugePos_;
@@ -60,5 +65,7 @@ private:
     //今アニメーションしてるゲージの要素番号
     int nowAnimGauge_;
 
+
+    void SetScore(SCOREGAUGELIST score);
 
 };

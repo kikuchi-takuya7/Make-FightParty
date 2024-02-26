@@ -86,13 +86,13 @@ void MetaAI::Update()
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 
 		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(ZERO, TRAP_KILL_GAUGE);
+			pRankingUI_->SetScore(ZERO, TRAP_KILL_GAUGE,1);
 		}
 		if (Input::IsKeyDown(DIK_2)) {
-			pRankingUI_->SetScore(ZERO, WIN_GAUGE);
+			pRankingUI_->SetScore(ZERO, WIN_GAUGE,1);
 		}
 		if (Input::IsKeyDown(DIK_3)) {
-			pRankingUI_->SetScore(ZERO, KILL_GAUGE);
+			pRankingUI_->SetScore(ZERO, KILL_GAUGE,1);
 		}
 		
 		if (pRankingUI_->IsAllEndAnim() && Input::IsKeyDown(DIK_SPACE)) {
@@ -275,7 +275,15 @@ void MetaAI::ToCreateMode()
 
 		pWaitTimer_->Start();
 
-		pRankingUI_->SetScore(winPlayer, WIN_GAUGE);
+		pRankingUI_->SetScore(winPlayer, WIN_GAUGE,1);
+
+		//キル数分もスコアに加算する
+		for (int i = 0; i < characterStatusList_.size(); i++) {
+			pRankingUI_->SetScore(i, KILL_GAUGE, characterStatusList_.at(i).killPoint);
+			pRankingUI_->SetScore(i, TRAP_KILL_GAUGE, characterStatusList_.at(i).trapKillPoint);
+		}
+
+		pRankingUI_->AllChildLeave();
 		pNavigationAI_->AllStopUpdate();
 		
 

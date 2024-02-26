@@ -52,6 +52,7 @@ public:
 
 protected:
 
+	//プレイヤーかエネミーのインスタンスを持っておく
 	Character* pCharacter_;
 
 };
