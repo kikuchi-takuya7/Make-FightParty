@@ -2,7 +2,7 @@
 #include "../../../Engine/Input.h"
 #include "../Character.h"
 
-CharacterRunState::CharacterRunState(Character* character):CharacterState(character)
+CharacterRunState::CharacterRunState(Character* character, int model):CharacterState(character, model)
 {
 }
 

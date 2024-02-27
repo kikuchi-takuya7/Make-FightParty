@@ -15,15 +15,12 @@ namespace {
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
-
-	const int WAIT_START_FRAME = ZERO;
-	const int WAIT_END_FRAME = 60;
 }
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
 	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, false, ZERO, ZERO, ZERO, "NONE")),
-	pState_(new CharacterStateManager(this)), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false)
+	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false)
 	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
 }
@@ -39,15 +36,13 @@ void Character::Initialize()
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 
-	std::string fileName = "PlayerFbx/player" + std::to_string(GetObjectID()) + ".fbx";
-
 	//モデルデータのロード
+	std::string fileName = "PlayerFbx/player" + std::to_string(GetObjectID()) + ".fbx";
 	hModel_ = Model::Load(fileName);
 	assert(hModel_ >= 0);
 
-	Model::SetAnimFrame(hModel_, WAIT_START_FRAME, WAIT_END_FRAME, 1);
+	pState_ = new CharacterStateManager(this, hModel_);
 
-	//status_ = { CHARACTER_HP,CHARACTER_ATTACK_POWER, false ,ZERO,ZERO,ZERO,"NONE" };
 	pPlayerUI_->SetMaxHp(status_.hp, status_.hp);
 
 	ChildInitialize();
@@ -71,7 +66,7 @@ void Character::Update()
 	
 
 	//ノックバック中は移動の処理をしない
-	if (pState_->characterState_ != pState_->pCharacterStateList_.at(KNOCKBACK) && pState_->characterState_ != pState_->pCharacterStateList_.at(ATTACK)) {
+	if (pState_->characterState_ != pState_->pCharacterStateList_.at(KNOCKBACK) && pState_->characterState_ != pState_->pCharacterStateList_.at(ATTACK) && status_.dead == false) {
 		ChildUpdate();
 	}
 
@@ -82,7 +77,7 @@ void Character::Update()
 void Character::Draw()
 {
 
-	if (stopDraw_ == true)
+	if (IsVisibled())
 		return;
 
 	ChildDraw();
@@ -150,6 +145,7 @@ bool Character::HitDamage(int damage)
 	//HPが0になったら
 	if (status_.hp <= 0) {
 		status_.dead = true;
+		
 	}
 
 	return status_.dead;
@@ -157,13 +153,13 @@ bool Character::HitDamage(int damage)
 
 void Character::StopDraw()
 {
-	stopDraw_ = true;
+	Visible();
 	pPlayerUI_->StopDraw();
 }
 
 void Character::StartDraw()
 {
-	stopDraw_ = false;
+	Invisible();
 	pPlayerUI_->StartDraw();
 }
 

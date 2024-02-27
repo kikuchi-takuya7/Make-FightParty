@@ -12,7 +12,7 @@ class CharacterAttackState : public CharacterState
 public:
 
 	//コンストラクタ
-	CharacterAttackState(Character* character);
+	CharacterAttackState(Character* character, int model);
 
 	/// <summary>
 	/// 更新
@@ -37,8 +37,8 @@ public:
 
 private:
 
-	int flame_;
-	//BoxCollider* pAttackCollision_;
+	int frame_;
+	bool settedCollision_;
 
 };
 

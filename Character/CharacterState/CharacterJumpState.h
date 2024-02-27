@@ -10,7 +10,7 @@ class CharacterJumpState : public CharacterState
 public:
 
 	//コンストラクタ
-	CharacterJumpState(Character* character);
+	CharacterJumpState(Character* character, int model);
 
 	/// <summary>
 	/// 更新

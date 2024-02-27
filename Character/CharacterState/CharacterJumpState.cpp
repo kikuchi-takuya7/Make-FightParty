@@ -7,7 +7,7 @@ namespace {
 	const float GRAVITY = 0.1f;
 }
 
-CharacterJumpState::CharacterJumpState(Character* character):CharacterState(character)
+CharacterJumpState::CharacterJumpState(Character* character, int model):CharacterState(character, model)
 {
 }
 

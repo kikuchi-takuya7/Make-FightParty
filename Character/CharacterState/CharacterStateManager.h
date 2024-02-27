@@ -27,7 +27,7 @@ public:
 	//CharacterStateList‚ÌenumŒ^‡‚É“ü‚Á‚Ä‚¢‚é
 	std::vector<CharacterState*> pCharacterStateList_;
 
-	CharacterStateManager(Character* character);
+	CharacterStateManager(Character* character, int model);
 	~CharacterStateManager();
 
 	/// <summary>

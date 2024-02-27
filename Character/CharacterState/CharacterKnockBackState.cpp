@@ -4,12 +4,14 @@
 
 namespace {
 
-	const float KNOCKBACK_DISTANCE = 4.0f;
+	const float KNOCKBACK_DISTANCE = 4.0f;//ノックバック距離
 	const int KNOCKBACK_RIGIDITYFLAME = 30;//喰らい硬直フレーム
 	const float KNOCKBACK_SPEED = 0.05f;//どのくらいの速度でノックバックするか
+	const int KNOCKBACK_START_FRAME = 210;
+	const int KNOCKBACK_END_FRAME = 240;
 }
 
-CharacterKnockBackState::CharacterKnockBackState(Character* character):CharacterState(character)
+CharacterKnockBackState::CharacterKnockBackState(Character* character, int model):CharacterState(character, model)
 {
 }
 
@@ -27,14 +29,16 @@ void CharacterKnockBackState::Update()
 
 	pCharacter_->SetPosition(playerPos);
 
-
 	/*if (characterPos == lastPoint_) {
 		pCharacter_->ChangeState(character_IDLE);
 		pCharacter_->ChangeKnockBack(false);
 	}*/
 
+
+	int nowFrame = Model::GetAnimFrame(hCharacterModel_);
+
 	//喰らい硬直が終わったら
-	if (flame_ >= KNOCKBACK_RIGIDITYFLAME) {
+	if (nowFrame >= KNOCKBACK_END_FRAME) {
 		pCharacter_->ChangeState(IDLE);
 	}
 
@@ -50,6 +54,8 @@ void CharacterKnockBackState::Enter()
 	flame_ = 0;
 	//色々初期化
 	knockBackRate_ = 0.0f;
+
+	Model::SetAnimFrame(hCharacterModel_, KNOCKBACK_START_FRAME, KNOCKBACK_END_FRAME, 1);
 
 	XMFLOAT3 targetRot = pCharacter_->GetTargetRot();
 
