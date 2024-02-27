@@ -17,6 +17,7 @@ class CreateMode;
 class NavigationAI;
 class CountDownUI;
 class RankingUI;
+class WinnerUI;
 class Timer;
 
 /// <summary>
@@ -118,12 +119,13 @@ private:
 
 	Timer* pWaitTimer_;
 
-	//現在1位の人のIDを覚えておく
+	//現在1位の人のIDを覚えておく(同率一位の可能性もあるため、後の処理を楽にするためvectorに)
 	vector<int> No1CharaID_;
 
 	//現在の順位をIDで覚えておく
 	vector<int> ranking_;
 
+	//現在のスコア。要素数がID
 	vector<int> score_;
 
 	bool endGame_;
@@ -134,6 +136,8 @@ private:
 	CountDownUI* pCountDown_;
 
 	RankingUI* pRankingUI_;
+
+	WinnerUI* pWinnerUI_;
 
 };
 

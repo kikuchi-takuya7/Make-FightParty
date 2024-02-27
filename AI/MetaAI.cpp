@@ -8,6 +8,7 @@
 #include "../UI/CountDownUI.h"
 #include "../UI/RankingUI.h"
 #include "../UI/GaugeUI/RankingGaugeUI.h"
+#include "../UI/WinnerUI.h"
 #include "../Stage/CreateMode/CreateMode.h"
 
 namespace {
@@ -30,7 +31,8 @@ namespace {
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
-	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this))
+	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this)),
+	pWinnerUI_(Instantiate<WinnerUI>(this))
 {
 }
 
@@ -40,16 +42,13 @@ MetaAI::~MetaAI()
 
 void MetaAI::Initialize()
 {
-
-	//最初は誰が一位でも同じ
-	No1CharaID_.emplace_back(ZERO);
-
-	//とりあえずでIDだけ入れとく
+	//色々初期化
+	for (int i = ZERO; i < 4; i++) {
+		No1CharaID_.emplace_back(i);
+	}
 	for (int i = ZERO; i < 4; i++) {
 		ranking_.emplace_back(i);
 	}
-
-	//スコアを初期化
 	for (int i = ZERO; i < 4; i++) {
 		score_.emplace_back(ZERO);
 	}
@@ -64,8 +63,6 @@ void MetaAI::Initialize()
 
 void MetaAI::Update()
 {
-	
-
 	//優勝者が決まったら試合を止める
 	if (endGame_) {
 
@@ -123,7 +120,6 @@ void MetaAI::Update()
 			pRankingUI_->AllChildLeave();
 
 		}
-
 	}
 
 	//カウントダウンが終わったら動く許可を出す
@@ -144,8 +140,6 @@ void MetaAI::Update()
 		}
 		pCreateMode_->ToSelectMode();
 	}
-
-	
 }
 
 void MetaAI::Release()
@@ -170,7 +164,7 @@ int MetaAI::Targeting(int ID)
 	}
 
 	//自分が1位だった場合0に固定する（同率でも）or 一位が全員死んでても0に固定
-	if (characterStatusList_.at(ranking_.at(ZERO)).winPoint == characterStatusList_.at(ID).winPoint || No1AllDead == true) {
+	if (score_.at(ranking_.at(ZERO)) == score_.at(ID) || No1AllDead == true) {
 
 		target = TARGET_RANDAM;
 	}
@@ -213,6 +207,8 @@ int MetaAI::Targeting(int ID)
 void MetaAI::CheckNo1Chara()
 {
 
+	No1CharaID_.clear();
+
 	//一位のポイントとそれと同じ点数が何人いるか
 	int No1Score = ZERO;
 	
@@ -238,7 +234,7 @@ void MetaAI::CheckNo1Chara()
 	for (int i = 1; i < ranking.size(); i++) {
 
 		//一位の人と同じポイントなら同率１位を入れる
-		if (No1Score == characterStatusList_.at(i).winPoint) {
+		if (No1Score == score_.at(i)) {
 
 			No1CharaID_.emplace_back(ranking.at(i).second);
 			ranking_.at(i) = ranking.at(i).second;

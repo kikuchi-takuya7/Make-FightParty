@@ -233,7 +233,7 @@
     <ClCompile Include="UI\RankingUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\WinPlayerUI.cpp">
+    <ClCompile Include="UI\WinnerUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Character\CharacterState\CharacterAttackState.cpp">
@@ -451,7 +451,7 @@
     <ClInclude Include="UI\RankingUI.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\WinPlayerUI.h">
+    <ClInclude Include="UI\WinnerUI.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Character\CharacterState\CharacterAttackState.h">

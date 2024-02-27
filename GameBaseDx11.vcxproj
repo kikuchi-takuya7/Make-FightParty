@@ -202,7 +202,7 @@
     <ClCompile Include="UI\RankingUI.cpp" />
     <ClCompile Include="UI\PlayerUI.cpp" />
     <ClCompile Include="UI\TitleUI.cpp" />
-    <ClCompile Include="UI\WinPlayerUI.cpp" />
+    <ClCompile Include="UI\WinnerUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI\AI.h" />
@@ -277,7 +277,7 @@
     <ClInclude Include="UI\RankingUI.h" />
     <ClInclude Include="UI\PlayerUI.h" />
     <ClInclude Include="UI\TitleUI.h" />
-    <ClInclude Include="UI\WinPlayerUI.h" />
+    <ClInclude Include="UI\WinnerUI.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
