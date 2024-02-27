@@ -9,13 +9,15 @@
 #include "../UI/RankingUI.h"
 #include "../UI/GaugeUI/RankingGaugeUI.h"
 #include "../UI/WinnerUI.h"
+#include "../UI/ChampionUI.h"
 #include "../Stage/CreateMode/CreateMode.h"
 
 namespace {
 
 	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -20);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
-	const XMFLOAT3 CHAMPION_CAM_DIFF = { ZERO,4,-5 };
+	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
+	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
 
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
@@ -32,7 +34,7 @@ namespace {
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
 	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this)),
-	pWinnerUI_(Instantiate<WinnerUI>(this))
+	pWinnerUI_(Instantiate<WinnerUI>(this)),pChampionUI_(Instantiate<ChampionUI>(this))
 {
 }
 
@@ -59,6 +61,9 @@ void MetaAI::Initialize()
 
 	pRankingUI_->AllChildLeave();
 	pRankingUI_->AllChildVisible();
+
+	pWinnerUI_->Visible();
+	pChampionUI_->Visible();
 }
 
 void MetaAI::Update()
@@ -68,6 +73,7 @@ void MetaAI::Update()
 
 		//ˆê’èŽžŠÔ‘Ò‚Á‚½‚ç—DŸŽÒ‚ÉƒJƒƒ‰‚ðŒü‚¯‚é
 		if (pWaitTimer_->IsFinished()) {
+			pChampionUI_->Invisible();
 			pRankingUI_->AllChildVisible();
 			pRankingUI_->AllChildLeave();
 			MoveChampionCam();
@@ -81,6 +87,7 @@ void MetaAI::Update()
 		pNavigationAI_->AllStopDrawPlayerUI();
 		pRankingUI_->AllChildInvisible();
 		pRankingUI_->AllChildEnter();
+		pWinnerUI_->Visible();
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 
 		if (Input::IsKeyDown(DIK_2)) {
@@ -104,6 +111,7 @@ void MetaAI::Update()
 			}
 
 			pWaitTimer_->Reset();
+			
 
 			//—DŸŽÒ‚ªŒˆ‚Ü‚Á‚Ä‚çƒŠƒUƒ‹ƒgƒV[ƒ“‚É
 			int ID = VictoryPlayer();
@@ -300,6 +308,9 @@ void MetaAI::ToCreateMode()
 
 		pRankingUI_->AllChildLeave();
 		pNavigationAI_->AllStopUpdate();
+		
+		pWinnerUI_->SetWinnerID(winPlayer);
+		pWinnerUI_->Invisible();
 
 		pWaitTimer_->Start();
 	}
@@ -352,14 +363,15 @@ void MetaAI::MoveChampionCam()
 {
 	Character* pChampion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
 	XMFLOAT3 charaPos = pChampion->GetPosition();
-	XMFLOAT3 camPos = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_DIFF.y, charaPos.z + CHAMPION_CAM_DIFF.z);
+	XMFLOAT3 camPos = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_POS_DIFF.y, charaPos.z + CHAMPION_CAM_POS_DIFF.z);
+	XMFLOAT3 camTar = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_TAR_DIFF.y, charaPos.z + CHAMPION_CAM_TAR_DIFF.z);
 
 	//—DŸŽÒ‚à‡‚í‚¹‚Ä‘O‚ÉŒü‚©‚¹‚é
 	XMFLOAT3 rot = pChampion->GetRotate();
 	RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
 	pChampion->SetRotateY(rot.y);
 
-	Camera::MoveCam(camPos, charaPos, CHAMPION_CAM_RATE);
+	Camera::MoveCam(camPos, camTar, CHAMPION_CAM_RATE);
 }
 
 int MetaAI::VictoryPlayer()

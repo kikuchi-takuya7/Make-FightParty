@@ -3,7 +3,7 @@
 namespace {
 
 	const int COST = 5;
-	const int NEEDLEPOWER = 5;
+	const int NEEDLEPOWER = 1;
 
 }
 

@@ -278,6 +278,9 @@
     <ClCompile Include="UI\GaugeUI\TrapKillScore.cpp">
       <Filter>UI\GaugeUI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ChampionUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -498,6 +501,9 @@
     </ClInclude>
     <ClInclude Include="UI\GaugeUI\TrapKillScore.h">
       <Filter>UI\GaugeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ChampionUI.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

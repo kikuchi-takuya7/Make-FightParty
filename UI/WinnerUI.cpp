@@ -2,9 +2,14 @@
 #include "../Engine/Image.h"
 #include<assert.h>
 
+namespace {
+	const XMFLOAT3 WINNER_POS = { 625, 180,ZERO };
+	const XMFLOAT3 NUMBER_POS = { 585, 125,ZERO };
+}
+
 //コンストラクタ
 WinnerUI::WinnerUI(GameObject* parent)
-	: GameObject(parent, "WinnerUI"), hPict_{-1,-1,-1,-1}, hWinnerPict_(-1)
+	: GameObject(parent, "WinnerUI"), hPict_{-1,-1,-1,-1}, hWinnerPict_(-1),winnerID_(0)
 {
 }
 
@@ -45,10 +50,22 @@ void WinnerUI::Draw()
 {
 	//SetScale(XMFLOAT3(0.8f, 0.6f, 1));
 
-	Image::SetTransform(hWinnerPict_, transform_);
+	if (IsVisibled()) {
+		return;
+	}
+
+	Transform winnerTrans = transform_;
+	winnerTrans.position_.x = SpriteToFloatX(WINNER_POS.x);
+	winnerTrans.position_.y = SpriteToFloatY(WINNER_POS.y);
+
+	Image::SetTransform(hWinnerPict_, winnerTrans);
 	Image::Draw(hWinnerPict_);
 
-	Image::SetTransform(hPict_[winnerID_], transform_);
+	Transform numberTrans = transform_;
+	numberTrans.position_.x = SpriteToFloatX(NUMBER_POS.x);
+	numberTrans.position_.y = SpriteToFloatY(NUMBER_POS.y);
+
+	Image::SetTransform(hPict_[winnerID_], numberTrans);
 	Image::Draw(hPict_[winnerID_]);
 
 }

@@ -18,6 +18,7 @@ class NavigationAI;
 class CountDownUI;
 class RankingUI;
 class WinnerUI;
+class ChampionUI;
 class Timer;
 
 /// <summary>
@@ -138,6 +139,8 @@ private:
 	RankingUI* pRankingUI_;
 
 	WinnerUI* pWinnerUI_;
+
+	ChampionUI* pChampionUI_;
 
 };
 
