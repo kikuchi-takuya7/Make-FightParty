@@ -534,7 +534,7 @@ bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
         XMStoreFloat3(&data.start, front);
         XMStoreFloat3(&data.dir, back - front);
 
-        //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す
+        //モデルのTransformが最後にDrawした位置のままになっているため、一度それぞれの位置に戻す。同じhandleで複数描画してるのが原因
         Transform objTrans;
         objTrans.position_ = OBJECT_POS[i];
         Model::SetTransform(viewObjectList_.at(i), objTrans);

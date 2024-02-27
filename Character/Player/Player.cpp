@@ -17,7 +17,7 @@ namespace {
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 
-	const int FPS = 60;
+
 }
 
 //コンストラクタ
@@ -45,10 +45,10 @@ void Player::ChildInitialize()
 	status_.attackPower = PLAYER_ATTACK_POWER;
 
 	//モデルデータのロード
-	hModel_ = Model::Load("PlayerFbx/playerTest.fbx");
-	assert(hModel_ >= 0);
+	//hModel_ = Model::Load("PlayerFbx/playerTest.fbx");
+	//assert(hModel_ >= 0);
 
-	Model::SetAnimFrame(hModel_, 1, FPS, 1);
+	
 
 	
 	

@@ -15,6 +15,9 @@ namespace {
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
+
+	const int WAIT_START_FRAME = ZERO;
+	const int WAIT_END_FRAME = 60;
 }
 
 //コンストラクタ
@@ -36,9 +39,13 @@ void Character::Initialize()
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 
+	std::string fileName = "PlayerFbx/player" + std::to_string(GetObjectID()) + ".fbx";
+
 	//モデルデータのロード
-	hModel_ = Model::Load("PlayerFbx/player.fbx");
+	hModel_ = Model::Load(fileName);
 	assert(hModel_ >= 0);
+
+	Model::SetAnimFrame(hModel_, WAIT_START_FRAME, WAIT_END_FRAME, 1);
 
 	//status_ = { CHARACTER_HP,CHARACTER_ATTACK_POWER, false ,ZERO,ZERO,ZERO,"NONE" };
 	pPlayerUI_->SetMaxHp(status_.hp, status_.hp);

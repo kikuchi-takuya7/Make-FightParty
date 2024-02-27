@@ -59,9 +59,10 @@ void MainGameScene::Initialize()
 	for (int i = 0; i < PLAYER_NUM; i++) {
 
 		Player* pPlayer;
-		pPlayer = Instantiate<Player>(this);
+		pPlayer = NoInitInstantiate<Player>(this);
 		pPlayer->SetObjectID(objectID);
-		
+		pPlayer->Initialize();
+
 		std::string name = " Player" + std::to_string(objectID + 1);
 		pPlayer->SetCharacterName(name);
 		pPlayer->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
@@ -84,8 +85,9 @@ void MainGameScene::Initialize()
 	//各種AIを用意してセットする
 	for (int i = 0; i < ENEMY_NUM; i++) {
 
-		pEnemy[i] = Instantiate<Enemy>(this);
+		pEnemy[i] = NoInitInstantiate<Enemy>(this);
 		pEnemy[i]->SetObjectID(objectID);
+		pEnemy[i]->Initialize();
 
 		std::string name = "     CP" + std::to_string(objectID + 1 - PLAYER_NUM);
 		pEnemy[i]->SetCharacterName(name);

@@ -327,3 +327,15 @@ T* Instantiate(GameObject* pParent)
 	pNewObject->Initialize();
 	return pNewObject;
 }
+
+//initializeを呼び出さずオブジェクトを作成するテンプレート
+template <class T>
+T* NoInitInstantiate(GameObject* pParent)
+{
+	T* pNewObject = new T(pParent);
+	if (pParent != nullptr)
+	{
+		pParent->PushBackChild(pNewObject);
+	}
+	return pNewObject;
+}
