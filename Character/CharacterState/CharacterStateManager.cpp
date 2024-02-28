@@ -67,6 +67,9 @@ void CharacterStateManager::Leave()
 void CharacterStateManager::ChangeState(CharacterStateList nextState)
 {
 
+	if (characterState_ == pCharacterStateList_.at(nextState)) 
+		return;
+
 	//ó‘Ô‚ð•ÏX‚µ‚ÄA‚»‚Ìó‘Ô‚Ì‰Šú‰»ˆ—‚ðs‚¤
 	characterState_->Leave();
 	characterState_ = pCharacterStateList_.at(nextState);

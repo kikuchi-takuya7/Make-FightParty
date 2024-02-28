@@ -24,7 +24,7 @@ namespace {
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
 
-	const float WAIT_WINNER_TIME = 3.0f;
+	const float WAIT_WINNER_TIME = 30000.0f;
 	const float WAIT_CHAMPION_TIME = 3.0f;
 
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };

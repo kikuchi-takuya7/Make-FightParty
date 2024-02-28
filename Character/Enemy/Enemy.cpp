@@ -86,8 +86,6 @@ void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Col
 			((Character*)pTarget)->TellStatus();
 		}
 
-		
-
 		//ˆê’è‚ÌŠm—¦‚Å‘_‚¢‚ð‰£‚Á‚Ä‚«‚½‘ŠŽè‚É•Ï‚¦‚é
 		if (rand() % 2 == ZERO) {
 			pCharacterAI_->SetTargetID(pTarget->GetObjectID());

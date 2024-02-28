@@ -3,7 +3,7 @@
 
 namespace {
 	const int DIE_START_FRAME = 250;
-	const int DIE_END_FRAME = 340 + 50;
+	const int DIE_END_FRAME = 340 + 10000;//Ž€‚ñ‚¾‚ ‚Æ‚¸‚Á‚ÆŽ~‚Ü‚Á‚Ä‚Ä‚à‚ç‚¤
 }
 
 CharacterDieState::CharacterDieState(Character* character, int model) :CharacterState(character, model)
@@ -13,11 +13,11 @@ CharacterDieState::CharacterDieState(Character* character, int model) :Character
 void CharacterDieState::Update()
 {
 
-	int nowFrame = Model::GetAnimFrame(hCharacterModel_);
+	/*int nowFrame = Model::GetAnimFrame(hCharacterModel_);
 	if (nowFrame >= DIE_END_FRAME) {
 		pCharacter_->Leave();
-		Model::SetAnimFrame(hCharacterModel_, DIE_END_FRAME, DIE_END_FRAME, 1);
-	}
+		Model::SetAnimFrame(hCharacterModel_, DIE_END_FRAME, DIE_END_FRAME, 0);
+	}*/
 }
 
 void CharacterDieState::HandleInput()
@@ -38,4 +38,5 @@ void CharacterDieState::Enter()
 
 void CharacterDieState::Leave()
 {
+	int i = 0;
 }
