@@ -73,19 +73,6 @@ void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Col
 	//UŒ‚‚É“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
-
-		//Œã‚Å“G‚Ì•ûŒü‚ÉŒü‚«‚È‚¨‚·
-		SetTargetRotate(pTarget->GetRotate());
-		pState_->ChangeState(KNOCKBACK);
-
-		//‚»‚ÌUŒ‚‚Å‚â‚ç‚ê‚½‚çA‘ŠŽè‚ÌƒLƒ‹ƒ|ƒCƒ“ƒg‚ð‘‚â‚·
-		if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
-			Status status = ((Character*)pTarget)->GetStatus();
-			status.killPoint++;
-			((Character*)pTarget)->SetStatus(status);
-			((Character*)pTarget)->TellStatus();
-		}
-
 		//ˆê’è‚ÌŠm—¦‚Å‘_‚¢‚ð‰£‚Á‚Ä‚«‚½‘ŠŽè‚É•Ï‚¦‚é
 		if (rand() % 2 == ZERO) {
 			pCharacterAI_->SetTargetID(pTarget->GetObjectID());

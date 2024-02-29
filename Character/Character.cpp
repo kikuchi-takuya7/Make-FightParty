@@ -7,10 +7,11 @@
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 #include "../UI/PlayerUI.h"
 #include "CharacterState/CharacterStateManager.h"
+#include "../Engine/VFX.h"
 
 namespace {
 	const int CHARACTER_HP = 100;
-	const int CHARACTER_ATTACK_POWER = 100;
+	const int CHARACTER_ATTACK_POWER = 20;
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
@@ -133,6 +134,26 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 		HitDamage(static_cast<Needle*>(pTarget)->GetNeedlePower());
 	}
 
+	//UŒ‚‚É“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
+	{
+		//“G‚Ì•ûŒü‚ÉŒü‚«‚È‚¨‚·
+		SetTargetRotate(pTarget->GetRotate());
+		pState_->ChangeState(KNOCKBACK);
+
+		//‚»‚ÌUŒ‚‚Å‚â‚ç‚ê‚½‚çA‘ŠŽè‚ÌƒLƒ‹ƒ|ƒCƒ“ƒg‚ð‘‚â‚·
+		if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
+			Status status = ((Character*)pTarget)->GetStatus();
+			status.killPoint++;
+			((Character*)pTarget)->SetStatus(status);
+			((Character*)pTarget)->TellStatus();
+			DieEffect();
+		}
+		else {
+			HitEffect();
+		}
+	}
+
 	ChildOnCollision(pTarget, myType, targetType);
 }
 
@@ -216,6 +237,88 @@ void Character::SetCharacterName(std::string name)
 {
 	status_.playerName = name;
 	pPlayerUI_->SetPlayerName(name);
+}
+
+void Character::HitEffect()
+{
+	EmitterData data;
+	data.textureFileName = "VFX/cloudA.png";
+	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
+	data.delay = 0;
+	data.directionRnd = XMFLOAT3(0, 0, 0);
+	data.speed = 0.1f;
+	data.speedRnd = 0.0;
+	data.sizeRnd = XMFLOAT2(0.4, 0.4);
+	data.color = XMFLOAT4(1, 1, 0, 1);
+	data.deltaColor = XMFLOAT4(0, -0.03, 0, -0.02);
+
+	//‰Î‚Ì•²
+	data.number = 50;
+	data.positionRnd = XMFLOAT3(1, 1, 1);
+	data.direction = targetRot_;
+	//data.directionRnd = XMFLOAT3(10, 10, 10);
+	data.size = XMFLOAT2(0.2, 0.2);
+	data.scale = XMFLOAT2(0.95, 0.95);
+	data.rotateRnd = XMFLOAT3(45, 45, 45);
+	data.lifeTime = 10;
+	data.speed = 0.1f;
+	//data.gravity = 0.001f;
+	VFX::Start(data);
+}
+
+void Character::DieEffect()
+{
+	EmitterData data;
+
+	//‰Š
+	data.textureFileName = "VFX/cloudA.png";
+	data.position = transform_.position_;
+	data.delay = 0;
+	data.number = 80;
+	data.lifeTime = 30;
+	data.direction = XMFLOAT3(0, 1, 0);
+	data.directionRnd = XMFLOAT3(90, 90, 90);
+	data.speed = 0.1f;
+	data.speedRnd = 0.8;
+	data.size = XMFLOAT2(1.2, 1.2);
+	data.sizeRnd = XMFLOAT2(0.4, 0.4);
+	data.scale = XMFLOAT2(1.05, 1.05);
+	data.color = XMFLOAT4(1, 1, 0.1, 1);
+	data.deltaColor = XMFLOAT4(0, -1.0 / 20, 0, -1.0 / 20);
+	VFX::Start(data);
+
+	//‰Î‚Ì•²
+	data.delay = 0;
+	data.number = 80;
+	data.lifeTime = 100;
+	data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
+	data.direction = XMFLOAT3(0, 1, 0);
+	data.directionRnd = XMFLOAT3(90, 90, 90);
+	data.speed = 0.25f;
+	data.speedRnd = 1;
+	data.accel = 0.93;
+	data.size = XMFLOAT2(0.1, 0.1);
+	data.sizeRnd = XMFLOAT2(0.4, 0.4);
+	data.scale = XMFLOAT2(0.99, 0.99);
+	data.color = XMFLOAT4(1, 1, 0.1, 1);
+	data.deltaColor = XMFLOAT4(0, 0, 0, 0);
+	data.gravity = 0.003f;
+	VFX::Start(data);
+
+	//’n–Ê
+	data.textureFileName = "VFX/flashA_R.png";
+	data.positionRnd = XMFLOAT3(0, 0, 0);
+	data.isBillBoard = false;
+	data.rotate.x = 90;
+	data.delay = 0;
+	data.number = 1;
+	data.lifeTime = 7;
+	data.speed = 0;
+	data.size = XMFLOAT2(5, 5);
+	data.sizeRnd = XMFLOAT2(0, 0);
+	data.scale = XMFLOAT2(1.25f, 1.25f);
+	data.color = XMFLOAT4(1, 1, 1, 0.3f);
+	VFX::Start(data);
 }
 
 

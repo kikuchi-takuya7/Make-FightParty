@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "../../../Engine/Model.h"
 
+
 namespace {
 
 	const float BULLET_RANGE = 30.0f;
@@ -107,4 +108,5 @@ void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, in
 	attackPower_ = attackPower;
 	bulletSpeed_ = speed;
 }
+
 

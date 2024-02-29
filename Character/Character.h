@@ -172,7 +172,11 @@ protected:
     //キャラクターがそれぞれで持つUI
     PlayerUI* pPlayerUI_;
 
+    //攻撃を食らった時のエフェクト
+    void HitEffect();
 
+    //死んだ時にでるエフェクト
+    void DieEffect();
 
 private:
 

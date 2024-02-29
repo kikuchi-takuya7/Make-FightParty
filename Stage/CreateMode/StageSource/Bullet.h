@@ -30,7 +30,6 @@ public:
 
 	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed);
 	
-
 	int GetAttackPower() { return attackPower_; }
 
 private:
@@ -50,5 +49,7 @@ private:
 	SphereCollider* collider_;
 
 	XMFLOAT3 bulletPos_;
+
+	
 
 };

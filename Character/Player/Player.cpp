@@ -2,6 +2,7 @@
 #include "../../Engine/Model.h"
 #include "../../Engine/Input.h"
 #include "../../Engine/Global.h"
+#include "../../Engine/VFX.h"
 #include "../../AI/MetaAI.h"
 #include "../../Scene/MainGameScene.h"
 #include "../../Stage/CreateMode/StageSource/Bullet.h"
@@ -109,17 +110,19 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 
-		//敵の方向に向きなおす
-		SetTargetRotate(pTarget->GetRotate());
-		pState_->ChangeState(KNOCKBACK);
+		////敵の方向に向きなおす
+		//SetTargetRotate(pTarget->GetRotate());
+		//pState_->ChangeState(KNOCKBACK);
 
-		//その攻撃でやられたら、相手のキルポイントを増やす
-		if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
-			Status status = ((Character*)pTarget)->GetStatus();
-			status.killPoint++;
-			((Character*)pTarget)->SetStatus(status);
-			((Character*)pTarget)->TellStatus();
-		}
+		////その攻撃でやられたら、相手のキルポイントを増やす
+		//if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
+		//	Status status = ((Character*)pTarget)->GetStatus();
+		//	status.killPoint++;
+		//	((Character*)pTarget)->SetStatus(status);
+		//	((Character*)pTarget)->TellStatus();
+		//}
+
+		
 	}
 
 }
