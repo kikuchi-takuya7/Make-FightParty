@@ -24,8 +24,8 @@ namespace {
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
 
-	const float WAIT_WINNER_TIME = 1.0f;
-	const float WAIT_CHAMPION_TIME = 1.0f;
+	const float WAIT_WINNER_TIME = 3.0f;
+	const float WAIT_CHAMPION_TIME = 3.0f;
 
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 	const int VICTORY_POINT = 80;
@@ -64,6 +64,7 @@ void MetaAI::Initialize()
 
 	pWinnerUI_->Visible();
 	pChampionUI_->Visible();
+	pChampionUI_->Leave();
 }
 
 void MetaAI::Update()
@@ -77,6 +78,10 @@ void MetaAI::Update()
 			pRankingUI_->AllChildVisible();
 			pRankingUI_->AllChildLeave();
 			MoveChampionCam();
+			if (pChampionUI_->IsEnd() && Input::IsKeyDown(DIK_SPACE)) {
+				SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+				pSceneManager->ChangeScene(SCENE_ID_TITLE);
+			}
 		}
 
 		return;

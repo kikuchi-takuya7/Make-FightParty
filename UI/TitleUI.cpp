@@ -2,6 +2,10 @@
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
 
+namespace {
+	const XMFLOAT3 TEXT_POS = { 500,600,ZERO };
+}
+
 //コンストラクタ
 TitleUI::TitleUI(GameObject* parent)
     :GameObject(parent, "TitleUI")
@@ -56,10 +60,7 @@ void TitleUI::Draw()
 	Image::SetTransform(hPict_[FIGHT], fight_Trans_);
 	Image::Draw(hPict_[FIGHT]);
 
-	float textX = Direct3D::screenWidth_ / 2;
-	float textY = Direct3D::screenHeight_ / 2 + 200;
-
-	pText_->Draw(500, 600, "PleaseSpace");
+	pText_->Draw(TEXT_POS.x, TEXT_POS.y, "PleaseSpace");
 }
 
 //開放

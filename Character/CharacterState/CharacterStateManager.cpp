@@ -10,17 +10,18 @@
 
 //CharacterState* CharacterStateManager::CharacterState_ = CharacterIdleState_;
 
-CharacterStateManager::CharacterStateManager(Character* character):CharacterState(character)
+CharacterStateManager::CharacterStateManager(Character* character, int model):CharacterState(character, model)
 {
 
-	pCharacterStateList_.emplace_back(new CharacterIdleState(character));
-	pCharacterStateList_.emplace_back(new CharacterAttackState(character));
-	pCharacterStateList_.emplace_back(new CharacterJumpState(character));
-	pCharacterStateList_.emplace_back(new CharacterKnockBackState(character));
-	pCharacterStateList_.emplace_back(new CharacterRunState(character));
-	pCharacterStateList_.emplace_back(new CharacterDieState(character));	
+	pCharacterStateList_.emplace_back(new CharacterIdleState(character, model));
+	pCharacterStateList_.emplace_back(new CharacterAttackState(character, model));
+	pCharacterStateList_.emplace_back(new CharacterJumpState(character, model));
+	pCharacterStateList_.emplace_back(new CharacterKnockBackState(character, model));
+	pCharacterStateList_.emplace_back(new CharacterRunState(character, model));
+	pCharacterStateList_.emplace_back(new CharacterDieState(character, model));
 
 	characterState_ = pCharacterStateList_.at(IDLE);
+	characterState_->Enter();
 }
 
 CharacterStateManager::~CharacterStateManager()
@@ -39,14 +40,15 @@ CharacterStateManager::~CharacterStateManager()
 
 void CharacterStateManager::Update()
 {
-	
+
+	//死ぬ処理.
+	if (pCharacter_->GetStatus().dead) {
+		ChangeState(DIE);
+	}
 
 	characterState_->Update();
 
-	//ノックバックが終わってから死ぬ処理.
-	if (pCharacter_->GetStatus().dead && characterState_ != pCharacterStateList_.at(KNOCKBACK)) {
-		ChangeState(DIE);
-	}
+	
 
 }
 
@@ -64,6 +66,9 @@ void CharacterStateManager::Leave()
 
 void CharacterStateManager::ChangeState(CharacterStateList nextState)
 {
+
+	if (characterState_ == pCharacterStateList_.at(nextState)) 
+		return;
 
 	//状態を変更して、その状態の初期化処理を行う
 	characterState_->Leave();

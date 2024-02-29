@@ -57,13 +57,19 @@ void Player::ChildInitialize()
 //更新
 void Player::ChildUpdate()
 {
+
+	
+
 	//移動キーが押されているなら
 	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D) || Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
 	{
 
 		//Runstateで移動中なら速度早くして、他のstateなら移動速度遅くするとかが良い気がする
 		MoveCharacter();
-		//ChangeState(Character_RUN, Character);
+		ChangeState(RUN);
+	}
+	else {
+		ChangeState(IDLE);
 	}
 
 	if (Input::IsKeyDown(DIK_F)) {
@@ -102,6 +108,11 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 	//攻撃に当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
+
+		//敵の方向に向きなおす
+		SetTargetRotate(pTarget->GetRotate());
+		pState_->ChangeState(KNOCKBACK);
+
 		//その攻撃でやられたら、相手のキルポイントを増やす
 		if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
 			Status status = ((Character*)pTarget)->GetStatus();
@@ -109,11 +120,6 @@ void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, Co
 			((Character*)pTarget)->SetStatus(status);
 			((Character*)pTarget)->TellStatus();
 		}
-
-		//後で敵の方向に向きなおす
-		SetTargetRotate(pTarget->GetRotate());
-
-		pState_->ChangeState(KNOCKBACK);
 	}
 
 }
@@ -154,8 +160,8 @@ void Player::MoveCharacter()
 	fMove = VectorToFloat3(vMove);
 
 	//速度調整
-	fMove.x *= 0.5;
-	fMove.z *= 0.5;
+	fMove.x *= 0.2;
+	fMove.z *= 0.2;
 
 	characterPos.x += fMove.x;
 	characterPos.z += fMove.z;
@@ -163,6 +169,8 @@ void Player::MoveCharacter()
 	SetPosition(characterPos);
 
 	float length = Length(vMove);
+
+	
 
 	//動いているなら角度を求めて回転する
 	if (length != ZERO) {
@@ -187,7 +195,6 @@ void Player::MoveCharacter()
 		SetRotateY(degree);
 
 		SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
-
 	}
 }
 

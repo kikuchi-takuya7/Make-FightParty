@@ -10,7 +10,7 @@ class CharacterIdleState : public CharacterState
 public:
 
 	//コンストラクタ
-	CharacterIdleState(Character* character);
+	CharacterIdleState(Character* character, int model);
 
 	/// <summary>
 	/// 更新

@@ -10,7 +10,7 @@ class CharacterDieState : public CharacterState
 public:
 
 	//コンストラクタ
-	CharacterDieState(Character* character);
+	CharacterDieState(Character* characte, int modelr);
 
 	/// <summary>
 	/// 更新

@@ -9,7 +9,7 @@ class CharacterRunState : public CharacterState
 
 public:
 	//コンストラクタ
-	CharacterRunState(Character* character);
+	CharacterRunState(Character* character, int model);
 
 	/// <summary>
 	/// 更新

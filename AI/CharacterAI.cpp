@@ -77,7 +77,7 @@ void CharacterAI::MoveEnemy()
 
 		pEnemy_->SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
 
-		//pEnemy_->ChangeState(ENEMY_RUN);
+		pEnemy_->ChangeState(RUN);
 
 	}
 }

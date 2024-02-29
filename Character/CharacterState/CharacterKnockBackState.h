@@ -10,7 +10,7 @@ class CharacterKnockBackState : public CharacterState
 public:
 
 	//コンストラクタ
-	CharacterKnockBackState(Character* character);
+	CharacterKnockBackState(Character* character, int model);
 
 	/// <summary>
 	/// 更新

@@ -1,6 +1,9 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+class Timer;
+class Text;
+
 class ChampionUI : public GameObject
 {
 
@@ -25,7 +28,15 @@ public:
     //ŠJ•ú
     void Release() override;
 
+    bool IsEnd();
+
 private:
 
     int hPict_;
+
+    Timer* pTimer_;
+
+    Text* pText_;
+
+
 };

@@ -2,6 +2,7 @@
 //#include "../Engine/GameObject.h"
 #include "../../../Engine/Global.h"
 #include "../../../Engine/Input.h"
+#include "../../../Engine/Model.h"
 
 //前方宣言
 class Character;
@@ -26,7 +27,7 @@ class CharacterState
 public:
 
 	//コンストラクタ
-	CharacterState(Character* character);
+	CharacterState(Character* character, int model);
 
 
 	/// <summary>
@@ -54,6 +55,8 @@ protected:
 
 	//プレイヤーかエネミーのインスタンスを持っておく
 	Character* pCharacter_;
+
+	int hCharacterModel_;
 
 };
 
