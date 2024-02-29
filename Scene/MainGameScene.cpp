@@ -134,6 +134,9 @@ void MainGameScene::Initialize()
 	hPict_ = Image::Load("Image/BackGround/BackGround.png");
 	assert(hPict_ >= 0);
 
+	Transform trans = transform_;
+	trans.scale_ = XMFLOAT3(5, 5, 5);
+	Image::SetTransform(hPict_, trans);
 
 }
 
