@@ -97,8 +97,8 @@ void Character::Release()
 	//Åˆ«¡‚Ìstate‚Ìó‘Ô‚É‚æ‚Á‚Ädelete‚·‚é‚©‚µ‚È‚¢‚©‚ğŒˆ‚ß‚éB
 	//pAttackCollision_ = nullptr;
 
-	/*SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);*/
+	SAFE_DELETE(pAttackCollision_);
+	SAFE_DELETE(pBodyCollision_);
 	
 }
 

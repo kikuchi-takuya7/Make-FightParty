@@ -83,8 +83,8 @@ void Cannon::FiringEffect()
 	data.textureFileName = "VFX/cloudA.png";
 	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
 	data.positionRnd = XMFLOAT3(0.1, 0, 0.1);
-	data.delay = 5;
-	data.number = 1;
+	data.delay = 0;
+	data.number = 2;
 	data.lifeTime = 30;
 	data.direction = XMFLOAT3(0, 1, 0);
 	data.directionRnd = XMFLOAT3(0, 0, 0);
