@@ -28,16 +28,7 @@ public:
 
 private:
 
-	//
-	NavigationAI* pNavigationAI_;
-
-	//ƒQ[ƒ€‘S‘Ì‚Ìƒoƒ‰ƒ“ƒX‚ğŠÇ—‚·‚éAI
-	MetaAI* pMetaAI_;
-
-	Stage* pStage_;
-
-	/*Player* pPlayer_;
-
-	Enemy* pEnemy_;*/
+	//”wŒi
+	int hPict_;
 	
 };
