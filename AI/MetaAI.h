@@ -109,6 +109,8 @@ private:
 
 	int VictoryPlayer();
 
+	void VictoryEffect();
+
 	//vector<Status> enemyStatusList_;
 	//vector<Status> playerStatusList_;
 

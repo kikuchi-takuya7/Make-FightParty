@@ -78,7 +78,7 @@ void Player::ChildUpdate()
 	}
 
 	if (Input::IsKeyDown(DIK_SPACE)) {
-		ChangeState(JUMP);
+		//ChangeState(JUMP);
 	}
 
 }

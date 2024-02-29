@@ -253,15 +253,15 @@ void Character::HitEffect()
 	data.deltaColor = XMFLOAT4(0, -0.03, 0, -0.02);
 
 	//‰Î‚Ì•²
-	data.number = 50;
-	data.positionRnd = XMFLOAT3(1, 1, 1);
+	data.number = 40;
+	data.positionRnd = XMFLOAT3(0.5, 0.5, 0.5);
 	data.direction = targetRot_;
-	//data.directionRnd = XMFLOAT3(10, 10, 10);
-	data.size = XMFLOAT2(0.2, 0.2);
-	data.scale = XMFLOAT2(0.95, 0.95);
-	data.rotateRnd = XMFLOAT3(45, 45, 45);
-	data.lifeTime = 10;
-	data.speed = 0.1f;
+	data.directionRnd = XMFLOAT3(90, 90, 90);
+	data.size = XMFLOAT2(0.3, 0.3);
+	data.scale = XMFLOAT2(0.9, 0.9);
+	//data.rotateRnd = XMFLOAT3(360, 360, 360);
+	data.lifeTime = 15;
+	data.speed = 0.2f;
 	//data.gravity = 0.001f;
 	VFX::Start(data);
 }
@@ -272,7 +272,7 @@ void Character::DieEffect()
 
 	//‰Š
 	data.textureFileName = "VFX/cloudA.png";
-	data.position = transform_.position_;
+	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
 	data.delay = 0;
 	data.number = 80;
 	data.lifeTime = 30;
@@ -305,20 +305,20 @@ void Character::DieEffect()
 	data.gravity = 0.003f;
 	VFX::Start(data);
 
-	//’n–Ê
-	data.textureFileName = "VFX/flashA_R.png";
-	data.positionRnd = XMFLOAT3(0, 0, 0);
-	data.isBillBoard = false;
-	data.rotate.x = 90;
-	data.delay = 0;
-	data.number = 1;
-	data.lifeTime = 7;
-	data.speed = 0;
-	data.size = XMFLOAT2(5, 5);
-	data.sizeRnd = XMFLOAT2(0, 0);
-	data.scale = XMFLOAT2(1.25f, 1.25f);
-	data.color = XMFLOAT4(1, 1, 1, 0.3f);
-	VFX::Start(data);
+	////’n–Ê
+	//data.textureFileName = "VFX/flashA_R.png";
+	//data.positionRnd = XMFLOAT3(0, 0, 0);
+	//data.isBillBoard = false;
+	//data.rotate.x = 90;
+	//data.delay = 0;
+	//data.number = 1;
+	//data.lifeTime = 7;
+	//data.speed = 0;
+	//data.size = XMFLOAT2(5, 5);
+	//data.sizeRnd = XMFLOAT2(0, 0);
+	//data.scale = XMFLOAT2(1.25f, 1.25f);
+	//data.color = XMFLOAT4(1, 1, 1, 0.3f);
+	//VFX::Start(data);
 }
 
 

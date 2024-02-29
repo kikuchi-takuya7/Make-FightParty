@@ -9,7 +9,7 @@
 namespace {
 	const XMFLOAT3 UI_POS = { 650, 300,ZERO };
 	const XMFLOAT3 TEXT_POS = { 500,600,ZERO };
-	const float WAIT_TIME = 5.0f;
+	const float WAIT_TIME = 10.0f;
 }
 
 //コンストラクタ

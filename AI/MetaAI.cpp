@@ -1,10 +1,12 @@
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/Player/Player.h"
+#include "../Character/CharacterState/CharacterState.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include "../Engine/SceneManager.h"
 #include "../Engine/Timer.h"
+#include "../Engine/VFX.h"
 #include "../UI/CountDownUI.h"
 #include "../UI/RankingUI.h"
 #include "../UI/GaugeUI/RankingGaugeUI.h"
@@ -19,6 +21,7 @@ namespace {
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
+	const float CHAMPION_EFFECT_DIFF = 2.0f;
 
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
@@ -34,7 +37,7 @@ namespace {
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
 	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this)),
-	pWinnerUI_(Instantiate<WinnerUI>(this)),pChampionUI_(Instantiate<ChampionUI>(this))
+	pWinnerUI_(Instantiate<WinnerUI>(this)),pChampionUI_(nullptr)
 {
 }
 
@@ -63,8 +66,8 @@ void MetaAI::Initialize()
 	pRankingUI_->AllChildVisible();
 
 	pWinnerUI_->Visible();
-	pChampionUI_->Visible();
-	pChampionUI_->Leave();
+	
+
 }
 
 void MetaAI::Update()
@@ -75,9 +78,11 @@ void MetaAI::Update()
 		//一定時間待ったら優勝者にカメラを向ける
 		if (pWaitTimer_->IsFinished()) {
 			pChampionUI_->Invisible();
+			pChampionUI_->Enter();
 			pRankingUI_->AllChildVisible();
 			pRankingUI_->AllChildLeave();
 			MoveChampionCam();
+			VictoryEffect();
 			if (pChampionUI_->IsEnd() && Input::IsKeyDown(DIK_SPACE)) {
 				SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 				pSceneManager->ChangeScene(SCENE_ID_TITLE);
@@ -124,6 +129,9 @@ void MetaAI::Update()
 				endGame_ = true;
 				pNavigationAI_->AllEraseCollision();
 				pWaitTimer_->Start();
+				pChampionUI_ = Instantiate<ChampionUI>(this);
+				pChampionUI_->Visible();
+				pChampionUI_->Leave();
 				return;
 			}
 
@@ -290,6 +298,8 @@ void MetaAI::ToCreateMode()
 		
 		characterStatusList_.at(winPlayer).winPoint++;
 
+		pNavigationAI_->GetCaracter(winPlayer)->ChangeState(IDLE);
+
 		//キャラクタークラスにも教える
 		pNavigationAI_->SetStatus(winPlayer, characterStatusList_.at(winPlayer));
 
@@ -406,4 +416,47 @@ int MetaAI::VictoryPlayer()
 	}
 
 	return winner;
+}
+
+void MetaAI::VictoryEffect()
+{
+
+	Character* pChampion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
+
+	XMFLOAT3 championPos = pChampion->GetPosition();
+
+	EmitterData data;
+	data.textureFileName = "VFX/cloudA.png";
+	data.position = XMFLOAT3(championPos.x + CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
+	data.positionRnd = XMFLOAT3(0.1, 0, 0.1);
+	data.delay = 0;
+	data.number = 1;
+	data.lifeTime = 60;
+	data.gravity = -0.002f;
+	data.direction = XMFLOAT3(0, 1, 0);
+	data.directionRnd = XMFLOAT3(0, 0, 0);
+	data.speed = 0.01f;
+	data.speedRnd = 0.0;
+	data.size = XMFLOAT2(1.5, 1.5);
+	data.sizeRnd = XMFLOAT2(0.4, 0.4);
+	data.scale = XMFLOAT2(1.01, 1.01);
+	data.color = XMFLOAT4(1, 1, 0, 1);
+	data.deltaColor = XMFLOAT4(0, -0.03, 0, -0.02);
+	VFX::Start(data);
+
+	data.position = XMFLOAT3(championPos.x - CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
+	VFX::Start(data);
+
+
+	//火の粉
+	data.number = 3;
+	data.positionRnd = XMFLOAT3(0.8, 0, 0.8);
+	data.direction = XMFLOAT3(0, 1, 0);
+	data.directionRnd = XMFLOAT3(10, 10, 10);
+	data.size = XMFLOAT2(0.2, 0.2);
+	data.scale = XMFLOAT2(0.95, 0.95);
+	data.lifeTime = 120;
+	data.speed = 0.1f;
+	data.gravity = 0;
+	VFX::Start(data);
 }
