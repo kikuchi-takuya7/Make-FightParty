@@ -40,7 +40,9 @@ void StageSourceBase::Draw()
 {
 	ChildDraw();
 
+#ifdef _DEBUG
 	CollisionDraw();
+#endif
 
 }
 

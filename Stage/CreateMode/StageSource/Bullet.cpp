@@ -83,7 +83,9 @@ void Bullet::Draw()
 	Model::SetTransform(bulletModel_, bulletTrans);
 	Model::Draw(bulletModel_);
 
+#ifdef _DEBUG
 	CollisionDraw();
+#endif
 }
 
 void Bullet::Release()

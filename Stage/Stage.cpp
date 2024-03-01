@@ -113,7 +113,7 @@ void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 		if (sx >= STAGE_SIZE.x || sx < 0 || sz >= STAGE_SIZE.y || sz < 0) {
 			continue;
 		}
-		stageCost_.at(pos.z + moveZ[i]).at(pos.x + moveX[i]) = cost;
+		stageCost_.at(sz).at(sx) = cost;
 	}
 }
 

@@ -7,7 +7,7 @@ namespace {
 	const float MIN = ZERO;
 	const float MAX = 1.0f;
 
-	const float PINCH = 20.0f;
+	const float PINCH = 25.0f;
 }
 
 

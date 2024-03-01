@@ -43,7 +43,7 @@ void Player::ChildInitialize()
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	status_.attackPower = PLAYER_ATTACK_POWER;
+	//status_.attackPower = PLAYER_ATTACK_POWER;
 
 	//モデルデータのロード
 	//hModel_ = Model::Load("PlayerFbx/playerTest.fbx");
