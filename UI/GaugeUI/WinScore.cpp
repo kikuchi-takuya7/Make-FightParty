@@ -31,8 +31,3 @@ void WinScore::ChildDraw()
 void WinScore::ChildRelease()
 {
 }
-
-bool WinScore::IsEndAnim()
-{
-	return false;
-}

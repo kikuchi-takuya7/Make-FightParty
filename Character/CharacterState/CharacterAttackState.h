@@ -4,7 +4,7 @@
 class BoxCollider;
 
 /// <summary>
-/// UŒ‚‚µ‚½ó‘Ô
+/// UŒ‚‚µ‚Ä‚¢‚éó‘Ô
 /// </summary>
 class CharacterAttackState : public CharacterState
 {
@@ -37,7 +37,7 @@ public:
 
 private:
 
-	int frame_;
+	//“–‚½‚è”»’è‚ğİ’uÏ‚İ‚©”Û‚©Bİ’uÏ‚İ‚È‚çtrue
 	bool settedCollision_;
 
 };

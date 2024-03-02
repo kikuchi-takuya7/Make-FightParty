@@ -85,6 +85,7 @@ void Stage::Release()
 	//SAFE_DELETE(pCreateMode_);
 }
 
+// 全てのupdateを許可
 void Stage::AllStartUpdate()
 {
 	for (auto it = pStageSourceList_.begin(); it != pStageSourceList_.end(); it++) {
@@ -92,6 +93,7 @@ void Stage::AllStartUpdate()
 	}
 }
 
+//全てのupdateを止める
 void Stage::AllStopUpdate()
 {
 	for (auto it = pStageSourceList_.begin(); it != pStageSourceList_.end(); it++) {
@@ -99,6 +101,9 @@ void Stage::AllStopUpdate()
 	}
 }
 
+// ステージのコストをセットする
+// 引数１：そのオブジェクトの位置
+// 引数２：オブジェクトのコスト
 void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 {
 	stageCost_.at(pos.z).at(pos.x) = cost;
@@ -117,11 +122,10 @@ void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 	}
 }
 
+// Astarアルゴリズムで出た経路を表示する為にモデルを変える為の関数
+// 引数：経路探索ででた経路
 void Stage::SetDebugModel(std::stack<std::pair<int, int>> pair)
 {
-
-	
-
 	//Astarの経路探索で出た場所のモデルを変える
 	while (!pair.empty())
 	{

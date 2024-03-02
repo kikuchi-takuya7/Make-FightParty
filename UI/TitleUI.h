@@ -1,6 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+//タイトルの画像をenumで管理
 enum IMAGE {
 
     MAKE,
@@ -12,7 +13,7 @@ enum IMAGE {
 class Text;
 
 /// <summary>
-/// タイトルのロゴを管理するシーン
+/// タイトルのロゴを管理するクラス
 /// </summary>
 class TitleUI : public GameObject
 {

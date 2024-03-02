@@ -2,7 +2,7 @@
 #include "CharacterState.h"
 
 /// <summary>
-/// ジャンプしてる状態
+/// ジャンプしてる状態(未実装)
 /// </summary>
 class CharacterJumpState : public CharacterState
 {

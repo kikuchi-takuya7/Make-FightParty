@@ -98,8 +98,3 @@ void CharacterKnockBackState::Enter()
 void CharacterKnockBackState::Leave()
 {
 }
-
-float CharacterKnockBackState::GetRateValue(float begin, float end, float rate)
-{
-	return (end - begin) * rate + begin;
-}

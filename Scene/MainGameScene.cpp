@@ -129,7 +129,7 @@ void MainGameScene::Initialize()
 		charaAI->AskTarget();
 	}
 
-	pMetaAI->StartGame();
+	pMetaAI->ResetGame();
 
 	hPict_ = Image::Load("Image/BackGround/BackGround.png");
 	assert(hPict_ >= 0);

@@ -7,6 +7,9 @@
 //表示する位置は、外から（使う側）から指定できるようにする
 //加算する関数と、減算する関数と、現在の値を取得する関数を用意する
 
+/// <summary>
+/// 徐々に動かしたいゲージ用の基底クラス
+/// </summary>
 class GaugeBase : public GameObject
 {
 
@@ -82,10 +85,21 @@ public:
     /// <param name="v">変更後の値</param>
     void SetValue(float v);
 
+    /// <summary>
+    /// 現在のゲージの値を取得
+    /// </summary>
+    /// <returns>nowGaugeの値</returns>
     float GetValue();
 
+    /// <summary>
+    /// アニメーションが終わったかどうか
+    /// </summary>
+    /// <returns>終わっていたらtrue</returns>
     bool IsEndAnim();
 
+    /// <summary>
+    /// アニメーションを即座に終わらせる関数
+    /// </summary>
     void EndAnim();
 
 protected:

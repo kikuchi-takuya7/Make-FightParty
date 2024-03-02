@@ -32,8 +32,3 @@ void KillScore::ChildDraw()
 void KillScore::ChildRelease()
 {
 }
-
-bool KillScore::IsEndAnim()
-{
-	return false;
-}

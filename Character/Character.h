@@ -1,16 +1,23 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+/// <summary>
+/// 攻撃力や試合中のkillポイント等を覚えるステータス
+/// </summary>
 struct Status {
-    int hp;
-    int attackPower;
-    bool dead;
 
-    int winPoint;
-    int killPoint;
-    int trapKillPoint;
-    std::string playerName;
+    //試合に関係するステータス
+    int hp;                 //HP
+    int attackPower;        //敵を殴った時に与えるダメージ
+    bool dead;              //死んでいるかどうか。死んでたらtrue
 
+    //スコアに関係するステータス
+    int winPoint;           //勝った合計数
+    int killPoint;          //試合中に倒した敵の数
+    int trapKillPoint;      //トラップで倒した
+    std::string playerName; //プレイヤーの名前
+
+    //デフォルトコンストラクタ
     Status() {
         hp = ZERO;
         attackPower = ZERO;
@@ -21,6 +28,7 @@ struct Status {
         playerName = "noname";
     }
 
+    //引数付きコンストラクタ
     Status(int h, int p, bool d, int win, int kill, int obj, std::string n) {
         hp = h;
         attackPower = p;
@@ -71,61 +79,63 @@ public:
     /// <param name="pTarget">当たった相手</param>
     void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
+    //////////////////子供に継承させる関数//////////////////////////////
+
+    /// <summary>
+    /// 継承先用の初期化関数
+    /// </summary>
+    virtual void ChildInitialize() {};
+
+    /// <summary>
+    /// 継承先用のUpdate関数
+    /// </summary>
+    virtual void ChildUpdate() {};
+
+    /// <summary>
+    /// 継承先用の描画関数
+    /// </summary>
+    virtual void ChildDraw() {};
+
+    /// <summary>
+    /// 継承先用の開放関数
+    /// </summary>
+    virtual void ChildRelease() {};
+
+    /// <summary>
+    /// キャラクター毎の移動処理（敵ならAI、人なら操作）
+    /// </summary>
+    virtual void MoveCharacter() {};
+
+    /// <summary>
+    /// Enemyが攻撃を食らった時に一定確率で狙いを変える用の関数
+    /// </summary>
+    virtual void ChangeTarget(GameObject* pTarget) {};
+
+    /// <summary>
+    /// メタAIに情報を教える関数
+    /// </summary>
+    virtual void TellStatus() {};
 
     /////////////////////メンバ関数/////////////////////////////////////
 
     /// <summary>
-    /// 攻撃に当たった時
+    /// 攻撃に当たった時にHPを減らす関数
     /// </summary>
     /// <param name="damage">食らったダメージ量</param>
     /// <returns>そのダメージで死亡したらtrue</returns>
     bool HitDamage(int damage);
 
-    void StopDraw();
-
-    void StartDraw();
-
-    void StopDrawUI();
-
-    void Dead();
-
-    //////////////////子供に継承させる関数//////////////////////////////
-
     /// <summary>
-    /// 継承先用の初期化
+    /// ステータスをゲーム開始時にリセットする関数（winPointはそのまま）
     /// </summary>
-    virtual void ChildInitialize() {};
-
-    /// <summary>
-    /// 継承先用のUpdate
-    /// </summary>
-    virtual void ChildUpdate() {};
-
-    /// <summary>
-    /// 継承先用の描画
-    /// </summary>
-    virtual void ChildDraw() {};
-
-    /// <summary>
-    /// 継承先用の開放
-    /// </summary>
-    virtual void ChildRelease() {};
-
-    /// <summary>
-    /// キャラクターの移動処理
-    /// </summary>
-    virtual void MoveCharacter();
-
-    //子供の当たり判定（EnemyとPlayerで若干処理が違う）
-    virtual void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) {};
-
-    //メタAIに情報を教える関数
-    virtual void TellStatus() {};
-
-
-    //stateまとめて処理したいけど何とかできないかな
     void ResetStatus();
-    
+
+    //////////////////////////////////プレイヤーUIとまとめて状態を変える関数/////////////////
+
+    void StopDraw();    //描画を止める
+    void StartDraw();   //描画を許可する
+    void StopDrawUI();  //UIの描画を止める
+    void Dead();        //ステータスのdeadをtrueにする（未使用）
 
     ///////////////////アクセス関数/////////////////////////////////////
 
@@ -145,10 +155,15 @@ public:
     void SetTargetRotate(XMFLOAT3 rot) { targetRot_ = rot; }
     void SetAttackCollider() { AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK); }
     void SetUIPos(XMFLOAT3 pos);
-
     void SetCharacterName(std::string name);
 
 protected:
+
+    //攻撃を食らった時のエフェクト
+    void HitEffect();
+
+    //死んだ時にでるエフェクト
+    void DieEffect();
 
     //モデル番号
     int hModel_;
@@ -172,11 +187,7 @@ protected:
     //キャラクターがそれぞれで持つUI
     PlayerUI* pPlayerUI_;
 
-    //攻撃を食らった時のエフェクト
-    void HitEffect();
-
-    //死んだ時にでるエフェクト
-    void DieEffect();
+    
 
 private:
 

@@ -20,11 +20,6 @@ void DevelopSelectScene::Update()
 {
 	switch (scene_)
 	{
-	case SCENE_ID_MAPEDITOR: {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_MAPEDITOR);
-		break;
-	}
 	case SCENE_ID_MAINGAME: {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_MAINGAME);
@@ -54,9 +49,6 @@ void DevelopSelectScene::Imgui_Window()
 	if (ImGui::CollapsingHeader("Let's Go SelectScene"))
 	{
 		
-		if (ImGui::Button("MapEditor"))
-			scene_ = SCENE_ID_MAPEDITOR;
-
 		if (ImGui::Button("IKEditor"))
 			scene_ = SCENE_ID_MAINGAME;
 

@@ -181,7 +181,6 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Scene\DevelopSelectScene.cpp" />
     <ClCompile Include="Scene\MainGameScene.cpp" />
-    <ClCompile Include="Scene\MapEditorScene.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Stage\CreateMode\CreateMode.cpp" />
@@ -257,7 +256,6 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Scene\DevelopSelectScene.h" />
     <ClInclude Include="Scene\MainGameScene.h" />
-    <ClInclude Include="Scene\MapEditorScene.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Stage\CreateMode\CreateMode.h" />

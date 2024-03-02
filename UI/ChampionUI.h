@@ -4,6 +4,9 @@
 class Timer;
 class Text;
 
+/// <summary>
+/// —DŸÒ‚ªŒˆ‚Ü‚Á‚½‚Éo‚éUI
+/// </summary>
 class ChampionUI : public GameObject
 {
 

@@ -5,7 +5,7 @@ class Text;
 class HpGaugeUI;
 
 /// <summary>
-/// タイトルのロゴを管理するシーン
+/// HPゲージ等のキャラクターのUIを管理するクラス
 /// </summary>
 class PlayerUI : public GameObject
 {

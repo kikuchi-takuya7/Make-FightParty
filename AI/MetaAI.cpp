@@ -74,82 +74,17 @@ void MetaAI::Update()
 {
 	//優勝者が決まったら試合を止める
 	if (endGame_) {
-
-		//一定時間待ったら優勝者にカメラを向ける
-		if (pWaitTimer_->IsFinished()) {
-			pChampionUI_->Invisible();
-			pChampionUI_->Enter();
-			pRankingUI_->AllChildVisible();
-			pRankingUI_->AllChildLeave();
-			MoveChampionCam();
-			VictoryEffect();
-			if (pChampionUI_->IsEnd() && Input::IsKeyDown(DIK_SPACE)) {
-				SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-				pSceneManager->ChangeScene(SCENE_ID_TITLE);
-			}
-		}
-
+		ChampionUpdate();
 		return;
 	}
 
-	//優勝者が決まってる場合は上で、決まってないならこっちでタイマーを使う。
-	if (pWaitTimer_->IsFinished()) {
-		pNavigationAI_->AllStopDrawPlayerUI();
-		pRankingUI_->AllChildInvisible();
-		pRankingUI_->AllChildEnter();
-		pWinnerUI_->Visible();
-		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
+	//優勝者が決まってる場合は上で、決まってないならこっちを使う。
+	UsuallyUpdate();
 
-		if (Input::IsKeyDown(DIK_2)) {
-			pRankingUI_->SetScore(ZERO, WIN_GAUGE,1);
-			score_.at(ZERO) += SCORE[WIN_GAUGE];
-		}
-		if (Input::IsKeyDown(DIK_3)) {
-			pRankingUI_->SetScore(1, KILL_GAUGE,1);
-			score_.at(1) += SCORE[KILL_GAUGE];
-		}
-		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE, 1);
-			score_.at(2) += SCORE[TRAP_KILL_GAUGE];
-		}
-		
-		if (Input::IsKeyDown(DIK_SPACE)) {
-
-			if (pRankingUI_->IsAllEndAnim() == false) {
-				pRankingUI_->EndAnim();
-				return;
-			}
-
-			pWaitTimer_->Reset();
-			
-
-			//優勝者が決まってらリザルトシーンに
-			int ID = VictoryPlayer();
-			if (ID != -1) {
-				endGame_ = true;
-				pNavigationAI_->AllEraseCollision();
-				pWaitTimer_->Start();
-				pChampionUI_ = Instantiate<ChampionUI>(this);
-				pChampionUI_->Visible();
-				pChampionUI_->Leave();
-				return;
-			}
-
-			pCreateMode_->ToSelectMode();
-			pNavigationAI_->AllStopDraw();
-			pRankingUI_->AllChildVisible();
-			pRankingUI_->AllChildLeave();
-
-		}
-	}
-
-	//カウントダウンが終わったら動く許可を出す
-	if (pCountDown_->IsFinished()) {
-		pNavigationAI_->AllStartUpdate();
-		pCountDown_->Reset();
-	}
 
 	//デバック用
+#ifdef _DEBUG
+
 	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
 
 		characterStatusList_.at(ZERO).winPoint++;
@@ -161,13 +96,19 @@ void MetaAI::Update()
 		}
 		pCreateMode_->ToSelectMode();
 	}
+
+#endif 
+
+	
 }
 
 void MetaAI::Release()
 {
 }
 
-//狙うべき相手を決める関数
+// 狙うべき相手を指示する関数
+// 引数：自分のID
+// 戻り値：狙うべき敵のID
 int MetaAI::Targeting(int ID)
 {
 	int targetFrag = rand() % TARGET_NUM;
@@ -225,56 +166,20 @@ int MetaAI::Targeting(int ID)
 
 }
 
-void MetaAI::CheckNo1Chara()
+// セレクトモードで表示されたオブジェクトを選択する関数
+// 引数：表示されているオブジェクト一覧
+// 戻り値：どのオブジェクトを選んだか
+int MetaAI::SelectObject(vector<int> model)
 {
-
-	No1CharaID_.clear();
-
-	//一位のポイントとそれと同じ点数が何人いるか
-	int No1Score = ZERO;
-	
-	vector<pair<int,int>> ranking;
-
-	//ソートする用の配列に入れる
-	for (int i = ZERO; i < characterStatusList_.size(); i++) {
-
-		//キャラのスコアとIDを入れる（リストに入ってる順番がそのままIDになってる）
-		ranking.emplace_back(std::make_pair(score_.at(i),i));
-	}
-
-	//降順でソートする
-	std::sort(ranking.rbegin(), ranking.rend());
-
-	//一位のポイントとIDを覚えておく
-	No1Score = ranking.at(ZERO).first;
-	No1CharaID_.emplace_back(ranking.at(ZERO).second);
-	
-	//ついでにメンバ変数のランキングも更新する
-	ranking_.at(ZERO) = ranking.at(ZERO).second;
-
-	for (int i = 1; i < ranking.size(); i++) {
-
-		//一位の人と同じポイントなら同率１位を入れる
-		if (No1Score == score_.at(i)) {
-
-			No1CharaID_.emplace_back(ranking.at(i).second);
-			ranking_.at(i) = ranking.at(i).second;
-		}
-		else {
-			
-			//2位以下を更新
-			ranking_.at(i) = ranking.at(i).second;
-		}
-	}
-
-	
+	//今はとりあえずランダムで返す
+	return model.at(rand() % model.size());
 }
 
-void MetaAI::ToCreateMode()
+// 勝敗が決まっていたらクリエイトモードへ移行する関数
+void MetaAI::DecidedWinner()
 {
-
 	int deadNum = 0;
-	
+
 	int winPlayer = 0;
 
 	//死んでる人数を数える
@@ -288,58 +193,12 @@ void MetaAI::ToCreateMode()
 		}
 	}
 
-	//相打ちだった場合
-	if (deadNum == 4) {
-
-	}
-
-	//3人以上死んでいたら勝ったプレイヤーのwinPointを増やして、現在の順位を確認する
 	if (deadNum >= 3 && pCreateMode_->GetState() == NONE) {
-		
-		characterStatusList_.at(winPlayer).winPoint++;
-
-		pNavigationAI_->GetCaracter(winPlayer)->ChangeState(IDLE);
-
-		//キャラクタークラスにも教える
-		pNavigationAI_->SetStatus(winPlayer, characterStatusList_.at(winPlayer));
-
-
-		//スコアを確認する
-		pRankingUI_->SetScore(winPlayer, WIN_GAUGE,1);
-		score_.at(winPlayer) += SCORE[WIN_GAUGE];
-
-		//キル数分もスコアに加算する
-		for (int i = 0; i < characterStatusList_.size(); i++) {
-
-			pRankingUI_->SetScore(i, KILL_GAUGE, characterStatusList_.at(i).killPoint);
-			score_.at(i) += SCORE[KILL_GAUGE] * characterStatusList_.at(i).killPoint;
-			
-			pRankingUI_->SetScore(i, TRAP_KILL_GAUGE, characterStatusList_.at(i).trapKillPoint);
-			score_.at(i) += SCORE[TRAP_KILL_GAUGE] * characterStatusList_.at(i).trapKillPoint;
-		}
-
-		//現状の一位が誰か確認する
-		CheckNo1Chara();
-
-		pRankingUI_->AllChildLeave();
-		pNavigationAI_->AllStopUpdate();
-		
-		pWinnerUI_->SetWinnerID(winPlayer);
-		pWinnerUI_->Invisible();
-
-		pWaitTimer_->Start();
+		ToCreateMode(winPlayer);
 	}
 }
 
-void MetaAI::StartGame()
-{
-	pNavigationAI_->AllStartDraw();
-	pNavigationAI_->AllStopUpdate();
-
-	pCountDown_->Start();
-	GameCameraSet();
-}
-
+// ゲームの状態をリセットしてカウントダウンする関数
 void MetaAI::ResetGame()
 {
 	//もろもろ初期化して、カウントダウンが終わるまで動かさない。
@@ -353,27 +212,192 @@ void MetaAI::ResetGame()
 
 }
 
-void MetaAI::GameCameraSet()
-{
-	Camera::SetPosition(MAIN_GAME_CAM_POS);
-	Camera::SetTarget(MAIN_GAME_CAM_TAR);
-}
 
-int MetaAI::SelectObject(vector<int> model)
-{
-
-	//今はとりあえずランダムで返す
-	return model.at(rand() % model.size());
-
-
-}
-
+// characterStatusList_にステータスをプッシュすると同時に、名前もRankingUIにセットする関数
+// 引数：プッシュしたいステータス
 void MetaAI::PushCharacterStatus(Status status)
 {
 	characterStatusList_.emplace_back(status);
 	pRankingUI_->SetPlayerName(characterStatusList_.size() - 1, status.playerName);
 }
 
+///////////////////////////////////////////////private関数///////////////////////////////////////////
+
+
+// 優勝者が決まった時のUpdate
+void MetaAI::ChampionUpdate()
+{
+	//一定時間待ったら優勝者にカメラを向ける
+	if (pWaitTimer_->IsFinished()) {
+		pChampionUI_->Invisible();
+		pChampionUI_->Enter();
+		pRankingUI_->AllChildVisible();
+		pRankingUI_->AllChildLeave();
+		MoveChampionCam();
+		VictoryEffect();
+		if (pChampionUI_->IsEnd() && Input::IsKeyDown(DIK_SPACE)) {
+			SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+			pSceneManager->ChangeScene(SCENE_ID_TITLE);
+		}
+	}
+}
+
+// 通常時のUpdate関数
+void MetaAI::UsuallyUpdate()
+{
+	if (pWaitTimer_->IsFinished()) {
+		pNavigationAI_->AllStopDrawPlayerUI();
+		pRankingUI_->AllChildInvisible();
+		pRankingUI_->AllChildEnter();
+		pWinnerUI_->Visible();
+		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
+
+#ifdef _DEBUG
+		if (Input::IsKeyDown(DIK_2)) {
+			pRankingUI_->SetScore(ZERO, WIN_GAUGE, 1);
+			score_.at(ZERO) += SCORE[WIN_GAUGE];
+		}
+		if (Input::IsKeyDown(DIK_3)) {
+			pRankingUI_->SetScore(1, KILL_GAUGE, 1);
+			score_.at(1) += SCORE[KILL_GAUGE];
+		}
+		if (Input::IsKeyDown(DIK_4)) {
+			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE, 1);
+			score_.at(2) += SCORE[TRAP_KILL_GAUGE];
+		}
+#endif
+
+		if (Input::IsKeyDown(DIK_SPACE)) {
+
+			if (pRankingUI_->IsAllEndAnim() == false) {
+				pRankingUI_->EndAnim();
+				return;
+			}
+
+			pWaitTimer_->Reset();
+
+
+			//優勝者が決まってらリザルトシーンに
+			int ID = VictoryPlayer();
+			if (ID != -1) {
+				endGame_ = true;
+				pNavigationAI_->AllEraseCollision();
+				pWaitTimer_->Start();
+				pChampionUI_ = Instantiate<ChampionUI>(this);
+				pChampionUI_->Visible();
+				pChampionUI_->Leave();
+				return;
+			}
+
+			pCreateMode_->ToSelectMode();
+			pNavigationAI_->AllStopDraw();
+			pRankingUI_->AllChildVisible();
+			pRankingUI_->AllChildLeave();
+
+		}
+	}
+
+	//カウントダウンが終わったら動く許可を出す
+	if (pCountDown_->IsFinished()) {
+		pNavigationAI_->AllStartUpdate();
+		pCountDown_->Reset();
+	}
+}
+
+// 1位のキャラIDは誰か、何人いるかを確認する関数
+void MetaAI::CheckNo1Chara()
+{
+
+	No1CharaID_.clear();
+
+	//一位のポイントとそれと同じ点数が何人いるか
+	int No1Score = ZERO;
+
+	vector<pair<int, int>> ranking;
+
+	//ソートする用の配列に入れる
+	for (int i = ZERO; i < characterStatusList_.size(); i++) {
+
+		//キャラのスコアとIDを入れる（リストに入ってる順番がそのままIDになってる）
+		ranking.emplace_back(std::make_pair(score_.at(i), i));
+	}
+
+	//降順でソートする
+	std::sort(ranking.rbegin(), ranking.rend());
+
+	//一位のポイントとIDを覚えておく
+	No1Score = ranking.at(ZERO).first;
+	No1CharaID_.emplace_back(ranking.at(ZERO).second);
+
+	//ついでにメンバ変数のランキングも更新する
+	ranking_.at(ZERO) = ranking.at(ZERO).second;
+
+	for (int i = 1; i < ranking.size(); i++) {
+
+		//一位の人と同じポイントなら同率１位を入れる
+		if (No1Score == score_.at(i)) {
+
+			No1CharaID_.emplace_back(ranking.at(i).second);
+			ranking_.at(i) = ranking.at(i).second;
+		}
+		else {
+
+			//2位以下を更新
+			ranking_.at(i) = ranking.at(i).second;
+		}
+	}
+}
+
+
+// クリエイトモードに移行する関数
+// 引数：勝ったプレイヤーのID
+void MetaAI::ToCreateMode(int winnerID)
+{
+
+	//勝ったプレイヤーのwinPointを増やして、現在の順位を確認する
+	characterStatusList_.at(winnerID).winPoint++;
+
+	pNavigationAI_->GetCaracter(winnerID)->ChangeState(IDLE);
+
+	//キャラクタークラスにも教える
+	pNavigationAI_->SetStatus(winnerID, characterStatusList_.at(winnerID));
+
+
+	//スコアを確認する
+	pRankingUI_->SetScore(winnerID, WIN_GAUGE, 1);
+	score_.at(winnerID) += SCORE[WIN_GAUGE];
+
+	//キル数分もスコアに加算する
+	for (int i = 0; i < characterStatusList_.size(); i++) {
+
+		pRankingUI_->SetScore(i, KILL_GAUGE, characterStatusList_.at(i).killPoint);
+		score_.at(i) += SCORE[KILL_GAUGE] * characterStatusList_.at(i).killPoint;
+
+		pRankingUI_->SetScore(i, TRAP_KILL_GAUGE, characterStatusList_.at(i).trapKillPoint);
+		score_.at(i) += SCORE[TRAP_KILL_GAUGE] * characterStatusList_.at(i).trapKillPoint;
+	}
+
+	//現状の一位が誰か確認する
+	CheckNo1Chara();
+
+	pRankingUI_->AllChildLeave();
+	pNavigationAI_->AllStopUpdate();
+
+	pWinnerUI_->SetWinnerID(winnerID);
+	pWinnerUI_->Invisible();
+
+	pWaitTimer_->Start();
+
+}
+
+// ゲーム用のカメラにセットする関数
+void MetaAI::GameCameraSet()
+{
+	Camera::SetPosition(MAIN_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);
+}
+
+// 優勝者の方にカメラを向ける関数
 void MetaAI::MoveChampionCam()
 {
 	Character* pChampion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
@@ -389,6 +413,8 @@ void MetaAI::MoveChampionCam()
 	Camera::MoveCam(camPos, camTar, CHAMPION_CAM_RATE);
 }
 
+// 優勝者は誰かを決める関数
+// 引数：優勝したプレイヤーのID
 int MetaAI::VictoryPlayer()
 {
 	int winner = -1;
@@ -418,6 +444,7 @@ int MetaAI::VictoryPlayer()
 	return winner;
 }
 
+// 優勝者の周りにエフェクトを出す関数
 void MetaAI::VictoryEffect()
 {
 

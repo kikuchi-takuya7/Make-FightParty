@@ -14,16 +14,12 @@ namespace {
 	const int ATTACK_END_FRAME = 110;
 }
 
-CharacterAttackState::CharacterAttackState(Character* character, int model) :CharacterState(character, model),frame_(ZERO), settedCollision_(false)
+CharacterAttackState::CharacterAttackState(Character* character, int model) :CharacterState(character, model), settedCollision_(false)
 {
 }
 
 void CharacterAttackState::Update()
 {
-
-	//攻撃アニメーションを始めて一定時間立ったらIdleに戻す
-	frame_++;
-
 	//攻撃は殴る瞬間に少し前に出てジャンプできなくなるみたいな感じにしたい。スティックファイト座ゲームみたいな感じ
 
 	int nowFrame = Model::GetAnimFrame(hCharacterModel_);
@@ -52,7 +48,6 @@ void CharacterAttackState::HandleInput()
 
 void CharacterAttackState::Enter()
 {
-	frame_ = ZERO;
 	settedCollision_ = false;
 	Model::SetAnimFrame(hCharacterModel_, MOTION_START_FRAME, MOTION_END_FRAME, 1);
 }

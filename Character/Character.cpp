@@ -102,9 +102,10 @@ void Character::Release()
 	
 }
 
+// 別のcolliderに衝突したときに呼ばれる関数
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
-	
+	//死んでいたら判定しない様に
 	if (status_.dead) {
 		return;
 	}
@@ -141,6 +142,9 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 		SetTargetRotate(pTarget->GetRotate());
 		pState_->ChangeState(KNOCKBACK);
 
+		//攻撃を食らったのがEnemyの場合、一定確率で狙いを攻撃してきた相手に変える
+		ChangeTarget(pTarget);
+
 		//その攻撃でやられたら、相手のキルポイントを増やす
 		if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
 			Status status = ((Character*)pTarget)->GetStatus();
@@ -153,10 +157,11 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 			HitEffect();
 		}
 	}
-
-	ChildOnCollision(pTarget, myType, targetType);
 }
 
+// 攻撃に当たった時にHPを減らす関数
+// 引数：食らったダメージ量
+// 戻り値：そのダメージで死亡したらtrue
 bool Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
@@ -172,34 +177,7 @@ bool Character::HitDamage(int damage)
 	return status_.dead;
 }
 
-void Character::StopDraw()
-{
-	Visible();
-	pPlayerUI_->StopDraw();
-}
-
-void Character::StartDraw()
-{
-	Invisible();
-	pPlayerUI_->StartDraw();
-}
-
-void Character::StopDrawUI()
-{
-	pPlayerUI_->StopDraw();
-}
-
-void Character::Dead()
-{
-	status_.dead = true;
-}
-
-
-
-void Character::MoveCharacter()
-{
-}
-
+// ステータスをゲーム開始時にリセットする関数（winPointはそのまま）
 void Character::ResetStatus()
 {
 	EraseCollider(COLLIDER_ATTACK);
@@ -223,22 +201,54 @@ void Character::ResetStatus()
 	ChangeState(IDLE);
 }
 
+//描画を止める
+void Character::StopDraw()
+{
+	Visible();
+	pPlayerUI_->StopDraw();
+}
+
+//描画を許可する
+void Character::StartDraw()
+{
+	Invisible();
+	pPlayerUI_->StartDraw();
+}
+
+//UIの描画を止める
+void Character::StopDrawUI()
+{
+	pPlayerUI_->StopDraw();
+}
+
+//ステータスのdeadをtrueにする（未使用）
+void Character::Dead()
+{
+	status_.dead = true;
+}
+
+
+// 現在のstateを変える
+// 引数：次のstate
 void Character::ChangeState(CharacterStateList nextState)
 {
 	pState_->ChangeState(nextState);
 }
 
+//プレイヤーUIの場所をセットする
 void Character::SetUIPos(XMFLOAT3 pos)
 {
 	pPlayerUI_->SetPlayerUIPos(pos);
 }
 
+//キャラクターの名前をセットする
 void Character::SetCharacterName(std::string name)
 {
 	status_.playerName = name;
 	pPlayerUI_->SetPlayerName(name);
 }
 
+//攻撃を食らった時のエフェクト
 void Character::HitEffect()
 {
 	EmitterData data;
@@ -266,6 +276,7 @@ void Character::HitEffect()
 	VFX::Start(data);
 }
 
+//死んだ時にでるエフェクト
 void Character::DieEffect()
 {
 	EmitterData data;

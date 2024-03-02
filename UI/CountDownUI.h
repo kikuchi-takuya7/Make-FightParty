@@ -1,6 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+//カウントダウンの画像をenumで管理
 enum COUNTTIME {
     
     COUNT_GO,

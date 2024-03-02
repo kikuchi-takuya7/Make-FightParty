@@ -66,6 +66,9 @@ void GaugeBase::Release()
 {
 }
 
+// ゲージの値をセットする
+// 引数１：今の値
+// 引数２：値の最大値
 void GaugeBase::SetGauge(int nowGaugeBase, int maxGaugeBase)
 {
 	nowGauge_ = nowGaugeBase;
@@ -74,6 +77,8 @@ void GaugeBase::SetGauge(int nowGaugeBase, int maxGaugeBase)
 	
 }
 
+// 今のゲージの値を変える
+// 引数：今の値
 void GaugeBase::SetNowGauge(int nowGaugeBase)
 {
 	nowGauge_ = nowGaugeBase;
@@ -83,6 +88,8 @@ void GaugeBase::SetNowGauge(int nowGaugeBase)
 
 }
 
+// 値を加減算する
+// 引数：加算したい値
 void GaugeBase::AddValue(float v)
 {
 	nowGauge_ += v;
@@ -92,6 +99,8 @@ void GaugeBase::AddValue(float v)
 		nowGauge_ = maxGauge_;
 }
 
+// 値を引数の値に変更する
+// 引数：変更後の値
 void GaugeBase::SetValue(float v)
 {
 	assert(v >= MIN && v <= MAX);
@@ -103,16 +112,20 @@ void GaugeBase::SetValue(float v)
 		nowGauge_ = maxGauge_;
 }
 
+//現在のゲージの値を取得
+//戻り値：nowGaugeの値
 float GaugeBase::GetValue()
 {
 	return nowGauge_;
 }
-
+// アニメーションが終わったかどうか
+// 戻り値：終わっていたらturue
 bool GaugeBase::IsEndAnim()
 {
 	return (animGauge_ == nowGauge_);
 }
 
+//アニメーションを即座に終わらせる関数
 void GaugeBase::EndAnim()
 {
 	nowGauge_ = maxGauge_;

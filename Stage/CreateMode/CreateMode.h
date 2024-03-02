@@ -4,6 +4,7 @@
 #include <stack>
 #include <vector>
 
+//クリエイトモードとセレクトモードを切り替える用
 enum CREATESTATE {
 	SELECT_MODE,
 	SETTING_MODE,
@@ -18,6 +19,7 @@ enum FBXPATTERN {
 	PATTERN_END
 };
 
+//モデル番号とモデルのパターンを覚える
 struct ModelInfo {
 
 	//モデル番号
@@ -34,6 +36,7 @@ struct ModelInfo {
 
 };
 
+//セットするオブジェクトの情報
 struct SettingObjectInfo {
 
 	//モデル番号
@@ -53,6 +56,7 @@ struct SettingObjectInfo {
 		moved = false;
 	}
 
+	//引数ありコンストラクタ
 	SettingObjectInfo(int h, Transform t,bool m) {
 		hModel = h;
 		trans = t;
@@ -66,8 +70,9 @@ class Stage;
 class StageSourceBase;
 class Timer;
 
-//オブジェクト追加モードを管理するクラス
-//2つしかモードが無いからまとめたけどstateにした方が良い？
+/// <summary>
+/// オブジェクトをステージに追加するモード
+/// </summary>
 class CreateMode :public GameObject
 {
 public:
@@ -75,23 +80,29 @@ public:
 	//引数：parent  親オブジェクト（SceneManager）
 	CreateMode(GameObject* parent);
 
+	//////////////////////オーバーライドした関数//////////////
 
 	//初期化
 	void Initialize() override;
-	void SelectInit();
-	void SettingInit();
-
+	
 	//更新
 	void Update() override;
-	void SelectUpdate();
-	void SettingUpdate();
-
+	
 	//描画
 	void Draw() override;
 
 	//開放
 	void Release() override;
 
+	////////////////////////メンバ関数/////////////////////////
+
+	//各モードの初期化
+	void SelectInit();
+	void SettingInit();
+
+	//各モードの更新
+	void SelectUpdate();
+	void SettingUpdate();
 
 
 	/// <summary>
@@ -102,19 +113,20 @@ public:
 	/// <param name="element">何番目の要素か</param>
 	void CreateObject(int hModel,Transform trans, int element);
 
-
-	//createObjectListに入れる
+	/// <summary>
+	/// createObjectListに入れる
+	/// </summary>
+	/// <param name="object">追加したいオブジェクトのポインタ</param>
 	void AddCreateObject(StageSourceBase* object);
 
 	/// <summary>
-	/// マウスカーソルの位置から出るベクトルを取得する
+	/// マウスカーソルの位置から出るベクトルを参照渡しで取得する
 	/// </summary>
 	/// <param name="front">前のベクトル</param>
 	/// <param name="back">後ろのベクトル</param>
 	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);
 
-	//ディレクトリ内の指定した識別子のファイルネームを獲得	
-	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
+	
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
 
@@ -146,8 +158,18 @@ public:
 
 	//////////////////////セッティングモードで使う関数////////////////////////////////
 
+	/// <summary>
+	/// ステージの上にカーソルがあるかどうか
+	/// </summary>
+	/// <param name="front">飛ばすレイの前方向ベクトル</param>
+	/// <param name="back">後ろ方向のベクトル</param>
+	/// <returns>当たっていたらtrue</returns>
 	bool IsStageOverlapCursor(XMVECTOR front, XMVECTOR back);
 
+	/// <summary>
+	/// 設置しようとした場所が既に設置されているオブジェクトと被っているかどうか
+	/// </summary>
+	/// <returns>被っていたらtrue</returns>
 	bool IsOverlapPosition();
 
 	/// <summary>
@@ -157,9 +179,9 @@ public:
 
 	////////////////////////モードを切り替える関数///////////////////
 
-	void ToSelectMode();
-	void ToSettingMode();
-	void ToGameMode();
+	void ToSelectMode();	//セレクトモードに
+	void ToSettingMode();	//セッティングモードに
+	void ToGameMode();		//ゲームに戻す
 
 	///////////////////////////アクセス関数///////////////////////////////
 
@@ -172,6 +194,14 @@ public:
 
 
 private:
+
+	/// <summary>
+	/// ディレクトリ内の指定した識別子のファイルネームを獲得する関数
+	/// </summary>
+	/// <param name="dir_name">探索したいディレクトリ</param>
+	/// <param name="extension">探したいファイルの拡張子</param>
+	/// <returns>見つけたファイルの名前が入った配列</returns>
+	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
 	//モードを管理する変数
 	CREATESTATE nowState_;

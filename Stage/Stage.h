@@ -32,10 +32,10 @@ public:
     void Release() override;
 
 
+    ////////////////////全ての設置されたオブジェクトを操作する関数////////////////
 
-    void AllStartUpdate();
-
-    void AllStopUpdate();
+    void AllStartUpdate();  //全てのupdateを許可
+    void AllStopUpdate();   //全てのupdateを止める
 
     ///////////////CreateModeで使う関数///////////////////////
 
@@ -59,7 +59,7 @@ public:
     void PushStageSource(StageSourceBase* source) { pStageSourceList_.emplace_back(source); }
     int GetStageHandle() { return hModel_; }
     XMFLOAT3 GetStageSize();
-    std::vector<std::vector<long>> GetMap() { return stageCost_; }
+    std::vector<std::vector<int>> GetMap() { return stageCost_; }
     
 
 private:
@@ -74,10 +74,10 @@ private:
     CreateMode* pCreateMode_;
 
     //二次元配列でマップやコストを表す
-    std::vector<std::vector<long>> stageCost_; 
+    std::vector<std::vector<int>> stageCost_; 
 
     //Astarアルゴリズムのデバック用に色を変える為の配列
-    std::vector<std::vector<long>> stageModel_;
+    std::vector<std::vector<int>> stageModel_;
 
     //クリエイトモードで作られたモデル一覧
     std::list<StageSourceBase*> pStageSourceList_;

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+//数字の画像をenumで管理
 enum PLAYERNUMBER {
     ONE,
     TWO,
@@ -9,6 +10,9 @@ enum PLAYERNUMBER {
     PLAYER_NUM
 };
 
+/// <summary>
+/// 誰が勝ったかを表示するUI
+/// </summary>
 class WinnerUI : public GameObject
 {
 
@@ -33,6 +37,10 @@ public:
     //開放
     void Release() override;
 
+    /// <summary>
+    /// 勝ったプレイヤーのIDをセットする
+    /// </summary>
+    /// <param name="ID">勝ったプレイヤーのID</param>
     void SetWinnerID(int ID) { winnerID_ = ID; }
 
 private:

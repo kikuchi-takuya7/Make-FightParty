@@ -66,32 +66,21 @@ void Enemy::ChildRelease()
 	//SAFE_RELEASE(pCharacterAI_);
 }
 
-//‰½‚©“–‚½‚Á‚½Žž‚Ìˆ—
-void Enemy::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
+void Enemy::ChangeTarget(GameObject* pTarget)
 {
-
-	//UŒ‚‚É“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-	{
-		//ˆê’è‚ÌŠm—¦‚Å‘_‚¢‚ð‰£‚Á‚Ä‚«‚½‘ŠŽè‚É•Ï‚¦‚é
-		if (rand() % 2 == ZERO) {
-			pCharacterAI_->SetTargetID(pTarget->GetObjectID());
-		}
-
+	//ˆê’è‚ÌŠm—¦‚Å‘_‚¢‚ð‰£‚Á‚Ä‚«‚½‘ŠŽè‚É•Ï‚¦‚é
+	if (rand() % 2 == ZERO) {
+		pCharacterAI_->SetTargetID(pTarget->GetObjectID());
 	}
-
-	//UŒ‚‚ð“–‚Ä‚½Žž‚Ìˆ—
-	if (myType == COLLIDER_ATTACK && targetType == COLLIDER_BODY)
-	{
-	}
-
 }
 
+// CharavterAI‚ÉˆÚ“®‚·‚éêŠ‚ð•·‚¢‚ÄˆÚ“®‚·‚éŠÖ”
 void Enemy::MoveCharacter()
 {
 	pCharacterAI_->MoveEnemy();
 }
 
+// ƒƒ^AI‚ÉŒ»Ý‚ÌƒXƒe[ƒ^ƒX‚ð“`‚¦‚éŠÖ”
 void Enemy::TellStatus()
 {
 	pCharacterAI_->TellStatus();

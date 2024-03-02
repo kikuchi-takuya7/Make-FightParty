@@ -8,11 +8,6 @@
 #include "CharacterState.h"
 #include <vector>
 
-//class Character;
-
-//プレイヤーと敵のステートマネージャ共通にしたほうがいい説もあり
-//Characterクラスにステートマネージャ書けるし、当たり判定も継承しなくてよくなる
-
 /// <summary>
 /// Characterの状態を管理する
 /// </summary>
@@ -35,7 +30,6 @@ public:
 	/// </summary>
 	void Update() override;
 
-
 	/// <summary>
 	/// 入力によって状態を変化する
 	/// </summary>
@@ -57,12 +51,6 @@ public:
 	/// <param name="change">変更後の状態</param>
 	/// <param name="Character">変更するプレイヤーのポインタ</param>
 	void ChangeState(CharacterStateList nextState);
-
-	
-	//////////////////////////アクセス関数/////////////////////////////////
-
-
-	//結局ここに静的に残してるstateで交換するならこの関数使っても結局上のこのクラス内の変数使うから意味なくね説
 
 private:
 

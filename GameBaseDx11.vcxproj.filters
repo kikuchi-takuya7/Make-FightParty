@@ -155,9 +155,6 @@
     <ClCompile Include="Engine\Imgui\imgui_widgets.cpp">
       <Filter>01Engine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\MapEditorScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\DevelopSelectScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -378,9 +375,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Imgui\imstb_truetype.h">
       <Filter>01Engine\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\MapEditorScene.h">
-      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\DevelopSelectScene.h">
       <Filter>Scene</Filter>

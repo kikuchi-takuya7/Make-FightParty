@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 
+//スコアゲージの一覧
 enum SCOREGAUGELIST {
     WIN_GAUGE,
     KILL_GAUGE,
@@ -15,6 +16,9 @@ enum SCOREGAUGELIST {
 class Text;
 class GaugeBase;
 
+/// <summary>
+/// ランキングゲージを管理するクラス
+/// </summary>
 class RankingGaugeUI : public GaugeBase
 {
 
@@ -41,15 +45,32 @@ public:
     //開放
     void ChildRelease() override;
 
+    /// <summary>
+    /// 追加するスコアを入れる
+    /// </summary>
+    /// <param name="score">追加するスコアゲージ</param>
     void PushScore(SCOREGAUGELIST score);
 
+    /// <summary>
+    /// 全てのゲージのアニメーションが終わっているかどうか
+    /// </summary>
+    /// <returns>全て終わっていたらtrue</returns>
     bool IsAllEndAnim();
 
+    /// <summary>
+    /// ゲージのアニメーションを即座に終わらせる（一ゲージ分だけ）
+    /// </summary>
     void AllEndAnim();
 
     void SetName(std::string name) { name_ = name; }
 
 private:
+
+    /// <summary>
+    /// 表示するスコアのインスタンスを作る
+    /// </summary>
+    /// <param name="score">インスタンスを作るスコアゲージ</param>
+    void CreateScore(SCOREGAUGELIST score);
 
     //プレイヤー名
     Text* pText_;
@@ -68,6 +89,6 @@ private:
     int nowAnimGauge_;
 
 
-    void SetScore(SCOREGAUGELIST score);
+    
 
 };

@@ -3,6 +3,9 @@
 #include "GaugeBase.h"
 #include <stack>
 
+/// <summary>
+/// オブジェクトでキルされた時用のゲージUIクラス
+/// </summary>
 class TrapKillScore : public GaugeBase
 {
 
@@ -28,12 +31,6 @@ public:
     //開放
     void ChildRelease() override;
 
-
-    /// <summary>
-    /// アニメーションが終わったか
-    /// </summary>
-    /// <returns>終わってたらtrue</returns>
-    bool IsEndAnim();
 
 private:
 

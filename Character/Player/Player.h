@@ -31,16 +31,16 @@ public:
     //開放
     void ChildRelease() override;
 
-    /// <summary>
-    /// 別のcolliderに衝突したときに呼ばれる関数
-    /// </summary>
-    /// <param name="pTarget">当たった相手</param>
-    void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
-
     /////////////////////メンバ関数/////////////////////////////////////
 
+    /// <summary>
+    /// 入力によって移動する関数
+    /// </summary>
     void MoveCharacter() override;
 
+    /// <summary>
+    /// メタAIにステータスを伝える関数
+    /// </summary>
     void TellStatus() override;
 
 

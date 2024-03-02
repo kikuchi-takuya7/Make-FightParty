@@ -29,13 +29,22 @@ void CharacterAI::Release()
 
 }
 
+// 狙うべき敵をMetaAIに聞く関数
 void CharacterAI::AskTarget()
 {
 	//狙う敵のIDを決めてもらう
 	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
 }
 
-//動かす
+// MetaAIに情報を伝える関数
+void CharacterAI::TellStatus()
+{
+	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
+	pMetaAI_->DecidedWinner();
+}
+
+
+// NavigationAIに行くべき場所を聞き、移動する関数
 void CharacterAI::MoveEnemy()
 {
 
@@ -82,11 +91,7 @@ void CharacterAI::MoveEnemy()
 	}
 }
 
-void CharacterAI::Attack()
-{
-
-}
-
+// 攻撃するかどうかを指示する関数
 void CharacterAI::IsAttack()
 {
 	//狙おうとしてる敵が死んでたら、ターゲットを変える
@@ -101,10 +106,12 @@ void CharacterAI::IsAttack()
 	}
 }
 
+// クリエイトモードで選択したオブジェクトを移動させる関数
+// 戻り値：動かした後のTransform
 Transform CharacterAI::MoveSelectObject()
 {
 	
-	//アイテムの種類によって置くオブジェクトを決める？砲台は端っことか。時間あるか？あと向きもちゃんと買える
+	//アイテムの種類によって置くオブジェクトを決める？砲台は端っことか。
 
 	//ステージ内のどこかにランダムで置く
 	Transform objTrans;
@@ -116,8 +123,3 @@ Transform CharacterAI::MoveSelectObject()
 	return objTrans;
 }
 
-void CharacterAI::TellStatus()
-{
-	pMetaAI_->ChangeStatus(pEnemy_->GetObjectID(), pEnemy_->GetStatus());
-	pMetaAI_->ToCreateMode();
-}

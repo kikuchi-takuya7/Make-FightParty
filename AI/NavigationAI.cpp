@@ -5,6 +5,7 @@
 #include "CharacterAI.h"
 #include "../Stage/Stage.h"
 
+//定数宣言
 namespace {
 	const int STAGE_HEIGHT = 30;
 	const int STAGE_WIDTH = 30;
@@ -32,14 +33,13 @@ NavigationAI::~NavigationAI()
 
 void NavigationAI::Initialize()
 {
-
-	
 }
 
 void NavigationAI::Release()
 {
 }
 
+// 引数のIDのキャラクターAIにどこにオブジェクトを置くか聞く関数
 Transform NavigationAI::MoveSelectObject(int ID)
 {
 
@@ -53,8 +53,9 @@ Transform NavigationAI::MoveSelectObject(int ID)
 }
 
 
-//プレイヤーの開始位置と被ってるか
-//引数：比べるXMFLOAT3型の変数
+// 引数の値がプレイヤーの開始位置と被っているかを判断する関数
+// 引数：比べるXMFLOAT3型の変数
+// 戻り値：重なったらtrue
 bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 {
 	for (int i = ZERO; i < pCharacterList_.size(); i++) {
@@ -67,7 +68,10 @@ bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 	return false;
 }
 
-//引数で自分とターゲットを持ってくるのも考えた。どっちがいいかね
+// 引数の二人の距離を測る関数
+// 引数１：自分のID
+// 引数２：狙っている相手のID
+// 戻り値：比べた2人の距離
 float NavigationAI::Distance(int myID, int targetID)
 {
 
@@ -81,7 +85,10 @@ float NavigationAI::Distance(int myID, int targetID)
 	return distance;
 }
 
-//グリッド上でAstarアルゴリズムを使い最短距離を探す
+// グリッドでAstarを使い目標地点を探索する関数
+// 引数１：自分のID
+// 引数２：狙っている相手のID
+// 戻り値：次に向かうべき座標
 XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 {
 
@@ -126,14 +133,14 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	rest.at(start.first).at(start.second) = IntPair(start.first, start.second);
 	
 	//探索済みの場所を昇順で記憶しておく。topで要素を呼び出した時にfirstの一番値が小さいのを持ってきてくれる
-	std::priority_queue<PP, vector<PP>, std::greater<PP>> que;
+	std::priority_queue<PIntP, vector<PIntP>, std::greater<PIntP>> que;
 
 	//スタート地点から探索を始める
 	que.emplace(ZERO, IntPair(start.first, start.second));
 
 	//ありえない値の情報で初期化
 	const int Inf = 9999999;
-	dist.assign(height_, vector<long>(width_, Inf));
+	dist.assign(height_, vector<int>(width_, Inf));
 	rest.assign(height_, vector<IntPair>(width_, IntPair(ZERO,ZERO)));
 
 	//スタート地点のコストを入れる
@@ -143,7 +150,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	while (!que.empty())
 	{
 		//今いる場所を確保
-		PP now = que.top();
+		PIntP now = que.top();
 		que.pop();
 
 		bool isBreak = false;
@@ -198,7 +205,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			dist.at(sz).at(sx) = map.at(sz).at(sx) + cost + secondH;
 
 			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
-			que.emplace(PP(dist.at(sz).at(sx), IntPair(sz, sx)));
+			que.emplace(PIntP(dist.at(sz).at(sx), IntPair(sz, sx)));
 #else
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋map+ヒューリスティックのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
@@ -220,7 +227,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			dist.at(sz).at(sx) = dist.at(nz).at(nx) + map.at(sz).at(sx) + cost;
 
 			//次の探索候補を入れておく
-			que.emplace(PP(dist.at(sz).at(sx) + secondH, IntPair(sz, sx)));
+			que.emplace(PIntP(dist.at(sz).at(sx) + secondH, IntPair(sz, sx)));
 #endif
 			
 		}
@@ -241,8 +248,87 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 }
 
+//ステータスをリセットする（winPoint以外）
+void NavigationAI::AllResetStatus()
+{
+
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->ResetStatus();
+	}
+
+}
+
+//全ての描画を止める
+void NavigationAI::AllStopDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDraw();
+	}
+
+}
+
+//全ての描画を許可する
+void NavigationAI::AllStartDraw()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StartDraw();
+	}
+}
+
+//全てのUpdateを止める
+void NavigationAI::AllStopUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Leave();
+	}
+
+	pStage_->AllStopUpdate();
+}
+
+//全てのUpdateを許可する
+void NavigationAI::AllStartUpdate()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->Enter();
+	}
+
+	pStage_->AllStartUpdate();
+}
+
+//全てのプレイヤーUIの描画を止める
+void NavigationAI::AllStopDrawPlayerUI()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->StopDrawUI();
+	}
+}
+
+//全てのコライダーを消す(deleteはしない)
+void NavigationAI::AllEraseCollision()
+{
+	for (int i = 0; i < pCharacterList_.size(); i++) {
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
+		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
+	}
+}
+
+// 指定したIDのキャラのインスタンスを獲得する
+Character* NavigationAI::GetCaracter(int ID)
+{
+	return pCharacterList_.at(ID);
+}
+
+// 指定したキャラにステータスをセットする
+void NavigationAI::SetStatus(int ID, Status status)
+{
+	pCharacterList_.at(ID)->SetStatus(status);
+}
+
+///////////////////////////////////////////////////private関数/////////////////////////////////////////////
+
 //経路復元
-XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, IntPair target)
+XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest, IntPair start, IntPair target)
 {
 
 	//targetからスタート地点までたどりなおす
@@ -277,7 +363,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 			searchPos.emplace(rest.at(nz).at(nx));
 
 			//次はその前にいた座標の上下左右を探索するため更新
-			nz = z;  
+			nz = z;
 			nx = x;
 
 			break;
@@ -300,22 +386,22 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 
 	//空ならやめる
 	if (searchPos.empty())
-		return fMove;	
+		return fMove;
 
 	//stackのtopは一番最後の要素を取ってくる
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
 
 	if (checkVecX == 1) {
-		
+
 		fMove.x = -1.0f;
 	}
 	if (checkVecX == -1) {
-		
+
 		fMove.x = 1.0f;
 	}
 	if (checkVecZ == 1) {
-		
+
 		fMove.z = -1.0f;
 	}
 	if (checkVecZ == -1) {
@@ -327,10 +413,21 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest,IntPair start, I
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
 	vMove = XMVector3Normalize(vMove);
 	fMove = VectorToFloat3(vMove);
-	fMove = fMove * 0.1;	
+	fMove = fMove * 0.1;
 
 	return fMove;
 
+}
+
+IntPair NavigationAI::FloatToIntPair(float z, float x)
+{
+
+
+	int zPos = (int)z;
+	int xPos = (int)x;
+	IntPair pair = std::make_pair(zPos, xPos);
+
+	return pair;
 }
 
 int NavigationAI::Heuristic(int z, int x, IntPair target)
@@ -341,90 +438,4 @@ int NavigationAI::Heuristic(int z, int x, IntPair target)
 
 	//斜め移動なので大きいほうを返す
 	return max(tmpZ, tmpX);
-}
-
-IntPair NavigationAI::FloatToIntPair(float z, float x)
-{
-
-	
-	int zPos = (int)z;
-	int xPos = (int)x;
-	IntPair pair = std::make_pair(zPos, xPos);
-
-	return pair;
-}
-
-//ステータスをリセットする（winPoint以外）
-void NavigationAI::AllResetStatus()
-{
-
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->ResetStatus();
-	}
-
-}
-
-//全ての描画を止める
-void NavigationAI::AllStopDraw()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->StopDraw();
-	}
-
-}
-
-void NavigationAI::AllStartDraw()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->StartDraw();
-	}
-}
-
-void NavigationAI::AllStopUpdate()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->Leave();
-	}
-
-	pStage_->AllStopUpdate();
-}
-
-void NavigationAI::AllStartUpdate()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->Enter();
-	}
-
-	pStage_->AllStartUpdate();
-}
-
-void NavigationAI::AllStopDrawPlayerUI()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->StopDrawUI();
-	}
-}
-
-void NavigationAI::AllEraseCollision()
-{
-	for (int i = 0; i < pCharacterList_.size(); i++) {
-		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
-		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
-		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
-	}
-
-
-}
-
-
-
-
-Character* NavigationAI::GetCaracter(int ID)
-{
-	return pCharacterList_.at(ID);
-}
-
-void NavigationAI::SetStatus(int ID, Status status)
-{
-	pCharacterList_.at(ID)->SetStatus(status);
 }

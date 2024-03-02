@@ -3,6 +3,9 @@
 #include "GaugeBase.h"
 #include <stack>
 
+/// <summary>
+/// 一勝分のスコアゲージを管理するクラス
+/// </summary>
 class WinScore : public GaugeBase
 {
 
@@ -28,13 +31,6 @@ public:
 
     //開放
     void ChildRelease() override;
-
-
-    /// <summary>
-    /// アニメーションが終わったか
-    /// </summary>
-    /// <returns>終わってたらtrue</returns>
-    bool IsEndAnim();
 
 private:
 

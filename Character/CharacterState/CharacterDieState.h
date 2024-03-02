@@ -2,7 +2,7 @@
 #include "CharacterState.h"
 
 /// <summary>
-/// €‚ñ‚¾ó‘Ô
+/// €‚ñ‚Å‚¢‚éó‘Ô
 /// </summary>
 class CharacterDieState : public CharacterState
 {

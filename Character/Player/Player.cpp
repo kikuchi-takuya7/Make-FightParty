@@ -103,30 +103,7 @@ void Player::ChildRelease()
 
 }
 
-//何か当たった時の処理
-void Player::ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
-{
-	//攻撃に当たったときの処理
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
-	{
-
-		////敵の方向に向きなおす
-		//SetTargetRotate(pTarget->GetRotate());
-		//pState_->ChangeState(KNOCKBACK);
-
-		////その攻撃でやられたら、相手のキルポイントを増やす
-		//if (HitDamage(((Character*)pTarget)->GetStatus().attackPower)) {
-		//	Status status = ((Character*)pTarget)->GetStatus();
-		//	status.killPoint++;
-		//	((Character*)pTarget)->SetStatus(status);
-		//	((Character*)pTarget)->TellStatus();
-		//}
-
-		
-	}
-
-}
-
+// 入力によって移動する関数
 void Player::MoveCharacter()
 {
 	XMFLOAT3 fMove = ZERO_FLOAT3;
@@ -201,14 +178,10 @@ void Player::MoveCharacter()
 	}
 }
 
+/// メタAIにステータスを伝える関数
 void Player::TellStatus()
 {
-	
-	//どっちも違う気がする。どうやってプレイヤーからMetaAIに死んだことを伝える？名前検索しちゃっていい？
-
-	//((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
-	//((MainGameScene*)GetParent())->CallStatus(GetObjectID(), GetStatus());
 
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
-	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ToCreateMode();
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->DecidedWinner();
 }

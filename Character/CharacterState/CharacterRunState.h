@@ -32,7 +32,5 @@ public:
 	/// </summary>
 	void Leave() override;
 
-	void MoveCharacter();
-
 };
 

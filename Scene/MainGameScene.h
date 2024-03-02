@@ -6,7 +6,9 @@ class NavigationAI;
 class Stage;
 struct Status;
 
-//■■シーンを管理するクラス
+/// <summary>
+/// ゲームのメインとなるシーン
+/// </summary>
 class MainGameScene : public GameObject
 {
 public:

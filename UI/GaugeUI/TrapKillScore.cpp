@@ -29,8 +29,3 @@ void TrapKillScore::ChildDraw()
 void TrapKillScore::ChildRelease()
 {
 }
-
-bool TrapKillScore::IsEndAnim()
-{
-	return false;
-}

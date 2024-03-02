@@ -20,7 +20,7 @@ public:
 	//デストラクタ
 	~CharacterAI();
 
-	/////////オーバーライドした関数///////
+	//////////////オーバーライドした関数////////////////
 
 	//初期化
 	void Initialize() override;
@@ -28,25 +28,35 @@ public:
 	//解放
 	void Release() override;
 
-	/////////////////メンバ関数//////////////////////////
+	/////////////////メンバ関数/////////////////////////
 
+	/// <summary>
+	/// 狙うべき敵をMetaAIに聞く関数
+	/// </summary>
 	void AskTarget();
-	
-	////////////////担当する敵を操るメンバ関数///////////////////
 
-	void MoveEnemy();
-
-	void Attack();
-
-	void IsAttack();
-
-	Transform MoveSelectObject();
-
-	///////////////////上位AIに情報を伝える関数/////////////////////////////
-
+	/// <summary>
+	/// MetaAIに情報を伝える関数
+	/// </summary>
 	void TellStatus();
 
-	///////////////////アクセス関数/////////////
+	/// <summary>
+	/// NavigationAIに行くべき場所を聞き、移動する関数
+	/// </summary>
+	void MoveEnemy();
+
+	/// <summary>
+	/// 攻撃するかどうかを指示する関数
+	/// </summary>
+	void IsAttack();
+
+	/// <summary>
+	/// クリエイトモードで選択したオブジェクトを移動させる関数
+	/// </summary>
+	/// <returns>動かした後のTransform</returns>
+	Transform MoveSelectObject();
+
+	///////////////////アクセス関数///////////////////
 
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }

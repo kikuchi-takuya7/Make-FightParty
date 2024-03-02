@@ -6,8 +6,6 @@ class EnemyStateManager;
 class NavigationAI;
 class CharacterAI;
 
-
-
 /// <summary>
 /// キャラクターAIで動かす敵のクラス
 /// </summary>
@@ -36,32 +34,28 @@ public:
     void ChildRelease() override;
 
     /// <summary>
-    /// 別のcolliderに衝突したときに呼ばれる関数
+    /// 敵から攻撃を食らった時に呼び出される、一定確率でターゲットを変える関数
     /// </summary>
-    /// <param name="pTarget">当たった相手</param>
-    void ChildOnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
+    void ChangeTarget(GameObject* pTarget) override;
 
     /////////////////////メンバ関数/////////////////////////////////////
 
     /// <summary>
-    /// CharavterAIに移動する場所を聞いて移動する
+    /// CharavterAIに移動する場所を聞いて移動する関数
     /// </summary>
     void MoveCharacter() override;
 
-    /////////////////////AIに伝える関数/////////////////////////////
-
+    /// <summary>
+    /// メタAIに現在のステータスを伝える関数
+    /// </summary>
     void TellStatus() override;
 
     ///////////////////アクセス関数/////////////////////////////////////
     void SetCharacterAI(CharacterAI* AI) { pCharacterAI_ = AI; }
-    
-    //セッターの中でセッターは呼べなかったから普通にgameSceneで用意しちゃう
-    //void SetNavi(NavigationAI* naviAI) { pCharacterAI_->SetNavigationAI(naviAI); }
-
 
 private:
 
-
-    CharacterAI* pCharacterAI_;//色んな判断をしてくれるAIのつもり
+    //キャラクターAIのインスタンス
+    CharacterAI* pCharacterAI_;
 
 };

@@ -86,6 +86,7 @@ void CreateMode::Initialize()
     
 }
 
+//セレクトモード用の初期化
 void CreateMode::SelectInit()
 {
 
@@ -113,6 +114,7 @@ void CreateMode::SelectInit()
     }
 }
 
+//セッティングモード用の初期化
 void CreateMode::SettingInit()
 {
 
@@ -151,6 +153,7 @@ void CreateMode::Update()
     }
 }
 
+//セレクトモード時の更新処理
 void CreateMode::SelectUpdate()
 {
     if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
@@ -198,6 +201,7 @@ void CreateMode::SelectUpdate()
     }
 }
 
+//セッティングモード時の更新処理
 void CreateMode::SettingUpdate()
 {
     if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
@@ -338,6 +342,10 @@ void CreateMode::Release()
 {
 }
 
+// オブジェクトを作成する
+// 引数１：モデル番号
+// 引数２：モデルのtransform
+// 引数３：何番目の要素か
 void CreateMode::CreateObject(int hModel, Transform trans, int element)
 {
 
@@ -370,53 +378,23 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
         break;
     }
 
-    Graph test = pStage_->GetMap();
-
     settingObject_.at(element).moved = true;
 
     //クリックしたらそのオブジェクトを消す（モデル番号を無くして処理しなくする）
     settingObject_.at(element).hModel = -1;
 }
 
-
-
+// createObjectListに入れる
+// 引数１：追加したいオブジェクトのポインタ
 void CreateMode::AddCreateObject(StageSourceBase* object)
 {
     //後々のこと考えたらID割り振ったほうがいいか。後で爆弾とか実装する事考えたら
     createObjectList_.emplace_back(object);
-
 }
 
-std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
-{
-    HANDLE hFind;
-    WIN32_FIND_DATA win32fd;//defined at Windwos.h
-    std::vector<std::string> file_names;
-
-    //拡張子の設定
-    std::string search_name = dir_name + "*." + extension;
-
-    hFind = FindFirstFile(search_name.c_str(), &win32fd);
-
-    if (hFind == INVALID_HANDLE_VALUE) {
-        throw std::runtime_error("file not found");
-    }
-
-    do {
-        if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-        }
-        else {
-            file_names.emplace_back(win32fd.cFileName);
-            printf("%s\n", file_names.back().c_str());
-
-        }
-    } while (FindNextFile(hFind, &win32fd));
-
-    FindClose(hFind);
-
-    return file_names;
-}
-
+//マウスカーソルの位置から出るベクトルを参照渡しで取得する
+//引数１：前のベクトル
+//引数２：後ろのベクトル
 void CreateMode::GetCursorRay(XMVECTOR& front, XMVECTOR& back)
 {
     float w = (float)(Direct3D::screenWidth_ / 2.0f);
@@ -458,6 +436,8 @@ void CreateMode::GetCursorRay(XMVECTOR& front, XMVECTOR& back)
     
 }
 
+// AIがオブジェクトを選択する関数
+// 引数１：オブジェクトを選択する敵のID
 void CreateMode::AISelectObject(int ID)
 {
 
@@ -505,6 +485,8 @@ void CreateMode::AISelectObject(int ID)
 
 }
 
+// settingObjectに選んだオブジェクトの情報を渡す
+// 引数：オブジェクトを選んだ人のID
 void CreateMode::SelectObject(int ID)
 {
   
@@ -520,6 +502,9 @@ void CreateMode::SelectObject(int ID)
 
 }
 
+// カーソルが浮かんでるオブジェクトに合わさっているか
+// 引数１：飛ばすレイの前方向ベクトル
+// 引数２：後ろ方向のベクトル
 bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
 {
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
@@ -556,6 +541,8 @@ bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
     return false;
 }
 
+// プレイヤー全員がオブジェクトを選び終わったか
+// 戻り値：選び終わっていたらtrue
 bool CreateMode::IsAllDecidedObject()
 {
 
@@ -571,6 +558,10 @@ bool CreateMode::IsAllDecidedObject()
     return true;
 }
 
+// ステージの上にカーソルがあるかどうか
+// 引数１：飛ばすレイの前方向ベクトル
+// 引数２：後ろ方向のベクトル
+// 戻り値：当たっていたらtrue
 bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
 {
 
@@ -609,9 +600,10 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
     return false;
 }
 
+// 設置しようとした場所が既に設置されているオブジェクトと被っているかどうか
+// 引数１：当たっていたらtrue
 bool CreateMode::IsOverlapPosition()
 {
-
     Transform pos = settingObject_.at(selecting_Object_).trans;
 
     //既に作成されたオブジェクトと被った位置か確認する
@@ -637,6 +629,7 @@ bool CreateMode::IsOverlapPosition()
     return false;
 }
 
+// Aiが選んだオブジェクトを動かす位置を決める
 void CreateMode::AIMovingObject()
 {
     //オブジェクトの位置が被ってないか確認する用
@@ -685,6 +678,7 @@ void CreateMode::AIMovingObject()
     
 }
 
+//セレクトモードに
 void CreateMode::ToSelectMode()
 {
 
@@ -696,20 +690,51 @@ void CreateMode::ToSelectMode()
     //pNavigationAI_->AllEraseCollision();
 }
 
+//セッティングモードに
 void CreateMode::ToSettingMode()
 {
-    
     SettingInit();
     nowState_ = SETTING_MODE;
 }
 
+//ゲームに戻す
 void CreateMode::ToGameMode()
 {
-    
-
-    //ここで一旦暗転とかさせたいから移動はすぐでいいや
+    //ここで一旦暗転とかさせたいから移動はすぐでいい
     pMetaAI_->ResetGame();
     nowState_ = NONE;
+}
 
-    //pNavigationAI_->AllResetStatus();
+// ディレクトリ内の指定した識別子のファイルネームを獲得する関数
+// 引数１：探索したいディレクトリ
+// 引数２：探したいファイルの拡張子
+// 戻り値：みつけたファイルの名前が入った配列
+std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
+{
+    HANDLE hFind;
+    WIN32_FIND_DATA win32fd;//defined at Windwos.h
+    std::vector<std::string> file_names;
+
+    //拡張子の設定
+    std::string search_name = dir_name + "*." + extension;
+
+    hFind = FindFirstFile(search_name.c_str(), &win32fd);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+        throw std::runtime_error("file not found");
+    }
+
+    do {
+        if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        }
+        else {
+            file_names.emplace_back(win32fd.cFileName);
+            printf("%s\n", file_names.back().c_str());
+
+        }
+    } while (FindNextFile(hFind, &win32fd));
+
+    FindClose(hFind);
+
+    return file_names;
 }

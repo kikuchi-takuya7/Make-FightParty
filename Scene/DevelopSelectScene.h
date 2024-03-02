@@ -2,9 +2,9 @@
 #include "../Engine/GameObject.h"
 #include "../Engine/SceneManager.h"
 
-
-
-//■■シーンを管理するクラス
+/// <summary>
+/// デベロップ用のシーン
+/// </summary>
 class DevelopSelectScene : public GameObject
 {
 public:

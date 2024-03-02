@@ -56,6 +56,7 @@ protected:
 	//プレイヤーかエネミーのインスタンスを持っておく
 	Character* pCharacter_;
 
+	//キャラクターのモデル番号
 	int hCharacterModel_;
 
 };

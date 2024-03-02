@@ -56,8 +56,9 @@ void RankingGaugeUI::ChildUpdate()
 		return;
 	}
 
+	// 今のスコアゲージのアニメーションが終わったら次入れる予定のゲージを追加する
 	if (gauge_.back().first->IsEndAnim() == true && nextScore_.empty() == false) {
-		SetScore(nextScore_.front());
+		CreateScore(nextScore_.front());
 		nextScore_.pop();
 	}
 }
@@ -75,17 +76,21 @@ void RankingGaugeUI::ChildRelease()
 {
 }
 
+// 追加するスコアを入れる
+// 引数：追加するスコアゲージ
 void RankingGaugeUI::PushScore(SCOREGAUGELIST score)
 {
 	//最初だけ即時に入れる
 	if (gauge_.empty()) {
-		SetScore(score);
+		CreateScore(score);
 		return;
 	}
 
 	nextScore_.push(score);
 }
 
+// 全てのゲージのアニメーションが終わっているかどうか
+// 戻り値：全て終わっていたらtrue
 bool RankingGaugeUI::IsAllEndAnim()
 {
 	for (int i = 0; i < gauge_.size(); i++) {
@@ -100,6 +105,7 @@ bool RankingGaugeUI::IsAllEndAnim()
 	return true;
 }
 
+// ゲージのアニメーションを即座に終わらせる（一ゲージ分だけ）
 void RankingGaugeUI::AllEndAnim()
 {
 	for (int i = ZERO; i < gauge_.size(); i++) {
@@ -107,7 +113,9 @@ void RankingGaugeUI::AllEndAnim()
 	}
 }
 
-void RankingGaugeUI::SetScore(SCOREGAUGELIST score)
+// 表示するスコアのインスタンスを作る
+// 引数：インスタンスを作るスコアゲージ
+void RankingGaugeUI::CreateScore(SCOREGAUGELIST score)
 {
 	//最初のゲージだけ画像の隙間分を埋める
 	if (gauge_.empty())

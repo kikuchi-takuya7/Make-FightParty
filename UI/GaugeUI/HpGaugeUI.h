@@ -2,6 +2,7 @@
 #include "../../Engine/GameObject.h"
 #include "GaugeBase.h"
 
+//HPゲージの画像をenumで管理
 enum HPIMAGE {
     FLAME,
     GaugeMAIN,
@@ -10,6 +11,9 @@ enum HPIMAGE {
     HPIMAGE_NUM
 };
 
+/// <summary>
+/// HPゲージを管理するクラス
+/// </summary>
 class HpGaugeUI : public GaugeBase
 {
 

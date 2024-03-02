@@ -3,7 +3,7 @@
 
 class TitleUI;
 
-//■■シーンを管理するクラス
+//タイトルシーンを管理するクラス
 class TitleScene : public GameObject
 {
 public:

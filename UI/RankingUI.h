@@ -6,6 +6,9 @@
 class RankingGaugeUI;
 enum SCOREGAUGELIST;
 
+/// <summary>
+/// ˆê‡‚ÌŸÒ‚ªŒˆ‚Ü‚Á‚½Œã‚Éo‚éƒ‰ƒ“ƒLƒ“ƒO‚ÌUI
+/// </summary>
 class RankingUI : public GameObject
 {
 

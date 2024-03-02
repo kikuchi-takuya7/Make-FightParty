@@ -2,7 +2,7 @@
 #include "CharacterState.h"
 
 /// <summary>
-/// プレイヤーが走っている状態
+/// プレイヤーが攻撃を食らっている状態
 /// </summary>
 class CharacterKnockBackState : public CharacterState
 {
@@ -32,8 +32,6 @@ public:
 	/// 今のstateから離れる時に一度だけ呼ばれる関数
 	/// </summary>
 	void Leave() override;
-
-	float GetRateValue(float begin, float end, float rate);
 
 private:
 
