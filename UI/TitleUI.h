@@ -39,11 +39,18 @@ public:
 
 private:
 
+    //タイトルロゴの画像番号
     int hPict_[NUM];
 
+    //それぞれのロゴが動いたかどうか
+    bool moved_[NUM];
+
+    //それぞれのロゴの現在の位置
+    XMFLOAT3 titlePos_[NUM];
+
+    //テキストのインスタンス
     Text* pText_;
 
-    Transform make_Trans_;
-    Transform and_Trans_;
-    Transform fight_Trans_;
+    //背景画像番号
+    int hBackGround_;
 };
