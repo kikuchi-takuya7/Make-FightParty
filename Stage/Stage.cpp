@@ -26,11 +26,11 @@ void Stage::Initialize()
 
 	//モデルデータのロード
 	hModel_ = Model::Load("Stage/StageBrock.fbx");
-	assert(hModel_ >= 0);
+	assert(hModel_ >= ZERO);
 
 	//debug用のモデルデータのロード
 	debugModel_ = Model::Load("Stage/DebugBrock.fbx");
-	assert(hModel_ >= 0);
+	assert(hModel_ >= ZERO);
 
 	transform_.position_.x = ZERO;
 	transform_.position_.z = ZERO;

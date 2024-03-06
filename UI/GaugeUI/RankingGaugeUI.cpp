@@ -2,12 +2,13 @@
 #include "../../Engine/Image.h"
 #include "../../Engine/Text.h"
 #include "../../Engine/Input.h"
+#include "../../Engine/Audio.h"
 #include "WinScore.h"
 #include "KillScore.h"
 #include "TrapKillScore.h"
 #include<assert.h>
 
-
+//定数宣言
 namespace {
 
 	const float MIN = ZERO;
@@ -17,10 +18,9 @@ namespace {
 
 	//スコア毎のゲージの大きさを入れる
 	const float SCORE_DIFF[GAUGE_NUM] = { ONE_GAUGE_LENGTH,ONE_GAUGE_LENGTH / 2,ONE_GAUGE_LENGTH / 4 };
-
 	const float START_DIFF[GAUGE_NUM] = { ZERO,ONE_GAUGE_LENGTH / 2,ONE_GAUGE_LENGTH - ONE_GAUGE_LENGTH / 4 };
 
-	//これいみねぇや
+	//ゲージをすぐMaxにしたいだけで数字に意味はない
 	const int TEST_SCORE = 100;
 
 	const XMFLOAT3 GAUGE_SIZE = { 0.72f,0.5f,ZERO };
@@ -29,7 +29,7 @@ namespace {
 
 //コンストラクタ
 RankingGaugeUI::RankingGaugeUI(GameObject* parent)
-	: GaugeBase(parent, "RankingGaugeUI")
+	: GaugeBase(parent, "RankingGaugeUI"),hAudio_(-1)
 {
 }
 
@@ -46,6 +46,11 @@ void RankingGaugeUI::ChildInitialize()
 
 	pText_ = new Text;
 	pText_->Initialize();
+
+	hAudio_ = Audio::Load("Audio/SE/Gauge.wav", false, 3);
+	assert(hAudio_ >= ZERO);
+
+	Audio::Stop(hAudio_);
 }
 
 //更新
@@ -145,4 +150,6 @@ void RankingGaugeUI::CreateScore(SCOREGAUGELIST score)
 	gauge_.back().first->Enter();
 	gauge_.back().first->SetScale(GAUGE_SIZE);
 	gauge_.back().first->SetPosition(SpriteToFloatX(transform_.position_.x + gaugePos_.x), SpriteToFloatY(transform_.position_.y), ZERO);
+
+	Audio::Play(hAudio_);
 }

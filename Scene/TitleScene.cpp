@@ -4,13 +4,13 @@
 #include "../Engine/Input.h"
 #include "../Engine/Text.h"
 #include "../UI/TitleUI.h"
-
 #include "../UI/PlayerUI.h"
 #include "../UI/RankingUI.h"
+#include "../Engine/Audio.h"
 
 //コンストラクタ
 TitleScene::TitleScene(GameObject* parent)
-	: GameObject(parent, "TitleScene"), title_(nullptr)
+	: GameObject(parent, "TitleScene"), title_(nullptr),hAudio_(-1)
 {
 }
 
@@ -18,8 +18,12 @@ TitleScene::TitleScene(GameObject* parent)
 void TitleScene::Initialize()
 {
 	title_ = Instantiate<TitleUI>(this);
-	//Instantiate<PlayerUI>(this);
-	//Instantiate<GameUI>(this);
+	
+	hAudio_ = Audio::Load("Audio/TitleBGM.wav", true);
+	assert(hAudio_ >= ZERO);
+
+	Audio::Play(hAudio_);
+
 }
 
 //更新
@@ -43,6 +47,7 @@ void TitleScene::Draw()
 void TitleScene::Release()
 {
 	//pText_->Release();
+	//Audio::Stop(hAudio_);
 }
 
 void TitleScene::Imgui_Window()

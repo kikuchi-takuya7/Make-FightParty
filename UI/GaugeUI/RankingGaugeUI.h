@@ -88,7 +88,8 @@ private:
     //今アニメーションしてるゲージの要素番号
     int nowAnimGauge_;
 
-
+    //ゲージが伸びる効果音
+    int hAudio_;
     
 
 };

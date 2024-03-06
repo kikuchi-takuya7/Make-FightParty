@@ -4,6 +4,7 @@
 #include "../Stage/CreateMode/CreateMode.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Image.h"
+#include "../Engine/Audio.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../AI/MetaAI.h"
 #include "../AI/NavigationAI.h"
@@ -137,6 +138,9 @@ void MainGameScene::Initialize()
 	Transform trans = transform_;
 	trans.scale_ = XMFLOAT3(5, 5, 5);
 	Image::SetTransform(hPict_, trans);
+
+
+	
 
 }
 

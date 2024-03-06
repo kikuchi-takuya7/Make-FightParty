@@ -32,5 +32,7 @@ private:
 
 	//îwåi
 	int hPict_;
+
+	
 	
 };

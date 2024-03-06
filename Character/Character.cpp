@@ -2,6 +2,7 @@
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
+#include "../Engine/Audio.h"
 #include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
@@ -21,7 +22,7 @@ namespace {
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
 	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, false, ZERO, ZERO, ZERO, "NONE")),
-	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false)
+	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false), hSoundEffect_{-1,-1}
 	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
 }
@@ -40,12 +41,29 @@ void Character::Initialize()
 	//モデルデータのロード
 	std::string fileName = "PlayerFbx/player" + std::to_string(GetObjectID()) + ".fbx";
 	hModel_ = Model::Load(fileName);
-	assert(hModel_ >= 0);
+	assert(hModel_ >= ZERO);
 
 	pState_ = new CharacterStateManager(this, hModel_);
 
 	pPlayerUI_->SetMaxHp(status_.hp, status_.hp);
 
+
+	//音声データのロード
+	std::string str[SE_NUM] = { "Damage","Dead", };
+
+	for (int i = ZERO; i < SE_NUM; i++) {
+
+		std::string dir = "Audio/SE/";
+		std::string extention = ".wav";
+
+		std::string fileName = dir + str[i] + extention;
+
+		hSoundEffect_[i] = Audio::Load(fileName,false,3);
+		assert(hSoundEffect_[i] >= ZERO);
+
+		Audio::Stop(hSoundEffect_[i]);
+	}
+	
 	ChildInitialize();
 }
 
@@ -92,10 +110,7 @@ void Character::Release()
 	SAFE_DELETE(pState_);
 
 	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
-	//ていうかnullptr入れてるはずなのになぜ例外が出るのか
-	
-	//最悪今のstateの状態によってdeleteするかしないかを決める。
-	//pAttackCollision_ = nullptr;
+	//nullptr入れてるはずなのになぜ例外が出るのか
 
 	SAFE_DELETE(pAttackCollision_);
 	SAFE_DELETE(pBodyCollision_);
@@ -165,15 +180,16 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 bool Character::HitDamage(int damage)
 {
 	status_.hp -= damage;
-
 	pPlayerUI_->SetNowHp(status_.hp);
 
 	//HPが0になったら
 	if (status_.hp <= 0) {
 		status_.dead = true;
-		
+		Audio::Play(hSoundEffect_[DEAD]);
+		return status_.dead;
 	}
 
+	Audio::Play(hSoundEffect_[HIT]);
 	return status_.dead;
 }
 

@@ -182,9 +182,6 @@
     <ClCompile Include="Stage\CreateMode\CreateMode.cpp">
       <Filter>Stage\CreateMode</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\CreateMode\StageSource\TestFloor.cpp">
-      <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClCompile>
     <ClCompile Include="Stage\Stage.cpp">
       <Filter>Stage</Filter>
     </ClCompile>
@@ -416,9 +413,6 @@
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\Needle.h">
-      <Filter>Stage\CreateMode\StageSource</Filter>
-    </ClInclude>
-    <ClInclude Include="Stage\CreateMode\StageSource\TestFloor.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
     <ClInclude Include="Scene\TitleScene.h">

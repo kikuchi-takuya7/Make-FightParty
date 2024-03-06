@@ -37,6 +37,8 @@ private:
 
     int hPict_;
 
+    int hAudio_;
+
     Timer* pTimer_;
 
     Text* pText_;

@@ -1,5 +1,6 @@
 #include "WinnerUI.h"
 #include "../Engine/Image.h"
+#include "../Engine/Audio.h"
 #include<assert.h>
 
 namespace {
@@ -9,7 +10,7 @@ namespace {
 
 //コンストラクタ
 WinnerUI::WinnerUI(GameObject* parent)
-	: GameObject(parent, "WinnerUI"), hPict_{-1,-1,-1,-1}, hWinnerPict_(-1),winnerID_(0)
+	: GameObject(parent, "WinnerUI"), hPict_{-1,-1,-1,-1}, hWinnerPict_(-1),winnerID_(0),hAudio_(-1)
 {
 }
 
@@ -24,7 +25,7 @@ void WinnerUI::Initialize()
 	std::string str[PLAYER_NUM] = { "One","Two","Three", "Four" };
 
 	//画像データのロード
-	for (int i = 0; i < PLAYER_NUM; i++) {
+	for (int i = ZERO; i < PLAYER_NUM; i++) {
 
 		std::string dir = "Image/WinnerUI/";
 		std::string extention = ".png";
@@ -32,11 +33,15 @@ void WinnerUI::Initialize()
 		std::string fileName = dir + str[i] + extention;
 
 		hPict_[i] = Image::Load(fileName);
-		assert(hPict_[i] >= 0);
+		assert(hPict_[i] >= ZERO);
 	}
 
 	hWinnerPict_ = Image::Load("Image/WinnerUI/P-WIN.png");
+	assert(hWinnerPict_ >= ZERO);
 
+	hAudio_ = Audio::Load("Audio/SE/Winner.wav", false, 1);
+
+	isSound_ = false;
 }
 
 //更新
@@ -51,8 +56,16 @@ void WinnerUI::Draw()
 	//SetScale(XMFLOAT3(0.8f, 0.6f, 1));
 
 	if (IsVisibled()) {
+		isSound_ = false;
+		Audio::Stop(hAudio_);
 		return;
 	}
+
+	if (isSound_ == false) {
+		Audio::Play(hAudio_);
+		isSound_ = true;
+	}
+	
 
 	Transform winnerTrans = transform_;
 	winnerTrans.position_.x = SpriteToFloatX(WINNER_POS.x);

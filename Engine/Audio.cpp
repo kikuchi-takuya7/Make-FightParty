@@ -72,9 +72,14 @@ int Audio::Load(std::string fileName, bool isLoop, int svNum)
 	char wave[4];
 	ReadFile(hFile, &wave, 4, &dwBytes, NULL);
 
+	int i = 0;
 	Chunk formatChunk;
 	while (formatChunk.id[0] != 'f') {
 		ReadFile(hFile, &formatChunk.id, 4, &dwBytes, NULL);
+		i++;
+		if (i >= 100) {
+			int f = 0;
+		}
 	}
 	ReadFile(hFile, &formatChunk.size, 4, &dwBytes, NULL);
 

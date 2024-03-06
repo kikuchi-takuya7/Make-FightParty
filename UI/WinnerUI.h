@@ -50,4 +50,7 @@ private:
 
     int winnerID_;
 
+    int hAudio_;
+
+    bool isSound_;
 };

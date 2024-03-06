@@ -3,6 +3,7 @@
 #include "../Engine/Text.h"
 #include "../Engine/Timer.h"
 #include "../Engine/Input.h"
+#include "../Engine/Audio.h"
 #include "../Engine/SceneManager.h"
 #include<assert.h>
 
@@ -35,6 +36,11 @@ void ChampionUI::Initialize()
 	pTimer_->SetLimit(WAIT_TIME);
 	pTimer_->StopDraw();
 	pTimer_->Stop();
+
+	hAudio_ = Audio::Load("Audio/ChampionBGM.wav",true);
+	assert(hAudio_ >= ZERO);
+
+	Audio::Play(hAudio_);
 
 }
 

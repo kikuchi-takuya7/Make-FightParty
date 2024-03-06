@@ -7,6 +7,7 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Timer.h"
 #include "../Engine/VFX.h"
+#include "../Engine/Audio.h"
 #include "../UI/CountDownUI.h"
 #include "../UI/RankingUI.h"
 #include "../UI/GaugeUI/RankingGaugeUI.h"
@@ -67,6 +68,10 @@ void MetaAI::Initialize()
 
 	pWinnerUI_->Visible();
 	
+	hAudio_ = Audio::Load("Audio/FightBGM.wav", true);
+	assert(hAudio_ >= ZERO);
+
+	Audio::Play(hAudio_);
 
 }
 
@@ -210,6 +215,8 @@ void MetaAI::ResetGame()
 	pCountDown_->Start();
 	GameCameraSet();
 
+	Audio::Play(hAudio_);
+
 }
 
 
@@ -245,6 +252,7 @@ void MetaAI::ChampionUpdate()
 // 通常時のUpdate関数
 void MetaAI::UsuallyUpdate()
 {
+	//試合が終わったらタイマーがスタートして、終わったら呼ばれる
 	if (pWaitTimer_->IsFinished()) {
 		pNavigationAI_->AllStopDrawPlayerUI();
 		pRankingUI_->AllChildInvisible();
@@ -387,6 +395,8 @@ void MetaAI::ToCreateMode(int winnerID)
 	pWinnerUI_->Invisible();
 
 	pWaitTimer_->Start();
+
+	Audio::Stop(hAudio_);
 
 }
 

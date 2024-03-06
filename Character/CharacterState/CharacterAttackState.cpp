@@ -1,6 +1,7 @@
 #include "CharacterAttackState.h"
 #include "../../BoxCollider.h"
 #include "../Character.h"
+#include "../../Engine/Audio.h"
 
 //’è”
 namespace {
@@ -14,8 +15,11 @@ namespace {
 	const int ATTACK_END_FRAME = 110;
 }
 
-CharacterAttackState::CharacterAttackState(Character* character, int model) :CharacterState(character, model), settedCollision_(false)
+CharacterAttackState::CharacterAttackState(Character* character, int model) :CharacterState(character, model), settedCollision_(false),hAudio_(-1)
 {
+	hAudio_ = Audio::Load("Audio/SE/Attack.wav", false);
+	assert(hAudio_ >= ZERO);
+	Audio::Stop(hAudio_);
 }
 
 void CharacterAttackState::Update()
@@ -27,6 +31,7 @@ void CharacterAttackState::Update()
 	if (nowFrame >= ATTACK_START_FRAME && settedCollision_ == false) {
 		settedCollision_ = true;
 		pCharacter_->SetAttackCollider();
+		Audio::Play(hAudio_);
 	}
 
 	if (nowFrame >= ATTACK_END_FRAME) {

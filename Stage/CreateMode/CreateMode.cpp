@@ -8,6 +8,7 @@
 #include "../../Engine/Global.h"
 #include "../../Engine/Debug.h"
 #include "../../Engine/Timer.h"
+#include "../../Engine/Audio.h"
 #include "../../AI/MetaAI.h"
 #include "../../AI/NavigationAI.h"
 #include "StageSource/OneBrock.h"
@@ -23,7 +24,7 @@ namespace {
     const float OBJ_MOVE_RATE = 0.05f;
     const XMFLOAT3 OBJECT_POS[MAX_VIEW_OBJECT] = { XMFLOAT3(7,22,15),XMFLOAT3(12,22,15) ,XMFLOAT3(17,22,15) ,XMFLOAT3(22,22,15),
                                                    XMFLOAT3(7,18,15) ,XMFLOAT3(12,18,15)  ,XMFLOAT3(17,18,15)  ,XMFLOAT3(22,18,15)};
-    //参加するプレイヤーの最大人数分
+    //選択されたオブジェクトを表示する位置
     const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
 
     //カメラの位置
@@ -35,21 +36,20 @@ namespace {
     const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
     const float WAIT_TIME = 1.5f;
 
+    //初期化用
     const int INF = 999999;
 }
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), timer_(Instantiate<Timer>(this))
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), timer_(Instantiate<Timer>(this)),hCreateSound_{-1,-1},hBGM_(-1)
 {
-
 
 }
 
 //初期化
 void CreateMode::Initialize()
 {
-
     //Mapファイルの中に入ってるfbxファイルの名前を入れる
     std::vector<std::string> fileName;
 
@@ -64,7 +64,7 @@ void CreateMode::Initialize()
         std::string dir = "StageResource/";
         modelData_.at(i).hModel = Model::Load(dir + fileName.at(i));
         modelData_.at(i).modelPattern = (FBXPATTERN)i;
-        assert(modelData_.at(i).hModel >= 0);
+        assert(modelData_.at(i).hModel >= ZERO);
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
@@ -83,6 +83,26 @@ void CreateMode::Initialize()
     nowState_ = NONE;
 
     timer_->SetLimit(WAIT_TIME);
+
+
+    //音声データのロード
+    std::string str[CREATESOUND_NUM] = { "Sellect","Setting"};
+
+    for (int i = ZERO; i < CREATESOUND_NUM; i++) {
+
+        std::string dir = "Audio/SE/";
+        std::string extention = ".wav";
+
+        std::string fileName = dir + str[i] + extention;
+
+        hCreateSound_[i] = Audio::Load(fileName, false, 3);
+        assert(hCreateSound_[i] >= ZERO);
+
+        Audio::Stop(hCreateSound_[i]);
+    }
+
+    hBGM_ = Audio::Load("Audio/CreateModeBGM.wav", true);
+    Audio::Stop(hBGM_);
     
 }
 
@@ -112,6 +132,8 @@ void CreateMode::SelectInit()
     for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
         viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
     }
+
+    Audio::Play(hBGM_);
 }
 
 //セッティングモード用の初期化
@@ -173,6 +195,7 @@ void CreateMode::SelectUpdate()
             AISelectObject(ranking_.at(nextSelectCharacterID_));
             nextSelectCharacterID_--;
             isObjectMoving_ = true;
+            Audio::Play(hCreateSound_[SELECT]);
             return;
         }
 
@@ -188,6 +211,7 @@ void CreateMode::SelectUpdate()
                 SelectObject(ranking_.at(nextSelectCharacterID_));
                 nextSelectCharacterID_--;
                 isObjectMoving_ = true;
+                Audio::Play(hCreateSound_[SELECT]);
             }
         }
 
@@ -211,6 +235,7 @@ void CreateMode::SettingUpdate()
     //移動する処理。
     if (settingObject_.at(ZERO).moved) {
         AIMovingObject();
+        Audio::Play(hCreateSound_[SETTING]);
     }
 
     //マウスからレイを飛ばす用のベクトルを獲得
@@ -219,10 +244,11 @@ void CreateMode::SettingUpdate()
     GetCursorRay(front, back);
 
     if (IsStageOverlapCursor(front, back)) {
-        if (Input::IsMouseButtonDown(0) && IsOverlapPosition() == false) {
+        if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
 
             //ひとまずプレイヤーは1人目だけだから
             CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
+            Audio::Play(hCreateSound_[SETTING]);
         }
 
         if (Input::IsKeyDown(DIK_UP)) {
@@ -245,7 +271,7 @@ void CreateMode::SettingUpdate()
     //全てのオブジェクトを設置し終わったらゲームに戻る
     {
         bool isAllCreate = true;
-        for (int i = 0; i < settingObject_.size(); i++) {
+        for (int i = ZERO; i < settingObject_.size(); i++) {
 
             //モデル番号が-1じゃないなら
             if (settingObject_.at(i).hModel != -1) {
@@ -703,6 +729,8 @@ void CreateMode::ToGameMode()
     //ここで一旦暗転とかさせたいから移動はすぐでいい
     pMetaAI_->ResetGame();
     nowState_ = NONE;
+
+    Audio::Stop(hBGM_);
 }
 
 // ディレクトリ内の指定した識別子のファイルネームを獲得する関数

@@ -46,9 +46,6 @@ public:
 
 private:
 
-    //int hModel_;
-
-    ////HP等のステータス
-    //Status status_;
+    
 
 };

@@ -38,4 +38,6 @@ private:
     void FiringEffect();
 
     Timer* timer_;
+
+    int hAudio_;
 };

@@ -28,5 +28,6 @@ public:
 private:
 
 	TitleUI* title_;
+	int hAudio_;
 
 };

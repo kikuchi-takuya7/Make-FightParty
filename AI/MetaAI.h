@@ -175,5 +175,9 @@ private:
 
 	ChampionUI* pChampionUI_;
 
+
+	//ÉQÅ[ÉÄBGM
+	int hAudio_;
+
 };
 

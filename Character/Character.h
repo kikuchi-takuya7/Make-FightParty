@@ -41,6 +41,12 @@ struct Status {
 
 };
 
+enum SoundEffect {
+    HIT,
+    DEAD,
+    SE_NUM
+};
+
 class PlayerUI;
 class CharacterStateManager;
 enum CharacterStateList;
@@ -187,6 +193,8 @@ protected:
     //キャラクターがそれぞれで持つUI
     PlayerUI* pPlayerUI_;
 
+    //効果音
+    int hSoundEffect_[SE_NUM];
     
 
 private:

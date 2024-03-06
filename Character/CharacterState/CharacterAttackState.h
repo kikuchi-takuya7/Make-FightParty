@@ -40,5 +40,8 @@ private:
 	//“–‚½‚è”»’è‚ğİ’uÏ‚İ‚©”Û‚©Bİ’uÏ‚İ‚È‚çtrue
 	bool settedCollision_;
 
+	//UŒ‚‚ÌSE
+	int hAudio_;
+
 };
 

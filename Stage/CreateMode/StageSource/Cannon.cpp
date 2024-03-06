@@ -2,8 +2,10 @@
 #include "../../../Character/Character.h"
 #include "../../../Engine/Timer.h"
 #include "../../../Engine/VFX.h"
+#include "../../../Engine/Audio.h"
 #include "Bullet.h"
 
+//’è”éŒ¾
 namespace {
 	const int COST = -1;
 
@@ -33,7 +35,8 @@ void Cannon::ChildInitialize()
 
 	AddCollider(pBoxCollision_, COLLIDER_BROCK);
 
-	
+	hAudio_ = Audio::Load("Audio/SE/Cannon.wav", false,3);
+	Audio::Stop(hAudio_);
 
 	//‹…‚ð‘Å‚ÂŠÔŠu
 	timer_->SetLimit(BULLET_INTERVAL);
@@ -56,6 +59,7 @@ void Cannon::ChildUpdate()
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();
+		Audio::Play(hAudio_);
 	}
 
 }

@@ -19,6 +19,12 @@ enum FBXPATTERN {
 	PATTERN_END
 };
 
+enum CreateSound {
+	SELECT,
+	SETTING,
+	CREATESOUND_NUM
+};
+
 //モデル番号とモデルのパターンを覚える
 struct ModelInfo {
 
@@ -203,9 +209,6 @@ private:
 	/// <returns>見つけたファイルの名前が入った配列</returns>
 	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
-	//モードを管理する変数
-	CREATESTATE nowState_;
-
 	/////////////AI等のインスタンス///////////
 
 	MetaAI* pMetaAI_;
@@ -236,10 +239,13 @@ private:
 	//選択したオブジェクトが移動中か
 	bool isObjectMoving_;
 
-	//////////////////////////その他//////////////////////////////
-
 	//作成したオブジェクトリスト
 	std::list<StageSourceBase*> createObjectList_;
+
+	//////////////////////////その他//////////////////////////////
+
+	//モードを管理する変数
+	CREATESTATE nowState_;
 
 	//モデルを回転させる変数
 	float rotateObjectValue_;
@@ -249,6 +255,12 @@ private:
 
 	//時間を置くのに使う
 	Timer* timer_;
+
+	//SEの音番号
+	int hCreateSound_[CREATESOUND_NUM];
+
+	//BGM
+	int hBGM_;
 
 
 	//インスタンスを作成して色々するテンプレート
