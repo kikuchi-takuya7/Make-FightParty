@@ -4,6 +4,7 @@
 class MetaAI;
 class NavigationAI;
 class Stage;
+class CreateMode;
 struct Status;
 
 /// <summary>
@@ -30,9 +31,24 @@ public:
 
 private:
 
+	//クリエイトモードに色々セットしたりする関数
+	void CreateModeInit();
+
 	//背景
 	int hPict_;
 
+	//このクラス内では使わないけど一応インスタンスを保持しておく
+
+	//ゲーム全体の位置等を管理するAI
+	NavigationAI* pNavigationAI_;
 	
+	//ゲーム全体のバランスを管理するAI
+	MetaAI* pMetaAI_;
+
+	//ステージ
+	Stage* pStage_;
+
+	//クリエイトモード時に使うクラス
+	CreateMode* pCreateMode_;
 	
 };

@@ -27,7 +27,8 @@ namespace {
 
 //コンストラクタ
 MainGameScene::MainGameScene(GameObject* parent)
-	:GameObject(parent, "MainGameScene"),hPict_(-1)
+	:GameObject(parent, "MainGameScene"),hPict_(-1),pNavigationAI_(Instantiate<NavigationAI>(this)),pMetaAI_(Instantiate<MetaAI>(this)),
+	pStage_(Instantiate<Stage>(this)),pCreateMode_(NoInitInstantiate<CreateMode>(this))
 {
 
 }
@@ -36,32 +37,13 @@ MainGameScene::MainGameScene(GameObject* parent)
 void MainGameScene::Initialize()
 {
 
-	//ゲーム全体の位置等を管理するAI
-	NavigationAI* pNavigationAI;
-
-	//ゲーム全体のバランスを管理するAI
-	MetaAI* pMetaAI;
-
-	//ステージ
-	Stage* pMetaA;
-
-	pNavigationAI = Instantiate<NavigationAI>(this);
-	pMetaAI = Instantiate<MetaAI>(this);
-	pMetaA = Instantiate<Stage>(this);
-
-	pNavigationAI->SetStage(pMetaA);
-
-	pMetaAI->SetNavigationAI(pNavigationAI);
+	pNavigationAI_->SetStage(pStage_);
+	pMetaAI_->SetNavigationAI(pNavigationAI_);
 	
+	//クリエイトモードに色々セットする
+	CreateModeInit();
+
 	int objectID = 0;
-
-	CreateMode* createMode = Instantiate<CreateMode>(this);
-	createMode->SetMetaAI(pMetaAI);
-	createMode->SetNavigationAI(pNavigationAI);
-	createMode->SetStage(pMetaA);
-	pMetaA->SetCreateMode(createMode);
-	pMetaAI->SetCreateMode(createMode);
-
 
 	//プレイヤーをプレイ人数分用意する
 	for (int i = 0; i < PLAYER_NUM; i++) {
@@ -75,8 +57,8 @@ void MainGameScene::Initialize()
 		pPlayer->SetCharacterName(name);
 		pPlayer->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
 
-		pNavigationAI->PushCharacter(pPlayer);
-		pMetaAI->PushCharacterStatus(pPlayer->GetStatus());
+		pNavigationAI_->PushCharacter(pPlayer);
+		pMetaAI_->PushCharacterStatus(pPlayer->GetStatus());
 
 		pPlayer->SetPosition(CHARA_POS[objectID]);
 		pPlayer->SetStartPos(CHARA_POS[objectID]);
@@ -86,7 +68,7 @@ void MainGameScene::Initialize()
 	//XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO)
 	
 	//敵の最初のIDを覚えて後で使う
-	createMode->SetStartEnemyID(objectID);
+	pCreateMode_->SetStartEnemyID(objectID);
 
 	Enemy* pEnemy[ENEMY_NUM];
 	
@@ -101,8 +83,8 @@ void MainGameScene::Initialize()
 		pEnemy[i]->SetCharacterName(name);
 		pEnemy[i]->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * objectID), PLAYERUI_FIRST_POS.y, ZERO));
 
-		pNavigationAI->PushCharacter(pEnemy[i]);
-		pMetaAI->PushCharacterStatus(pEnemy[i]->GetStatus());
+		pNavigationAI_->PushCharacter(pEnemy[i]);
+		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
 
 		pEnemy[i]->SetPosition(CHARA_POS[objectID]);
 		pEnemy[i]->SetStartPos(CHARA_POS[objectID]);
@@ -117,17 +99,17 @@ void MainGameScene::Initialize()
 
 		CharacterAI* charaAI = Instantiate<CharacterAI>(this);
 		charaAI->SetEnemy(pEnemy[i]);
-		charaAI->SetNavigationAI(pNavigationAI);
-		charaAI->SetMetaAI(pMetaAI);
+		charaAI->SetNavigationAI(pNavigationAI_);
+		charaAI->SetMetaAI(pMetaAI_);
 
-		pNavigationAI->PushCharacterAI(charaAI);
+		pNavigationAI_->PushCharacterAI(charaAI);
 
 		pEnemy[i]->SetCharacterAI(charaAI);
 
 		charaAI->AskTarget();
 	}
 
-	pMetaAI->ResetGame();
+	pMetaAI_->ResetGame();
 
 	hPict_ = Image::Load("Image/BackGround/BackGround.png");
 	assert(hPict_ >= 0);
@@ -157,10 +139,22 @@ void MainGameScene::Release()
 {
 	/*SAFE_RELEASE(pPlayer);
 	SAFE_RELEASE(pEnemy);*/
-	//SAFE_RELEASE(pMetaAI);
-	//SAFE_RELEASE(pNavigationAI);
-	/*SAFE_DELETE(pMetaAI);
-	SAFE_DELETE(pNavigationAI);*/
+	//SAFE_RELEASE(pMetaAI_);
+	//SAFE_RELEASE(pNavigationAI_);
+	/*SAFE_DELETE(pMetaAI_);
+	SAFE_DELETE(pNavigationAI_);*/
 	
 	
+}
+
+//クリエイトモードに色々セットしたりする関数
+void MainGameScene::CreateModeInit()
+{
+	//クリエイトモードに色々セットする
+	pCreateMode_->SetMetaAI(pMetaAI_);
+	pCreateMode_->SetNavigationAI(pNavigationAI_);
+	pCreateMode_->SetStage(pStage_);
+	pCreateMode_->Initialize();
+	pStage_->SetCreateMode(pCreateMode_);
+	pMetaAI_->SetCreateMode(pCreateMode_);
 }

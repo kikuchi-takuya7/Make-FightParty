@@ -76,8 +76,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        trans.position_.y += 1;
-        CreateInstance<OneBrock>(modelData_.at(ZERO).hModel, trans, ZERO);
+        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, ZERO);
     }
 
     //MAX_VIEW_OBJECT•ª‚Ì—v‘f‚ðŽ–‘O‚ÉŽæ‚Á‚Ä‚¨‚­

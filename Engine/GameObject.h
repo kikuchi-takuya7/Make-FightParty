@@ -95,7 +95,7 @@ public:
 
 	
 	/// <summary>
-	/// 滑らかに移動させる
+	/// 滑らかに移動させる為の関数
 	/// </summary>
 	/// <param name="position">動かしたいオブジェクトの座標</param>
 	/// <param name="lastPos">最終的なポジション</param>
@@ -104,20 +104,20 @@ public:
 	bool RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float moveRate);
 
 	//各フラグの制御
-	bool IsDead();			// 削除するかどうか
-	void KillMe();			// 自分を削除する
-	void Enter();			// Updateを許可
-	void Leave();			// Updateを拒否
-	void Visible();			// Drawを許可
-	void Invisible();		// Drawを拒否
-	bool IsInitialized();	// 初期化済みかどうか
-	void SetInitialized();	// 初期化済みにする
-	bool IsEntered();		// Update実行していいか
-	bool IsVisibled();		// Draw実行していいか
-	void AllChildEnter();
-	void AllChildLeave();
-	void AllChildVisible();
-	void AllChildInvisible();
+	bool IsDead();				// 削除するかどうか
+	void KillMe();				// 自分を削除する
+	void Enter();				// Updateを許可
+	void Leave();				// Updateを拒否
+	void Visible();				// Drawを許可
+	void Invisible();			// Drawを拒否
+	bool IsInitialized();		// 初期化済みかどうか
+	void SetInitialized();		// 初期化済みにする
+	bool IsEntered();			// Update実行していいか
+	bool IsVisibled();			// Draw実行していいか
+	void AllChildEnter();		// 子供全てをEnter
+	void AllChildLeave();		// 子供全てをLeave
+	void AllChildVisible();		// 子供全てをVisible
+	void AllChildInvisible();	// 子供全てをInvisible 
 
 
 	//子オブジェクトリストを取得
