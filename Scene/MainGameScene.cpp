@@ -35,9 +35,6 @@ MainGameScene::MainGameScene(GameObject* parent)
 //初期化
 void MainGameScene::Initialize()
 {
-	//Direct3Dを呼び出す前にglobal.hを呼び出すから値がバグる。ので一旦ここで定数宣言しちゃう
-	/*const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(SpriteToFloatX(185), SpriteToFloatY(650), ZERO);
-	const float UI_DIFF = SpriteToFloatX(350);*/
 
 	//ゲーム全体の位置等を管理するAI
 	NavigationAI* pNavigationAI;

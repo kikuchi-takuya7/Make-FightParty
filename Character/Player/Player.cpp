@@ -74,11 +74,12 @@ void Player::ChildUpdate()
 	}
 
 	if (Input::IsKeyDown(DIK_F)) {
-		ChangeState(ATTACK);
+		//ChangeState(ATTACK);
 	}
 
 	if (Input::IsKeyDown(DIK_SPACE)) {
 		//ChangeState(JUMP);
+		ChangeState(ATTACK);
 	}
 
 }

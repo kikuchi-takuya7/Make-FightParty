@@ -10,6 +10,8 @@ namespace {
 	const int STAGE_COST = 1;
 	const int moveZ[4] = { ZERO,ZERO,   1,  -1};
 	const int moveX[4] = { 1,   -1,  ZERO,ZERO};
+
+	
 }
 
 Stage::Stage(GameObject* parent)
@@ -47,6 +49,7 @@ void Stage::Initialize()
 
 			stageCost_.at(z).at(x) = STAGE_COST;
 			stageModel_.at(z).at(x) = hModel_;
+			
 		}
 	}
 
@@ -60,10 +63,11 @@ void Stage::Update()
 void Stage::Draw()
 {
 
-	Transform blockTrans;
+	
 
 	for (int z = 0; z < STAGE_SIZE.z; z++) {
 		for (int x = 0; x < STAGE_SIZE.x; x++) {
+			Transform blockTrans;
 			blockTrans.position_.z = z;
 			blockTrans.position_.x = x;
 			Model::SetTransform(stageModel_.at(z).at(x), blockTrans);

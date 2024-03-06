@@ -38,6 +38,10 @@ namespace {
 
     //初期化用
     const int INF = 999999;
+
+    //真ん中にオブジェクトを追加する
+    const int STAGE_ADDX[9] = { 14,15,15,15,16,15,15,13,17 };
+    const int STAGE_ADDZ[9] = { 15,14,15,16,15,13,17,15,15 };
 }
 
 //コンストラクタ
@@ -65,6 +69,15 @@ void CreateMode::Initialize()
         modelData_.at(i).hModel = Model::Load(dir + fileName.at(i));
         modelData_.at(i).modelPattern = (FBXPATTERN)i;
         assert(modelData_.at(i).hModel >= ZERO);
+    }
+
+    //真ん中に十字型の壁を作る。Astarわかりやすくする為に
+    for (int i = 0; i < 9; i++) {
+        Transform trans;
+        trans.position_.x = STAGE_ADDX[i];
+        trans.position_.z = STAGE_ADDZ[i];
+        trans.position_.y += 1;
+        CreateInstance<OneBrock>(modelData_.at(ZERO).hModel, trans, ZERO);
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
