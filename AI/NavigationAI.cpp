@@ -167,6 +167,11 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			int sz = nz + moveZ[i];
 			int sx = nx + moveX[i];
 
+			// ‰æ–ÊŠO‚È‚ç
+			if (sz < ZERO || sz >= height_ || sx < ZERO || sx >= width_) {
+				continue;
+			}
+
 			//•Ç‚È‚ç
 			if (map.at(sz).at(sx) == -1) {
 				isWall = true;

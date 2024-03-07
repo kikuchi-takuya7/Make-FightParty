@@ -3,7 +3,7 @@
 
 namespace {
 	const int DIE_START_FRAME = 250;
-	const int DIE_END_FRAME = 340 + 10000;//€‚ñ‚¾‚ ‚Æ‚¸‚Á‚Æ~‚Ü‚Á‚Ä‚Ä‚à‚ç‚¤
+	const int DIE_END_FRAME = 340 + 9999999;//€‚ñ‚¾‚ ‚Æ‚¸‚Á‚Æ~‚Ü‚Á‚Ä‚Ä‚à‚ç‚¤Bif•¶‚ğg‚í‚È‚­‚Ä‚à‚¢‚¢‚æ‚¤‚É
 }
 
 CharacterDieState::CharacterDieState(Character* character, int model) :CharacterState(character, model)

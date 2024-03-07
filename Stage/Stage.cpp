@@ -8,10 +8,16 @@
 namespace {
 	XMFLOAT3 STAGE_SIZE = XMFLOAT3(30.0f, ZERO, 30.0f);
 	const int STAGE_COST = 1;
+
+	//追加したオブジェクトの周囲に追加するコスト。完全な壁だった場合敵が止まってしまうため
+	const int ADD_COST = 10;
+
 	const int moveZ[4] = { ZERO,ZERO,   1,  -1};
 	const int moveX[4] = { 1,   -1,  ZERO,ZERO};
 
-	
+	//上下左右に移動（探索）するための配列
+	/*const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
+	const int moveX[8] = { 1,  -1,ZERO,ZERO, 1,-1, 1,-1 };*/
 }
 
 Stage::Stage(GameObject* parent)
@@ -63,8 +69,8 @@ void Stage::Draw()
 
 	
 
-	for (int z = 0; z < STAGE_SIZE.z; z++) {
-		for (int x = 0; x < STAGE_SIZE.x; x++) {
+	for (int z = ZERO; z < STAGE_SIZE.z; z++) {
+		for (int x = ZERO; x < STAGE_SIZE.x; x++) {
 			Transform blockTrans;
 			blockTrans.position_.z = z;
 			blockTrans.position_.x = x;
@@ -74,7 +80,7 @@ void Stage::Draw()
 	}
 
 	//描画し終わったら次のAstar経路を表示する為にモデルを全て初期化する
-	for (int z = 0; z < STAGE_SIZE.z; z++) {
+	for (int z = ZERO; z < STAGE_SIZE.z; z++) {
 		for (int x = 0; x < STAGE_SIZE.x; x++) {
 			stageModel_.at(z).at(x) = hModel_;
 		}
@@ -111,16 +117,18 @@ void Stage::SetStageCost(XMFLOAT3 pos, int cost)
 	stageCost_.at(pos.z).at(pos.x) = cost;
 
 	//一マスだけ壁にすると斜め移動するときに引っかかるから上下もコストを反映させてみる
-	for (int i = 0; i < 4; i++) {
+	for (int i = ZERO; i < ARRAYSIZE(moveZ); i++) {
 
 		int sz = pos.z + moveZ[i];
 		int sx = pos.x + moveX[i];
 
 		//画面外だったらやめる
-		if (sx >= STAGE_SIZE.x || sx < 0 || sz >= STAGE_SIZE.y || sz < 0) {
+		if (sx >= STAGE_SIZE.x || sx < ZERO || sz >= STAGE_SIZE.z || sz < ZERO) {
 			continue;
 		}
-		stageCost_.at(sz).at(sx) = cost;
+
+		//実際に壁というわけではないので壁にはしないけどコストを重くする
+		stageCost_.at(sz).at(sx) = cost + ADD_COST;
 	}
 }
 
