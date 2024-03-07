@@ -7,6 +7,8 @@ class Stage;
 class CreateMode;
 struct Status;
 
+
+
 /// <summary>
 /// ゲームのメインとなるシーン
 /// </summary>
@@ -50,5 +52,7 @@ private:
 
 	//クリエイトモード時に使うクラス
 	CreateMode* pCreateMode_;
+
 	
+
 };
