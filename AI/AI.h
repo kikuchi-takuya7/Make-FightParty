@@ -16,7 +16,7 @@ public:
 	AI(GameObject* parent, std::string name);
 
 	//デストラクタ
-	~AI();//virtual付けたほうがいい？後で調べよう
+	~AI();
 
 
 private:
