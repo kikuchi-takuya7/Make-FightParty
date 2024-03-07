@@ -24,21 +24,7 @@ namespace {
 	const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(185.0f,650.0f, ZERO);
 	const float UI_DIFF = 275.0f;
 
-	//インスタンスを作成して色々するテンプレート
-	template <class T>
-	T* CreateCharacter(T* character, int ID, std::string name)
-	{
-		character = NoInitInstantiate<T>(this);
-		character->SetObjectID(ID);
-		character->Initialize();
-
-		std::string str = name + std::to_string(ID + 1);
-		character->SetCharacterName(str);
-		character->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * ID), PLAYERUI_FIRST_POS.y, ZERO));
-
-		character->SetPosition(CHARA_POS[ID]);
-		character->SetStartPos(CHARA_POS[ID]);
-	}
+	
 }
 
 //コンストラクタ
@@ -60,49 +46,36 @@ void MainGameScene::Initialize()
 	CreateModeInit();
 
 	int objectID = 0;
-
 	Player* pPlayer[PLAYER_NUM];
 
 	//プレイヤーをプレイ人数分用意する
 	for (int i = 0; i < PLAYER_NUM; i++) {
 
-		CreateCharacter<Player>(pPlayer[i], objectID, " Player");
-		pNavigationAI_->PushCharacter(pPlayer[i]);
-		pMetaAI_->PushCharacterStatus(pPlayer[i]->GetStatus());
+		pPlayer[i] = CreateCharacter<Player>(objectID, " Player");
 		objectID++;
 	}
-	
+
+
 	//敵の最初のIDを覚えて後で使う
 	pCreateMode_->SetStartEnemyID(objectID);
-
 	Enemy* pEnemy[ENEMY_NUM];
-	
+
 	//各種AIを用意してセットする
 	for (int i = 0; i < ENEMY_NUM; i++) {
 
-		CreateCharacter<Enemy>(pEnemy[i], objectID, "     CP");
-		pNavigationAI_->PushCharacter(pEnemy[i]);
-		pMetaAI_->PushCharacterStatus(pEnemy[i]->GetStatus());
+		pEnemy[i] = CreateCharacter<Enemy>(objectID, "     CP");
 		objectID++;
 	}
 
 	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めてプレイヤー以外もちゃんと狙うように
 	for (int i = 0; i < ENEMY_NUM; i++) {
 
-		CharacterAI* charaAI = Instantiate<CharacterAI>(this);
-		charaAI->SetEnemy(pEnemy[i]);
-		charaAI->SetNavigationAI(pNavigationAI_);
-		charaAI->SetMetaAI(pMetaAI_);
-
-		pNavigationAI_->PushCharacterAI(charaAI);
-
-		pEnemy[i]->SetCharacterAI(charaAI);
-
-		charaAI->AskTarget();
+		CreateCharaAI(pEnemy[i]);
 	}
 
 	pMetaAI_->ResetGame();
 
+	//背景をロード
 	hPict_ = Image::Load("Image/BackGround/BackGround.png");
 	assert(hPict_ >= 0);
 
@@ -151,3 +124,36 @@ void MainGameScene::CreateModeInit()
 	pMetaAI_->SetCreateMode(pCreateMode_);
 }
 
+void MainGameScene::CreateCharaAI(Enemy* enemy)
+{
+	CharacterAI* charaAI = Instantiate<CharacterAI>(this);
+	charaAI->SetEnemy(enemy);
+	charaAI->SetNavigationAI(pNavigationAI_);
+	charaAI->SetMetaAI(pMetaAI_);
+
+	pNavigationAI_->PushCharacterAI(charaAI);
+
+	enemy->SetCharacterAI(charaAI);
+
+	charaAI->AskTarget();
+}
+
+template<class T>
+T* MainGameScene::CreateCharacter(int ID, std::string name)
+{
+	T* character = NoInitInstantiate<T>(this);
+	character->SetObjectID(ID);
+	character->Initialize();
+
+	std::string str = name + std::to_string(ID + 1);
+	character->SetCharacterName(str);
+	character->SetUIPos(XMFLOAT3(PLAYERUI_FIRST_POS.x + (UI_DIFF * ID), PLAYERUI_FIRST_POS.y, ZERO));
+
+	character->SetPosition(CHARA_POS[ID]);
+	character->SetStartPos(CHARA_POS[ID]);
+
+	pNavigationAI_->PushCharacter(character);
+	pMetaAI_->PushCharacterStatus(character->GetStatus());
+
+	return character;
+}

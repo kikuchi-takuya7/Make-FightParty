@@ -5,6 +5,7 @@ class MetaAI;
 class NavigationAI;
 class Stage;
 class CreateMode;
+class Enemy;
 struct Status;
 
 
@@ -36,6 +37,9 @@ private:
 	//クリエイトモードに色々セットしたりする関数
 	void CreateModeInit();
 
+	//キャラクターAIを作る
+	void CreateCharaAI(Enemy* enemy);
+
 	//背景
 	int hPict_;
 
@@ -54,5 +58,9 @@ private:
 	CreateMode* pCreateMode_;
 
 	
+	//インスタンスを作成して色々するテンプレート
+	template <class T>
+	T* CreateCharacter(int ID, std::string name);
 
 };
+
