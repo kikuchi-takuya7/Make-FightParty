@@ -49,10 +49,8 @@ void Stage::Initialize()
 
 			stageCost_.at(z).at(x) = STAGE_COST;
 			stageModel_.at(z).at(x) = hModel_;
-			
 		}
 	}
-
 }
 
 void Stage::Update()
