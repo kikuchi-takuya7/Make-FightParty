@@ -1,0 +1,29 @@
+・フォルダ構成
+├─AI					AI関連のクラス
+├─Assets				モデル等が入ってます
+│  ├─DebugCollision		デバック用の当たり判定
+│  ├─EditorUIFbx			マップエディタのUI用
+|    ├─Image				タイトルなどの画像
+│  ├─Map				マップのリソース
+│  ├─PlayerFbx			プレイヤーのFBX
+│  ├─Shader				シェーダー
+|    └─StageSource		クリエイトモードで使うfbx
+├─Character				キャラクター関連のクラス
+│  ├─Enemy				敵のクラス
+│  ├─Player				プレイヤーのクラス
+│  └─CharacterState		キャラクタークラス全般で使われる共通のstateパターン
+├─Engine　				使ってるエンジン
+│  ├─Imgui				GUI（未使用）
+│  ├─json-develop			jsonファイルで保存用（未使用） 
+│  └─SaveManager			セーブマネージャクラス
+├─MapEditor				マップエディタクラス
+│  └─MapSource			マップのリソースのクラス
+├─Scene					シーン一覧
+├─Stage					ステージ
+│  └─CreateMode			クリエイトモード
+│	   └─StageSource		クリエイトモードで使うクラス
+├─x64
+│  └─Debug
+│      ├─GameBaseDx11.tlog
+│      └─Make-FightParty.tlog
+└─メモ					個人用のメモ
