@@ -155,7 +155,38 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 		bool isBreak = false;
 
+		//ŽüˆÍ‚É•Ç‚ª‚ ‚é‚©‚Ç‚¤‚©
+		bool isWall = false;
+
+		//ŽüˆÍ‚É•Ç‚ª‚ ‚é‚©Šm”F‚·‚é
 		for (int i = ZERO; i < ARRAYSIZE(moveZ); i++) {
+			//¡‚¢‚éêŠ NowZ
+			int nz = now.second.first;
+			int nx = now.second.second;
+			//¡‚©‚ç’Tõ‚·‚éêŠ SecondZ
+			int sz = nz + moveZ[i];
+			int sx = nx + moveX[i];
+
+			// ‰æ–ÊŠO‚È‚ç
+			if (sz < ZERO || sz >= height_ || sx < ZERO || sx >= width_) {
+				continue;
+			}
+
+			//•Ç‚È‚ç
+			if (map.at(sz).at(sx) == -1) {
+				isWall = true;
+				break;
+			}
+		}
+
+		int roop = ARRAYSIZE(moveZ);
+
+		//ŽüˆÍ‚É•Ç‚ª‚ ‚é‚È‚çŽÎ‚ßˆÚ“®‚³‚¹‚È‚¢‚æ‚¤‚É‚·‚é
+		if (isWall == true) {
+			roop = ARRAYSIZE(moveZ) / 2;
+		}
+
+		for (int i = ZERO; i < roop; i++) {
 
 			//¡‚¢‚éêŠ NowZ
 			int nz = now.second.first;
