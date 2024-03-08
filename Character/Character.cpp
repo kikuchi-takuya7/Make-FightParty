@@ -107,13 +107,20 @@ void Character::Release()
 {
 	ChildRelease();
 
+
+	//試合中以外、Collisionは消しているのでここでDELETEする。
+
+	//コリジョンをcolliderListから外してるときは自動開放されないので、特定の条件の時のみ自分で開放する
+	if (pState_->characterState_ != pState_->pCharacterStateList_.at(ATTACK)) {
+
+		SAFE_DELETE(pAttackCollision_);
+	}
+	else if(pState_->characterState_ == pState_->pCharacterStateList_.at(DIE)){
+		SAFE_DELETE(pAttackCollision_);
+		SAFE_DELETE(pBodyCollision_);
+	}
+
 	SAFE_DELETE(pState_);
-
-	//試合中以外、Collisionは消しているのでここでDELETEする。尚実行中に消すとエラーになる
-	//nullptr入れてるはずなのになぜ例外が出るのか
-
-	SAFE_DELETE(pAttackCollision_);
-	SAFE_DELETE(pBodyCollision_);
 	
 }
 
