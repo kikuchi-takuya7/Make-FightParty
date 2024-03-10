@@ -1,29 +1,22 @@
 ・フォルダ構成
 ├─AI					AI関連のクラス
 ├─Assets				モデル等が入ってます
-│  ├─DebugCollision		デバック用の当たり判定
-│  ├─EditorUIFbx			マップエディタのUI用
-|    ├─Image				タイトルなどの画像
-│  ├─Map				マップのリソース
-│  ├─PlayerFbx			プレイヤーのFBX
-│  ├─Shader				シェーダー
-|    └─StageSource		クリエイトモードで使うfbx
-├─Character				キャラクター関連のクラス
-│  ├─Enemy				敵のクラス
-│  ├─Player				プレイヤーのクラス
-│  └─CharacterState		キャラクタークラス全般で使われる共通のstateパターン
-├─Engine　				使ってるエンジン
-│  ├─Imgui				GUI（未使用）
-│  ├─json-develop			jsonファイルで保存用（未使用） 
-│  └─SaveManager			セーブマネージャクラス
-├─MapEditor				マップエディタクラス
-│  └─MapSource			マップのリソースのクラス
-├─Scene					シーン一覧
-├─Stage					ステージ
-│  └─CreateMode			クリエイトモード
-│	   └─StageSource		クリエイトモードで使うクラス
-├─x64
-│  └─Debug
-│      ├─GameBaseDx11.tlog
-│      └─Make-FightParty.tlog
-└─メモ					個人用のメモ
+│  ├─Audio				SEやBGMが入っています
+│  ├─DebugCollision	デバック用の当たり判定
+│  ├─Image				UI等の画像が入っています
+│  ├─Others			砲台の球が入っています
+│  ├─PlayerFbx			プレイヤーのFBXが入っています
+│  ├─Shader			hlslシェーダーが入っています
+│  ├─Stage				ステージに使っているfbxが入っています
+│  ├─StageResource		クリエイトモードで使っているfbxモデルが入っています
+│  └─VFX				エフェクトで使う画像が入っています
+├─Character				キャラクター関連のクラスが入っています
+│  └─CharacterState	キャラクターstateクラスが入っています
+├─Engine				ゲームエンジンが入っています
+├─Scene					シーンが入っています
+├─Stage					ステージ関連のクラスが入っています
+│  └─CreateMode		クリエイトモードのクラスが入っています
+│      └─StageSource	クリエイトモードで使うモデルのクラスが入っています
+├─UI					UIクラスが入っています
+│  └─GaugeUI			ゲージ関連のクラスが入っています
+└─メモ					個人的なメモが入っています
