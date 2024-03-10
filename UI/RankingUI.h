@@ -4,6 +4,7 @@
 #include <queue>
 
 class RankingGaugeUI;
+class Text;
 enum SCOREGAUGELIST;
 
 /// <summary>
@@ -51,4 +52,6 @@ private:
 
     //{ゲージのインスタンス、スコア}
     std::vector<RankingGaugeUI*> pGaugeList_;
+
+    Text* pText_;
 };
