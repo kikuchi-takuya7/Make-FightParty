@@ -1,9 +1,13 @@
 #include "RankingUI.h"
 #include "GaugeUI/RankingGaugeUI.h"
 #include "../Engine/Image.h"
+#include "../Engine/Text.h"
 #include <assert.h>
 
 namespace {
+
+	const XMFLOAT3 PAPER_SIZE = { 0.8f, 0.6f, 1 };
+
 	const int MAX_PLAYER = 4;
 	const XMFLOAT3 FIRST_GAUGE_POS = { 266.5f,170,ZERO };
 	const float GAUGE_Y_DIFF = 150;
@@ -13,12 +17,14 @@ namespace {
 	const XMFLOAT3 START_POS = { ZERO, -5,ZERO };
 	const float MOVE_RATE = 0.2f;
 
+	const XMFLOAT3 TEXT_POS = { 550,700,ZERO };
+
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 }
 
 //コンストラクタ
 RankingUI::RankingUI(GameObject* parent)
-	: GameObject(parent, "RankingUI"),hPict_(-1)
+	: GameObject(parent, "RankingUI"), hPict_(-1), pText_(nullptr)
 {
 }
 
@@ -44,6 +50,10 @@ void RankingUI::Initialize()
 	transform_.position_ = START_POS;
 
 	//誰が勝ったか、誰のオブジェクトが敵をキルしたか、誰かをキルしたか、相打ちならどうするか
+
+
+	pText_ = new Text;
+	pText_->Initialize();
 }
 
 //更新
@@ -62,23 +72,27 @@ void RankingUI::Draw()
 
 	RateMovePosition(transform_.position_, ZERO_FLOAT3, MOVE_RATE);
 
-	SetScale(XMFLOAT3(0.8f,0.6f,1));
+	SetScale(PAPER_SIZE);
 
 	Image::SetTransform(hPict_, transform_);
 	Image::Draw(hPict_);
+
+	if (IsAllEndAnim()) {
+		pText_->Draw(TEXT_POS.x, TEXT_POS.y, "Please Space");
+	}
 
 }
 
 //開放
 void RankingUI::Release()
 {
-	
+
 }
 
 bool RankingUI::IsAllEndAnim()
 {
 	for (int i = ZERO; i < pGaugeList_.size(); i++) {
-		if(pGaugeList_.at(i)->IsAllEndAnim() == false)
+		if (pGaugeList_.at(i)->IsAllEndAnim() == false)
 			return false;
 	}
 	return true;
@@ -103,9 +117,6 @@ void RankingUI::SetPlayerName(int ID, std::string str)
 
 void RankingUI::SetScore(int ID, SCOREGAUGELIST score, int num)
 {
-
-	
-
 	for (int i = ZERO; i < num; i++) {
 		pGaugeList_.at(ID)->PushScore(score);
 	}
