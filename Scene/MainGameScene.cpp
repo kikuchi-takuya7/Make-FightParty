@@ -67,7 +67,7 @@ void MainGameScene::Initialize()
 		objectID++;
 	}
 
-	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めてプレイヤー以外もちゃんと狙うように
+	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めて全員の中からちゃんと狙うように
 	for (int i = 0; i < ENEMY_NUM; i++) {
 
 		CreateCharaAI(pEnemy[i]);

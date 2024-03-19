@@ -9,7 +9,14 @@ enum TARGETPATTERN {
 	TARGET_RANDAM,
 	TARGET_NO_1,
 	TARGET_NUM,
+};
 
+//画面上に今どんな処理をしてるかを表示するパターン
+enum NOWMODE {
+	WAITING,
+	CHAMPIONMODE,
+	RESULTMODE,
+	MODE_NUM
 };
 
 class Player;
@@ -21,6 +28,8 @@ class RankingUI;
 class WinnerUI;
 class ChampionUI;
 class Timer;
+class Text;
+struct TargetInfo;
 
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
@@ -44,6 +53,9 @@ public:
 	//更新
 	void Update() override;
 
+	//描画
+	void Draw() override;
+
 	//解放
 	void Release() override;
 
@@ -54,8 +66,8 @@ public:
 	/// 狙うべき相手を指示する関数
 	/// </summary>
 	/// <param name="ID">自分のID</param>
-	/// <returns>狙うべき相手のID</returns>
-	int Targeting(int ID);
+	/// <returns>狙うべき相手のIDと、使ったターゲットのパターン</returns>
+	TargetInfo Targeting(int ID);
 
 	/// <summary>
 	/// クリエイトモードで表示されたオブジェクトを選択する
@@ -168,13 +180,14 @@ private:
 	////////////////////UI/////////////////////
 
 	CountDownUI* pCountDown_;
-
 	RankingUI* pRankingUI_;
-
 	WinnerUI* pWinnerUI_;
-
 	ChampionUI* pChampionUI_;
 
+	//metaAIが今何をしているかを表示する為のテキスト
+	Text* pText_;
+	NOWMODE mode_;
+	
 
 	//ゲームBGM
 	int hAudio_;

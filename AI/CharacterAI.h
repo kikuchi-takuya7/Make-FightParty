@@ -4,6 +4,25 @@
 class NavigationAI;
 class MetaAI;
 class Enemy;
+class Text;
+enum TARGETPATTERN;
+
+enum TARGETPATTERNTEXT {
+	RANDAM,
+	NO_1,
+	COUNTER,
+	TEXT_NUM,
+};
+
+//狙っている敵IDとモード
+struct TargetInfo {
+
+	//狙っている敵のID
+	int ID;
+
+	//そのIDを狙うのに使った確率のパターン（現在の状態を描画するのに使う）
+	TARGETPATTERNTEXT mode;
+};
 
 /// <summary>
 /// 敵キャラクターを動かすAI
@@ -24,6 +43,9 @@ public:
 
 	//初期化
 	void Initialize() override;
+
+	//描画
+	void Draw() override;
 
 	//解放
 	void Release() override;
@@ -62,7 +84,7 @@ public:
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 
-	void SetTargetID(int ID) { targetID_ = ID; }
+	void SetTarget(TargetInfo target) { target_ = target; }
 
 private:
 
@@ -73,8 +95,10 @@ private:
 	//自分が操る敵のインスタンス
 	Enemy* pEnemy_;
 
-	//今自分が狙っている敵のID
-	int targetID_;
+	TargetInfo target_;
 
+	//現在の状態を表示する用のテキスト
+	Text* pText_;
+	
 };
 

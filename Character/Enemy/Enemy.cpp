@@ -70,7 +70,11 @@ void Enemy::ChangeTarget(GameObject* pTarget)
 {
 	//ˆê’è‚ÌŠm—¦‚Å‘_‚¢‚ğ‰£‚Á‚Ä‚«‚½‘Šè‚É•Ï‚¦‚é
 	if (rand() % 2 == ZERO) {
-		pCharacterAI_->SetTargetID(pTarget->GetObjectID());
+		TargetInfo target;
+		target.ID = pTarget->GetObjectID();
+		target.mode = COUNTER;
+		pCharacterAI_->SetTarget(target);
+
 	}
 }
 

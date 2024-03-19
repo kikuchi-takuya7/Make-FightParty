@@ -3,14 +3,21 @@
 #include "MetaAI.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/CharacterState/CharacterState.h"
+#include "../Engine/Text.h"
+
+namespace {
+	//表示する現在のAIの状態
+	XMFLOAT3 TEXT_POS = { -70,50,ZERO };
+	std::string text[TEXT_NUM] = { ":Randam",":No1",":Counter"};
+}
 
 CharacterAI::CharacterAI(GameObject* parent)
-	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr)
+	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr),pText_(new Text)
 {
 }
 
 CharacterAI::CharacterAI(GameObject* parent, Enemy* enemy, NavigationAI* naviAI)
-	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy)
+	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy), pText_(new Text)
 {
 }
 
@@ -20,8 +27,16 @@ CharacterAI::~CharacterAI()
 
 void CharacterAI::Initialize()
 {
-	
+	//pEnemy_->GetStatus().playerName;
+	pText_->Initialize();
+}
 
+void CharacterAI::Draw()
+{
+	std::string str = pEnemy_->GetStatus().playerName + text[target_.mode];
+	int tmp = pEnemy_->GetObjectID();
+
+	pText_->Draw(TEXT_POS.x, TEXT_POS.y * tmp, str.c_str());
 }
 
 void CharacterAI::Release()
@@ -33,7 +48,7 @@ void CharacterAI::Release()
 void CharacterAI::AskTarget()
 {
 	//狙う敵のIDを決めてもらう
-	targetID_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
+	target_ = pMetaAI_->Targeting(pEnemy_->GetObjectID());
 }
 
 // MetaAIに情報を伝える関数
@@ -49,7 +64,7 @@ void CharacterAI::MoveEnemy()
 {
 
 	//NavigationAIに向かうべき方向を聞く
-	XMFLOAT3 fMove = pNavigationAI_->Astar(pEnemy_->GetObjectID(), targetID_);
+	XMFLOAT3 fMove = pNavigationAI_->Astar(pEnemy_->GetObjectID(), target_.ID);
 
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
@@ -95,11 +110,11 @@ void CharacterAI::MoveEnemy()
 void CharacterAI::IsAttack()
 {
 	//狙おうとしてる敵が死んでたら、ターゲットを変える
-	if (pMetaAI_->GetCharacterStatus(targetID_).dead) {
+	if (pMetaAI_->GetCharacterStatus(target_.ID).dead) {
 		AskTarget();
 	}
 
-	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), targetID_);
+	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), target_.ID);
 	
 	if (distance <= 2.0f) {
 		pEnemy_->ChangeState(ATTACK);
@@ -110,9 +125,6 @@ void CharacterAI::IsAttack()
 // 戻り値：動かした後のTransform
 Transform CharacterAI::MoveSelectObject()
 {
-	
-	//アイテムの種類によって置くオブジェクトを決める？砲台は端っことか。
-
 	//ステージ内のどこかにランダムで置く
 	Transform objTrans;
 	objTrans.position_.x = rand() % 29;

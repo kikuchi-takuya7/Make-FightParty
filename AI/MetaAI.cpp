@@ -8,6 +8,7 @@
 #include "../Engine/Timer.h"
 #include "../Engine/VFX.h"
 #include "../Engine/Audio.h"
+#include "../Engine/Text.h"
 #include "../UI/CountDownUI.h"
 #include "../UI/RankingUI.h"
 #include "../UI/GaugeUI/RankingGaugeUI.h"
@@ -17,28 +18,34 @@
 
 namespace {
 
+	//カメラやエフェクトの位置
 	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -20);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
 	const float CHAMPION_EFFECT_DIFF = 2.0f;
-
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
 
+	//各シーン推移の際の待機時間
 	const float WAIT_WINNER_TIME = 3.0f;
 	const float WAIT_CHAMPION_TIME = 3.0f;
 
+	//スコア関係
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 	const int VICTORY_POINT = 80;
+
+	//表示する現在のAIの情報
+	XMFLOAT3 TEXT_POS = { 10,10,ZERO };
+	std::string nowModeText[MODE_NUM] = { ":Waiting...",":ChampionMode",":ResultMode" };
 }
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
 	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this)),
-	pWinnerUI_(Instantiate<WinnerUI>(this)),pChampionUI_(nullptr)
+	pWinnerUI_(Instantiate<WinnerUI>(this)),pChampionUI_(nullptr),pText_(new Text)
 {
 }
 
@@ -51,11 +58,7 @@ void MetaAI::Initialize()
 	//色々初期化
 	for (int i = ZERO; i < 4; i++) {
 		No1CharaID_.emplace_back(i);
-	}
-	for (int i = ZERO; i < 4; i++) {
 		ranking_.emplace_back(i);
-	}
-	for (int i = ZERO; i < 4; i++) {
 		score_.emplace_back(ZERO);
 	}
 
@@ -73,10 +76,14 @@ void MetaAI::Initialize()
 
 	Audio::Play(hAudio_);
 
+	pText_->Initialize();
+
 }
 
 void MetaAI::Update()
 {
+	mode_ = WAITING;
+
 	//優勝者が決まったら試合を止める
 	if (endGame_) {
 		ChampionUpdate();
@@ -107,6 +114,12 @@ void MetaAI::Update()
 	
 }
 
+void MetaAI::Draw()
+{
+	std::string str = GetObjectName() + nowModeText[mode_];
+	pText_->Draw(TEXT_POS.x, TEXT_POS.y, str.c_str());
+}
+
 void MetaAI::Release()
 {
 }
@@ -114,11 +127,13 @@ void MetaAI::Release()
 // 狙うべき相手を指示する関数
 // 引数：自分のID
 // 戻り値：狙うべき敵のID
-int MetaAI::Targeting(int ID)
+TargetInfo MetaAI::Targeting(int ID)
 {
 	int targetFrag = rand() % TARGET_NUM;
 
-	TARGETPATTERN target = (TARGETPATTERN)targetFrag;
+	TargetInfo target;
+
+	target.mode = (TARGETPATTERNTEXT)targetFrag;
 
 	bool No1AllDead = true;
 
@@ -133,21 +148,21 @@ int MetaAI::Targeting(int ID)
 	//自分が1位だった場合0に固定する（同率でも）or 一位が全員死んでても0に固定
 	if (score_.at(ranking_.at(ZERO)) == score_.at(ID) || No1AllDead == true) {
 
-		target = TARGET_RANDAM;
+		target.mode = (TARGETPATTERNTEXT)TARGET_RANDAM;
 	}
 
-	//全体を見て一位のプレイヤーを優先的に狙うように
-	switch (target)
+	//全体的に見て一位のプレイヤーを優先的に狙うように
+	switch (target.mode)
 	{
 	//キャラクターの中からランダムで狙う	
 	case TARGET_RANDAM:
 		while (true)
 		{
-			int targetID = rand() % characterStatusList_.size();
+			target.ID = rand() % characterStatusList_.size();
 
 			//狙った相手が自分じゃなく、死んでいなければ
-			if (targetID != ID)
-				return targetID;
+			if (target.ID != ID && characterStatusList_.at(target.ID).dead == false)
+				return target;
 		}
 		break;
 	
@@ -156,9 +171,10 @@ int MetaAI::Targeting(int ID)
 		while (true)
 		{
 			//狙った相手が自分じゃなければ
-			int targetID = rand() % No1CharaID_.size();
-			if (targetID != ID)
-				return targetID;
+			int tmp = rand() % No1CharaID_.size();
+			target.ID = No1CharaID_.at(tmp);
+			if (target.ID != ID)
+				return target;
 		}
 		break;
 
@@ -167,7 +183,7 @@ int MetaAI::Targeting(int ID)
 		break;
 	}
 
-	return 0;
+	return target;
 
 }
 
@@ -211,6 +227,7 @@ void MetaAI::ResetGame()
 	pNavigationAI_->AllResetStatus();
 	pNavigationAI_->AllStartDraw();
 	pNavigationAI_->AllStopUpdate();
+	pNavigationAI_->AllResetAITarget();
 	
 	pCountDown_->Start();
 	GameCameraSet();
@@ -228,14 +245,18 @@ void MetaAI::PushCharacterStatus(Status status)
 	pRankingUI_->SetPlayerName(characterStatusList_.size() - 1, status.playerName);
 }
 
+
 ///////////////////////////////////////////////private関数///////////////////////////////////////////
 
 
 // 優勝者が決まった時のUpdate
 void MetaAI::ChampionUpdate()
 {
+	
+
 	//一定時間待ったら優勝者にカメラを向ける
 	if (pWaitTimer_->IsFinished()) {
+		mode_ = CHAMPIONMODE;
 		pChampionUI_->Invisible();
 		pChampionUI_->Enter();
 		pRankingUI_->AllChildVisible();
@@ -254,13 +275,15 @@ void MetaAI::UsuallyUpdate()
 {
 	//試合が終わったらタイマーがスタートして、終わったら呼ばれる
 	if (pWaitTimer_->IsFinished()) {
+		mode_ = RESULTMODE;
 		pNavigationAI_->AllStopDrawPlayerUI();
 		pRankingUI_->AllChildInvisible();
 		pRankingUI_->AllChildEnter();
 		pWinnerUI_->Visible();
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 
-#ifdef _DEBUG
+
+#ifdef _DEBUG //デバック用
 		if (Input::IsKeyDown(DIK_2)) {
 			pRankingUI_->SetScore(ZERO, WIN_GAUGE, 1);
 			score_.at(ZERO) += SCORE[WIN_GAUGE];
@@ -275,6 +298,7 @@ void MetaAI::UsuallyUpdate()
 		}
 #endif
 
+		//スペースが押されたら次へ進むorアニメーションが終わってないならアニメーションをスキップする
 		if (Input::IsKeyDown(DIK_SPACE)) {
 
 			if (pRankingUI_->IsAllEndAnim() == false) {

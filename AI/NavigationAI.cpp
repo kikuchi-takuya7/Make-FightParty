@@ -289,6 +289,13 @@ void NavigationAI::AllResetStatus()
 
 }
 
+void NavigationAI::AllResetAITarget()
+{
+	for (int i = 0; i < pCharacterAIList_.size(); i++) {
+		pCharacterAIList_.at(i)->AskTarget();
+	}
+}
+
 //‘S‚Ä‚Ì•`‰æ‚ðŽ~‚ß‚é
 void NavigationAI::AllStopDraw()
 {

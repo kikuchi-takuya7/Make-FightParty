@@ -19,7 +19,7 @@
 #pragma comment(lib,"Winmm.lib")
 
 //定数宣言
-const char* WIN_CLASS_NAME = "SampleGame";	//ウィンドウクラス名
+const char* WIN_CLASS_NAME = "Make&FightParty";	//ウィンドウクラス名
 
 const int WindowWidth = 1280;
 const int WindowHeight = 720;

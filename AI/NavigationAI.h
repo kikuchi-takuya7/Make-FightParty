@@ -81,6 +81,7 @@ public:
 	///////////////キャラクターすべてに指示を出す関数/////////////////////
 
 	void AllResetStatus();		//ステータスをリセットする（winPoint以外）
+	void AllResetAITarget();		//AIのターゲットを全てリセットする
 	void AllStopDraw();			//全ての描画を止める
 	void AllStartDraw();		//全ての描画を許可する
 	void AllStopUpdate();		//全てのUpdateを止める
