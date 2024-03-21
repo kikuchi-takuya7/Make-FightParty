@@ -151,7 +151,6 @@ public:
     /// <param name="nextState">ŽŸ‚Ìstate</param>
     void ChangeState(CharacterStateList nextState);
 
-
     Status GetStatus() { return status_; }
     XMFLOAT3 GetStartPos() { return startPos_; }
     XMFLOAT3 GetTargetRot() { return targetRot_; }
