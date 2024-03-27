@@ -126,55 +126,6 @@ void CreateMode::Initialize()
     
 }
 
-//セレクトモード用の初期化
-void CreateMode::SelectInit()
-{
-
-    rotateObjectValue_ = ZERO;
-    selecting_Object_ = INF;
-    nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
-
-    isObjectMoving_ = false;
-
-    ranking_ = pMetaAI_->GetRanking();
-
-    pTimer_->Reset();
-
-    //前回のセッティングオブジェクトの情報をすべて初期化する
-    for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
-        Transform objPos;
-        settingObject_.at(i).hModel = -1;
-        settingObject_.at(i).trans = objPos;
-        settingObject_.at(i).moved = false;
-    }
-
-    //hModelの中からランダムで表示させるオブジェクトを決める
-    for (int i = ZERO; i < MAX_VIEW_OBJECT; i++) {
-        viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
-    }
-
-    Audio::Play(hBGM_);
-}
-
-//セッティングモード用の初期化
-void CreateMode::SettingInit()
-{
-
-    selecting_Object_ = INF;
-
-    //settingObjectの位置をステージの真ん中に設定する
-    for (int i = ZERO; i < settingObject_.size(); i++) {
-        
-        Transform objPos;
-        objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
-
-        settingObject_.at(i).trans = objPos;
-        settingObject_.at(i).moved = false;
-    }
-
-    pTimer_->Reset();
-}
-
 //更新
 void CreateMode::Update()
 {
@@ -195,118 +146,6 @@ void CreateMode::Update()
     }
 }
 
-//セレクトモード時の更新処理
-void CreateMode::SelectUpdate()
-{
-    if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
-        return;
-    }
-
-    //オブジェクトがプレイヤー分選択されていなかったら
-    if (!IsAllDecidedObject()) {
-
-        //オブジェクトが移動中なら更新しない
-        if (isObjectMoving_) {
-            return;
-        }
-
-        //次にオブジェクトを選ぶ人がAIならAI用の処理をする
-        if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
-            AISelectObject(ranking_.at(nextSelectCharacterID_));
-            nextSelectCharacterID_--;
-            isObjectMoving_ = true;
-            Audio::Play(hCreateSound_[SELECT]);
-            return;
-        }
-
-        //マウスからレイを飛ばす用のベクトルを獲得
-        XMVECTOR front;
-        XMVECTOR back;
-        GetCursorRay(front, back);
-        //memo.レイキャストするたびにレイのstartが変わってる
-
-        //オブジェクトにカーソルがあってる状態でクリックされたら
-        if (IsSelectingOverlapCursor(front, back)) {
-            if (Input::IsMouseButtonDown(0)) {
-                SelectObject(ranking_.at(nextSelectCharacterID_));
-                nextSelectCharacterID_--;
-                isObjectMoving_ = true;
-                Audio::Play(hCreateSound_[SELECT]);
-            }
-        }
-
-        return;
-    }
-
-    //ここまで来たら一連の流れが終わってるのでタイマースタート
-    pTimer_->Start();
-    if (pTimer_->IsFinished()) {
-        ToSettingMode();
-    }
-}
-
-//セッティングモード時の更新処理
-void CreateMode::SettingUpdate()
-{
-    if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
-        return;
-    }
-
-    //移動する処理。
-    if (settingObject_.at(ZERO).moved) {
-        AIMovingObject();
-        Audio::Play(hCreateSound_[SETTING]);
-    }
-
-    //マウスからレイを飛ばす用のベクトルを獲得
-    XMVECTOR front;
-    XMVECTOR back;
-    GetCursorRay(front, back);
-
-    //マウスカーソルがステージ上に重なっているか
-    if (IsStageOverlapCursor(front, back)) {
-        
-        //左クリックされて、かつ　すでに設置されたオブジェクトが無いなら
-        if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
-
-            //ひとまずプレイヤーは1人目だけだからZEROで
-            CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
-            Audio::Play(hCreateSound_[SETTING]);
-        }
-
-        //右クリックされたら（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
-        if (Input::IsMouseButtonDown(1)) {
-            settingObject_.at(ZERO).trans.rotate_.y += 90;
-            if (settingObject_.at(ZERO).trans.rotate_.y >= 360) {
-                settingObject_.at(ZERO).trans.rotate_.y = ZERO;
-            }
-        }
-    }
-
-    //全てのオブジェクトを設置し終わったらゲームに戻る
-    {
-        bool isAllCreate = true;
-        for (int i = ZERO; i < settingObject_.size(); i++) {
-
-            //モデル番号が-1じゃないなら
-            if (settingObject_.at(i).hModel != -1) {
-                isAllCreate = false;
-            }
-        }
-
-        //すべて設置され終わったら
-        if (isAllCreate) {
-
-            //選択後に1秒待つ
-            pTimer_->Start();
-            if (pTimer_->IsFinished()) {
-                ToGameMode();
-            }
-        }
-    }
-
-
-}
 
 //描画
 void CreateMode::Draw()
@@ -335,53 +174,6 @@ void CreateMode::Draw()
     default:
         return;
     }
-}
-
-void CreateMode::SelectDraw()
-{
-    //空中に浮くオブジェクトを表示する
-    for (int i = ZERO; i < viewObjectList_.size(); i++) {
-
-        Transform objTrans;
-        objTrans.position_ = OBJECT_POS[i];
-        objTrans.rotate_.y = rotateObjectValue_;
-
-        if (i == selecting_Object_) {
-            objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
-        }
-
-        Model::SetTransform(viewObjectList_.at(i), objTrans);
-        Model::Draw(viewObjectList_.at(i));
-    }
-
-    //既に選ばれたオブジェクトを表示する
-    for (int i = ZERO; i < settingObject_.size(); i++) {
-
-        //-1なら更新しない。これが無いと勝手に動いちゃう
-        if (settingObject_.at(i).hModel == -1) {
-            continue;
-        }
-
-        //移動し終わってないオブジェクトを滑らかに動かす
-        if (settingObject_.at(i).moved == false) {
-            if (RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE)) {
-                settingObject_.at(i).moved = true;
-                isObjectMoving_ = false;
-            }
-        }
-
-
-
-        settingObject_.at(i).trans.rotate_.y = rotateObjectValue_;
-
-        Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
-        Model::Draw(settingObject_.at(i).hModel);
-    }
-    
-    rotateObjectValue_++;
-
-    //クリエイトモードだと言う事を表示
-    pText_->Draw(TEXT_POS.x, TEXT_POS.y, TEXT_NAME.c_str());
 }
 
 //開放
@@ -454,6 +246,213 @@ std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, co
     FindClose(hFind);
 
     return file_names;
+}
+
+//セレクトモード用の初期化
+void CreateMode::SelectInit()
+{
+
+    rotateObjectValue_ = ZERO;
+    selecting_Object_ = INF;
+    nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
+
+    isObjectMoving_ = false;
+
+    ranking_ = pMetaAI_->GetRanking();
+
+    pTimer_->Reset();
+
+    //前回のセッティングオブジェクトの情報をすべて初期化する
+    for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
+        Transform objPos;
+        settingObject_.at(i).hModel = -1;
+        settingObject_.at(i).trans = objPos;
+        settingObject_.at(i).moved = false;
+    }
+
+    //hModelの中からランダムで表示させるオブジェクトを決める
+    for (int i = ZERO; i < MAX_VIEW_OBJECT; i++) {
+        viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
+    }
+
+    Audio::Play(hBGM_);
+}
+
+//セッティングモード用の初期化
+void CreateMode::SettingInit()
+{
+
+    selecting_Object_ = INF;
+
+    //settingObjectの位置をステージの真ん中に設定する
+    for (int i = ZERO; i < settingObject_.size(); i++) {
+
+        Transform objPos;
+        objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+
+        settingObject_.at(i).trans = objPos;
+        settingObject_.at(i).moved = false;
+    }
+
+    pTimer_->Reset();
+}
+
+//セレクトモード時の更新処理
+void CreateMode::SelectUpdate()
+{
+    if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
+        return;
+    }
+
+    //オブジェクトがプレイヤー分選択されていなかったら
+    if (!IsAllDecidedObject()) {
+
+        //オブジェクトが移動中なら更新しない
+        if (isObjectMoving_) {
+            return;
+        }
+
+        //次にオブジェクトを選ぶ人がAIならAI用の処理をする
+        if (ranking_.at(nextSelectCharacterID_) >= startEnemyID_) {
+            AISelectObject(ranking_.at(nextSelectCharacterID_));
+            nextSelectCharacterID_--;
+            isObjectMoving_ = true;
+            Audio::Play(hCreateSound_[SELECT]);
+            return;
+        }
+
+        //マウスからレイを飛ばす用のベクトルを獲得
+        XMVECTOR front;
+        XMVECTOR back;
+        GetCursorRay(front, back);
+        //memo.レイキャストするたびにレイのstartが変わってる
+
+        //オブジェクトにカーソルがあってる状態でクリックされたら
+        if (IsSelectingOverlapCursor(front, back)) {
+            if (Input::IsMouseButtonDown(0)) {
+                SelectObject(ranking_.at(nextSelectCharacterID_));
+                nextSelectCharacterID_--;
+                isObjectMoving_ = true;
+                Audio::Play(hCreateSound_[SELECT]);
+            }
+        }
+
+        return;
+    }
+
+    //ここまで来たら一連の流れが終わってるのでタイマースタート
+    pTimer_->Start();
+    if (pTimer_->IsFinished()) {
+        ToSettingMode();
+    }
+}
+
+//セッティングモード時の更新処理
+void CreateMode::SettingUpdate()
+{
+    if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
+        return;
+    }
+
+    //移動する処理。
+    if (settingObject_.at(ZERO).moved) {
+        AIMovingObject();
+        Audio::Play(hCreateSound_[SETTING]);
+    }
+
+    //マウスからレイを飛ばす用のベクトルを獲得
+    XMVECTOR front;
+    XMVECTOR back;
+    GetCursorRay(front, back);
+
+    //マウスカーソルがステージ上に重なっているか
+    if (IsStageOverlapCursor(front, back)) {
+
+        //左クリックされて、かつ　すでに設置されたオブジェクトが無いなら
+        if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
+
+            //ひとまずプレイヤーは1人目だけだからZEROで
+            CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
+            Audio::Play(hCreateSound_[SETTING]);
+        }
+
+        //右クリックされたら（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
+        if (Input::IsMouseButtonDown(1)) {
+            settingObject_.at(ZERO).trans.rotate_.y += 90;
+            if (settingObject_.at(ZERO).trans.rotate_.y >= 360) {
+                settingObject_.at(ZERO).trans.rotate_.y = ZERO;
+            }
+        }
+    }
+
+    //全てのオブジェクトを設置し終わったらゲームに戻る
+    {
+        bool isAllCreate = true;
+        for (int i = ZERO; i < settingObject_.size(); i++) {
+
+            //モデル番号が-1じゃないなら
+            if (settingObject_.at(i).hModel != -1) {
+                isAllCreate = false;
+            }
+        }
+
+        //すべて設置され終わったら
+        if (isAllCreate) {
+
+            //選択後に1秒待つ
+            pTimer_->Start();
+            if (pTimer_->IsFinished()) {
+                ToGameMode();
+            }
+        }
+    }
+}
+
+void CreateMode::SelectDraw()
+{
+    //空中に浮くオブジェクトを表示する
+    for (int i = ZERO; i < viewObjectList_.size(); i++) {
+
+        Transform objTrans;
+        objTrans.position_ = OBJECT_POS[i];
+        objTrans.rotate_.y = rotateObjectValue_;
+
+        if (i == selecting_Object_) {
+            objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
+        }
+
+        Model::SetTransform(viewObjectList_.at(i), objTrans);
+        Model::Draw(viewObjectList_.at(i));
+    }
+
+    //既に選ばれたオブジェクトを表示する
+    for (int i = ZERO; i < settingObject_.size(); i++) {
+
+        //-1なら更新しない。これが無いと勝手に動いちゃう
+        if (settingObject_.at(i).hModel == -1) {
+            continue;
+        }
+
+        //移動し終わってないオブジェクトを滑らかに動かす
+        if (settingObject_.at(i).moved == false) {
+            if (RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE)) {
+                settingObject_.at(i).moved = true;
+                isObjectMoving_ = false;
+            }
+        }
+
+
+
+        settingObject_.at(i).trans.rotate_.y = rotateObjectValue_;
+
+        Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
+        Model::Draw(settingObject_.at(i).hModel);
+    }
+
+    rotateObjectValue_++;
+
+    //クリエイトモードだと言う事を表示
+    pText_->Draw(TEXT_POS.x, TEXT_POS.y, TEXT_NAME.c_str());
 }
 
 // オブジェクトを作成する

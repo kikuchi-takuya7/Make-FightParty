@@ -103,16 +103,7 @@ public:
 
 	////////////////////////メンバ関数/////////////////////////
 
-	//各モードの初期化
-	void SelectInit();
-	void SettingInit();
-
-	//各モードの更新
-	void SelectUpdate();
-	void SettingUpdate();
-
-	//各モードの描画
-	void SelectDraw();
+	
 
 	void ToSelectMode();	//セレクトモードに
 	void ToSettingMode();	//セッティングモードに
@@ -138,7 +129,16 @@ private:
 	/// <returns>見つけたファイルの名前が入った配列</returns>
 	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
 
+	//各モードの初期化
+	void SelectInit();
+	void SettingInit();
 
+	//各モードの更新
+	void SelectUpdate();
+	void SettingUpdate();
+
+	//各モードの描画
+	void SelectDraw();
 
 	/// <summary>
 	/// オブジェクトを作成する
