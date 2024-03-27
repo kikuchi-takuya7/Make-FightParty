@@ -3,6 +3,7 @@
 #include "../Scene/DevelopSelectScene.h"
 #include "../Scene/MainGameScene.h"
 #include "../Scene/TitleScene.h"
+#include "../Scene/TutorialScene.h"
 #include "../Scene/ResultScene.h"
 #include "Model.h"
 #include "Image.h"
@@ -57,6 +58,7 @@ void SceneManager::Update()
 		{
 		case SCENE_ID_DEVELOP_SELECT: Instantiate<DevelopSelectScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
+		case SCENE_ID_TUTORIAL: Instantiate<TutorialScene>(this); break;
 		case SCENE_ID_MAINGAME: Instantiate<MainGameScene>(this); break;
 		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 		}

@@ -30,6 +30,7 @@ void Bullet::Update()
 {
 	moveLen_ += bulletSpeed_;
 
+	//射程距離を超えたら
 	if (moveLen_ >= BULLET_RANGE) {
 		KillMe();
 	}
@@ -55,20 +56,6 @@ void Bullet::Update()
 		transform_.position_.x -= bulletSpeed_;
 	}
 
-	/*rotate = rotate % 360;
-	
-	if (rotate == 360) {
-		transform_.position_.z += bulletSpeed_;
-	}
-	if (rotate == 270) {
-		transform_.position_.x += bulletSpeed_;
-	}
-	if (rotate == 180) {
-		transform_.position_.z -= bulletSpeed_;
-	}
-	if (rotate == 90) {
-		transform_.position_.x -= bulletSpeed_;
-	}*/
 
 }
 
@@ -94,10 +81,12 @@ void Bullet::Release()
 
 void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
+	//ブロックに当たったら、それが自分でなければ
 	if (targetType == COLLIDER_BROCK && pTarget != this->GetParent()) {
 		KillMe();
 	}
 
+	//誰かに当たったら
 	if (targetType == COLLIDER_BODY) {
 		KillMe();
 	}

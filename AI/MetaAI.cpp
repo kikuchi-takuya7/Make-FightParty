@@ -37,8 +37,11 @@ namespace {
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 	const int VICTORY_POINT = 80;
 
+	//プレイヤーの最大人数
+	const int PLAYER_MAX_NUM = 4;
+
 	//表示する現在のAIの情報
-	XMFLOAT3 TEXT_POS = { 10,10,ZERO };
+	XMFLOAT3 TEXT_POS = { 10,20,ZERO };
 	std::string nowModeText[MODE_NUM] = { ":Waiting...",":ChampionMode",":ResultMode" };
 }
 
@@ -199,12 +202,12 @@ int MetaAI::SelectObject(vector<int> model)
 // 勝敗が決まっていたらクリエイトモードへ移行する関数
 void MetaAI::DecidedWinner()
 {
-	int deadNum = 0;
+	int deadNum = ZERO;
 
-	int winPlayer = 0;
+	int winPlayer = ZERO;
 
 	//死んでる人数を数える
-	for (int i = 0; i < characterStatusList_.size(); i++) {
+	for (int i = ZERO; i < characterStatusList_.size(); i++) {
 		if (characterStatusList_.at(i).dead) {
 			deadNum++;
 		}
@@ -214,7 +217,7 @@ void MetaAI::DecidedWinner()
 		}
 	}
 
-	if (deadNum >= 3 && pCreateMode_->GetState() == NONE) {
+	if (deadNum >= PLAYER_MAX_NUM - 1 && pCreateMode_->GetState() == NONE) {
 		ToCreateMode(winPlayer);
 	}
 }

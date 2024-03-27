@@ -275,6 +275,9 @@
     <ClCompile Include="UI\ChampionUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\TutorialScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -492,6 +495,9 @@
     </ClInclude>
     <ClInclude Include="UI\ChampionUI.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TutorialScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

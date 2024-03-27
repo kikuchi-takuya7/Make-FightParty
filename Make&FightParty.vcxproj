@@ -183,6 +183,7 @@
     <ClCompile Include="Scene\MainGameScene.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="Scene\TutorialScene.cpp" />
     <ClCompile Include="Stage\CreateMode\CreateMode.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="Scene\MainGameScene.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="Scene\TutorialScene.h" />
     <ClInclude Include="Stage\CreateMode\CreateMode.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h" />

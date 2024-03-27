@@ -29,6 +29,7 @@ void StageSourceBase::Update()
 
 	RateMovePosition(transform_.position_, lastPos_, MOVE_SPEED);
 
+	//XVˆ—‚ğ‚·‚é‚©‚Ç‚¤‚©
 	if (IsEntered()) {
 		ChildUpdate();
 	}

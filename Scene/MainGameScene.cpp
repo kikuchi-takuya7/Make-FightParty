@@ -17,11 +17,11 @@ namespace {
 
 	const int PLAYER_NUM = 1;
 	const int ENEMY_NUM = 3;
-	const int MAXPLAYER = 4;
+	const int MAX_PLAYER = 4;
 	const XMFLOAT3 CHARA_POS[4] = { XMFLOAT3(5,ZERO,5),XMFLOAT3(25,ZERO,5) ,XMFLOAT3(5,ZERO,25) ,XMFLOAT3(25,ZERO,25) };
 
 	//プレイヤーUIの位置。後で画像用の座標に切り替える
-	const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(185.0f,650.0f, ZERO);
+	const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(185.0f, 650.0f, ZERO);
 	const float UI_DIFF = 275.0f;
 
 	
@@ -45,11 +45,11 @@ void MainGameScene::Initialize()
 	//クリエイトモードに色々セットする
 	CreateModeInit();
 
-	int objectID = 0;
+	int objectID = ZERO;
 	Player* pPlayer[PLAYER_NUM];
 
 	//プレイヤーをプレイ人数分用意する
-	for (int i = 0; i < PLAYER_NUM; i++) {
+	for (int i = ZERO; i < PLAYER_NUM; i++) {
 
 		pPlayer[i] = CreateCharacter<Player>(objectID, " Player");
 		objectID++;
@@ -61,14 +61,14 @@ void MainGameScene::Initialize()
 	Enemy* pEnemy[ENEMY_NUM];
 
 	//各種AIを用意してセットする
-	for (int i = 0; i < ENEMY_NUM; i++) {
+	for (int i = ZERO; i < ENEMY_NUM; i++) {
 
 		pEnemy[i] = CreateCharacter<Enemy>(objectID, "     CP");
 		objectID++;
 	}
 
 	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めて全員の中からちゃんと狙うように
-	for (int i = 0; i < ENEMY_NUM; i++) {
+	for (int i = ZERO; i < ENEMY_NUM; i++) {
 
 		CreateCharaAI(pEnemy[i]);
 	}
@@ -77,7 +77,7 @@ void MainGameScene::Initialize()
 
 	//背景をロード
 	hPict_ = Image::Load("Image/BackGround/BackGround.png");
-	assert(hPict_ >= 0);
+	assert(hPict_ >= ZERO);
 
 	Transform trans = transform_;
 	trans.scale_ = XMFLOAT3(5, 5, 5);

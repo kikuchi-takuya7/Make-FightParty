@@ -9,6 +9,7 @@
 #include "../../Engine/Debug.h"
 #include "../../Engine/Timer.h"
 #include "../../Engine/Audio.h"
+#include "../../Engine/Text.h"
 #include "../../AI/MetaAI.h"
 #include "../../AI/NavigationAI.h"
 #include "StageSource/OneBrock.h"
@@ -28,12 +29,12 @@ namespace {
     const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
 
     //カメラの位置
-    const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, 0);
+    const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, ZERO);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
     const XMFLOAT3 SETTING_CAM_POS = XMFLOAT3(15, 20, -20);
-    const XMFLOAT3 SETTING_CAM_TAR = XMFLOAT3(15, 0, 15);
+    const XMFLOAT3 SETTING_CAM_TAR = XMFLOAT3(15, ZERO, 15);
     const XMFLOAT3 GAME_CAM_POS = XMFLOAT3(15, 10, -20);
-    const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
+    const XMFLOAT3 GAME_CAM_TAR = XMFLOAT3(15, ZERO, 15);
     const float WAIT_TIME = 1.5f;
 
     //初期化用
@@ -42,11 +43,16 @@ namespace {
     //真ん中にオブジェクトを追加する
     const int STAGE_ADDX[9] = { 14,15,15,15,16,15,15,13,17 };
     const int STAGE_ADDZ[9] = { 15,14,15,16,15,13,17,15,15 };
+
+    //CreateModeを表示する位置
+    std::string TEXT_NAME = "CREATEMODE";
+    const XMFLOAT3 TEXT_POS = { 400,30,ZERO };
+
 }
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr), timer_(Instantiate<Timer>(this)),hCreateSound_{-1,-1},hBGM_(-1)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr),pText_(nullptr), pTimer_(Instantiate<Timer>(this)), hCreateSound_{-1,-1}, hBGM_(-1)
 {
 
 }
@@ -93,8 +99,10 @@ void CreateMode::Initialize()
     }
 
     nowState_ = NONE;
+    pText_ = new Text;
+    pText_->Initialize();
 
-    timer_->SetLimit(WAIT_TIME);
+    pTimer_->SetLimit(WAIT_TIME);
 
 
     //音声データのロード
@@ -130,7 +138,7 @@ void CreateMode::SelectInit()
 
     ranking_ = pMetaAI_->GetRanking();
 
-    timer_->Reset();
+    pTimer_->Reset();
 
     //前回のセッティングオブジェクトの情報をすべて初期化する
     for (int i = ZERO; i < MAX_CHARACTER_NUM; i++) {
@@ -141,7 +149,7 @@ void CreateMode::SelectInit()
     }
 
     //hModelの中からランダムで表示させるオブジェクトを決める
-    for (int i = 0; i < MAX_VIEW_OBJECT; i++) {
+    for (int i = ZERO; i < MAX_VIEW_OBJECT; i++) {
         viewObjectList_.at(i) = rand() % modelData_.size() + modelData_.at(ZERO).hModel;
     }
 
@@ -155,7 +163,7 @@ void CreateMode::SettingInit()
     selecting_Object_ = INF;
 
     //settingObjectの位置をステージの真ん中に設定する
-    for (int i = 0; i < settingObject_.size(); i++) {
+    for (int i = ZERO; i < settingObject_.size(); i++) {
         
         Transform objPos;
         objPos.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
@@ -164,7 +172,7 @@ void CreateMode::SettingInit()
         settingObject_.at(i).moved = false;
     }
 
-    timer_->Reset();
+    pTimer_->Reset();
 }
 
 //更新
@@ -231,8 +239,8 @@ void CreateMode::SelectUpdate()
     }
 
     //ここまで来たら一連の流れが終わってるのでタイマースタート
-    timer_->Start();
-    if (timer_->IsFinished()) {
+    pTimer_->Start();
+    if (pTimer_->IsFinished()) {
         ToSettingMode();
     }
 }
@@ -255,28 +263,23 @@ void CreateMode::SettingUpdate()
     XMVECTOR back;
     GetCursorRay(front, back);
 
+    //マウスカーソルがステージ上に重なっているか
     if (IsStageOverlapCursor(front, back)) {
+        
+        //左クリックされて、かつ　すでに設置されたオブジェクトが無いなら
         if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
 
-            //ひとまずプレイヤーは1人目だけだから
+            //ひとまずプレイヤーは1人目だけだからZEROで
             CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
             Audio::Play(hCreateSound_[SETTING]);
         }
 
-        if (Input::IsKeyDown(DIK_UP)) {
-            settingObject_.at(ZERO).trans.rotate_.y = 0;
-        }
-
-        if (Input::IsKeyDown(DIK_RIGHT)) {
-            settingObject_.at(ZERO).trans.rotate_.y = 90;
-        }
-
-        if (Input::IsKeyDown(DIK_DOWN)) {
-            settingObject_.at(ZERO).trans.rotate_.y = 180;
-        }
-
-        if (Input::IsKeyDown(DIK_LEFT)) {
-            settingObject_.at(ZERO).trans.rotate_.y = 270;
+        //右クリックされたら（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
+        if (Input::IsMouseButtonDown(1)) {
+            settingObject_.at(ZERO).trans.rotate_.y += 90;
+            if (settingObject_.at(ZERO).trans.rotate_.y >= 360) {
+                settingObject_.at(ZERO).trans.rotate_.y = ZERO;
+            }
         }
     }
 
@@ -291,11 +294,12 @@ void CreateMode::SettingUpdate()
             }
         }
 
+        //すべて設置され終わったら
         if (isAllCreate) {
 
             //選択後に1秒待つ
-            timer_->Start();
-            if (timer_->IsFinished()) {
+            pTimer_->Start();
+            if (pTimer_->IsFinished()) {
                 ToGameMode();
             }
         }
@@ -308,59 +312,19 @@ void CreateMode::SettingUpdate()
 void CreateMode::Draw()
 {
 
-    //アップデート内でクリエイトモードとセットモードで切り替えるか
+    
 
+    //アップデート内でクリエイトモードとセットモードで切り替える
     switch (nowState_)
     {
     case SELECT_MODE:
 
-        //空中に浮くオブジェクトを表示する
-        for (int i = 0; i < viewObjectList_.size(); i++) {
-
-            Transform objTrans;
-            objTrans.position_ = OBJECT_POS[i];
-            objTrans.rotate_.y = rotateObjectValue_;
-            
-            if (i == selecting_Object_) {
-                objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
-            }
-
-            Model::SetTransform(viewObjectList_.at(i), objTrans);
-            Model::Draw(viewObjectList_.at(i));
-        }
-
-        //vector<int> ranking = pMetaAI_->GetRanking();
-
-        //既に選ばれたオブジェクトを表示する
-        for (int i = 0; i < settingObject_.size(); i++) {
-
-            //-1なら更新しない。これが無いと勝手に動いちゃう
-            if (settingObject_.at(i).hModel == -1) {
-                continue;
-            }
-
-            //移動し終わってないオブジェクトを滑らかに動かす
-            if (settingObject_.at(i).moved == false) {
-                if (RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE)) {
-                    settingObject_.at(i).moved = true;
-                    isObjectMoving_ = false;
-                }
-            }
-
-            
-
-            settingObject_.at(i).trans.rotate_.y = rotateObjectValue_;
-
-            Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
-            Model::Draw(settingObject_.at(i).hModel);
-        }
-
-        rotateObjectValue_++;
+        SelectDraw();
         break;
 
     case SETTING_MODE:
-        
-        for (int i = 0; i < settingObject_.size(); i++) {
+
+        for (int i = ZERO; i < settingObject_.size(); i++) {
 
             Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
             Model::Draw(settingObject_.at(i).hModel);
@@ -371,13 +335,125 @@ void CreateMode::Draw()
     default:
         return;
     }
+}
 
+void CreateMode::SelectDraw()
+{
+    //空中に浮くオブジェクトを表示する
+    for (int i = ZERO; i < viewObjectList_.size(); i++) {
+
+        Transform objTrans;
+        objTrans.position_ = OBJECT_POS[i];
+        objTrans.rotate_.y = rotateObjectValue_;
+
+        if (i == selecting_Object_) {
+            objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
+        }
+
+        Model::SetTransform(viewObjectList_.at(i), objTrans);
+        Model::Draw(viewObjectList_.at(i));
+    }
+
+    //既に選ばれたオブジェクトを表示する
+    for (int i = ZERO; i < settingObject_.size(); i++) {
+
+        //-1なら更新しない。これが無いと勝手に動いちゃう
+        if (settingObject_.at(i).hModel == -1) {
+            continue;
+        }
+
+        //移動し終わってないオブジェクトを滑らかに動かす
+        if (settingObject_.at(i).moved == false) {
+            if (RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE)) {
+                settingObject_.at(i).moved = true;
+                isObjectMoving_ = false;
+            }
+        }
+
+
+
+        settingObject_.at(i).trans.rotate_.y = rotateObjectValue_;
+
+        Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
+        Model::Draw(settingObject_.at(i).hModel);
+    }
     
+    rotateObjectValue_++;
+
+    //クリエイトモードだと言う事を表示
+    pText_->Draw(TEXT_POS.x, TEXT_POS.y, TEXT_NAME.c_str());
 }
 
 //開放
 void CreateMode::Release()
 {
+}
+
+//セレクトモードに
+void CreateMode::ToSelectMode()
+{
+
+    SelectInit();
+    nowState_ = SELECT_MODE;
+
+    pNavigationAI_->AllStopDraw();
+    pNavigationAI_->AllStopUpdate();
+    //pNavigationAI_->AllEraseCollision();
+}
+
+//セッティングモードに
+void CreateMode::ToSettingMode()
+{
+    SettingInit();
+    nowState_ = SETTING_MODE;
+}
+
+//ゲームに戻す
+void CreateMode::ToGameMode()
+{
+    //ここで一旦暗転とかさせたいから移動はすぐでいい
+    pMetaAI_->ResetGame();
+    nowState_ = NONE;
+
+    Audio::Stop(hBGM_);
+}
+
+
+///////////////////////////////private関数//////////////////////////////////////////
+
+
+// ディレクトリ内の指定した識別子のファイルネームを獲得する関数
+// 引数１：探索したいディレクトリ
+// 引数２：探したいファイルの拡張子
+// 戻り値：みつけたファイルの名前が入った配列
+std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
+{
+    HANDLE hFind;
+    WIN32_FIND_DATA win32fd;//defined at Windwos.h
+    std::vector<std::string> file_names;
+
+    //拡張子の設定
+    std::string search_name = dir_name + "*." + extension;
+
+    hFind = FindFirstFile(search_name.c_str(), &win32fd);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+        throw std::runtime_error("file not found");
+    }
+
+    do {
+        if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        }
+        else {
+            file_names.emplace_back(win32fd.cFileName);
+            printf("%s\n", file_names.back().c_str());
+
+        }
+    } while (FindNextFile(hFind, &win32fd));
+
+    FindClose(hFind);
+
+    return file_names;
 }
 
 // オブジェクトを作成する
@@ -471,7 +547,7 @@ void CreateMode::GetCursorRay(XMVECTOR& front, XMVECTOR& back)
     back = XMLoadFloat3(&mousePosBack);
     //4,3にinvVP,invPrj,invVeewをかける
     back = XMVector3TransformCoord(back, invVP * invProj * invView);
-    
+
 }
 
 // AIがオブジェクトを選択する関数
@@ -483,7 +559,7 @@ void CreateMode::AISelectObject(int ID)
 
     //表示されてるモデルのモデル番号を全て取得する
     for (int i = ZERO; i < viewObjectList_.size(); i++) {
-        
+
         //-1は判定しない
         if (viewObjectList_.at(i) == -1) {
             continue;
@@ -519,7 +595,7 @@ void CreateMode::AISelectObject(int ID)
 
     //選択する
     SelectObject(ID);
-    
+
 
 }
 
@@ -527,10 +603,10 @@ void CreateMode::AISelectObject(int ID)
 // 引数：オブジェクトを選んだ人のID
 void CreateMode::SelectObject(int ID)
 {
-  
+
     Transform objPos;
     objPos.position_ = OBJECT_POS[selecting_Object_];
-  
+
     //選択したオブジェクトを入れてく
     settingObject_.at(ID).hModel = viewObjectList_.at(selecting_Object_);
     settingObject_.at(ID).trans = objPos;
@@ -543,7 +619,7 @@ void CreateMode::SelectObject(int ID)
 // カーソルが浮かんでるオブジェクトに合わさっているか
 // 引数１：飛ばすレイの前方向ベクトル
 // 引数２：後ろ方向のベクトル
-bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front,XMVECTOR back)
+bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back)
 {
     //カーソルから飛ばしたレイがモデルに当たってるか確認する
     for (int i = ZERO; i < viewObjectList_.size(); i++) {
@@ -684,16 +760,16 @@ void CreateMode::AIMovingObject()
 
         //モデルのTransformの位置を他のオブジェクトと被ってない位置に置けるまで繰り替えす
         while (true) {
-                        
+
             //NavigationAIを経由してどこに置くかを決める
             settingObject_.at(i).trans = pNavigationAI_->MoveSelectObject(i);
-        
+
             //プレイヤーの位置と被っていたらもう一度
             if (pNavigationAI_->IsOverlapPos(settingObject_.at(i).trans.position_)) {
                 srand(time(NULL));
                 continue;
             }
-            
+
             bool isBreak = true;
 
             //モデルの位置が他と被っていたら、もう一度
@@ -704,77 +780,14 @@ void CreateMode::AIMovingObject()
                     continue;
                 }
             }
-            
+
             if (isBreak)
                 break;
-        
+
         }
-        
+
         CreateObject(settingObject_.at(i).hModel, settingObject_.at(i).trans, i);
     }
 
-    
-}
 
-//セレクトモードに
-void CreateMode::ToSelectMode()
-{
-
-    SelectInit();
-    nowState_ = SELECT_MODE;
-
-    pNavigationAI_->AllStopDraw();
-    pNavigationAI_->AllStopUpdate();
-    //pNavigationAI_->AllEraseCollision();
-}
-
-//セッティングモードに
-void CreateMode::ToSettingMode()
-{
-    SettingInit();
-    nowState_ = SETTING_MODE;
-}
-
-//ゲームに戻す
-void CreateMode::ToGameMode()
-{
-    //ここで一旦暗転とかさせたいから移動はすぐでいい
-    pMetaAI_->ResetGame();
-    nowState_ = NONE;
-
-    Audio::Stop(hBGM_);
-}
-
-// ディレクトリ内の指定した識別子のファイルネームを獲得する関数
-// 引数１：探索したいディレクトリ
-// 引数２：探したいファイルの拡張子
-// 戻り値：みつけたファイルの名前が入った配列
-std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false)
-{
-    HANDLE hFind;
-    WIN32_FIND_DATA win32fd;//defined at Windwos.h
-    std::vector<std::string> file_names;
-
-    //拡張子の設定
-    std::string search_name = dir_name + "*." + extension;
-
-    hFind = FindFirstFile(search_name.c_str(), &win32fd);
-
-    if (hFind == INVALID_HANDLE_VALUE) {
-        throw std::runtime_error("file not found");
-    }
-
-    do {
-        if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-        }
-        else {
-            file_names.emplace_back(win32fd.cFileName);
-            printf("%s\n", file_names.back().c_str());
-
-        }
-    } while (FindNextFile(hFind, &win32fd));
-
-    FindClose(hFind);
-
-    return file_names;
 }

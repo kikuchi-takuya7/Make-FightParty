@@ -75,6 +75,7 @@ class NavigationAI;
 class Stage;
 class StageSourceBase;
 class Timer;
+class Text;
 
 /// <summary>
 /// オブジェクトをステージに追加するモード
@@ -110,6 +111,34 @@ public:
 	void SelectUpdate();
 	void SettingUpdate();
 
+	//各モードの描画
+	void SelectDraw();
+
+	void ToSelectMode();	//セレクトモードに
+	void ToSettingMode();	//セッティングモードに
+	void ToGameMode();		//ゲームに戻す
+
+	///////////////////////////アクセス関数///////////////////////////////
+
+	CREATESTATE GetState() { return nowState_; }
+	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
+	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
+	void SetStage(Stage* stage) { pStage_ = stage; }
+	void SetStartEnemyID(int ID) { startEnemyID_ = ID; }
+	std::list<StageSourceBase*> GetCreateObjectList() { return createObjectList_; }
+
+
+private:
+
+	/// <summary>
+	/// ディレクトリ内の指定した識別子のファイルネームを獲得する関数
+	/// </summary>
+	/// <param name="dir_name">探索したいディレクトリ</param>
+	/// <param name="extension">探したいファイルの拡張子</param>
+	/// <returns>見つけたファイルの名前が入った配列</returns>
+	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
+
+
 
 	/// <summary>
 	/// オブジェクトを作成する
@@ -117,7 +146,7 @@ public:
 	/// <param name="hModel">モデル番号</param>
 	/// <param name="trans">モデルのTransform</param>
 	/// <param name="element">何番目の要素か</param>
-	void CreateObject(int hModel,Transform trans, int element);
+	void CreateObject(int hModel, Transform trans, int element);
 
 	/// <summary>
 	/// createObjectListに入れる
@@ -132,7 +161,7 @@ public:
 	/// <param name="back">後ろのベクトル</param>
 	void GetCursorRay(XMVECTOR& front, XMVECTOR& back);
 
-	
+
 
 	//////////////////////セレクトモードで使う関数////////////////////////////////
 
@@ -185,30 +214,6 @@ public:
 
 	////////////////////////モードを切り替える関数///////////////////
 
-	void ToSelectMode();	//セレクトモードに
-	void ToSettingMode();	//セッティングモードに
-	void ToGameMode();		//ゲームに戻す
-
-	///////////////////////////アクセス関数///////////////////////////////
-
-	CREATESTATE GetState() { return nowState_; }
-	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
-	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
-	void SetStage(Stage* stage) { pStage_ = stage; }
-	void SetStartEnemyID(int ID) { startEnemyID_ = ID; }
-	std::list<StageSourceBase*> GetCreateObjectList() { return createObjectList_; }
-
-
-private:
-
-	/// <summary>
-	/// ディレクトリ内の指定した識別子のファイルネームを獲得する関数
-	/// </summary>
-	/// <param name="dir_name">探索したいディレクトリ</param>
-	/// <param name="extension">探したいファイルの拡張子</param>
-	/// <returns>見つけたファイルの名前が入った配列</returns>
-	std::vector<std::string> GetFilePath(const std::string& dir_name, const std::string& extension) noexcept(false);
-
 	/////////////AI等のインスタンス///////////
 
 	MetaAI* pMetaAI_;
@@ -253,8 +258,11 @@ private:
 	//敵の最初のID
 	int startEnemyID_;
 
+	//CreateModeを表示するテキスト
+	Text* pText_;
+
 	//時間を置くのに使う
-	Timer* timer_;
+	Timer* pTimer_;
 
 	//SEの音番号
 	int hCreateSound_[CREATESOUND_NUM];
