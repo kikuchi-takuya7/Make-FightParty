@@ -351,7 +351,7 @@ void CreateMode::SelectUpdate()
 void CreateMode::SettingUpdate()
 {
     if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
-        return;
+        return; 
     }
 
     //ˆÚ“®‚·‚éˆ—B
