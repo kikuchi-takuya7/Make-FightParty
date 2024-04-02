@@ -9,15 +9,28 @@ namespace {
 	//表示する現在のAIの状態
 	XMFLOAT3 TEXT_POS = { -70,50,ZERO };
 	std::string text[TEXT_NUM] = { ":Randam",":No1",":Counter"};
+
+	//デフォルトの攻撃する射程
+	const float DEFAULT_ATTACK_RANGE = 2.0f;
+
+	//デフォルトの攻撃する確率(％)
+	const int DEFAULT_ATTACE_PROBABILITY = 10.0f;
+
+	//デフォルトの毎フレーム毎に追加される攻撃確率
+	const int DEFAULT_ADD_PROBABILITY = 2.0f;
+
+	//ステージに設置する最大座標、セッティングモードで使う
+	const int SETTING_MAXPOS_X = 29;
+	const int SETTING_MAXPOS_Y = 29;
 }
 
 CharacterAI::CharacterAI(GameObject* parent)
-	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr),pText_(new Text)
+	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr), attackRange_(DEFAULT_ATTACK_RANGE), attackProbability_(DEFAULT_ATTACE_PROBABILITY), pText_(new Text)
 {
 }
 
 CharacterAI::CharacterAI(GameObject* parent, Enemy* enemy, NavigationAI* naviAI)
-	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy), pText_(new Text)
+	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy), attackRange_(DEFAULT_ATTACK_RANGE), attackProbability_(DEFAULT_ATTACE_PROBABILITY), pText_(new Text)
 {
 }
 
@@ -116,8 +129,18 @@ void CharacterAI::IsAttack()
 
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), target_.ID);
 	
-	if (distance <= 2.0f) {
-		pEnemy_->ChangeState(ATTACK);
+	//ターゲットが射程内なら
+	if (distance <= attackRange_) {
+		
+		//確率で攻撃する
+		if (rand() % 100 - attackProbability_ == ZERO) {
+			pEnemy_->ChangeState(ATTACK);
+			attackProbability_ = startAttackProbability_;
+			return;
+		}
+		
+		//攻撃されなかったら次攻撃する確率を増やす
+		attackProbability_ += DEFAULT_ADD_PROBABILITY;
 	}
 }
 
@@ -127,9 +150,10 @@ Transform CharacterAI::MoveSelectObject()
 {
 	//ステージ内のどこかにランダムで置く
 	Transform objTrans;
-	objTrans.position_.x = rand() % 29;
-	objTrans.position_.z = rand() % 29;
+	objTrans.position_.x = rand() % SETTING_MAXPOS_X;
+	objTrans.position_.z = rand() % SETTING_MAXPOS_Y;
 
+	//360度のうち上下左右ランダムな方向になるように
 	objTrans.rotate_.y = rand() % 4 * 90;
 
 	return objTrans;

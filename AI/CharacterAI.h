@@ -83,6 +83,8 @@ public:
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
+	void SetAttackRange(int range) { attackRange_ = range; }
+	void SetAttackProbability(int probability) { startAttackProbability_ = probability; attackProbability_ = probability; }
 
 	void SetTarget(TargetInfo target) { target_ = target; }
 
@@ -95,6 +97,16 @@ private:
 	//自分が操る敵のインスタンス
 	Enemy* pEnemy_;
 
+	//攻撃する時の射程
+	int attackRange_;
+
+	//最初の攻撃する確率
+	int startAttackProbability_;
+
+	//攻撃する確率
+	int attackProbability_;
+
+	//狙っている敵
 	TargetInfo target_;
 
 	//現在の状態を表示する用のテキスト

@@ -5,6 +5,7 @@
 #include "../Engine/Camera.h"
 #include "../Engine/Image.h"
 #include "../Engine/Audio.h"
+#include "../Engine/CsvReader.h"
 #include "../Character/Enemy/Enemy.h"
 #include "../AI/MetaAI.h"
 #include "../AI/NavigationAI.h"
@@ -39,6 +40,8 @@ MainGameScene::MainGameScene(GameObject* parent)
 void MainGameScene::Initialize()
 {
 
+	
+
 	pNavigationAI_->SetStage(pStage_);
 	pMetaAI_->SetNavigationAI(pNavigationAI_);
 	
@@ -67,10 +70,21 @@ void MainGameScene::Initialize()
 		objectID++;
 	}
 
+	//外部ファイルからAIの情報を入手
+	CsvReader csv;
+	bool isLoad = csv.Load("");
+	assert(isLoad);
+
+	//AI毎の攻撃する射程を入手
+	vector<int> attackRange;
+	for (int i = ZERO; i < ENEMY_NUM; i++) {
+		attackRange.push_back(csv.GetValue(1, i));
+	}
+
 	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めて全員の中からちゃんと狙うように
 	for (int i = ZERO; i < ENEMY_NUM; i++) {
 
-		CreateCharaAI(pEnemy[i]);
+		CreateCharaAI(pEnemy[i],attackRange[i]);
 	}
 
 	pMetaAI_->ResetGame();
@@ -124,7 +138,7 @@ void MainGameScene::CreateModeInit()
 	pMetaAI_->SetCreateMode(pCreateMode_);
 }
 
-void MainGameScene::CreateCharaAI(Enemy* enemy)
+void MainGameScene::CreateCharaAI(Enemy* enemy, int attackRange)
 {
 	CharacterAI* charaAI = Instantiate<CharacterAI>(this);
 	charaAI->SetEnemy(enemy);
