@@ -17,7 +17,7 @@ namespace {
 	const int DEFAULT_ATTACE_PROBABILITY = 10;
 
 	//デフォルトの毎フレーム毎に追加される攻撃確率
-	const int DEFAULT_ADD_PROBABILITY = 2.0f;
+	const int DEFAULT_ADD_PROBABILITY = 2;
 
 	//ステージに設置する最大座標、セッティングモードで使う
 	const int SETTING_MAXPOS_X = 29;
