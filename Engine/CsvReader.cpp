@@ -113,9 +113,15 @@ std::string CsvReader::GetString(DWORD x, DWORD y)
 }
 
 //指定した位置のデータを整数で取得
-int CsvReader::GetValue(DWORD x, DWORD y)
+int CsvReader::GetValueInt(DWORD x, DWORD y)
 {
 	return atoi(GetString(x, y).c_str());
+}
+
+//指定した位置のデータを浮動小数点変数で取得
+float CsvReader::GetValueFloat(DWORD x, DWORD y)
+{
+	return atof(GetString(x, y).c_str());
 }
 
 //ファイルの列数を取得

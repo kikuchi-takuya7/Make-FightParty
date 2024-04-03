@@ -14,7 +14,7 @@ namespace {
 	const float DEFAULT_ATTACK_RANGE = 2.0f;
 
 	//デフォルトの攻撃する確率(％)
-	const int DEFAULT_ATTACE_PROBABILITY = 10.0f;
+	const int DEFAULT_ATTACE_PROBABILITY = 10;
 
 	//デフォルトの毎フレーム毎に追加される攻撃確率
 	const int DEFAULT_ADD_PROBABILITY = 2.0f;
@@ -132,8 +132,8 @@ void CharacterAI::IsAttack()
 	//ターゲットが射程内なら
 	if (distance <= attackRange_) {
 		
-		//確率で攻撃する
-		if (rand() % 100 - attackProbability_ == ZERO) {
+		//確率で攻撃する(単位が％の為100を使う)
+		if (rand() % 100 < attackProbability_) {
 			pEnemy_->ChangeState(ATTACK);
 			attackProbability_ = startAttackProbability_;
 			return;

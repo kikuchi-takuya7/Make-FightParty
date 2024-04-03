@@ -83,7 +83,7 @@ public:
 	void SetEnemy(Enemy* enemy) { pEnemy_ = enemy; }
 	void SetNavigationAI(NavigationAI* AI) { pNavigationAI_ = AI; }
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
-	void SetAttackRange(int range) { attackRange_ = range; }
+	void SetAttackRange(float range) { attackRange_ = range; }
 	void SetAttackProbability(int probability) { startAttackProbability_ = probability; attackProbability_ = probability; }
 
 	void SetTarget(TargetInfo target) { target_ = target; }
@@ -98,7 +98,7 @@ private:
 	Enemy* pEnemy_;
 
 	//UŒ‚‚·‚é‚ÌË’ö
-	int attackRange_;
+	float attackRange_;
 
 	//Å‰‚ÌUŒ‚‚·‚éŠm—¦
 	int startAttackProbability_;

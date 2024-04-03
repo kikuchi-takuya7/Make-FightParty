@@ -25,7 +25,9 @@ namespace {
 	const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(185.0f, 650.0f, ZERO);
 	const float UI_DIFF = 275.0f;
 
-	
+	//csv内の攻撃射程、攻撃確率がある位置（x座標のみ）
+	const int RANGE_CSV_POS = 1;
+	const int PROBABILITY_SCV_POS = 2;
 }
 
 //コンストラクタ
@@ -72,19 +74,22 @@ void MainGameScene::Initialize()
 
 	//外部ファイルからAIの情報を入手
 	CsvReader csv;
-	bool isLoad = csv.Load("");
-	assert(isLoad);
+	bool isLoad = csv.Load("Others/AI_Option.csv");
 
-	//AI毎の攻撃する射程を入手
-	vector<int> attackRange;
+	//AI毎の攻撃する射程、攻撃する確率を入手
+	vector<float> attackRange;
+	vector<int> attackProbability;
 	for (int i = ZERO; i < ENEMY_NUM; i++) {
-		attackRange.push_back(csv.GetValue(1, i));
+
+		//csvでのy座標の位置が、一番上（0）には種類や説明等が書かれている為1増やす
+		attackRange.push_back(csv.GetValueFloat(RANGE_CSV_POS, i + 1));
+		attackProbability.push_back(csv.GetValueInt(PROBABILITY_SCV_POS, i + 1));
 	}
 
 	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めて全員の中からちゃんと狙うように
 	for (int i = ZERO; i < ENEMY_NUM; i++) {
 
-		CreateCharaAI(pEnemy[i],attackRange[i]);
+		CreateCharaAI(pEnemy[i],attackRange.at(i),attackProbability.at(i));
 	}
 
 	pMetaAI_->ResetGame();
@@ -138,12 +143,14 @@ void MainGameScene::CreateModeInit()
 	pMetaAI_->SetCreateMode(pCreateMode_);
 }
 
-void MainGameScene::CreateCharaAI(Enemy* enemy, int attackRange)
+void MainGameScene::CreateCharaAI(Enemy* enemy, float attackRange, int attackProbability)
 {
 	CharacterAI* charaAI = Instantiate<CharacterAI>(this);
 	charaAI->SetEnemy(enemy);
 	charaAI->SetNavigationAI(pNavigationAI_);
 	charaAI->SetMetaAI(pMetaAI_);
+	charaAI->SetAttackRange(attackRange);
+	charaAI->SetAttackProbability(attackProbability);
 
 	pNavigationAI_->PushCharacterAI(charaAI);
 
