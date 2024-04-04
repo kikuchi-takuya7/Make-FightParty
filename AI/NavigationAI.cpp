@@ -75,12 +75,14 @@ bool NavigationAI::IsOverlapPos(XMFLOAT3 pos)
 float NavigationAI::Distance(int myID, int targetID)
 {
 
-	//将来的にMetaAIに狙うべき敵を聞きたい
-	XMFLOAT3 eP = pCharacterList_.at(myID)->GetPosition();
-	XMFLOAT3 pP = pCharacterList_.at(targetID)->GetPosition();
+	XMFLOAT3 myP = pCharacterList_.at(myID)->GetPosition();
+	XMFLOAT3 tarP = pCharacterList_.at(targetID)->GetPosition();
 
-	//ピタゴラスの定理で距離を求められるらしい
-	float distance = pow((pP.x - eP.x) * (pP.x - eP.x) + (pP.y - eP.y) * (pP.y - eP.y) + (pP.z - eP.z) * (pP.z - eP.z), 0.5);
+	//三平方の定理で距離を求められる。
+	float distance = hypot(myP.x - tarP.x, myP.z - tarP.z);
+
+	//今後y座標を動かす事があればこっちか
+	//float distance = pow((tarP.x - myP.x) * (tarP.x - myP.x) + (tarP.y - myP.y) * (tarP.y - myP.y) + (tarP.z - myP.z) * (tarP.z - myP.z), 0.5);
 
 	return distance;
 }

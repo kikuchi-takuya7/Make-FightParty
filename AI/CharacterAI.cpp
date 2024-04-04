@@ -4,6 +4,7 @@
 #include "../Character/Enemy/Enemy.h"
 #include "../Character/CharacterState/CharacterState.h"
 #include "../Engine/Text.h"
+#include "../Engine/Timer.h"
 
 namespace {
 	//表示する現在のAIの状態
@@ -19,18 +20,25 @@ namespace {
 	//デフォルトの毎フレーム毎に追加される攻撃確率
 	const int DEFAULT_ADD_PROBABILITY = 2;
 
+	//デフォルトの攻撃クールダウン(秒)
+	const float DEFAULT_COOL_DOWN = 0.5f;
+
 	//ステージに設置する最大座標、セッティングモードで使う
 	const int SETTING_MAXPOS_X = 29;
 	const int SETTING_MAXPOS_Y = 29;
 }
 
 CharacterAI::CharacterAI(GameObject* parent)
-	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr), attackRange_(DEFAULT_ATTACK_RANGE), attackProbability_(DEFAULT_ATTACE_PROBABILITY), pText_(new Text)
+	:AI(parent, "CharacterAI"), pNavigationAI_(nullptr), pMetaAI_(nullptr), pEnemy_(nullptr), 
+	attackRange_(DEFAULT_ATTACK_RANGE), attackProbability_(DEFAULT_ATTACE_PROBABILITY), attackAddProbability_(DEFAULT_ADD_PROBABILITY), attackCoolDown_(DEFAULT_COOL_DOWN),
+	pCoolDown_(Instantiate<Timer>(this)), pText_(new Text)
 {
 }
 
 CharacterAI::CharacterAI(GameObject* parent, Enemy* enemy, NavigationAI* naviAI)
-	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy), attackRange_(DEFAULT_ATTACK_RANGE), attackProbability_(DEFAULT_ATTACE_PROBABILITY), pText_(new Text)
+	:AI(parent, "CharacterAI"), pNavigationAI_(naviAI), pMetaAI_(nullptr), pEnemy_(enemy),
+	attackRange_(DEFAULT_ATTACK_RANGE), attackProbability_(DEFAULT_ATTACE_PROBABILITY), attackAddProbability_(DEFAULT_ADD_PROBABILITY), attackCoolDown_(DEFAULT_COOL_DOWN),
+	pCoolDown_(Instantiate<Timer>(this)), pText_(new Text)
 {
 }
 
@@ -42,6 +50,9 @@ void CharacterAI::Initialize()
 {
 	//pEnemy_->GetStatus().playerName;
 	pText_->Initialize();
+	pCoolDown_->SetLimit(attackCoolDown_);
+	pCoolDown_->Visible();
+	pCoolDown_->Start();
 }
 
 void CharacterAI::Draw()
@@ -127,6 +138,10 @@ void CharacterAI::IsAttack()
 		AskTarget();
 	}
 
+	//攻撃クールダウン中なら
+	if (!pCoolDown_->IsFinished())
+		return;
+
 	float distance = pNavigationAI_->Distance(pEnemy_->GetObjectID(), target_.ID);
 	
 	//ターゲットが射程内なら
@@ -136,11 +151,14 @@ void CharacterAI::IsAttack()
 		if (rand() % 100 < attackProbability_) {
 			pEnemy_->ChangeState(ATTACK);
 			attackProbability_ = startAttackProbability_;
+			pCoolDown_->Reset();
+			pCoolDown_->Start();
 			return;
 		}
 		
 		//攻撃されなかったら次攻撃する確率を増やす
-		attackProbability_ += DEFAULT_ADD_PROBABILITY;
+		attackProbability_ += attackAddProbability_;
+		
 	}
 }
 

@@ -349,6 +349,7 @@ void MetaAI::CheckNo1Chara()
 	//ついでにメンバ変数のランキングも更新する
 	ranking_.at(ZERO) = ranking.at(ZERO).second;
 
+	//2位から更新するため、1からforを回す
 	for (int i = 1; i < ranking.size(); i++) {
 
 		//一位の人と同じポイントなら同率１位を入れる

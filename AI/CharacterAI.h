@@ -5,6 +5,7 @@ class NavigationAI;
 class MetaAI;
 class Enemy;
 class Text;
+class Timer;
 enum TARGETPATTERN;
 
 enum TARGETPATTERNTEXT {
@@ -85,6 +86,8 @@ public:
 	void SetMetaAI(MetaAI* AI) { pMetaAI_ = AI; }
 	void SetAttackRange(float range) { attackRange_ = range; }
 	void SetAttackProbability(int probability) { startAttackProbability_ = probability; attackProbability_ = probability; }
+	void SetAttackAddPro(int addProbability) { attackAddProbability_ = addProbability; }
+	void SetAttackCoolDown(float time) { attackCoolDown_ = time; }
 
 	void SetTarget(TargetInfo target) { target_ = target; }
 
@@ -97,6 +100,11 @@ private:
 	//自分が操る敵のインスタンス
 	Enemy* pEnemy_;
 
+	//狙っている敵
+	TargetInfo target_;
+
+	//////AI毎に変わるステータス///////////////////
+
 	//攻撃する時の射程
 	float attackRange_;
 
@@ -106,8 +114,12 @@ private:
 	//攻撃する確率
 	int attackProbability_;
 
-	//狙っている敵
-	TargetInfo target_;
+	//追加される攻撃確率
+	int attackAddProbability_;
+
+	//攻撃のクールダウン
+	float attackCoolDown_;
+	Timer* pCoolDown_;
 
 	//現在の状態を表示する用のテキスト
 	Text* pText_;

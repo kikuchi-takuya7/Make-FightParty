@@ -39,33 +39,20 @@ void Player::ChildInitialize()
 	//開始地点に移動する
 	SetPosition(startPos_);
 
-	//addcolliderしたら勝手に開放されるからね
+	//addcolliderしたら勝手に開放される
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
-	//status_.attackPower = PLAYER_ATTACK_POWER;
-
-	//モデルデータのロード
-	//hModel_ = Model::Load("PlayerFbx/playerTest.fbx");
-	//assert(hModel_ >= 0);
-
-	
-
-	
-	
 }
 
 //更新
 void Player::ChildUpdate()
 {
 
-	
-
 	//移動キーが押されているなら
 	if (Input::IsKey(DIK_A) || Input::IsKey(DIK_D) || Input::IsKey(DIK_W) || Input::IsKey(DIK_S))
 	{
 
-		//Runstateで移動中なら速度早くして、他のstateなら移動速度遅くするとかが良い気がする
 		MoveCharacter();
 		ChangeState(RUN);
 	}
@@ -135,7 +122,7 @@ void Player::MoveCharacter()
 
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
 
-	//斜めの移動でも早くならないように(必要か？)
+	//斜めの移動でも早くならないように
 	vMove = XMVector3Normalize(vMove);
 
 	fMove = VectorToFloat3(vMove);

@@ -38,7 +38,7 @@ private:
 	void CreateModeInit();
 
 	//キャラクターAIを作る
-	void CreateCharaAI(Enemy* enemy, float attackRange, int attackProbability);
+	void CreateCharaAI(Enemy* enemy, float attackRange, int attackProbability, int addPro, float coolDown);
 
 	//背景
 	int hPict_;

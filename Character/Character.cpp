@@ -16,7 +16,9 @@ namespace {
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(0.9, 2, 0.9);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1.5, 1, 3);
+	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1.5, 0.5, 3);
+
+	const int PLAYER_MAX_NUM = 4;
 }
 
 //コンストラクタ
@@ -58,7 +60,7 @@ void Character::Initialize()
 
 		std::string fileName = dir + str[i] + extention;
 
-		hSoundEffect_[i] = Audio::Load(fileName,false,3);
+		hSoundEffect_[i] = Audio::Load(fileName,false,PLAYER_MAX_NUM);
 		assert(hSoundEffect_[i] >= ZERO);
 
 		Audio::Stop(hSoundEffect_[i]);

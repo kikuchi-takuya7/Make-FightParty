@@ -24,7 +24,6 @@ CharacterAttackState::CharacterAttackState(Character* character, int model) :Cha
 
 void CharacterAttackState::Update()
 {
-	//攻撃は殴る瞬間に少し前に出てジャンプできなくなるみたいな感じにしたい。スティックファイト座ゲームみたいな感じ
 
 	int nowFrame = Model::GetAnimFrame(hCharacterModel_);
 
