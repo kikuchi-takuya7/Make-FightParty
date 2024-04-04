@@ -153,7 +153,7 @@ Transform CharacterAI::MoveSelectObject()
 	objTrans.position_.x = rand() % SETTING_MAXPOS_X;
 	objTrans.position_.z = rand() % SETTING_MAXPOS_Y;
 
-	//360度のうち上下左右ランダムな方向になるように
+	//360度のうち上下左右ランダムな方向になるようにするため、0~3の値に90をかけています
 	objTrans.rotate_.y = rand() % 4 * 90;
 
 	return objTrans;

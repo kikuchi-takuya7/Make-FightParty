@@ -41,7 +41,7 @@ namespace {
 	const int PLAYER_MAX_NUM = 4;
 
 	//表示する現在のAIの情報
-	XMFLOAT3 TEXT_POS = { 10,20,ZERO };
+	const XMFLOAT3 TEXT_POS = { 10,20,ZERO };
 	std::string nowModeText[MODE_NUM] = { ":Waiting...",":ChampionMode",":ResultMode" };
 }
 
@@ -59,7 +59,7 @@ MetaAI::~MetaAI()
 void MetaAI::Initialize()
 {
 	//色々初期化
-	for (int i = ZERO; i < 4; i++) {
+	for (int i = ZERO; i < PLAYER_MAX_NUM; i++) {
 		No1CharaID_.emplace_back(i);
 		ranking_.emplace_back(i);
 		score_.emplace_back(ZERO);
@@ -95,25 +95,6 @@ void MetaAI::Update()
 
 	//優勝者が決まってる場合は上で、決まってないならこっちを使う。
 	UsuallyUpdate();
-
-
-	//デバック用
-#ifdef _DEBUG
-
-	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
-
-		characterStatusList_.at(ZERO).winPoint++;
-		pNavigationAI_->SetStatus(ZERO, characterStatusList_.at(ZERO));
-		CheckNo1Chara();
-
-		if (characterStatusList_.at(ZERO).winPoint >= 4) {
-			endGame_ = true;
-		}
-		pCreateMode_->ToSelectMode();
-	}
-
-#endif 
-
 	
 }
 
@@ -212,11 +193,12 @@ void MetaAI::DecidedWinner()
 			deadNum++;
 		}
 		else {
-			//勝ったやつのプレイヤーIDを覚えておく
+			//勝った人のプレイヤーIDを覚えておく
 			winPlayer = i;
 		}
 	}
 
+	//3人以上死んでいればクリエイトモードへ
 	if (deadNum >= PLAYER_MAX_NUM - 1 && pCreateMode_->GetState() == NONE) {
 		ToCreateMode(winPlayer);
 	}
@@ -442,7 +424,7 @@ void MetaAI::MoveChampionCam()
 	XMFLOAT3 camPos = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_POS_DIFF.y, charaPos.z + CHAMPION_CAM_POS_DIFF.z);
 	XMFLOAT3 camTar = XMFLOAT3(charaPos.x, charaPos.y + CHAMPION_CAM_TAR_DIFF.y, charaPos.z + CHAMPION_CAM_TAR_DIFF.z);
 
-	//優勝者も合わせて前に向かせる
+	//優勝者も合わせて前に向かせる為、180度(画面の真正面)に回転させる
 	XMFLOAT3 rot = pChampion->GetRotate();
 	RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
 	pChampion->SetRotateY(rot.y);
@@ -489,6 +471,7 @@ void MetaAI::VictoryEffect()
 
 	XMFLOAT3 championPos = pChampion->GetPosition();
 
+	//炎本体（プレイヤーの右と左に出す）
 	EmitterData data;
 	data.textureFileName = "VFX/cloudA.png";
 	data.position = XMFLOAT3(championPos.x + CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
@@ -508,6 +491,19 @@ void MetaAI::VictoryEffect()
 	data.deltaColor = XMFLOAT4(0, -0.03, 0, -0.02);
 	VFX::Start(data);
 
+	//火の粉
+	data.number = 3;
+	data.positionRnd = XMFLOAT3(0.8, 0, 0.8);
+	data.direction = XMFLOAT3(0, 1, 0);
+	data.directionRnd = XMFLOAT3(10, 10, 10);
+	data.size = XMFLOAT2(0.2, 0.2);
+	data.scale = XMFLOAT2(0.95, 0.95);
+	data.lifeTime = 120;
+	data.speed = 0.1f;
+	data.gravity = 0;
+	VFX::Start(data);
+
+	//プレイヤーの左に出す炎
 	data.position = XMFLOAT3(championPos.x - CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
 	VFX::Start(data);
 
