@@ -63,6 +63,9 @@
     <Filter Include="Character\CharacterState">
       <UniqueIdentifier>{0ec3dda4-267c-4f7f-87a0-4cad042a9cbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VFXData">
+      <UniqueIdentifier>{8d94a987-e96a-441c-a925-97a5dce00cc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -277,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="Scene\TutorialScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="VFXData\VFXData.cpp">
+      <Filter>VFXData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -498,6 +504,9 @@
     </ClInclude>
     <ClInclude Include="Scene\TutorialScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="VFXData\VFXData.h">
+      <Filter>VFXData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

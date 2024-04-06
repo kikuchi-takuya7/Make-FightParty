@@ -3,13 +3,15 @@
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
 #include "../Engine/Audio.h"
+#include "../Engine/VFX.h"
 #include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
 #include "../UI/PlayerUI.h"
 #include "CharacterState/CharacterStateManager.h"
-#include "../Engine/VFX.h"
+#include "../VFXData/VFXData.h"
 
+//基礎ステータス等
 namespace {
 	const int CHARACTER_HP = 100;
 	const int CHARACTER_ATTACK_POWER = 25;
@@ -21,10 +23,80 @@ namespace {
 	const int PLAYER_MAX_NUM = 4;
 }
 
+//namespace HitEffectData {
+//	std::string FILENAME = "VFX/cloudA.png";			//画像ファイル名
+//	XMFLOAT3 POSITIONRND = XMFLOAT3(0.5f, 0.5f, 0.5f);	//位置の誤差
+//	XMFLOAT3 DIRECTIONRND = XMFLOAT3(90, 90, 90);		//移動方向の誤差（各軸の角度）
+//	float	 SPEED = 0.2f;			//1フレームの速度
+//	float	 SPEEDRND = ZERO;		//速度誤差（0～1）
+//	float	 ACCEL = 1.0f;			//加速度
+//	float	 GRAVITY = 0.0f;		//重力
+//	XMFLOAT4 COLOR = XMFLOAT4(1, 1, ZERO, 1);					//色（RGBA 0～1）
+//	XMFLOAT4 DELTACOLOR = XMFLOAT4(ZERO, -0.03f, ZERO, -0.02f);	//色の変化量
+//	XMFLOAT3 ROTATE = XMFLOAT3(ZERO, ZERO, ZERO);		//各軸での角度
+//	XMFLOAT3 ROTATERND = XMFLOAT3(ZERO, ZERO, ZERO);	//角度誤差
+//	XMFLOAT3 SPIN = XMFLOAT3(ZERO, ZERO, ZERO);			//回転速度
+//	XMFLOAT2 SIZE = XMFLOAT2(0.3, 0.3f);			//サイズ
+//	XMFLOAT2 SIZERND = XMFLOAT2(0.4, 0.4f);			//サイズ誤差（0～1）
+//	XMFLOAT2 SCALE = XMFLOAT2(0.9f, 0.9f);			//1フレームの拡大率
+//	DWORD	 LIFETIME = 15;		//パーティクルの寿命（フレーム数）
+//	DWORD	 DELAY = ZERO;		//何フレームおきにパーティクルを発生させるか
+//	DWORD	 NUMBER = 40;		//1度に出すパーティクル量
+//	bool	 ISBILLBOARD;		//ビルボードかどうか
+//}
+//
+//namespace DieEffect {
+//	namespace Explosion {
+//		std::string FILENAME = "VFX/cloudA.png";				//画像ファイル名	
+//		XMFLOAT3 POSITIONRND = ZERO_FLOAT3;						//位置の誤差
+//		XMFLOAT3 DIRECTION = XMFLOAT3(ZERO, 1.0f, ZERO);		//移動方向
+//		XMFLOAT3 DIRECTIONRND = XMFLOAT3(90, 90, 90);			//移動方向の誤差（各軸の角度）
+//		float	 SPEED = 0.1f;			//1フレームの速度
+//		float	 SPEEDRND = 0.8f;		//速度誤差（0～1）
+//		float	 ACCEL = 1.0f;			//加速度
+//		float	 GRAVITY = 0.0f;		//重力
+//		XMFLOAT4 COLOR = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);					//色（RGBA 0～1）
+//		XMFLOAT4 DELTACOLOR = XMFLOAT4(ZERO, -1.0 / 20, ZERO, -1.0 / 20);	//色の変化量
+//		XMFLOAT3 ROTATE;		//各軸での角度
+//		XMFLOAT3 ROTATERND;		//角度誤差
+//		XMFLOAT3 SPIN;			//回転速度
+//		XMFLOAT2 SIZE = XMFLOAT2(1.2f, 1.2f);			//サイズ
+//		XMFLOAT2 SIZERND = XMFLOAT2(0.4, 0.4f);			//サイズ誤差（0～1）
+//		XMFLOAT2 SCALE = XMFLOAT2(1.05f, 1.05f);			//1フレームの拡大率
+//		DWORD	 LIFETIME = 30;		//パーティクルの寿命（フレーム数）
+//		DWORD	 DELAY = ZERO;		//何フレームおきにパーティクルを発生させるか
+//		DWORD	 NUMBER = 80;		//1度に出すパーティクル量
+//		bool	 ISBILLBOARD;		//ビルボードかどうか
+//	}
+//	namespace FireSpark {
+//		std::string FILENAME = "VFX/cloudA.png";			//画像ファイル名
+//		XMFLOAT3 POSITIONRND = XMFLOAT3(0.5f, ZERO, 0.5f);	//位置の誤差
+//		XMFLOAT3 DIRECTION = XMFLOAT3(ZERO, 1, ZERO);		//移動方向
+//		XMFLOAT3 DIRECTIONRND = XMFLOAT3(90, 90, 90);		//移動方向の誤差（各軸の角度）
+//		float	 SPEED = 0.25f;			//1フレームの速度
+//		float	 SPEEDRND = 1.0f;		//速度誤差（0～1）
+//		float	 ACCEL = 0.93f;			//加速度
+//		float	 GRAVITY = 0.003f;		//重力
+//		XMFLOAT4 COLOR = XMFLOAT4(1, 1, 0.1f, 1);					//色（RGBA 0～1）
+//		XMFLOAT4 DELTACOLOR = XMFLOAT4(ZERO, ZERO, ZERO, ZERO);		//色の変化量
+//		XMFLOAT3 ROTATE;		//各軸での角度
+//		XMFLOAT3 ROTATERND;		//角度誤差
+//		XMFLOAT3 SPIN;			//回転速度
+//		XMFLOAT2 SIZE = XMFLOAT2(0.1f, 0.1f);				//サイズ
+//		XMFLOAT2 SIZERND = XMFLOAT2(0.4f, 0.4f);			//サイズ誤差（0～1）
+//		XMFLOAT2 SCALE = XMFLOAT2(0.99f, 0.99f);			//1フレームの拡大率
+//		DWORD	 LIFETIME = 100;		//パーティクルの寿命（フレーム数）
+//		DWORD	 DELAY = ZERO;			//何フレームおきにパーティクルを発生させるか
+//		DWORD	 NUMBER = 80;			//1度に出すパーティクル量
+//		bool	 ISBILLBOARD;			//ビルボードかどうか
+//	}
+//
+//}
+
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
 	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, false, ZERO, ZERO, ZERO, "NONE")),
-	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), stopDraw_(false), hSoundEffect_{-1,-1}
+	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), hSoundEffect_{-1,-1}
 	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
 }
@@ -277,66 +349,83 @@ void Character::SetCharacterName(std::string name)
 //攻撃を食らった時のエフェクト
 void Character::HitEffect()
 {
+	using namespace HitEffectData;
 
 	//火の粉
 	EmitterData data;
-	data.textureFileName = "VFX/cloudA.png";
+	data.textureFileName = FILENAME;
 	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
-	data.delay = 0;
-	data.speedRnd = 0.0;
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.color = XMFLOAT4(1, 1, 0, 1);
-	data.deltaColor = XMFLOAT4(0, -0.03, 0, -0.02);
-	data.number = 40;
-	data.positionRnd = XMFLOAT3(0.5, 0.5, 0.5);
+	data.positionRnd = POSITIONRND;
 	data.direction = targetRot_;
-	data.directionRnd = XMFLOAT3(90, 90, 90);
-	data.size = XMFLOAT2(0.3, 0.3);
-	data.scale = XMFLOAT2(0.9, 0.9);
-	data.lifeTime = 15;
-	data.speed = 0.2f;
+	data.directionRnd = DIRECTIONRND;
+	data.speed = SPEED;
+	data.speedRnd = SPEEDRND;
+	data.color = COLOR;
+	data.deltaColor = DELTACOLOR;
+	data.size = HitEffectData::SIZE;
+	data.sizeRnd = SIZERND;
+	data.scale = SCALE;
+	data.lifeTime = LIFETIME;
+	data.delay = DELAY;
+	data.number = NUMBER;
+
+	
 	VFX::Start(data);
 }
 
 //死んだ時にでるエフェクト
 void Character::DieEffect()
 {
+
+	using namespace DieEffect;
+
 	EmitterData data;
 
 	//炎（爆発本体）
-	data.textureFileName = "VFX/cloudA.png";
-	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
-	data.delay = 0;
-	data.number = 80;
-	data.lifeTime = 30;
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(90, 90, 90);
-	data.speed = 0.1f;
-	data.speedRnd = 0.8;
-	data.size = XMFLOAT2(1.2, 1.2);
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.scale = XMFLOAT2(1.05, 1.05);
-	data.color = XMFLOAT4(1, 1, 0.1, 1);
-	data.deltaColor = XMFLOAT4(0, -1.0 / 20, 0, -1.0 / 20);
-	VFX::Start(data);
+	{
+		using namespace Explosion;
+
+		data.textureFileName = FILENAME;
+		data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
+		data.direction = DIRECTION;
+		data.directionRnd = DIRECTIONRND;
+		data.speed = SPEED;
+		data.speedRnd = SPEEDRND;
+		data.color = COLOR;
+		data.deltaColor = DELTACOLOR;
+		data.size = Explosion::SIZE;
+		data.sizeRnd = SIZERND;
+		data.scale = SCALE;
+		data.lifeTime = LIFETIME;
+		data.delay = DELAY;
+		data.number = NUMBER;
+
+		VFX::Start(data);
+	}
+	
 
 	//火の粉
-	data.delay = 0;
-	data.number = 80;
-	data.lifeTime = 100;
-	data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(90, 90, 90);
-	data.speed = 0.25f;
-	data.speedRnd = 1;
-	data.accel = 0.93;
-	data.size = XMFLOAT2(0.1, 0.1);
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.scale = XMFLOAT2(0.99, 0.99);
-	data.color = XMFLOAT4(1, 1, 0.1, 1);
-	data.deltaColor = XMFLOAT4(0, 0, 0, 0);
-	data.gravity = 0.003f;
-	VFX::Start(data);
+	{
+		using namespace FireSpark;
+
+		data.positionRnd = POSITIONRND;
+		data.direction = DIRECTION;
+		data.directionRnd = DIRECTIONRND;
+		data.speed = SPEED;
+		data.speedRnd = SPEEDRND;
+		data.accel = FireSpark::ACCEL;
+		data.gravity = GRAVITY;
+		data.color = COLOR;
+		data.deltaColor = DELTACOLOR;
+		data.size = FireSpark::SIZE;
+		data.sizeRnd = SIZERND;
+		data.scale = SCALE;
+		data.lifeTime = LIFETIME;
+		data.delay = DELAY;
+		data.number = NUMBER;
+
+		VFX::Start(data);
+	}
 
 }
 

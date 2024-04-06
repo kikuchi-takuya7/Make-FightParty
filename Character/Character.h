@@ -198,12 +198,6 @@ protected:
 
 private:
 
-    
-
-    ////////////////////////////////////////////
-
-    bool stopDraw_;
-
     //UŒ‚‚ğH‚ç‚Á‚½‚É‰ñ“]‚·‚é‚Ì‚Ég‚¤
     XMFLOAT3 targetRot_;
 
