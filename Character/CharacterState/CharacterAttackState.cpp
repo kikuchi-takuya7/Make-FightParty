@@ -9,10 +9,14 @@ namespace {
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 	const int ATTACK_RIGIDITYFLAME = 60;//攻撃持続フレーム
 
+	//アニメーションのフレーム
 	const int MOTION_START_FRAME = 60;
 	const int MOTION_END_FRAME = 130;
 	const int ATTACK_START_FRAME = 90;
 	const int ATTACK_END_FRAME = 110;
+
+	//アニメーションの1フレーム毎に進む速度
+	const int ANIMATION_SPEED = 1;
 }
 
 CharacterAttackState::CharacterAttackState(Character* character, int model) :CharacterState(character, model), settedCollision_(false),hAudio_(-1)
@@ -53,7 +57,7 @@ void CharacterAttackState::HandleInput()
 void CharacterAttackState::Enter()
 {
 	settedCollision_ = false;
-	Model::SetAnimFrame(hCharacterModel_, MOTION_START_FRAME, MOTION_END_FRAME, 1);
+	Model::SetAnimFrame(hCharacterModel_, MOTION_START_FRAME, MOTION_END_FRAME, ANIMATION_SPEED);
 }
 
 void CharacterAttackState::Leave()

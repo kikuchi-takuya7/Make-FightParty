@@ -76,7 +76,7 @@ void MainGameScene::Initialize()
 
 	//外部ファイルからAIの情報を入手
 	CsvReader csv;
-	bool isLoad = csv.Load("Others/AI_Option.csv");
+	bool isLoad = csv.Load("CSV/AI_Option.csv");
 
 	//AI毎の攻撃する射程、攻撃する確率、増加率、クールダウンを入手
 	vector<float> attackRange;

@@ -9,6 +9,14 @@ namespace {
 	const float KNOCKBACK_SPEED = 0.05f;//どのくらいの速度でノックバックするか
 	const int KNOCKBACK_START_FRAME = 210;
 	const int KNOCKBACK_END_FRAME = 240;
+
+	//アニメーションの1フレーム毎に進む速度
+	const int ANIMATION_SPEED = 1;
+
+	const float MAX_KNOCKBACK_X = 29.0f;
+	const float MAX_KNOCKBACK_Z = 29.0f;
+	const float MIN_KNOCKBACK_X = ZERO;
+	const float MIN_KNOCKBACK_Z = ZERO;
 }
 
 CharacterKnockBackState::CharacterKnockBackState(Character* character, int model):CharacterState(character, model)
@@ -51,11 +59,11 @@ void CharacterKnockBackState::HandleInput()
 
 void CharacterKnockBackState::Enter()
 {
-	flame_ = 0;
+	flame_ = ZERO;
 	//色々初期化
-	knockBackRate_ = 0.0f;
+	knockBackRate_ = ZERO;
 
-	Model::SetAnimFrame(hCharacterModel_, KNOCKBACK_START_FRAME, KNOCKBACK_END_FRAME, 1);
+	Model::SetAnimFrame(hCharacterModel_, KNOCKBACK_START_FRAME, KNOCKBACK_END_FRAME, ANIMATION_SPEED);
 
 	XMFLOAT3 targetRot = pCharacter_->GetTargetRot();
 
@@ -80,17 +88,17 @@ void CharacterKnockBackState::Enter()
 
 	lastPoint_ = VectorToFloat3(pos);
 
-	if (lastPoint_.x <= 0.5) {
-		lastPoint_.x = 0;
+	if (lastPoint_.x <= MIN_KNOCKBACK_X) {
+		lastPoint_.x = MIN_KNOCKBACK_X;
 	}
-	if (lastPoint_.x >= 28.5) {
-		lastPoint_.x = 28.5;
+	if (lastPoint_.x >= MAX_KNOCKBACK_X) {
+		lastPoint_.x = MAX_KNOCKBACK_X;
 	}
-	if (lastPoint_.z <= 0.5) {
-		lastPoint_.z = 0.5;
+	if (lastPoint_.z <= MIN_KNOCKBACK_Z) {
+		lastPoint_.z = MIN_KNOCKBACK_X;
 	}
-	if (lastPoint_.z >= 28.5) {
-		lastPoint_.z = 28.5;
+	if (lastPoint_.z >= MAX_KNOCKBACK_Z) {
+		lastPoint_.z = MAX_KNOCKBACK_Z;
 	}
 
 }

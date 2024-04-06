@@ -18,7 +18,13 @@ namespace {
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 
+	const float PLAYER_SPEED = 0.2;
 
+	//移動できる最大の位置
+	const float MAX_MOVE_X = 29.0f;
+	const float MAX_MOVE_Z = 29.0f;
+	const float MIN_MOVE_X = ZERO;
+	const float MIN_MOVE_Z = ZERO;
 }
 
 //コンストラクタ
@@ -103,19 +109,19 @@ void Player::MoveCharacter()
 	XMFLOAT3 characterPos = GetPosition();
 
 	//結局後で正規化してるからここの値は大きくても意味なし
-	if (Input::IsKey(DIK_A) && characterPos.x >= 0.5)
+	if (Input::IsKey(DIK_A) && characterPos.x >= MIN_MOVE_X)
 	{
 		fMove.x = -0.01f;
 	}
-	if (Input::IsKey(DIK_D) && characterPos.x <= 28.5)
+	if (Input::IsKey(DIK_D) && characterPos.x <= MAX_MOVE_X)
 	{
 		fMove.x = 0.01f;
 	}
-	if (Input::IsKey(DIK_W) && characterPos.z <= 28.5)
+	if (Input::IsKey(DIK_W) && characterPos.z <= MAX_MOVE_Z)
 	{
 		fMove.z = 0.01f;
 	}
-	if (Input::IsKey(DIK_S) && characterPos.z >= 0.5)
+	if (Input::IsKey(DIK_S) && characterPos.z >= MIN_MOVE_Z)
 	{
 		fMove.z = -0.01f;
 	}
@@ -128,8 +134,8 @@ void Player::MoveCharacter()
 	fMove = VectorToFloat3(vMove);
 
 	//速度調整
-	fMove.x *= 0.2;
-	fMove.z *= 0.2;
+	fMove.x *= PLAYER_SPEED;
+	fMove.z *= PLAYER_SPEED;
 
 	characterPos.x += fMove.x;
 	characterPos.z += fMove.z;
@@ -151,7 +157,7 @@ void Player::MoveCharacter()
 		float dot = XMVectorGetX(vDot);
 		float angle = acos(dot);
 
-		//外積が-になる角度なら
+		//外積が-になる角度なら向きを逆にする
 		XMVECTOR vCross = XMVector3Cross(vFront, vMove);
 		if (XMVectorGetY(vCross) < ZERO) {
 

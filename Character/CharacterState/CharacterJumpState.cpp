@@ -5,6 +5,9 @@
 namespace {
 	const float JUMP_VELOCITY = 1.0f;
 	const float GRAVITY = 0.1f;
+
+	//アニメーションの1フレーム毎に進む速度
+	const int ANIMATION_SPEED = 1;
 }
 
 CharacterJumpState::CharacterJumpState(Character* character, int model):CharacterState(character, model)

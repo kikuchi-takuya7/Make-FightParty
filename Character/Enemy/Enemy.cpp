@@ -11,6 +11,9 @@
 namespace {
 	const int ENEMY_HP = 100;
 	const int ENEMY_ATTACK_POWER = 20;
+
+	//殴ってきた相手に狙いを変える確率
+	const int COUNTER_PROBABILITY = 50;
 }
 
 //コンストラクタ
@@ -69,7 +72,7 @@ void Enemy::ChildRelease()
 void Enemy::ChangeTarget(GameObject* pTarget)
 {
 	//一定の確率で狙いを殴ってきた相手に変える
-	if (rand() % 2 == ZERO) {
+	if (rand() % 100 < COUNTER_PROBABILITY) {
 		TargetInfo target;
 		target.ID = pTarget->GetObjectID();
 		target.mode = COUNTER;

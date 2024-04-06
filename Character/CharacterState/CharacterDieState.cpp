@@ -4,6 +4,9 @@
 namespace {
 	const int DIE_START_FRAME = 250;
 	const int DIE_END_FRAME = 340 + 9999999;//死んだあとずっと止まっててもらう。if文を使わなくてもいいように
+
+	//アニメーションの1フレーム毎に進む速度
+	const int ANIMATION_SPEED = 1;
 }
 
 CharacterDieState::CharacterDieState(Character* character, int model) :CharacterState(character, model)
@@ -31,7 +34,7 @@ void CharacterDieState::Enter()
 
 	pCharacter_->TellStatus();
 
-	Model::SetAnimFrame(hCharacterModel_, DIE_START_FRAME, DIE_END_FRAME, 1);
+	Model::SetAnimFrame(hCharacterModel_, DIE_START_FRAME, DIE_END_FRAME, ANIMATION_SPEED);
 	
 	
 }

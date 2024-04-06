@@ -15,6 +15,7 @@
 #include "../UI/WinnerUI.h"
 #include "../UI/ChampionUI.h"
 #include "../Stage/CreateMode/CreateMode.h"
+#include "../VFXData/VFXData.h"
 
 namespace {
 
@@ -381,12 +382,12 @@ void MetaAI::ToCreateMode(int winnerID)
 	pNavigationAI_->SetStatus(winnerID, characterStatusList_.at(winnerID));
 
 
-	//スコアを確認する
+	//勝者にスコアを追加する
 	pRankingUI_->SetScore(winnerID, WIN_GAUGE, 1);
 	score_.at(winnerID) += SCORE[WIN_GAUGE];
 
 	//キル数分もスコアに加算する
-	for (int i = 0; i < characterStatusList_.size(); i++) {
+	for (int i = ZERO; i < characterStatusList_.size(); i++) {
 
 		pRankingUI_->SetScore(i, KILL_GAUGE, characterStatusList_.at(i).killPoint);
 		score_.at(i) += SCORE[KILL_GAUGE] * characterStatusList_.at(i).killPoint;
@@ -468,56 +469,76 @@ int MetaAI::VictoryPlayer()
 void MetaAI::VictoryEffect()
 {
 
-	Character* pChampion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
+	using namespace VictoryEffect;
 
+	Character* pChampion = pNavigationAI_->GetCaracter(No1CharaID_.at(ZERO));
 	XMFLOAT3 championPos = pChampion->GetPosition();
 
-	//炎本体（プレイヤーの右と左に出す）
 	EmitterData data;
-	data.textureFileName = "VFX/cloudA.png";
-	data.position = XMFLOAT3(championPos.x + CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
-	data.positionRnd = XMFLOAT3(0.1, 0, 0.1);
-	data.delay = 0;
-	data.number = 1;
-	data.lifeTime = 60;
-	data.gravity = -0.002f;
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(0, 0, 0);
-	data.speed = 0.01f;
-	data.speedRnd = 0.0;
-	data.size = XMFLOAT2(1.5, 1.5);
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.scale = XMFLOAT2(1.01, 1.01);
-	data.color = XMFLOAT4(1, 1, 0, 1);
-	data.deltaColor = XMFLOAT4(0, -0.03, 0, -0.02);
-	VFX::Start(data);
 
+	//炎本体（プレイヤーの右と左に出す）
+	{
+		using namespace Fire;
+
+		data.textureFileName = FILENAME;
+		data.position = XMFLOAT3(championPos.x + CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
+		data.positionRnd = POSITIONRND;
+		data.direction = DIRECTION;
+		data.directionRnd = DIRECTIONRND;
+		data.speed = SPEED;
+		data.speedRnd = SPEEDRND;
+		data.accel = Fire::ACCEL;
+		data.gravity = GRAVITY;
+		data.color = COLOR;
+		data.deltaColor = DELTACOLOR;
+		data.rotate = ROTATE;
+		data.rotateRnd = ROTATERND;
+		data.spin = SPIN;
+		data.size = Fire::SIZE;
+		data.sizeRnd = SIZERND;
+		data.scale = SCALE;
+		data.lifeTime = LIFETIME;
+		data.delay = DELAY;
+		data.number = NUMBER;
+		data.isBillBoard = ISBILLBOARD;
+
+		VFX::Start(data);
+
+		//左に炎を出す
+		data.position = XMFLOAT3(championPos.x - CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
+		VFX::Start(data);
+	}
+	
 	//火の粉
-	data.number = 3;
-	data.positionRnd = XMFLOAT3(0.8, 0, 0.8);
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(10, 10, 10);
-	data.size = XMFLOAT2(0.2, 0.2);
-	data.scale = XMFLOAT2(0.95, 0.95);
-	data.lifeTime = 120;
-	data.speed = 0.1f;
-	data.gravity = 0;
-	VFX::Start(data);
+	{
+		using namespace FireSpark;
 
-	//プレイヤーの左に出す炎
-	data.position = XMFLOAT3(championPos.x - CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
-	VFX::Start(data);
+		data.textureFileName = FILENAME;
+		data.position = XMFLOAT3(championPos.x + CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
+		data.positionRnd = POSITIONRND;
+		data.direction = DIRECTION;
+		data.directionRnd = DIRECTIONRND;
+		data.speed = SPEED;
+		data.speedRnd = SPEEDRND;
+		data.accel = FireSpark::ACCEL;
+		data.gravity = GRAVITY;
+		data.color = COLOR;
+		data.deltaColor = DELTACOLOR;
+		data.rotate = ROTATE;
+		data.rotateRnd = ROTATERND;
+		data.spin = SPIN;
+		data.size = FireSpark::SIZE;
+		data.sizeRnd = SIZERND;
+		data.scale = SCALE;
+		data.lifeTime = LIFETIME;
+		data.delay = DELAY;
+		data.number = NUMBER;
+		data.isBillBoard = ISBILLBOARD;
 
+		VFX::Start(data);
 
-	//火の粉
-	data.number = 3;
-	data.positionRnd = XMFLOAT3(0.8, 0, 0.8);
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(10, 10, 10);
-	data.size = XMFLOAT2(0.2, 0.2);
-	data.scale = XMFLOAT2(0.95, 0.95);
-	data.lifeTime = 120;
-	data.speed = 0.1f;
-	data.gravity = 0;
-	VFX::Start(data);
+		//左に火の粉を出す
+		data.position = XMFLOAT3(championPos.x - CHAMPION_EFFECT_DIFF, ZERO, championPos.z);
+		VFX::Start(data);
+	}
 }

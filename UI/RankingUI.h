@@ -42,8 +42,19 @@ public:
 
     ////////////////アクセス関数///////////////
 
+    /// <summary>
+    /// プレイヤーの名前を設定
+    /// </summary>
+    /// <param name="ID">設定したいプレイヤーのID</param>
+    /// <param name="str">名前</param>
     void SetPlayerName(int ID, std::string str);
 
+    /// <summary>
+    /// スコアを追加する
+    /// </summary>
+    /// <param name="ID">スコアを追加したいプレイヤーのID</param>
+    /// <param name="score">追加するスコアの種類</param>
+    /// <param name="num">何個追加するか</param>
     void SetScore(int ID, SCOREGAUGELIST score, int num);
 
 private:

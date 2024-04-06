@@ -8,6 +8,9 @@ namespace {
 	const float RUN_TRANSITION_END_FRAME = 210;
 	const float RUN_START_FRAME = 150;
 	const float RUN_END_FRAME = 190;
+
+	//アニメーションの1フレーム毎に進む速度
+	const int ANIMATION_SPEED = 1;
 }
 
 CharacterRunState::CharacterRunState(Character* character, int model):CharacterState(character, model)
@@ -34,7 +37,7 @@ void CharacterRunState::HandleInput()
 
 void CharacterRunState::Enter()
 {
-	Model::SetAnimFrame(hCharacterModel_, RUN_START_FRAME, RUN_END_FRAME, 1);
+	Model::SetAnimFrame(hCharacterModel_, RUN_START_FRAME, RUN_END_FRAME, ANIMATION_SPEED);
 }
 
 void CharacterRunState::Leave()
