@@ -26,6 +26,10 @@ namespace {
 	//ステージに設置する最大座標、セッティングモードで使う
 	const int SETTING_MAXPOS_X = 29;
 	const int SETTING_MAXPOS_Y = 29;
+
+	//オブジェクトを上下左右に向きを変える用。90度に0～3をかけて360度回転させるようにする
+	const int OBJECT_ANGLE_CHOICES = 90;
+	const int OBJECT_ANGLE_PATTERN = 4;
 }
 
 CharacterAI::CharacterAI(GameObject* parent)
@@ -172,7 +176,7 @@ Transform CharacterAI::MoveSelectObject()
 	objTrans.position_.z = rand() % SETTING_MAXPOS_Y;
 
 	//360度のうち上下左右ランダムな方向になるようにするため、0~3の値に90をかける
-	objTrans.rotate_.y = rand() % 4 * 90;
+	objTrans.rotate_.y = rand() % OBJECT_ANGLE_PATTERN * OBJECT_ANGLE_CHOICES;
 
 	return objTrans;
 }

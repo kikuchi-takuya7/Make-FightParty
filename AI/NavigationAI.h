@@ -121,7 +121,7 @@ private:
 	/// <param name="rest">一個前にいた座標を2次元配列で記憶したもの</param>
 	/// <param name="start">スタート地点</param>
 	/// <param name="target">目標地点</param>
-	/// <returns></returns>
+	/// <returns>次に向かわせる座標</returns>
 	XMFLOAT3 Path_Search(vector<vector<IntPair>> rest, IntPair start, IntPair target);
 
 	/// <summary>

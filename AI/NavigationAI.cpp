@@ -11,6 +11,8 @@ namespace {
 	const int STAGE_WIDTH = 30;
 
 	const int STAGE_COST = 1;
+	const int DIAGONAL_COST = 1;
+	const int WALL = -1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
 	/*const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
@@ -19,6 +21,13 @@ namespace {
 	//上下左右に移動（探索）するための配列
 	const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
 	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
+
+	//配列内の斜めを探索する位置
+	const int DIAGONAL_MOVE = 4;
+
+	const float CPU_SPEED = 0.1f;
+
+
 }
 
 NavigationAI::NavigationAI(GameObject* parent)
@@ -115,7 +124,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 	Graph map = pStage_->GetMap();
 
 	//対象がなんか壁の中にいたら止まる(壁に体こすりつけるとなりがち)
-	if (map.at(target.first).at(target.second) == -1) {
+	if (map.at(target.first).at(target.second) == WALL) {
 		return ZERO_FLOAT3;
 	}
 
@@ -175,7 +184,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			}
 
 			//壁なら
-			if (map.at(sz).at(sx) == -1) {
+			if (map.at(sz).at(sx) == WALL) {
 				isWall = true;
 				break;
 			}
@@ -205,7 +214,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			}
 
 			//壁なら
-			if (map.at(sz).at(sx) == -1) {
+			if (map.at(sz).at(sx) == WALL) {
 				continue;
 			}
 
@@ -214,8 +223,8 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 			int nowH = Heuristic(nz, nx, target);
 
 			//斜め移動にコストをつける。コストをつけないと斜め移動しかしなくなってしまった.Astarにとっては斜め移動も上下移動も同じスピードだから
-			if (i > 3) {
-				cost = 1;
+			if (i >= DIAGONAL_MOVE) {
+				cost = DIAGONAL_COST;
 			}
 
 #if 0
@@ -285,7 +294,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 void NavigationAI::AllResetStatus()
 {
 
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->ResetStatus();
 	}
 
@@ -293,7 +302,7 @@ void NavigationAI::AllResetStatus()
 
 void NavigationAI::AllResetAITarget()
 {
-	for (int i = 0; i < pCharacterAIList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterAIList_.size(); i++) {
 		pCharacterAIList_.at(i)->AskTarget();
 	}
 }
@@ -301,7 +310,7 @@ void NavigationAI::AllResetAITarget()
 //全ての描画を止める
 void NavigationAI::AllStopDraw()
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->StopDraw();
 	}
 
@@ -310,7 +319,7 @@ void NavigationAI::AllStopDraw()
 //全ての描画を許可する
 void NavigationAI::AllStartDraw()
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->StartDraw();
 	}
 }
@@ -318,7 +327,7 @@ void NavigationAI::AllStartDraw()
 //全てのUpdateを止める
 void NavigationAI::AllStopUpdate()
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->Leave();
 	}
 
@@ -328,7 +337,7 @@ void NavigationAI::AllStopUpdate()
 //全てのUpdateを許可する
 void NavigationAI::AllStartUpdate()
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->Enter();
 	}
 
@@ -338,7 +347,7 @@ void NavigationAI::AllStartUpdate()
 //全てのプレイヤーUIの描画を止める
 void NavigationAI::AllStopDrawPlayerUI()
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->StopDrawUI();
 	}
 }
@@ -346,7 +355,7 @@ void NavigationAI::AllStopDrawPlayerUI()
 //全てのコライダーを消す(deleteはしない)
 void NavigationAI::AllEraseCollision()
 {
-	for (int i = 0; i < pCharacterList_.size(); i++) {
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		pCharacterList_.at(i)->EraseCollider(COLLIDER_BODY);
 		pCharacterList_.at(i)->EraseCollider(COLLIDER_ATTACK);
 		pCharacterList_.at(i)->EraseCollider(COLLIDER_WEAPON);
@@ -428,10 +437,11 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest, IntPair start, 
 	if (searchPos.empty())
 		return fMove;
 
-	//stackのtopは一番最後の要素を取ってくる
+	//最初の位置から次の最短距離はどの座標かを確認する(絶対に1か0か－1になり、移動したい方向が1または－1になる)
 	int checkVecZ = start.first - searchPos.top().first;
 	int checkVecX = start.second - searchPos.top().second;
 
+	//次のX座標とZ座標の移動している座標の方向に移動させる
 	if (checkVecX == 1) {
 
 		fMove.x = -1.0f;
@@ -453,7 +463,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest, IntPair start, 
 	XMVECTOR vMove = XMLoadFloat3(&fMove);
 	vMove = XMVector3Normalize(vMove);
 	fMove = VectorToFloat3(vMove);
-	fMove = fMove * 0.1;
+	fMove = fMove * CPU_SPEED;
 
 	return fMove;
 

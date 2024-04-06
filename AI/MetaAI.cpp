@@ -269,18 +269,18 @@ void MetaAI::UsuallyUpdate()
 		Camera::MoveCam(RANKING_CAM_POS, RANKING_CAM_TAR, RANKING_CAM_RATE);
 
 
-#ifdef _DEBUG //デバック用
+#ifdef _DEBUG //デバック用 ゲージを増やす
 		if (Input::IsKeyDown(DIK_2)) {
 			pRankingUI_->SetScore(ZERO, WIN_GAUGE, 1);
 			score_.at(ZERO) += SCORE[WIN_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_3)) {
 			pRankingUI_->SetScore(1, KILL_GAUGE, 1);
-			score_.at(1) += SCORE[KILL_GAUGE];
+			score_.at(ZERO) += SCORE[KILL_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_4)) {
 			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE, 1);
-			score_.at(2) += SCORE[TRAP_KILL_GAUGE];
+			score_.at(ZERO) += SCORE[TRAP_KILL_GAUGE];
 		}
 #endif
 

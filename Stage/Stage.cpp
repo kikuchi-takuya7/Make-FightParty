@@ -81,7 +81,7 @@ void Stage::Draw()
 
 	//描画し終わったら次のAstar経路を表示する為にモデルを全て初期化する
 	for (int z = ZERO; z < STAGE_SIZE.z; z++) {
-		for (int x = 0; x < STAGE_SIZE.x; x++) {
+		for (int x = ZERO; x < STAGE_SIZE.x; x++) {
 			stageModel_.at(z).at(x) = hModel_;
 		}
 	}
