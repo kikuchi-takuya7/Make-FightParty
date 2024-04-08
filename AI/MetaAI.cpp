@@ -419,9 +419,11 @@ void MetaAI::GameCameraSet()
 	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
 	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
 
-	Character* pFarChara = pNavigationAI_->GetCaracter(farthestID);
-	Character* pPlayer = pNavigationAI_->GetCaracter(PLAYER_ID);
+	XMFLOAT3 farPos = pNavigationAI_->GetCaracter(farthestID)->GetPosition();
+	XMFLOAT3 myPos = pNavigationAI_->GetCaracter(PLAYER_ID)->GetPosition();
 
+	//真ん中の注視点を求める
+	XMFLOAT3 camTar = Float3Add(farPos, myPos) / 2;
 
 	Camera::SetPosition(MAIN_GAME_CAM_POS);
 	Camera::SetTarget(MAIN_GAME_CAM_TAR);
