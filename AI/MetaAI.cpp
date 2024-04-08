@@ -41,6 +41,8 @@ namespace {
 	//プレイヤーの最大人数
 	const int PLAYER_MAX_NUM = 4;
 
+	const int PLAYER_ID = ZERO;
+
 	//表示する現在のAIの情報
 	const XMFLOAT3 TEXT_POS = { 10,20,ZERO };
 	std::string nowModeText[MODE_NUM] = { ":Waiting...",":ChampionMode",":ResultMode" };
@@ -414,6 +416,13 @@ void MetaAI::ToCreateMode(int winnerID)
 // ゲーム用のカメラにセットする関数
 void MetaAI::GameCameraSet()
 {
+	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
+	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
+
+	Character* pFarChara = pNavigationAI_->GetCaracter(farthestID);
+	Character* pPlayer = pNavigationAI_->GetCaracter(PLAYER_ID);
+
+
 	Camera::SetPosition(MAIN_GAME_CAM_POS);
 	Camera::SetTarget(MAIN_GAME_CAM_TAR);
 }
