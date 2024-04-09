@@ -29,6 +29,7 @@ namespace {
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
+	const float GAME_CAM_RATE = 0.01f;
 
 	//各シーン推移の際の待機時間
 	const float WAIT_WINNER_TIME = 3.0f;
@@ -218,7 +219,7 @@ void MetaAI::ResetGame()
 	pNavigationAI_->AllResetAITarget();
 	
 	pCountDown_->Start();
-	GameCameraSet();
+	//GameCameraMove();
 
 	Audio::Play(hAudio_);
 
@@ -240,8 +241,6 @@ void MetaAI::PushCharacterStatus(Status status)
 // 優勝者が決まった時のUpdate
 void MetaAI::ChampionUpdate()
 {
-	
-
 	//一定時間待ったら優勝者にカメラを向ける
 	if (pWaitTimer_->IsFinished()) {
 		mode_ = CHAMPIONMODE;
@@ -273,15 +272,15 @@ void MetaAI::UsuallyUpdate()
 
 #ifdef _DEBUG //デバック用 ゲージを増やす
 		if (Input::IsKeyDown(DIK_2)) {
-			pRankingUI_->SetScore(ZERO, WIN_GAUGE, 1);
+			pRankingUI_->SetScore(ZERO, WIN_GAUGE);
 			score_.at(ZERO) += SCORE[WIN_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_3)) {
-			pRankingUI_->SetScore(1, KILL_GAUGE, 1);
+			pRankingUI_->SetScore(1, KILL_GAUGE);
 			score_.at(ZERO) += SCORE[KILL_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE, 1);
+			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE);
 			score_.at(ZERO) += SCORE[TRAP_KILL_GAUGE];
 		}
 #endif
@@ -322,6 +321,9 @@ void MetaAI::UsuallyUpdate()
 		pNavigationAI_->AllStartUpdate();
 		pCountDown_->Reset();
 	}
+
+	//カメラを動かす
+	GameCameraMove();
 }
 
 // 1位のキャラIDは誰か、何人いるかを確認する関数
@@ -385,7 +387,7 @@ void MetaAI::ToCreateMode(int winnerID)
 
 
 	//勝者にスコアを追加する
-	pRankingUI_->SetScore(winnerID, WIN_GAUGE, 1);
+	pRankingUI_->SetScore(winnerID, WIN_GAUGE);
 	score_.at(winnerID) += SCORE[WIN_GAUGE];
 
 	//キル数分もスコアに加算する
@@ -413,8 +415,15 @@ void MetaAI::ToCreateMode(int winnerID)
 
 }
 
-// ゲーム用のカメラにセットする関数
+// ゲーム用カメラにセットする関数
 void MetaAI::GameCameraSet()
+{
+	Camera::SetPosition(MAIN_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);
+}
+
+// ゲームカメラを動かす関数
+void MetaAI::GameCameraMove()
 {
 	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
 	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
@@ -425,8 +434,17 @@ void MetaAI::GameCameraSet()
 	//真ん中の注視点を求める
 	XMFLOAT3 camTar = Float3Add(farPos, myPos) / 2;
 
-	Camera::SetPosition(MAIN_GAME_CAM_POS);
-	Camera::SetTarget(MAIN_GAME_CAM_TAR);
+	//座標は線分の半径分遠くすればいい感じか.camTarとの距離をキャラの距離分ぐらい離してみよう。x座標とy座標だけ動かさない感じ？
+	XMFLOAT3 camPos = camTar;
+	camPos.y = MAIN_GAME_CAM_POS.y;
+
+	float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
+	camPos.z = camTar.z + MAIN_GAME_CAM_POS.z - dis;
+	camPos.z /= 2;
+	camPos.x = camTar.x / 2 + camTar.x;
+
+	Camera::MoveCam(camPos, camTar,GAME_CAM_RATE);
+	
 }
 
 // 優勝者の方にカメラを向ける関数

@@ -18,7 +18,6 @@ const XMFLOAT3 ZERO_FLOAT3 = XMFLOAT3(ZERO, ZERO, ZERO);
 //staticにしないとエラー。global.hが何度も呼び出されるから多重定義になっちゃう的な？とにかくプロジェクト動いてからいつでも使うから静的に取っておku
 
 //Direct3Dが読まれる前にこれ読んじゃうとscreenWidthが0だから値おかしくなる。
-
 //Xの座標をピクセル単位に変換(主に画像を操作する場面で使用)
 static float SpriteToFloatX(float x) {
 

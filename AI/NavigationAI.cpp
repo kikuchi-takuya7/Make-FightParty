@@ -108,7 +108,7 @@ int NavigationAI::Farthest(int ID)
 	//ˆê”Ô‰“‚¢‹——£‚É‚¢‚éƒLƒƒƒ‰‚ðŒ©‚Â‚¯‚é
 	for (int i = ZERO; i < pCharacterList_.size(); i++) {
 		
-		if (ID == i)
+		if (ID == i || pCharacterList_.at(i)->GetStatus().dead == true)
 			continue;
 
 		float tmp = Distance(ID, i);

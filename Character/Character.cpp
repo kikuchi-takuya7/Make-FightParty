@@ -82,11 +82,7 @@ void Character::Update()
 	//今いる位置をprevPosに置いておく
 	prevPos_ = transform_.position_;
 
-	
-
 	pState_->Update();
-
-	
 
 	//ノックバック中は移動の処理をしない
 	if (pState_->characterState_ != pState_->pCharacterStateList_.at(KNOCKBACK) && pState_->characterState_ != pState_->pCharacterStateList_.at(ATTACK) && status_.dead == false) {

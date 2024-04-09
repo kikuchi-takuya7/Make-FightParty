@@ -133,6 +133,11 @@ private:
 	/// ゲーム用のカメラに切り替える（その位置にセットする）
 	/// </summary>
 	void GameCameraSet();
+
+	/// <summary>
+	/// ゲーム用のカメラを動かす
+	/// </summary>
+	void GameCameraMove();
 	
 	/// <summary>
 	/// 優勝者の方にカメラを向ける関数
