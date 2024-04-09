@@ -20,7 +20,7 @@
 namespace {
 
 	//カメラやエフェクトの位置
-	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -20);
+	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
@@ -428,6 +428,11 @@ void MetaAI::GameCameraMove()
 	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
 	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
 
+	//既に勝者が決まっていたら
+	if (farthestID == -1) {
+		return;
+	}
+
 	XMFLOAT3 farPos = pNavigationAI_->GetCaracter(farthestID)->GetPosition();
 	XMFLOAT3 myPos = pNavigationAI_->GetCaracter(PLAYER_ID)->GetPosition();
 
@@ -436,14 +441,13 @@ void MetaAI::GameCameraMove()
 
 	//座標は線分の半径分遠くすればいい感じか.camTarとの距離をキャラの距離分ぐらい離してみよう。x座標とy座標だけ動かさない感じ？
 	XMFLOAT3 camPos = camTar;
+	camPos.z = MAIN_GAME_CAM_POS.z;
 	camPos.y = MAIN_GAME_CAM_POS.y;
 
 	float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
-	camPos.z = camTar.z + MAIN_GAME_CAM_POS.z - dis;
-	camPos.z /= 2;
-	camPos.x = camTar.x / 2 + camTar.x;
+	
 
-	Camera::MoveCam(camPos, camTar,GAME_CAM_RATE);
+	Camera::MoveCam(camPos, camTar, GAME_CAM_RATE);
 	
 }
 
