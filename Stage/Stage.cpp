@@ -116,11 +116,14 @@ void Stage::AllStopUpdate()
 // 引数４：y方向の大きさ
 void Stage::SetStageCost(XMFLOAT3 pos, int cost, int xSize, int zSize)
 {
-	XMFLOAT3 stagePos = pos;
-
 	//xとzのサイズ分コストをつける
 	for (int x = ZERO; x < xSize; x++) {
 		for (int z = ZERO; z < zSize; z++) {
+
+			XMFLOAT3 stagePos = pos;
+
+			stagePos.x += x;
+			stagePos.z += z;
 
 			//座標のの位置にコストをつける
 			stageCost_.at(stagePos.z).at(stagePos.x) = cost;
@@ -139,10 +142,7 @@ void Stage::SetStageCost(XMFLOAT3 pos, int cost, int xSize, int zSize)
 				//実際に壁というわけではないので壁にはしないけどコストを重くする
 				stageCost_.at(sz).at(sx) = cost + ADD_COST;
 			}
-
-			stagePos.z++;
 		}
-		stagePos.x++;
 	}
 
 	

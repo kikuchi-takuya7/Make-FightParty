@@ -807,7 +807,7 @@ T* CreateMode::CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 squa
 
     //回転行列を適応
     XMVECTOR vec = XMLoadFloat2(&square);
-    vec = XMVector2TransformCoord(vec, matRot);
+    vec = XMVector2Transform(vec, rotateY);
     XMStoreFloat2(&square, vec);
 
     //コストをつける
