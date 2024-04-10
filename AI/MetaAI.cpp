@@ -272,16 +272,16 @@ void MetaAI::UsuallyUpdate()
 
 #ifdef _DEBUG //デバック用 ゲージを増やす
 		if (Input::IsKeyDown(DIK_2)) {
-			pRankingUI_->SetScore(ZERO, WIN_GAUGE);
-			score_.at(ZERO) += SCORE[WIN_GAUGE];
+			pRankingUI_->SetScore(PLAYER_ID, WIN_GAUGE);
+			score_.at(PLAYER_ID) += SCORE[WIN_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_3)) {
-			pRankingUI_->SetScore(1, KILL_GAUGE);
-			score_.at(ZERO) += SCORE[KILL_GAUGE];
+			pRankingUI_->SetScore(PLAYER_ID, KILL_GAUGE);
+			score_.at(PLAYER_ID) += SCORE[KILL_GAUGE];
 		}
 		if (Input::IsKeyDown(DIK_4)) {
-			pRankingUI_->SetScore(2, TRAP_KILL_GAUGE);
-			score_.at(ZERO) += SCORE[TRAP_KILL_GAUGE];
+			pRankingUI_->SetScore(PLAYER_ID, TRAP_KILL_GAUGE);
+			score_.at(PLAYER_ID) += SCORE[TRAP_KILL_GAUGE];
 		}
 #endif
 
