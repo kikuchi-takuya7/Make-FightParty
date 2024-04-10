@@ -273,29 +273,7 @@ private:
 
 	//インスタンスを作成して色々するテンプレート
 	template <class T>
-	T* CreateInstance(int hModel, Transform trans, int ID)
-	{
-		T* pObject = Instantiate<T>(this);
-		AddCreateObject(pObject);
-		pStage_->PushStageSource(pObject);
-		pStage_->SetStageCost(trans.position_, pObject->GetStageCost());
-		
-		//AIが選んだオブジェクトなら真ん中からゆっくり動くように
-		if (ID >= startEnemyID_) {
-			Transform objTrans;
-			objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
-			objTrans.rotate_ = trans.rotate_;
-			pObject->SetMoveLastPos(trans.position_);
-			pObject->SetTransform(objTrans);
-		}
-		else {
-			pObject->SetMoveLastPos(trans.position_);
-			pObject->SetTransform(trans);
-		}
-
-		pObject->Leave();
-		pObject->SetHandle(hModel);
-		return pObject;
-	}
+	T* CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square);
+	
 
 };

@@ -40,9 +40,12 @@ namespace {
     //初期化用
     const int INF = 999999;
 
-    //真ん中にオブジェクトを追加する
+    //真ん中にオブジェクトを追加する用の座標。縦二つで一つの座標となってる
     const int STAGE_ADDX[9] = { 14,15,15,15,16,15,15,13,17 };
     const int STAGE_ADDZ[9] = { 15,14,15,16,15,13,17,15,15 };
+
+    //オブジェクト毎の大きさ（xとzで何マス使っているか）
+    const XMFLOAT2 OBJECT_SIZE[PATTERN_END] = { XMFLOAT2(1,1),XMFLOAT2(1,1),XMFLOAT2(2,1) };
 
     //CreateModeを表示する位置
     std::string TEXT_NAME = "CREATEMODE";
@@ -82,7 +85,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, ZERO);
+        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, ZERO,OBJECT_SIZE[ONEBROCK]);
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
@@ -475,15 +478,15 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     switch (pattern)
     {
     case CANNON:
-        CreateInstance<Cannon>(hModel, trans, element);
+        CreateInstance<Cannon>(hModel, trans, element, OBJECT_SIZE[pattern]);
         break;
 
     case NEEDLE:
-        CreateInstance<Needle>(hModel, trans, element);
+        CreateInstance<Needle>(hModel, trans, element, OBJECT_SIZE[pattern]);
         break;
 
     case ONEBROCK:
-        CreateInstance<OneBrock>(hModel, trans, element);
+        CreateInstance<OneBrock>(hModel, trans, element, OBJECT_SIZE[pattern]);
         break;
 
     case PATTERN_END:
@@ -787,6 +790,43 @@ void CreateMode::AIMovingObject()
 
         CreateObject(settingObject_.at(i).hModel, settingObject_.at(i).trans, i);
     }
+}
 
+template <class T>
+T* CreateMode::CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square)
+{
+    T* pObject = Instantiate<T>(this);
+    AddCreateObject(pObject);
+    pStage_->PushStageSource(pObject);
 
+    //回転行列を作り、四角形のオブジェクトのコストの位置を回転させる
+    XMMATRIX rotateX, rotateY;
+    rotateX = XMMatrixIdentity();
+    rotateY = XMMatrixRotationY(XMConvertToRadians(trans.rotate_.y));
+    XMMATRIX matRot = rotateX * rotateY;
+
+    //回転行列を適応
+    XMVECTOR vec = XMLoadFloat2(&square);
+    vec = XMVector2TransformCoord(vec, matRot);
+    XMStoreFloat2(&square, vec);
+
+    //コストをつける
+    pStage_->SetStageCost(trans.position_, pObject->GetStageCost(), square.x, square.y);
+
+    //AIが選んだオブジェクトなら真ん中からゆっくり動くように
+    if (ID >= startEnemyID_) {
+        Transform objTrans;
+        objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+        objTrans.rotate_ = trans.rotate_;
+        pObject->SetMoveLastPos(trans.position_);
+        pObject->SetTransform(objTrans);
+    }
+    else {
+        pObject->SetMoveLastPos(trans.position_);
+        pObject->SetTransform(trans);
+    }
+
+    pObject->Leave();
+    pObject->SetHandle(hModel);
+    return pObject;
 }

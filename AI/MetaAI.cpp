@@ -99,7 +99,21 @@ void MetaAI::Update()
 
 	//優勝者が決まってる場合は上で、決まってないならこっちを使う。
 	UsuallyUpdate();
-	
+
+#ifdef _DEBUG //デバック用 無理やりクリエイトモードに移行する
+
+	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
+
+		for (int i = ZERO; i < characterStatusList_.size(); i++) {
+			characterStatusList_.at(i).dead = true;
+			pNavigationAI_->SetStatus(i, characterStatusList_.at(i));
+		}
+		pCreateMode_->ToSelectMode();
+	}
+
+#endif
+
+
 }
 
 void MetaAI::Draw()
@@ -428,7 +442,7 @@ void MetaAI::GameCameraMove()
 	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
 	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
 
-	//既に勝者が決まっていたら
+	//既に勝者が決まっていたら動かさない
 	if (farthestID == -1) {
 		return;
 	}
@@ -444,7 +458,7 @@ void MetaAI::GameCameraMove()
 	camPos.z = MAIN_GAME_CAM_POS.z;
 	camPos.y = MAIN_GAME_CAM_POS.y;
 
-	float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
+	//float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
 	
 
 	Camera::MoveCam(camPos, camTar, GAME_CAM_RATE);

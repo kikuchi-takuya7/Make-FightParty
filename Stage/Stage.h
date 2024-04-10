@@ -47,7 +47,9 @@ public:
     /// </summary>
     /// <param name="pos">そのオブジェクトの位置</param>
     /// <param name="cost">オブジェクトのコスト</param>
-    void SetStageCost(XMFLOAT3 pos, int cost);
+    /// <param name="x">x方向の大きさ</param>
+    /// <param name="z">z方向の大きさ</param>
+    void SetStageCost(XMFLOAT3 pos, int cost, int xSize,int zSize);
 
     /// <summary>
     /// Astarアルゴリズムで出た経路を表示する為にモデルを変える為の関数

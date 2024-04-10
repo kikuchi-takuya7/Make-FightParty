@@ -112,24 +112,40 @@ void Stage::AllStopUpdate()
 // ステージのコストをセットする
 // 引数１：そのオブジェクトの位置
 // 引数２：オブジェクトのコスト
-void Stage::SetStageCost(XMFLOAT3 pos, int cost)
+// 引数３：x方向の大きさ
+// 引数４：y方向の大きさ
+void Stage::SetStageCost(XMFLOAT3 pos, int cost, int xSize, int zSize)
 {
-	stageCost_.at(pos.z).at(pos.x) = cost;
+	XMFLOAT3 stagePos = pos;
 
-	//一マスだけ壁にすると斜め移動するときに引っかかるから上下もコストを反映させてみる
-	for (int i = ZERO; i < ARRAYSIZE(moveZ); i++) {
+	//xとzのサイズ分コストをつける
+	for (int x = ZERO; x < xSize; x++) {
+		for (int z = ZERO; z < zSize; z++) {
 
-		int sz = pos.z + moveZ[i];
-		int sx = pos.x + moveX[i];
+			//座標のの位置にコストをつける
+			stageCost_.at(stagePos.z).at(stagePos.x) = cost;
 
-		//画面外だったらやめる
-		if (sx >= STAGE_SIZE.x || sx < ZERO || sz >= STAGE_SIZE.z || sz < ZERO) {
-			continue;
+			//一マスだけ壁にすると斜め移動するときに引っかかるから上下もコストを反映させる
+			for (int i = ZERO; i < ARRAYSIZE(moveZ); i++) {
+
+				int sz = stagePos.z + moveZ[i];
+				int sx = stagePos.x + moveX[i];
+
+				//画面外だったらやめる
+				if (sx >= STAGE_SIZE.x || sx < ZERO || sz >= STAGE_SIZE.z || sz < ZERO) {
+					continue;
+				}
+
+				//実際に壁というわけではないので壁にはしないけどコストを重くする
+				stageCost_.at(sz).at(sx) = cost + ADD_COST;
+			}
+
+			stagePos.z++;
 		}
-
-		//実際に壁というわけではないので壁にはしないけどコストを重くする
-		stageCost_.at(sz).at(sx) = cost + ADD_COST;
+		stagePos.x++;
 	}
+
+	
 }
 
 // Astarアルゴリズムで出た経路を表示する為にモデルを変える為の関数
