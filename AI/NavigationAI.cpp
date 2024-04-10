@@ -96,6 +96,31 @@ float NavigationAI::Distance(int myID, int targetID)
 	return distance;
 }
 
+// 引数のキャラと一番遠い距離にいるキャラとの距離を測る関数
+// 引数１：調べたいキャラのID
+// 戻り値：一番遠いキャラのID
+int NavigationAI::Farthest(int ID)
+{
+
+	float max = ZERO;
+	int maxID = -1;
+
+	//一番遠い距離にいるキャラを見つける
+	for (int i = ZERO; i < pCharacterList_.size(); i++) {
+		
+		if (ID == i || pCharacterList_.at(i)->GetStatus().dead == true)
+			continue;
+
+		float tmp = Distance(ID, i);
+		if (max < tmp) {
+			max = tmp;
+			maxID = i;
+		}
+	}
+
+	return maxID;
+}
+
 // グリッドでAstarを使い目標地点を探索する関数
 // 引数１：自分のID
 // 引数２：狙っている相手のID

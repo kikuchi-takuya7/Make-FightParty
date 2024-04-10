@@ -64,6 +64,13 @@ public:
 	/// <returns>比べた二人の距離</returns>
 	float Distance(int myID, int targetID);
 
+	/// <summary>
+	/// 引数のキャラと一番遠い距離にいるキャラとの距離を測る
+	/// </summary>
+	/// <param name="ID">一番遠い位置を求める関数</param>
+	/// <returns>一番遠いキャラのID</returns>
+	int Farthest(int ID);
+
 	//////////////////Astarアルゴリズムで使う関数//////////////////
 
 	/// <summary>
@@ -74,14 +81,10 @@ public:
 	/// <returns>次に向かうべき座標</returns>
 	XMFLOAT3 Astar(int myID, int targetID);
 
-	
-
-	
-
 	///////////////キャラクターすべてに指示を出す関数/////////////////////
 
 	void AllResetStatus();		//ステータスをリセットする（winPoint以外）
-	void AllResetAITarget();		//AIのターゲットを全てリセットする
+	void AllResetAITarget();	//AIのターゲットを全てリセットする
 	void AllStopDraw();			//全ての描画を止める
 	void AllStartDraw();		//全ての描画を許可する
 	void AllStopUpdate();		//全てのUpdateを止める

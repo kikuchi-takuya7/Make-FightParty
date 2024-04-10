@@ -55,7 +55,7 @@ public:
     /// <param name="ID">スコアを追加したいプレイヤーのID</param>
     /// <param name="score">追加するスコアの種類</param>
     /// <param name="num">何個追加するか</param>
-    void SetScore(int ID, SCOREGAUGELIST score, int num);
+    void SetScore(int ID, SCOREGAUGELIST score, int num = 1);
 
 private:
 

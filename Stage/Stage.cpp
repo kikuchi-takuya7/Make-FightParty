@@ -21,7 +21,7 @@ namespace {
 }
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent, "Stage"),hModel_(-1),debugModel_(-1), pCreateMode_(nullptr), pStageSourceList_(0)
+	:GameObject(parent, "Stage"),hModel_(-1),debugModel_(-1), pCreateMode_(nullptr), pStageSourceList_(ZERO)
 {
 }
 
