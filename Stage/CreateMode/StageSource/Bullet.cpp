@@ -35,11 +35,12 @@ void Bullet::Update()
 		KillMe();
 	}
 
-	int rotate = GetParent()->GetRotate().y;
-
+#if 0//前までの玉の回転の仕方とか
 
 	//transform_.positionでコリジョンの動きで、bulletPosでモデルの動き
 	//collisionはrotateを考慮してないので、別々に作る必要がある
+
+	int rotate = GetParent()->GetRotate().y;
 
 	bulletPos_.z += bulletSpeed_;
 
@@ -56,6 +57,18 @@ void Bullet::Update()
 		transform_.position_.x -= bulletSpeed_;
 	}
 
+#else//別の方法
+
+	int rotate = GetParent()->GetRotate().y;
+
+	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(rotate));
+
+	XMVECTOR vec = XMLoadFloat3(&transform_.position_);
+
+	vec = XMVector2TransformCoord(vec, rotY);
+
+
+#endif
 
 }
 

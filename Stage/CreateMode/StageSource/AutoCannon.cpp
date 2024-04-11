@@ -1,4 +1,4 @@
-#include "Cannon.h"
+#include "AutoCannon.h"
 #include "../../../Character/Character.h"
 #include "../../../Engine/Timer.h"
 #include "../../../Engine/VFX.h"
@@ -11,23 +11,25 @@ namespace {
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
-	const float BULLET_INTERVAL = 3.0f;
+	const float BULLET_INTERVAL = 3;
 	const float BULLET_SIZE = 0.3f;
 
-	const int BULLET_ATTACK_POWER = 20;
-	const float BULLET_SPEED = 0.4f;
+	const int BULLET_ATTACK_POWER = 5;
+	const float BULLET_SPEED = 0.2f;
+
+	const int SAME_SOUND = 3;
 }
 
-Cannon::Cannon(GameObject* parent)
-	:StageSourceBase(parent, "Cannon"), timer_(Instantiate<Timer>(this))
+AutoCannon::AutoCannon(GameObject* parent)
+	:StageSourceBase(parent, "AutoCannon"), timer_(Instantiate<Timer>(this))
 {
 }
 
-Cannon::~Cannon()
+AutoCannon::~AutoCannon()
 {
 }
 
-void Cannon::ChildInitialize()
+void AutoCannon::ChildInitialize()
 {
 
 	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
@@ -35,15 +37,15 @@ void Cannon::ChildInitialize()
 
 	AddCollider(pBoxCollision_, COLLIDER_BROCK);
 
-	hAudio_ = Audio::Load("Audio/SE/Cannon.wav", false,3);
+	hAudio_ = Audio::Load("Audio/SE/Cannon.wav", false, SAME_SOUND);
 	Audio::Stop(hAudio_);
 
 	//球を打つ間隔
 	timer_->SetLimit(BULLET_INTERVAL);
-	
+
 }
 
-void Cannon::ChildUpdate()
+void AutoCannon::ChildUpdate()
 {
 
 	timer_->Start();
@@ -52,7 +54,7 @@ void Cannon::ChildUpdate()
 	if (timer_->IsFinished()) {
 		Bullet* pBullet = Instantiate<Bullet>(this);
 		pBullet->SetScale(BULLET_SIZE);
-		
+
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
 		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED);
@@ -64,23 +66,23 @@ void Cannon::ChildUpdate()
 
 }
 
-void Cannon::ChildDraw()
+void AutoCannon::ChildDraw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 }
 
-void Cannon::ChildRelease()
+void AutoCannon::ChildRelease()
 {
 }
 
-void Cannon::OnCollision(GameObject* pTarget)
+void AutoCannon::OnCollision(GameObject* pTarget)
 {
-	
+
 
 }
 
-void Cannon::FiringEffect()
+void AutoCannon::FiringEffect()
 {
 	EmitterData data;
 

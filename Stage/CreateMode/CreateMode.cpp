@@ -15,6 +15,7 @@
 #include "StageSource/OneBrock.h"
 #include "StageSource/Cannon.h"
 #include "StageSource/Needle.h"
+#include "StageSource/AutoCannon.h"
 
 
 //定数宣言
@@ -45,7 +46,7 @@ namespace {
     const int STAGE_ADDZ[9] = { 15,14,15,16,15,13,17,15,15 };
 
     //オブジェクト毎の大きさ（xとzで何マス使っているか）
-    const XMFLOAT2 OBJECT_SIZE[PATTERN_END] = { XMFLOAT2(1,1),XMFLOAT2(1,1),XMFLOAT2(2,1) };
+    const XMFLOAT2 OBJECT_SIZE[PATTERN_END] = { XMFLOAT2(1,1),XMFLOAT2(1,1),XMFLOAT2(1,1),XMFLOAT2(1,1) };
 
     //CreateModeを表示する位置
     std::string TEXT_NAME = "CREATEMODE";
@@ -477,6 +478,10 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
     switch (pattern)
     {
+    case AUTO_CANNON:
+        CreateInstance<AutoCannon>(hModel, trans, element, OBJECT_SIZE[pattern]);
+        break;
+
     case CANNON:
         CreateInstance<Cannon>(hModel, trans, element, OBJECT_SIZE[pattern]);
         break;

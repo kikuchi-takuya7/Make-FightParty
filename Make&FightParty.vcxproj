@@ -185,6 +185,7 @@
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Scene\TutorialScene.cpp" />
     <ClCompile Include="Stage\CreateMode\CreateMode.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\AutoCannon.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Needle.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Scene\TutorialScene.h" />
     <ClInclude Include="Stage\CreateMode\CreateMode.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\AutoCannon.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Needle.h" />

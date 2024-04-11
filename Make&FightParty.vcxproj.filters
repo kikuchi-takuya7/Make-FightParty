@@ -284,6 +284,9 @@
     <ClCompile Include="VFXData\VFXData.cpp">
       <Filter>VFXData</Filter>
     </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\AutoCannon.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -507,6 +510,9 @@
     </ClInclude>
     <ClInclude Include="VFXData\VFXData.h">
       <Filter>VFXData</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\AutoCannon.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

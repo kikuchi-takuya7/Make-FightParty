@@ -13,6 +13,7 @@ enum CREATESTATE {
 
 //新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
 enum FBXPATTERN {
+	AUTO_CANNON,
 	CANNON,
 	NEEDLE,
 	ONEBROCK,
@@ -271,9 +272,37 @@ private:
 	int hBGM_;
 
 
-	//インスタンスを作成して色々するテンプレート
+	//インスタンスを作成して色々するテンプレート(大きさを変えられる用にする実装を試す用)
 	template <class T>
 	T* CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square);
+
+
+	//インスタンスを作成して色々するテンプレート
+	template <class T>
+	T* CreateInstance(int hModel, Transform trans, int ID)
+	{
+		T* pObject = Instantiate<T>(this);
+		AddCreateObject(pObject);
+		pStage_->PushStageSource(pObject);
+		pStage_->SetStageCost(trans.position_, pObject->GetStageCost());
+
+		//AIが選んだオブジェクトなら真ん中からゆっくり動くように
+		if (ID >= startEnemyID_) {
+			Transform objTrans;
+			objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+			objTrans.rotate_ = trans.rotate_;
+			pObject->SetMoveLastPos(trans.position_);
+			pObject->SetTransform(objTrans);
+		}
+		else {
+			pObject->SetMoveLastPos(trans.position_);
+			pObject->SetTransform(trans);
+		}
+
+		pObject->Leave();
+		pObject->SetHandle(hModel);
+		return pObject;
+	}
 	
 
 };
