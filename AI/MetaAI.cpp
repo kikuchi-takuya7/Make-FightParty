@@ -22,6 +22,7 @@ namespace {
 	//カメラやエフェクトの位置
 	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
+	const XMFLOAT3 MAIN_GAME_CAM_ANGLE = XMFLOAT3(1, 0, 1);
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
@@ -425,6 +426,9 @@ void MetaAI::GameCameraSet()
 // ゲームカメラを動かす関数
 void MetaAI::GameCameraMove()
 {
+
+#if 0 //一番遠い敵との間を注視点にしたやつ
+
 	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
 	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
 
@@ -446,9 +450,46 @@ void MetaAI::GameCameraMove()
 
 	float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
 	
-
 	Camera::MoveCam(camPos, camTar, GAME_CAM_RATE);
+
+#else //4体の真ん中を注視点にしようとしてるやつ
 	
+	//ID順にキャラクターの座標
+	vector<XMFLOAT3> playerPos;
+
+	//ナビゲーションAIから全てのキャラクターの座標を得る
+	for (int i = ZERO; i < PLAYER_MAX_NUM; i++) {
+		playerPos.emplace_back(pNavigationAI_->GetCaracter(i)->GetPosition());
+	}
+
+	float maxX = ZERO, maxZ = ZERO, minX = 9999, minZ = 9999;
+
+	//xとyの最大値、最小値を求める
+	for (int i = ZERO; i < playerPos.size(); i++) {
+
+		if (maxX < playerPos.at(i).x) {
+			maxX = playerPos.at(i).x;
+		}
+		else if (minX > playerPos.at(i).x) {
+			minX = playerPos.at(i).x;
+		}
+
+		if (maxZ < playerPos.at(i).z) {
+			maxZ = playerPos.at(i).z;
+		}
+		else if (minZ > playerPos.at(i).z) {
+			minZ = playerPos.at(i).z;
+		}
+	}
+
+	//四角形の中心を注視点にする
+	XMFLOAT3 centerPoint = XMFLOAT3((maxX + minX) / 2, ZERO, (maxZ + minZ) / 2);
+
+	XMVECTOR angle = XMLoadFloat3(&MAIN_GAME_CAM_ANGLE);
+
+
+#endif
+
 }
 
 // 優勝者の方にカメラを向ける関数
