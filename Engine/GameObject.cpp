@@ -44,9 +44,9 @@ bool GameObject::RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float mo
 	if (moveRate_ < 1.0f) {
 		moveRate_ += moveRate;
 
-		// 変な数字で止まらないように
-		if (moveRate_ > 1.0f)
-			moveRate_ = 1.0f;
+		// 変な数字で止まらないように(GetRateValue内に移動させた)
+		/*if (moveRate_ > 1.0f)
+			moveRate_ = 1.0f;*/
 
 		//ターゲットとポジションが同じだとエラー起きるから注意
 
@@ -63,6 +63,16 @@ bool GameObject::RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float mo
 	}
 
 	return false;
+}
+
+
+float GameObject::GetRateValue(float begin, float end, float rate)
+{
+	//1以上なら1に戻す
+	if (rate > 1.0f) {
+		rate = 1.0f;
+	}
+	return (end - begin) * rate + begin;
 }
 
 // 削除するかどうか
@@ -275,10 +285,7 @@ void GameObject::KillObjectSub(GameObject* obj)
 	obj->Release();
 }
 
-float GameObject::GetRateValue(float begin, float end, float rate)
-{
-	return (end - begin) * rate + begin;
-}
+
 
 
 

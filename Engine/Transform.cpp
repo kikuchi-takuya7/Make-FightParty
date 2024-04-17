@@ -1,7 +1,5 @@
 #include "Transform.h"
 
-
-
 Transform::Transform(): pParent_(nullptr)
 {
 	position_ = XMFLOAT3(0, 0, 0);
@@ -11,7 +9,6 @@ Transform::Transform(): pParent_(nullptr)
 	matRotate_ = XMMatrixIdentity();
 	matScale_ = XMMatrixIdentity();
 }
-
 
 Transform::~Transform()
 {

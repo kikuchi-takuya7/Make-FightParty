@@ -19,18 +19,22 @@
 
 namespace {
 
-	//カメラやエフェクトの位置
-	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
+	//メインとなるゲームのカメラ情報
+	const XMFLOAT3 MIN_GAME_CAM_POS = XMFLOAT3(15, 5, -5);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
-	const XMFLOAT3 MAIN_GAME_CAM_ANGLE = XMFLOAT3(1, 0, 1);
+	const XMFLOAT3 MAX_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
+	
+	//一位が決まった時の情報
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
 	const float CHAMPION_EFFECT_DIFF = 2.0f;
+
+	//現在の順位を表示するときの情報
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
-	const float GAME_CAM_RATE = 0.01f;
+	//const float GAME_CAM_RATE = 0.01f;
 
 	//各シーン推移の際の待機時間
 	const float WAIT_WINNER_TIME = 3.0f;
@@ -40,9 +44,13 @@ namespace {
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 	const int VICTORY_POINT = 80;
 
+	//ステージの大きさ(横幅縦幅の最大値)
+	int STAGE_MAX_SIZE = 30;
+
 	//プレイヤーの最大人数
 	const int PLAYER_MAX_NUM = 4;
 
+	//プレイヤーのID
 	const int PLAYER_ID = ZERO;
 
 	//表示する現在のAIの情報
@@ -419,8 +427,8 @@ void MetaAI::ToCreateMode(int winnerID)
 // ゲーム用カメラにセットする関数
 void MetaAI::GameCameraSet()
 {
-	Camera::SetPosition(MAIN_GAME_CAM_POS);
-	Camera::SetTarget(MAIN_GAME_CAM_TAR);
+	/*Camera::SetPosition(MAIN_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);*/
 }
 
 // ゲームカメラを動かす関数
@@ -485,8 +493,16 @@ void MetaAI::GameCameraMove()
 	//四角形の中心を注視点にする
 	XMFLOAT3 centerPoint = XMFLOAT3((maxX + minX) / 2, ZERO, (maxZ + minZ) / 2);
 
-	XMVECTOR angle = XMLoadFloat3(&MAIN_GAME_CAM_ANGLE);
+	//一番遠い敵との距離を測り、それを元にレートを作る
+	float dis = pNavigationAI_->Distance(PLAYER_ID, pNavigationAI_->Farthest(PLAYER_ID));
 
+	float rate = dis / STAGE_MAX_SIZE;
+
+	XMFLOAT3 camPos = XMFLOAT3(centerPoint.x,
+		GetRateValue(MIN_GAME_CAM_POS.y, MAX_GAME_CAM_POS.y, rate), GetRateValue(MIN_GAME_CAM_POS.z, MAX_GAME_CAM_POS.z, rate));
+
+	Camera::SetPosition(camPos);
+	Camera::SetTarget(centerPoint);
 
 #endif
 

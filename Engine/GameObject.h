@@ -103,6 +103,15 @@ public:
 	/// <returns>移動し終わったらtrue</returns>
 	bool RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float moveRate);
 
+	/// <summary>
+	/// 二つの値の間の位置をレートによって決める関数
+	/// </summary>
+	/// <param name="begin">初めの値</param>
+	/// <param name="end">最後の値</param>
+	/// <param name="rate">0～1.0の間(1以上の値は1に戻す)</param>
+	/// <returns>レートに応じた位置</returns>
+	float GetRateValue(float begin, float end, float rate);
+
 	//各フラグの制御
 	bool IsDead();				// 削除するかどうか
 	void KillMe();				// 自分を削除する
@@ -286,8 +295,6 @@ private:
 	//オブジェクト削除（再帰）
 	//引数：obj　削除するオブジェクト
 	void KillObjectSub(GameObject* obj);
-
-	float GetRateValue(float begin, float end, float rate);
 
 private:
 	//フラグ
