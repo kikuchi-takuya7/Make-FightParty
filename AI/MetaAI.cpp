@@ -20,7 +20,7 @@
 namespace {
 
 	//カメラやエフェクトの位置
-	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
+	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 15, -15);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
 	const XMFLOAT3 MAIN_GAME_CAM_ANGLE = XMFLOAT3(1, 0, 1);
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
@@ -31,6 +31,9 @@ namespace {
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
 	const float GAME_CAM_RATE = 0.01f;
+
+	//カメラの角度°
+	const int CAM_ANGLE = 45;
 
 	//各シーン推移の際の待機時間
 	const float WAIT_WINNER_TIME = 3.0f;
@@ -482,10 +485,22 @@ void MetaAI::GameCameraMove()
 		}
 	}
 
+	//一番遠いキャラとの距離を測って、その長さと45度で単位円として斜辺の長さを求めて、その長さを使って何とかしてzとyを求めれば行けるかな
+	//平行移動行列見たいなの必要か？
+	float radian = XMConvertToRadians(CAM_ANGLE);
+	float bottom = maxX - minX;
+	float hypot = bottom / radian;
+
 	//四角形の中心を注視点にする
 	XMFLOAT3 centerPoint = XMFLOAT3((maxX + minX) / 2, ZERO, (maxZ + minZ) / 2);
+	//Camera::SetPosition(XMFLOAT3(centerPoint.x, MAIN_GAME_CAM_POS.y, centerPoint.z));
 
-	XMVECTOR angle = XMLoadFloat3(&MAIN_GAME_CAM_ANGLE);
+	XMFLOAT3 tmp = XMFLOAT3(centerPoint.x, hypot / 2, -(hypot / 2 + MAIN_GAME_CAM_POS.z));
+	SetPosition(tmp);
+
+	XMVECTOR target = XMLoadFloat3(&centerPoint);
+	Camera::SetTarget(target);
+
 
 
 #endif

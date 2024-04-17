@@ -14,3 +14,6 @@ std::atan2():引数にcosの長さとsinの長さを入れることで、その�
 XMMatrixTranslation():戻り値で平行移動行列を作ってくれる
 
 XMStoreFloat3():ベクトルをXMFLOAT3にしてくれる。
+XMLoadFloat3():floatをベクトル
+
+底辺/cosθ＝斜辺
