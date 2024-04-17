@@ -19,17 +19,26 @@
 
 namespace {
 
-	//カメラやエフェクトの位置
-	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
+	//メインとなるゲームのカメラ情報
+	const XMFLOAT3 MIN_GAME_CAM_POS = XMFLOAT3(15, 5, -5);
 	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
+	const XMFLOAT3 MAX_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
+	const float GAME_CAM_RATE = 0.01f;
+	
+	//一位が決まった時の情報
 	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
 	const float CHAMPION_EFFECT_DIFF = 2.0f;
+
+	//現在の順位を表示するときの情報
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
-	const float GAME_CAM_RATE = 0.01f;
+	
+
+	//カメラの角度°
+	const int CAM_ANGLE = 45;
 
 	//各シーン推移の際の待機時間
 	const float WAIT_WINNER_TIME = 3.0f;
@@ -42,6 +51,7 @@ namespace {
 	//プレイヤーの最大人数
 	const int PLAYER_MAX_NUM = 4;
 
+	//プレイヤーのID
 	const int PLAYER_ID = ZERO;
 
 	//表示する現在のAIの情報
@@ -418,13 +428,16 @@ void MetaAI::ToCreateMode(int winnerID)
 // ゲーム用カメラにセットする関数
 void MetaAI::GameCameraSet()
 {
-	Camera::SetPosition(MAIN_GAME_CAM_POS);
-	Camera::SetTarget(MAIN_GAME_CAM_TAR);
+	/*Camera::SetPosition(MAIN_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);*/
 }
 
 // ゲームカメラを動かす関数
 void MetaAI::GameCameraMove()
 {
+
+#if 0 //一番遠い敵との間を注視点にしたやつ
+
 	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
 	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
 
@@ -446,9 +459,73 @@ void MetaAI::GameCameraMove()
 
 	float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
 	
-
 	Camera::MoveCam(camPos, camTar, GAME_CAM_RATE);
+
+#else //4体の真ん中を注視点にしようとしてるやつ
 	
+	//ID順にキャラクターの座標
+	vector<XMFLOAT3> playerPos;
+
+	//ナビゲーションAIから全てのキャラクターの座標を得る(既に死んでいるキャラの座標は求めない)
+	for (int i = ZERO; i < PLAYER_MAX_NUM; i++) {
+
+		if (pNavigationAI_->GetCaracter(i)->GetStatus().dead == false) {
+			playerPos.emplace_back(pNavigationAI_->GetCaracter(i)->GetPosition());
+		}
+	}
+
+	//既に勝者が決まって居たらカメラを止める
+	if (playerPos.size() <= 1) {
+		return;
+	}
+
+	float maxX = ZERO, maxZ = ZERO, minX = 9999, minZ = 9999;
+
+	//xとyの最大値、最小値を求める
+	for (int i = ZERO; i < playerPos.size(); i++) {
+
+		if (maxX < playerPos.at(i).x) {
+			maxX = playerPos.at(i).x;
+		}
+		if (minX > playerPos.at(i).x) {
+			minX = playerPos.at(i).x;
+		}
+
+		if (maxZ < playerPos.at(i).z) {
+			maxZ = playerPos.at(i).z;
+		}
+		if (minZ > playerPos.at(i).z) {
+			minZ = playerPos.at(i).z;
+		}
+	}
+
+	//一番遠いキャラとの距離を測って、その長さと45度で単位円として斜辺の長さを求めて、その長さを使って何とかしてzとyを求めれば行けるかな
+	//平行移動行列見たいなの必要か？
+	/*float radian = XMConvertToRadians(CAM_ANGLE);
+	float bottom = maxX - minX;
+	float hypot = bottom / radian;*/
+
+	//四角形の中心を注視点にする
+	XMFLOAT3 centerPoint = XMFLOAT3((maxX + minX) / 2, ZERO, (maxZ + minZ) / 2);
+
+	//ステージの対角線の長さを求め、敵同士の最大の距離を求める
+	XMFLOAT3 stageSize = pNavigationAI_->GetStageSize();
+	float maxDis = sqrt(stageSize.x * stageSize.x + stageSize.z * stageSize.z);
+
+	//一番遠い敵との距離を測り、それを元にレートを作る
+	float dis = pNavigationAI_->Distance(PLAYER_ID, pNavigationAI_->Farthest(PLAYER_ID));
+	float rate = dis / maxDis;
+
+	XMFLOAT3 camPos = XMFLOAT3(centerPoint.x,
+		GetRateValue(MIN_GAME_CAM_POS.y, MAX_GAME_CAM_POS.y, rate), GetRateValue(MIN_GAME_CAM_POS.z, MAX_GAME_CAM_POS.z, rate));
+
+	Camera::MoveCam(camPos, centerPoint, GAME_CAM_RATE);
+
+	/*Camera::SetPosition(camPos);
+	Camera::SetTarget(centerPoint);*/
+
+#endif
+
 }
 
 // 優勝者の方にカメラを向ける関数

@@ -112,7 +112,7 @@ public:
 	void PushCharacter(Character* chara) { pCharacterList_.emplace_back(chara); }
 	void PushCharacterAI(CharacterAI* AI) { pCharacterAIList_.emplace_back(AI); }
 	void SetStage(Stage* stage) { pStage_ = stage; }
-
+	XMFLOAT3 GetStageSize();
 
 private:
 
