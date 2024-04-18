@@ -116,3 +116,26 @@ namespace VictoryEffect {
 		bool	 ISBILLBOARD = true;			//ビルボードかどうか
 	}
 }
+
+namespace FiringEffect {
+	std::string FILENAME = "VFX/cloudA.png";			//画像ファイル名
+	XMFLOAT3 POSITIONRND = XMFLOAT3(0.1f, ZERO, 0.1f);		//位置の誤差
+	XMFLOAT3 DIRECTION = XMFLOAT3(ZERO, 1, ZERO);		//移動方向
+	XMFLOAT3 DIRECTIONRND = XMFLOAT3(ZERO, ZERO, ZERO);		//移動方向の誤差（各軸の角度）
+	float	 SPEED = 0.1f;			//1フレームの速度
+	float	 SPEEDRND = ZERO;		//速度誤差（0～1）
+	float	 ACCEL = 0.98f;			//加速度
+	float	 GRAVITY = ZERO;		//重力
+	XMFLOAT4 COLOR = XMFLOAT4(1, 1, 1, 0.2);					//色（RGBA 0～1）
+	XMFLOAT4 DELTACOLOR = XMFLOAT4(ZERO, ZERO, ZERO, -0.002f);		//色の変化量
+	XMFLOAT3 ROTATE = ZERO_FLOAT3;		//各軸での角度
+	XMFLOAT3 ROTATERND = ZERO_FLOAT3;	//角度誤差
+	XMFLOAT3 SPIN = XMFLOAT3(ZERO, ZERO, 0.1f);		//回転速度
+	XMFLOAT2 SIZE = XMFLOAT2(2, 2);				//サイズ
+	XMFLOAT2 SIZERND = XMFLOAT2(0.4f, 0.4f);			//サイズ誤差（0～1）
+	XMFLOAT2 SCALE = XMFLOAT2(1.01f, 1.01f);;			//1フレームの拡大率
+	DWORD	 LIFETIME = 30;		//パーティクルの寿命（フレーム数）
+	DWORD	 DELAY = ZERO;			//何フレームおきにパーティクルを発生させるか
+	DWORD	 NUMBER = 2;			//1度に出すパーティクル量
+	bool	 ISBILLBOARD = true;			//ビルボードかどうか
+}
