@@ -428,8 +428,8 @@ void MetaAI::ToCreateMode(int winnerID)
 // ゲーム用カメラにセットする関数
 void MetaAI::GameCameraSet()
 {
-	/*Camera::SetPosition(MAIN_GAME_CAM_POS);
-	Camera::SetTarget(MAIN_GAME_CAM_TAR);*/
+	Camera::SetPosition(MAX_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);
 }
 
 // ゲームカメラを動かす関数
