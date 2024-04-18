@@ -20,13 +20,13 @@
 namespace {
 
 	//メインとなるゲームのカメラ情報
-	const XMFLOAT3 MIN_GAME_CAM_POS = XMFLOAT3(15, 5, -5);
-	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
-	const XMFLOAT3 MAX_GAME_CAM_POS = XMFLOAT3(15, 10, -15);
+	const XMFLOAT3 MIN_GAME_CAM_POS = XMFLOAT3(15, 5, -5);		//敵が近くにいるときのカメラ座標
+	const XMFLOAT3 MAX_GAME_CAM_POS = XMFLOAT3(15, 10, -15);	//敵が遠くにいるときのカメラ座標
+	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);	
 	const float GAME_CAM_RATE = 0.01f;
 	
 	//一位が決まった時の情報
-	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };
+	const XMFLOAT3 CHAMPION_CAM_POS_DIFF = { ZERO,4,-5 };	//一位がいる位置からのカメラ座標の差分
 	const XMFLOAT3 CHAMPION_CAM_TAR_DIFF = { ZERO,2,ZERO };
 	const float CHAMPION_CAM_RATE = 0.05f;
 	const float CHAMPION_EFFECT_DIFF = 2.0f;
@@ -36,8 +36,7 @@ namespace {
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
 	
-
-	//カメラの角度°
+	//カメラの角度°（未使用）
 	const int CAM_ANGLE = 45;
 
 	//各シーン推移の際の待機時間
@@ -325,6 +324,20 @@ void MetaAI::UsuallyUpdate()
 
 		}
 	}
+
+#ifdef _DEBUG //デバック用 強制的にクリエイトモードにする
+	if (Input::IsKeyDown(DIK_1) && pCreateMode_->GetState() == NONE) {
+
+		//全員死んだことにしてクリエイトモードに
+		for (int i = ZERO; i < characterStatusList_.size(); i++) {
+			characterStatusList_.at(i).dead = true;
+			pNavigationAI_->SetStatus(i, characterStatusList_.at(i));
+		}
+
+
+		pCreateMode_->ToSelectMode();
+	}
+#endif // _DEBUG
 
 	//カウントダウンが終わったら動く許可を出す
 	if (pCountDown_->IsFinished()) {
