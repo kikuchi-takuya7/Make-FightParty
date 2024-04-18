@@ -3,6 +3,7 @@
 #include "../../../Engine/Timer.h"
 #include "../../../Engine/VFX.h"
 #include "../../../Engine/Audio.h"
+#include "../../../VFXData/VFXData.h"
 #include "Bullet.h"
 
 //íËêîêÈåæ
@@ -84,23 +85,29 @@ void Cannon::FiringEffect()
 {
 	EmitterData data;
 
-	data.textureFileName = "VFX/cloudA.png";
-	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
-	data.positionRnd = XMFLOAT3(0.1, 0, 0.1);
-	data.delay = 0;
-	data.number = 2;
-	data.lifeTime = 30;
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(0, 0, 0);
-	data.speed = 0.1f;
-	data.accel = 0.98;
-	data.speedRnd = 0.0;
-	data.size = XMFLOAT2(2, 2);
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.scale = XMFLOAT2(1.01, 1.01);
-	data.color = XMFLOAT4(1, 1, 1, 0.2);
-	data.deltaColor = XMFLOAT4(0, 0, 0, -0.002);
-	data.spin.z = 0.1;
-	data.rotateRnd.z = 180;
+	using namespace FiringEffect;
+
+	data.textureFileName = FILENAME;
+	data.position = transform_.position_;
+	data.positionRnd = POSITIONRND;
+	data.direction = DIRECTION;
+	data.directionRnd = DIRECTIONRND;
+	data.speed = SPEED;
+	data.speedRnd = SPEEDRND;
+	data.accel = FiringEffect::ACCEL;
+	data.gravity = GRAVITY;
+	data.color = COLOR;
+	data.deltaColor = DELTACOLOR;
+	data.rotate = ROTATE;
+	data.rotateRnd = ROTATERND;
+	data.spin = SPIN;
+	data.size = FiringEffect::SIZE;
+	data.sizeRnd = SIZERND;
+	data.scale = SCALE;
+	data.lifeTime = LIFETIME;
+	data.delay = DELAY;
+	data.number = NUMBER;
+	data.isBillBoard = ISBILLBOARD;
+
 	VFX::Start(data);
 }

@@ -399,6 +399,12 @@ void NavigationAI::SetStatus(int ID, Status status)
 	pCharacterList_.at(ID)->SetStatus(status);
 }
 
+//ステージのサイズを獲得
+XMFLOAT3 NavigationAI::GetStageSize()
+{
+	return pStage_->GetStageSize();
+}
+
 ///////////////////////////////////////////////////private関数/////////////////////////////////////////////
 
 //経路復元
