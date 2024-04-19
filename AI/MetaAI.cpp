@@ -512,12 +512,6 @@ void MetaAI::GameCameraMove()
 		}
 	}
 
-	//一番遠いキャラとの距離を測って、その長さと45度で単位円として斜辺の長さを求めて、その長さを使って何とかしてzとyを求めれば行けるかな
-	//平行移動行列見たいなの必要か？
-	/*float radian = XMConvertToRadians(CAM_ANGLE);
-	float bottom = maxX - minX;
-	float hypot = bottom / radian;*/
-
 	//四角形の中心を注視点にする
 	XMFLOAT3 centerPoint = XMFLOAT3((maxX + minX) / 2, ZERO, (maxZ + minZ) / 2);
 
