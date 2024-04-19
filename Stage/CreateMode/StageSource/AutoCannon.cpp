@@ -64,6 +64,8 @@ void AutoCannon::ChildUpdate()
 		Audio::Play(hAudio_);
 	}
 
+
+
 }
 
 void AutoCannon::ChildDraw()
