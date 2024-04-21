@@ -87,10 +87,11 @@ void MetaAI::Initialize()
 
 	pWinnerUI_->Visible();
 	
-	hAudio_ = Audio::Load("Audio/FightBGM.wav", true);
-	assert(hAudio_ >= ZERO);
+	//hAudio_ = Audio::Load("Audio/FightBGM.wav", true);
+	//assert(hAudio_ >= ZERO);
 
-	Audio::Play(hAudio_);
+	//Audio::Stop(hAudio_);
+	//Audio::Play(hAudio_);
 
 	pText_->Initialize();
 

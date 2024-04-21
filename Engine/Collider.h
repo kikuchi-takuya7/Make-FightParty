@@ -29,6 +29,13 @@ enum ColliderAttackType
 	COLLIDER_BULLET			//球での攻撃
 };
 
+enum ColliderVec {
+	VEC_X,
+	VEC_Y,
+	VEC_Z,
+	VEC_NUM
+};
+
 //-----------------------------------------------------------
 //あたり判定を管理するクラス
 //-----------------------------------------------------------
@@ -39,14 +46,14 @@ class Collider
 	friend class SphereCollider;
 
 protected:
-	GameObject*		pGameObject_;	//この判定をつけたゲームオブジェクト
-	ColliderType	type_;			//種類
-	ColliderAttackType attackType_;	//どこの当たり判定だったか
-	XMFLOAT3		center_;		//中心位置（ゲームオブジェクトの原点から見た位置）
-	XMFLOAT3		size_;			//判定サイズ（幅、高さ、奥行き）
-	XMFLOAT3		rotate_;		//centerから回転させる角度。と思ったけど結局その四角形の形のまま動くからちゃんと回転してるわけではない。
-	//std::string		colliderName_;	//コライダー毎の名前。判定をコライダー毎に変える用
-	int				hDebugModel_;	//デバッグ表示用のモデルのID
+	GameObject*		pGameObject_;			//この判定をつけたゲームオブジェクト
+	ColliderType	type_;					//種類
+	ColliderAttackType attackType_;			//どこの当たり判定だったか
+	XMVECTOR		center_;				//中心位置（ゲームオブジェクトの原点から見た位置）
+	XMVECTOR		directionVec_[VEC_NUM];	//各軸ベクトル（各軸の方向を指し、回転もこれで管理）
+	float			length_[VEC_NUM];		//判定サイズ(各軸のベクトルの長さ)
+	//std::string		colliderName_;		//コライダー毎の名前。判定をコライダー毎に変える用
+	int				hDebugModel_;			//デバッグ表示用のモデルのID
 
 public:
 	//コンストラクタ
@@ -78,17 +85,7 @@ public:
 	//戻値：接触していればtrue
 	bool IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB);
 
-	/// <summary>
-	/// 回転した後のposを計算する
-	/// </summary>
-	/// <returns>回転後のcenter</returns>
-	XMFLOAT3 CalclationCenter();
-
-	/// <summary>
-	/// 回転した後のSizeを計算する（実際には回転してる訳では無くそれっぽく移動してるだけかも怪しいかもしれない）
-	/// </summary>
-	/// <returns>回転後のSize</returns>
-	XMFLOAT3 CalclationSize();
+	float LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, XMVECTOR* e3 = 0);
 
 	//テスト表示用の枠を描画
 	//引数：position	オブジェクトの位置
@@ -98,14 +95,18 @@ public:
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
 	//void SetName(std::string name) { colliderName_ = name; }
 	void SetAttackType(ColliderAttackType type) { attackType_ = type; }
-	void SetCenter(XMFLOAT3 center) { center_ = center; }
-	void SetSize(XMFLOAT3 size) { size_ = size; }
-	void SetRotate(XMFLOAT3 rotate) { rotate_ = rotate; }
+	void SetCenter(XMFLOAT3 center);
+	void SetSize(XMFLOAT3 size);
+	void SetRotate(XMFLOAT3 rotate);
 	//std::string GetName() { return colliderName_; }
 	ColliderAttackType GetAttackType() { return attackType_; }
-	XMFLOAT3 GetCenter() { return center_; }
+	/*XMFLOAT3 GetCenter() { return center_; }
 	XMFLOAT3 GetSize() { return size_; }
-	XMFLOAT3 GetRotate() { return rotate_; }
+	XMFLOAT3 GetRotate() { return rotate_; }*/
+
+	XMVECTOR GetDirect(int elem) { return directionVec_[elem]; }   // 指定軸番号の方向ベクトルを取得
+	float GetLen_W(int elem) { return length_[elem]; }          // 指定軸方向の長さを取得
+	XMVECTOR GetPos_W() { return center_; }             // 位置を取得
 
 };
 

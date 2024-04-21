@@ -9,9 +9,18 @@
 //引数：rotate	当たり判定を回転させる角度（まだ回ってない）
 BoxCollider::BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate)
 {
-	center_ = center;
-	size_ = size;
-	rotate_ = rotate;
+	center_ = XMLoadFloat3(&center);
+
+	//rotateから各軸ベクトルを取得
+	directionVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
+	directionVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
+	directionVec_[VEC_Z] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.z)));
+
+	//各軸方向ベクトルの長さをsizeから確保
+	length_[VEC_X] = size.x;
+	length_[VEC_Y] = size.y;
+	length_[VEC_Z] = size.z;
+
 	type_ = COLLIDER_BOX;
 
 	//リリース時は判定枠は表示しない
