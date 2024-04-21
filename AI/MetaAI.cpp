@@ -87,11 +87,10 @@ void MetaAI::Initialize()
 
 	pWinnerUI_->Visible();
 	
-	//hAudio_ = Audio::Load("Audio/FightBGM.wav", true);
-	//assert(hAudio_ >= ZERO);
+	hAudio_ = Audio::Load("Audio/FightBGM.wav", true);
+	assert(hAudio_ >= ZERO);
 
-	//Audio::Stop(hAudio_);
-	//Audio::Play(hAudio_);
+	Audio::Play(hAudio_);
 
 	pText_->Initialize();
 
@@ -526,12 +525,6 @@ void MetaAI::GameCameraMove()
 			minZ = playerPos.at(i).z;
 		}
 	}
-
-	//一番遠いキャラとの距離を測って、その長さと45度で単位円として斜辺の長さを求めて、その長さを使って何とかしてzとyを求めれば行けるかな
-	//平行移動行列見たいなの必要か？
-	/*float radian = XMConvertToRadians(CAM_ANGLE);
-	float bottom = maxX - minX;
-	float hypot = bottom / radian;*/
 
 	//四角形の中心を注視点にする
 	XMFLOAT3 centerPoint = XMFLOAT3((maxX + minX) / 2, ZERO, (maxZ + minZ) / 2);
