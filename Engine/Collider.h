@@ -50,7 +50,7 @@ protected:
 	ColliderType	type_;					//種類
 	ColliderAttackType attackType_;			//どこの当たり判定だったか
 	XMVECTOR		center_;				//中心位置（ゲームオブジェクトの原点から見た位置）
-	XMVECTOR		directionVec_[VEC_NUM];	//各軸ベクトル（各軸の方向を指し、回転もこれで管理）
+	XMVECTOR		directionNormalVec_[VEC_NUM];	//各軸ベクトル（各軸の方向を指し、回転もこれで管理）
 	float			length_[VEC_NUM];		//判定サイズ(各軸のベクトルの長さ)
 	//std::string		colliderName_;		//コライダー毎の名前。判定をコライダー毎に変える用
 	int				hDebugModel_;			//デバッグ表示用のモデルのID
@@ -104,7 +104,7 @@ public:
 	XMFLOAT3 GetSize() { return size_; }
 	XMFLOAT3 GetRotate() { return rotate_; }*/
 
-	XMVECTOR GetDirect(int elem) { return directionVec_[elem]; }   // 指定軸番号の方向ベクトルを取得
+	XMVECTOR GetDirect(int elem) { return directionNormalVec_[elem]; }   // 指定軸番号の方向ベクトルを取得
 	float GetLen_W(int elem) { return length_[elem]; }          // 指定軸方向の長さを取得
 	XMVECTOR GetPos_W() { return center_; }             // 位置を取得
 

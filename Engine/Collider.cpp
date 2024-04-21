@@ -23,7 +23,7 @@ Collider::~Collider()
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
 
-	// 各方向ベクトルの確保
+	// 各方向ベクトルの確保　標準化された方向ベクトルと、それに長さをかけて本来の長さに戻したベクトル
     //（N***:標準化方向ベクトル）
 	XMVECTOR NAe1 = boxA->GetDirect(VEC_X), Ae1 = NAe1 * boxA->GetLen_W(VEC_X);
 	XMVECTOR NAe2 = boxA->GetDirect(VEC_Y), Ae2 = NAe2 * boxA->GetLen_W(VEC_Y);
@@ -31,9 +31,9 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 	XMVECTOR NBe1 = boxB->GetDirect(VEC_X), Be1 = NBe1 * boxB->GetLen_W(VEC_X);
 	XMVECTOR NBe2 = boxB->GetDirect(VEC_Y), Be2 = NBe2 * boxB->GetLen_W(VEC_Y);
 	XMVECTOR NBe3 = boxB->GetDirect(VEC_Z), Be3 = NBe3 * boxB->GetLen_W(VEC_Z);
-	XMVECTOR Interval = boxA->GetPos_W() - boxB->GetPos_W();
+	XMVECTOR Interval = boxA->GetPos_W() - boxB->GetPos_W(); //二つの箱の中心点間の距離を求める準備
 
-	// 分離軸 : Ae1
+	// 分離軸 : Ae1 箱Aの方向ベクトルと分離軸との内積を2つ足すと半径分の分離軸上の長さを求められて、それの合計がLより長いならぶつかってる可能性あり
 	float rA = Length(Ae1);
 	float rB = LenSegOnSeparateAxis(&NAe1, &Be1, &Be2, &Be3);
 	float L = fabs(Length(XMVector3Dot(Interval, NAe1)));
@@ -203,9 +203,9 @@ float Collider::LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, 
 {
 	// 3つの内積の絶対値の和で投影線分長を計算
     // 分離軸Sepは標準化されていること
-	FLOAT r1 = fabs(Length(XMVector3Dot(*Sep, *e1)));
-	FLOAT r2 = fabs(Length(XMVector3Dot(*Sep, *e2)));
-	FLOAT r3 = e3 ? (fabs(Length(XMVector3Dot(*Sep, *e3)))) : 0;
+	float r1 = fabs(Length(XMVector3Dot(*Sep, *e1)));
+	float r2 = fabs(Length(XMVector3Dot(*Sep, *e2)));
+	float r3 = e3 ? (fabs(Length(XMVector3Dot(*Sep, *e3)))) : 0;
 	return r1 + r2 + r3;
 }
 
@@ -238,7 +238,7 @@ void Collider::SetSize(XMFLOAT3 size)
 void Collider::SetRotate(XMFLOAT3 rotate)
 {
 	//rotateから各軸ベクトルを取得
-	directionVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
-	directionVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
-	directionVec_[VEC_Z] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.z)));
+	directionNormalVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
+	directionNormalVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
+	directionNormalVec_[VEC_Z] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.z)));
 }

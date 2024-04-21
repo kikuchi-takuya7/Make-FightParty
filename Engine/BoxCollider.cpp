@@ -11,10 +11,24 @@ BoxCollider::BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate)
 {
 	center_ = XMLoadFloat3(&center);
 
+#if 0 //各軸の方向ベクトルはどうやって取る
+
 	//rotateから各軸ベクトルを取得
-	directionVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
-	directionVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
-	directionVec_[VEC_Z] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.z)));
+	XMVECTOR vec = XMVectorSet(size.x, ZERO, ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(center_ + vec, XMMatrixRotationX(XMConvertToRadians(rotate.x))));
+	vec = XMVectorSet(ZERO, size.y, ZERO, ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(center_ + vec, XMMatrixRotationY(XMConvertToRadians(rotate.y))));
+	vec = XMVectorSet(ZERO, ZERO, size.z, ZERO);
+	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(center_ + vec, XMMatrixRotationZ(XMConvertToRadians(rotate.z))));
+
+#else
+
+	//四角形各軸の方向ベクトルを正規化して確保
+	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x))));
+	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(center_, XMMatrixRotationY(XMConvertToRadians(rotate.y))));
+	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(center_, XMMatrixRotationZ(XMConvertToRadians(rotate.z))));
+
+#endif
 
 	//各軸方向ベクトルの長さをsizeから確保
 	length_[VEC_X] = size.x;
