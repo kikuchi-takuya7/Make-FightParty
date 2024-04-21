@@ -20,6 +20,7 @@
 
 //’è”éŒ¾
 namespace {
+    const int PLAYER_ID = 0;
     const int MAX_CHARACTER_NUM = 4;
     const int MAX_VIEW_OBJECT = 8;
     const float CAM_MOVE_RATE = 0.05f;
@@ -86,7 +87,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, ZERO,OBJECT_SIZE[ONEBROCK]);
+        //CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID, OBJECT_SIZE[ONEBROCK]);
     }
 
     //MAX_VIEW_OBJECT•ª‚Ì—v‘f‚ğ–‘O‚Éæ‚Á‚Ä‚¨‚­
