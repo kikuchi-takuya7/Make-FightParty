@@ -57,6 +57,7 @@ BoxCollider::~BoxCollider()
 //–ß’lFÚG‚µ‚Ä‚ê‚Îtrue
 bool BoxCollider::IsHit(Collider* target)
 {
+	
 	if (target->type_ == COLLIDER_BOX)
 		return IsHitBoxVsBox((BoxCollider*)target, this);
 	else

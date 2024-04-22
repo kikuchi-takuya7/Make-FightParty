@@ -168,7 +168,7 @@ void Player::MoveCharacter()
 
 		SetRotateY(degree);
 
-		SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
+		//SetColliderRotate(XMFLOAT3(ZERO, degree, ZERO));
 	}
 }
 

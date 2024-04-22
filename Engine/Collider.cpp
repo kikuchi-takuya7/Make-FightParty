@@ -22,6 +22,12 @@ Collider::~Collider()
 //戻値：接触していればtrue
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
+	//ワールド座標のrotateを確保
+	XMFLOAT3 rot = pGameObject_->GetRotate() + rotate_;
+
+	
+	//これを全部にやるぅ～？クソめんどくね何か楽できそう。あとXYZの所変えるの忘れるなよマトリックスのとこも
+	XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rotate_.x))));
 
 	// 各方向ベクトルの確保　標準化された方向ベクトルと、それに長さをかけて本来の長さに戻したベクトル
     //（N***:標準化方向ベクトル）
@@ -247,6 +253,7 @@ void Collider::SetSize(XMFLOAT3 size)
 
 void Collider::SetRotate(XMFLOAT3 rotate)
 {
+
 	//rotateから各軸ベクトルを取得
 	directionNormalVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
 	directionNormalVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
