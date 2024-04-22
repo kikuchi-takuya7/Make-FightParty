@@ -87,7 +87,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        //CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID, OBJECT_SIZE[ONEBROCK]);
+        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID, OBJECT_SIZE[ONEBROCK]);
     }
 
     //MAX_VIEW_OBJECT•ª‚Ì—v‘f‚ðŽ–‘O‚ÉŽæ‚Á‚Ä‚¨‚­

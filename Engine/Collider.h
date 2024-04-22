@@ -47,16 +47,15 @@ class Collider
 	friend class SphereCollider;
 
 protected:
-	GameObject*		pGameObject_;			//この判定をつけたゲームオブジェクト
-	ColliderType	type_;					//種類
-	ColliderAttackType attackType_;			//どこの当たり判定だったか
-	XMVECTOR		center_;				//中心位置（ゲームオブジェクトの原点から見た位置）
-	XMVECTOR		directionNormalVec_[VEC_NUM];	//各軸ベクトル（各軸の方向を指し、回転もこれで管理）
-	float			length_[VEC_NUM];		//判定サイズ(各軸のベクトルの長さ)
-	
-	//描画用
-	XMFLOAT3		rotate_;				//描画のTransform用にXMFLOAT3でも取っておく
-	XMFLOAT3		size_;					//描画用にsizeも取っておく
+	GameObject*		pGameObject_;					//この判定をつけたゲームオブジェクト
+	ColliderType	type_;							//種類
+	ColliderAttackType attackType_;					//どこの当たり判定だったか
+	XMVECTOR		center_;						//中心位置（ゲームオブジェクトの原点から見た位置）
+	XMVECTOR		directionNormalVec_[VEC_NUM];	//各軸ベクトル（各軸の方向を指す）
+	float			length_[VEC_NUM];				//判定サイズ(各軸のベクトルの長さ)
+
+	XMFLOAT3		rotate_;				//コライダー自体に設定された回転
+	XMFLOAT3		size_;					//コライダーのsize
 	
 	int				hDebugModel_;			//デバッグ表示用のモデルのID
 
@@ -90,7 +89,15 @@ public:
 	//戻値：接触していればtrue
 	bool IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB);
 
+	// 分離軸に投影された軸成分から投影線分長を算出
+	// 引数：分離軸となるベクトル
+	// 引数：一つ目の方向ベクトル
+	// 引数：二つ目の方向ベクトル
+	// 引数：三つ目の方向ベクトル（必要なら）
 	float LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, XMVECTOR* e3 = 0);
+
+	//各軸の方向ベクトルを計算
+	void Calclation();
 
 	//テスト表示用の枠を描画
 	//引数：position	オブジェクトの位置
@@ -98,17 +105,12 @@ public:
 
 	//////////アクセス関数////////////
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
-	//void SetName(std::string name) { colliderName_ = name; }
 	void SetAttackType(ColliderAttackType type) { attackType_ = type; }
 	void SetCenter(XMFLOAT3 center);
 	void SetSize(XMFLOAT3 size);
 	void SetRotate(XMFLOAT3 rotate);
-	//std::string GetName() { return colliderName_; }
-	ColliderAttackType GetAttackType() { return attackType_; }
-	/*XMFLOAT3 GetCenter() { return center_; }
-	XMFLOAT3 GetSize() { return size_; }
-	XMFLOAT3 GetRotate() { return rotate_; }*/
 
+	ColliderAttackType GetAttackType() { return attackType_; }
 	XMVECTOR GetDirect(int elem) { return directionNormalVec_[elem]; }   // 指定軸番号の方向ベクトルを取得
 	float GetLen_W(int elem) { return length_[elem]; }          // 指定軸方向の長さを取得
 	XMVECTOR GetPos_W() { return center_; }             // 位置を取得

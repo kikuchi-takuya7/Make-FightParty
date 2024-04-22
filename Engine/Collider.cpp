@@ -23,24 +23,30 @@ Collider::~Collider()
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
 	//ワールド座標のrotateを確保
-	XMFLOAT3 rot = pGameObject_->GetRotate() + rotate_;
+	XMFLOAT3 rotA = boxA->pGameObject_->GetRotate();
+	XMFLOAT3 rotB = boxB->pGameObject_->GetRotate();
 
-	
-	//これを全部にやるぅ～？クソめんどくね何か楽できそう。あとXYZの所変えるの忘れるなよマトリックスのとこも
-	XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rotate_.x))));
-
-	// 各方向ベクトルの確保　標準化された方向ベクトルと、それに長さをかけて本来の長さに戻したベクトル
+	// 各方向ベクトルの確保　標準化された方向ベクトル
     //（N***:標準化方向ベクトル）
-	XMVECTOR NAe1 = boxA->GetDirect(VEC_X), Ae1 = NAe1 * boxA->GetLen_W(VEC_X);
-	XMVECTOR NAe2 = boxA->GetDirect(VEC_Y), Ae2 = NAe2 * boxA->GetLen_W(VEC_Y);
-	XMVECTOR NAe3 = boxA->GetDirect(VEC_Z), Ae3 = NAe3 * boxA->GetLen_W(VEC_Z);
-	XMVECTOR NBe1 = boxB->GetDirect(VEC_X), Be1 = NBe1 * boxB->GetLen_W(VEC_X);
-	XMVECTOR NBe2 = boxB->GetDirect(VEC_Y), Be2 = NBe2 * boxB->GetLen_W(VEC_Y);
-	XMVECTOR NBe3 = boxB->GetDirect(VEC_Z), Be3 = NBe3 * boxB->GetLen_W(VEC_Z);
+	XMVECTOR NAe1 = boxA->GetDirect(VEC_X);
+	XMVECTOR NAe2 = boxA->GetDirect(VEC_Y);
+	XMVECTOR NAe3 = boxA->GetDirect(VEC_Z);
+	XMVECTOR NBe1 = boxB->GetDirect(VEC_X);
+	XMVECTOR NBe2 = boxB->GetDirect(VEC_Y);
+	XMVECTOR NBe3 = boxB->GetDirect(VEC_Z);
+
+	//それに長さをかけて本来の長さに戻したベクトル
+	XMVECTOR Ae1 = NAe1 * boxA->GetLen_W(VEC_X);
+	XMVECTOR Ae2 = NAe2 * boxA->GetLen_W(VEC_Y);
+	XMVECTOR Ae3 = NAe3 * boxA->GetLen_W(VEC_Z);
+	XMVECTOR Be1 = NBe1 * boxB->GetLen_W(VEC_X);
+	XMVECTOR Be2 = NBe2 * boxB->GetLen_W(VEC_Y);
+	XMVECTOR Be3 = NBe3 * boxB->GetLen_W(VEC_Z);
 	
+	//二つの箱の中心点間の距離を求める準備
 	XMVECTOR aCenter = XMVector3TransformCoord(boxA->GetPos_W(), boxA->pGameObject_->GetWorldMatrix());
 	XMVECTOR bCenter = XMVector3TransformCoord(boxB->GetPos_W(), boxB->pGameObject_->GetWorldMatrix());
-	XMVECTOR Interval = aCenter - bCenter; //二つの箱の中心点間の距離を求める準備
+	XMVECTOR Interval = aCenter - bCenter; 
 	
 	float tes1 = Length(XMVector3TransformCoord(boxA->GetPos_W(), boxA->pGameObject_->GetWorldMatrix()));
 	float tes2 = Length(XMVector3TransformCoord(boxB->GetPos_W(), boxB->pGameObject_->GetWorldMatrix()));
@@ -211,6 +217,10 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circ
 }
 
 // 分離軸に投影された軸成分から投影線分長を算出
+// 引数：分離軸となるベクトル
+// 引数：分離軸との角度を測る一つ目の方向ベクトル
+// 引数：二つ目の方向ベクトル
+// 引数：三つ目の方向ベクトル（必要なら）
 float Collider::LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, XMVECTOR* e3)
 {
 	// 3つの内積の絶対値の和で投影線分長を計算
@@ -221,6 +231,21 @@ float Collider::LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, 
 	return r1 + r2 + r3;
 }
 
+//各ベクトルを計算
+void Collider::Calclation()
+{
+	XMFLOAT3 rot = pGameObject_->GetRotate() + rotate_;
+
+	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
+	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x))));
+	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rot.y))));
+	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rot.z))));
+
+}
+
 //テスト表示用の枠を描画
 //引数：position	オブジェクトの位置
 void Collider::Draw(XMFLOAT3 position)
@@ -228,8 +253,8 @@ void Collider::Draw(XMFLOAT3 position)
 	Transform transform;
 
 	transform.position_ = VectorToFloat3(XMVector3TransformCoord(center_, pGameObject_->GetWorldMatrix()));
-	transform.rotate_ = rotate_;
-	transform.scale_ = size_;
+	transform.rotate_ = pGameObject_->GetRotate() + rotate_;
+	transform.scale_ = size_ * 2;
 
 	//transform.Calclation();
 	Model::SetTransform(hDebugModel_, transform);
@@ -244,20 +269,25 @@ void Collider::SetCenter(XMFLOAT3 center)
 void Collider::SetSize(XMFLOAT3 size)
 {
 	//各軸方向ベクトルの長さをsizeから確保
-	length_[VEC_X] = size.x;
-	length_[VEC_Y] = size.y;
-	length_[VEC_Z] = size.z;
+	length_[VEC_X] = size.x / 2;
+	length_[VEC_Y] = size.y / 2;
+	length_[VEC_Z] = size.z / 2;
 
-	size_ = size;
+	size_ = size / 2;
 }
 
 void Collider::SetRotate(XMFLOAT3 rotate)
 {
 
-	//rotateから各軸ベクトルを取得
-	directionNormalVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
-	directionNormalVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
-	directionNormalVec_[VEC_Z] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.z)));
+	XMFLOAT3 rot = pGameObject_->GetRotate() + rotate;
+
+	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
+	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x)));
+	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rot.y)));
+	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	directionNormalVec_[VEC_Z] = XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rot.z)));
 
 	rotate_ = rotate;
 }

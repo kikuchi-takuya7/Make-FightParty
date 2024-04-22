@@ -5,39 +5,21 @@
 
 //コンストラクタ（当たり判定の作成）
 //引数：center	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
-//引数：size	当たり判定のサイズ
+//引数：size	当たり判定のサイズ(直径)
 //引数：rotate	当たり判定を回転させる角度（まだ回ってない）
 BoxCollider::BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate)
 {
+
 	center_ = XMLoadFloat3(&center);
 
-#if 1 //各軸の方向ベクトルはどうやって取る
-
-	//rotateから各軸ベクトルを取得
-	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
-	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rotate.x))));
-	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
-	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rotate.y))));
-	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
-	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rotate.z))));
-
-#else
-
-	//四角形各軸の方向ベクトルを正規化して確保
-	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x))));
-	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(center_, XMMatrixRotationY(XMConvertToRadians(rotate.y))));
-	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(center_, XMMatrixRotationZ(XMConvertToRadians(rotate.z))));
-
-#endif
-
 	//各軸方向ベクトルの長さをsizeから確保
-	length_[VEC_X] = size.x;
-	length_[VEC_Y] = size.y;
-	length_[VEC_Z] = size.z;
+	length_[VEC_X] = size.x / 2;
+	length_[VEC_Y] = size.y / 2;
+	length_[VEC_Z] = size.z / 2;
 
 	//描画時用に残す
 	rotate_ = rotate;
-	size_ = size;
+	size_ = size / 2;
 
 	type_ = COLLIDER_BOX;
 
