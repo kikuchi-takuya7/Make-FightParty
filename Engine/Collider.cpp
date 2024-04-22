@@ -31,7 +31,13 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 	XMVECTOR NBe1 = boxB->GetDirect(VEC_X), Be1 = NBe1 * boxB->GetLen_W(VEC_X);
 	XMVECTOR NBe2 = boxB->GetDirect(VEC_Y), Be2 = NBe2 * boxB->GetLen_W(VEC_Y);
 	XMVECTOR NBe3 = boxB->GetDirect(VEC_Z), Be3 = NBe3 * boxB->GetLen_W(VEC_Z);
-	XMVECTOR Interval = boxA->GetPos_W() - boxB->GetPos_W(); //二つの箱の中心点間の距離を求める準備
+	
+	XMVECTOR aCenter = XMVector3TransformCoord(boxA->GetPos_W(), boxA->pGameObject_->GetWorldMatrix());
+	XMVECTOR bCenter = XMVector3TransformCoord(boxB->GetPos_W(), boxB->pGameObject_->GetWorldMatrix());
+	XMVECTOR Interval = aCenter - bCenter; //二つの箱の中心点間の距離を求める準備
+	
+	float tes1 = Length(XMVector3TransformCoord(boxA->GetPos_W(), boxA->pGameObject_->GetWorldMatrix()));
+	float tes2 = Length(XMVector3TransformCoord(boxB->GetPos_W(), boxB->pGameObject_->GetWorldMatrix()));
 
 	// 分離軸 : Ae1 箱Aの方向ベクトルと分離軸との内積を2つ足すと半径分の分離軸上の長さを求められて、それの合計がLより長いならぶつかってる可能性あり
 	float rA = Length(Ae1);
@@ -215,9 +221,11 @@ void Collider::Draw(XMFLOAT3 position)
 {
 	Transform transform;
 
-	transform.position_ = VectorToFloat3(center_);
+	transform.position_ = VectorToFloat3(XMVector3TransformCoord(center_, pGameObject_->GetWorldMatrix()));
+	transform.rotate_ = rotate_;
+	transform.scale_ = size_;
 
-	transform.Calclation();
+	//transform.Calclation();
 	Model::SetTransform(hDebugModel_, transform);
 	Model::Draw(hDebugModel_);
 }
@@ -233,6 +241,8 @@ void Collider::SetSize(XMFLOAT3 size)
 	length_[VEC_X] = size.x;
 	length_[VEC_Y] = size.y;
 	length_[VEC_Z] = size.z;
+
+	size_ = size;
 }
 
 void Collider::SetRotate(XMFLOAT3 rotate)
@@ -241,4 +251,6 @@ void Collider::SetRotate(XMFLOAT3 rotate)
 	directionNormalVec_[VEC_X] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.x)));
 	directionNormalVec_[VEC_Y] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.y)));
 	directionNormalVec_[VEC_Z] = XMVector3TransformCoord(center_, XMMatrixRotationX(XMConvertToRadians(rotate.z)));
+
+	rotate_ = rotate;
 }

@@ -29,6 +29,7 @@ enum ColliderAttackType
 	COLLIDER_BULLET			//球での攻撃
 };
 
+//3方向のベクトル
 enum ColliderVec {
 	VEC_X,
 	VEC_Y,
@@ -52,7 +53,11 @@ protected:
 	XMVECTOR		center_;				//中心位置（ゲームオブジェクトの原点から見た位置）
 	XMVECTOR		directionNormalVec_[VEC_NUM];	//各軸ベクトル（各軸の方向を指し、回転もこれで管理）
 	float			length_[VEC_NUM];		//判定サイズ(各軸のベクトルの長さ)
-	//std::string		colliderName_;		//コライダー毎の名前。判定をコライダー毎に変える用
+	
+	//描画用
+	XMFLOAT3		rotate_;				//描画のTransform用にXMFLOAT3でも取っておく
+	XMFLOAT3		size_;					//描画用にsizeも取っておく
+	
 	int				hDebugModel_;			//デバッグ表示用のモデルのID
 
 public:

@@ -11,15 +11,15 @@ BoxCollider::BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate)
 {
 	center_ = XMLoadFloat3(&center);
 
-#if 0 //各軸の方向ベクトルはどうやって取る
+#if 1 //各軸の方向ベクトルはどうやって取る
 
 	//rotateから各軸ベクトルを取得
-	XMVECTOR vec = XMVectorSet(size.x, ZERO, ZERO, ZERO);
-	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(center_ + vec, XMMatrixRotationX(XMConvertToRadians(rotate.x))));
-	vec = XMVectorSet(ZERO, size.y, ZERO, ZERO);
-	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(center_ + vec, XMMatrixRotationY(XMConvertToRadians(rotate.y))));
-	vec = XMVectorSet(ZERO, ZERO, size.z, ZERO);
-	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(center_ + vec, XMMatrixRotationZ(XMConvertToRadians(rotate.z))));
+	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rotate.x))));
+	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rotate.y))));
+	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rotate.z))));
 
 #else
 
@@ -34,6 +34,10 @@ BoxCollider::BoxCollider(XMFLOAT3 center, XMFLOAT3 size, XMFLOAT3 rotate)
 	length_[VEC_X] = size.x;
 	length_[VEC_Y] = size.y;
 	length_[VEC_Z] = size.z;
+
+	//描画時用に残す
+	rotate_ = rotate;
+	size_ = size;
 
 	type_ = COLLIDER_BOX;
 
