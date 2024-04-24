@@ -28,10 +28,10 @@ void Bullet::Initialize()
 
 void Bullet::Update()
 {
-	moveLen_ += bulletSpeed_;
+	transform_.position_.z += bulletSpeed_;
 
 	//ŽË’ö‹——£‚ð’´‚¦‚½‚ç
-	if (moveLen_ >= BULLET_RANGE) {
+	if (transform_.position_.z >= BULLET_RANGE) {
 		KillMe();
 	}
 
@@ -59,14 +59,6 @@ void Bullet::Update()
 
 #else//•Ê‚Ì•û–@
 
-	int rotate = GetParent()->GetRotate().y;
-
-	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(rotate));
-
-	XMVECTOR vec = XMLoadFloat3(&transform_.position_);
-
-	vec = XMVector2TransformCoord(vec, rotY);
-
 
 #endif
 
@@ -80,7 +72,7 @@ void Bullet::Draw()
 	bulletTrans.scale_ = transform_.scale_;
 	bulletTrans.position_ = Float3Add(transform_.position_,GetParent()->GetPosition());
 
-	Model::SetTransform(bulletModel_, bulletTrans);
+	Model::SetTransform(bulletModel_, transform_);
 	Model::Draw(bulletModel_);
 
 #ifdef _DEBUG

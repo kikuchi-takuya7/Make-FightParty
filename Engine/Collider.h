@@ -38,7 +38,8 @@ enum ColliderVec {
 };
 
 //-----------------------------------------------------------
-//あたり判定を管理するクラス
+//あたり判定を管理するクラス(分離軸判定を使用)
+//参考にしたサイト：http://marupeke296.com/COL_3D_No13_OBBvsOBB.html
 //-----------------------------------------------------------
 class Collider
 {
@@ -112,8 +113,8 @@ public:
 
 	ColliderAttackType GetAttackType() { return attackType_; }
 	XMVECTOR GetDirect(int elem) { return directionNormalVec_[elem]; }   // 指定軸番号の方向ベクトルを取得
-	float GetLen_W(int elem) { return length_[elem]; }          // 指定軸方向の長さを取得
-	XMVECTOR GetPos_W() { return center_; }             // 位置を取得
+	float GetLen(int elem) { return length_[elem]; }          // 指定軸方向の長さを取得
+	XMVECTOR GetCenter() { return center_; }             // 中心を取得
 
 };
 
