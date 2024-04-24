@@ -3,11 +3,15 @@
 #include "../../../Engine/Timer.h"
 #include "../../../Engine/VFX.h"
 #include "../../../Engine/Audio.h"
+#include "../../../AI/MetaAI.h"
+#include "../../../AI/NavigationAI.h"
 #include "Bullet.h"
 
 //定数宣言
 namespace {
 	const int COST = -1;
+
+	const int MAX_PLAYER = 4;
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
@@ -21,7 +25,7 @@ namespace {
 }
 
 AutoCannon::AutoCannon(GameObject* parent)
-	:StageSourceBase(parent, "AutoCannon"), timer_(Instantiate<Timer>(this))
+	:StageSourceBase(parent, "AutoCannon"), timer_(Instantiate<Timer>(this)), pMetaAI_(nullptr),pNavigationAI_(nullptr),target_(ZERO)
 {
 }
 
@@ -43,10 +47,24 @@ void AutoCannon::ChildInitialize()
 	//球を打つ間隔
 	timer_->SetLimit(BULLET_INTERVAL);
 
+	//設置したプレイヤー以外をランダムで狙うようにする。
+	while (true)
+	{
+		target_ = rand() % MAX_PLAYER;
+		if (target_ != authorID_) {
+			break;
+		}
+	}
+	
+
 }
 
 void AutoCannon::ChildUpdate()
 {
+
+	if (pNavigationAI_->GetCaracter(target_)->GetStatus().dead == true) {
+		target_ = pMetaAI_->Targeting(authorID_).ID;
+	}
 
 	timer_->Start();
 
@@ -64,16 +82,24 @@ void AutoCannon::ChildUpdate()
 		Audio::Play(hAudio_);
 	}
 
+
+	//狙っている敵に大砲を回転させる
+
+	//今狙っている敵の座標を獲得
+	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
+	XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
+
+	//前ベクトルを向いている方向に変換して、正規化
 	XMVECTOR vFront = { 0,0,1,0 };
-	vMove = XMVector3Normalize(vMove);
+	vFront = XMVector3Normalize(vFront);
 
 	//内積から角度を求める
-	XMVECTOR vDot = XMVector3Dot(vFront, vMove);
+	XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
 	float dot = XMVectorGetX(vDot);
 	float angle = acos(dot);
 
 	//外積が-になる角度なら
-	XMVECTOR vCross = XMVector3Cross(vFront, vMove);
+	XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
 	if (XMVectorGetY(vCross) < ZERO) {
 
 		angle *= -1;
@@ -81,8 +107,7 @@ void AutoCannon::ChildUpdate()
 
 	float degree = XMConvertToDegrees(angle);
 
-	pEnemy_->SetRotateY(degree);
-
+	SetRotateY(degree);
 }
 
 void AutoCannon::ChildDraw()

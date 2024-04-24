@@ -87,7 +87,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID, OBJECT_SIZE[ONEBROCK]);
+        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID);
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
@@ -479,10 +479,12 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
     switch (pattern)
     {
-    case AUTO_CANNON:
+    case AUTO_CANNON: {
         AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
-        
+        pObject->SetNavigationAI(pNavigationAI_);
+        pObject->SetMetaAI(pMetaAI_);
         break;
+    }
 
     case CANNON:
         CreateInstance<Cannon>(hModel, trans, element);

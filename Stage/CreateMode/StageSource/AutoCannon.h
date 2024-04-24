@@ -4,7 +4,9 @@
 #include "StageSourceBase.h"
 
 class Timer;
+class MetaAI;
 class NavigationAI;
+
 
 /// <summary>
 /// 一定間隔で攻撃する砲台
@@ -36,15 +38,23 @@ public:
 
 
     //アクセス関数
-    void SetNavigationAI(GameObject* AI) { pNavoigationAI = AI; }
+    void SetMetaAI(MetaAI* metaAI) { pMetaAI_ = metaAI; }
+    void SetNavigationAI(NavigationAI* naviAI) { pNavigationAI_ = naviAI; }
 
 private:
 
+    //発砲時のエフェクト
     void FiringEffect();
 
     Timer* timer_;
 
     int hAudio_;
 
-    NavigationAI* pNavoigationAI;
+    //AIのインスタンス
+    MetaAI* pMetaAI_;
+    NavigationAI* pNavigationAI_;
+
+    //ターゲットの情報
+    int target_;
+
 };

@@ -22,9 +22,6 @@ Collider::~Collider()
 //戻値：接触していればtrue
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
-	//ワールド座標のrotateを確保
-	XMFLOAT3 rotA = boxA->pGameObject_->GetRotate();
-	XMFLOAT3 rotB = boxB->pGameObject_->GetRotate();
 
 	// 各方向ベクトルの確保　標準化された方向ベクトル
     //（N***:標準化方向ベクトル）
