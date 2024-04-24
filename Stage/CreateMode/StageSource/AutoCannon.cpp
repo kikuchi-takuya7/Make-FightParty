@@ -91,7 +91,7 @@ void AutoCannon::ChildUpdate()
 
 	//前ベクトルを向いている方向に変換して、正規化
 	XMVECTOR vFront = { 0,0,1,0 };
-	vFront = XMVector3Normalize(vFront);
+	vFront = XMVector3Normalize(XMVector3TransformCoord(vFront,XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y))));
 
 	//内積から角度を求める
 	XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
@@ -107,7 +107,7 @@ void AutoCannon::ChildUpdate()
 
 	float degree = XMConvertToDegrees(angle);
 
-	SetRotateY(degree);
+	transform_.rotate_.y += degree;
 }
 
 void AutoCannon::ChildDraw()
