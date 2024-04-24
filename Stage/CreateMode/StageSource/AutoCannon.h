@@ -4,6 +4,7 @@
 #include "StageSourceBase.h"
 
 class Timer;
+class NavigationAI;
 
 /// <summary>
 /// ˆê’èŠÔŠu‚ÅUŒ‚‚·‚é–C‘ä
@@ -33,6 +34,10 @@ public:
 
     void OnCollision(GameObject* pTarget) override;
 
+
+    //ƒAƒNƒZƒXŠÖ”
+    void SetNavigationAI(GameObject* AI) { pNavoigationAI = AI; }
+
 private:
 
     void FiringEffect();
@@ -40,4 +45,6 @@ private:
     Timer* timer_;
 
     int hAudio_;
+
+    NavigationAI* pNavoigationAI;
 };

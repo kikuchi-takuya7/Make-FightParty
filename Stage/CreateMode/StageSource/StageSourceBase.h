@@ -14,6 +14,9 @@ protected:
     //ステージに置いたときのコスト。Astarアルゴリズムで使用
     int cost_;
 
+    //このオブジェクトを生成したプレイヤーのID
+    int authorID_;
+
     //当たり判定
     BoxCollider* pBoxCollision_;
 
@@ -72,8 +75,10 @@ public:
 
     int GetHandle() { return hModel_; }
     int GetStageCost() { return cost_; }
+    int GetAuthorID() { return authorID_; }
     void SetHandle(int handle) { hModel_ = handle; }
     void SetMoveLastPos(XMFLOAT3 lastPos) { lastPos_ = lastPos; }
+    void SetAuthorID(int ID) { authorID_ = ID; }
     
 protected:
 

@@ -374,18 +374,18 @@ void CreateMode::SettingUpdate()
     if (IsStageOverlapCursor(front, back)) {
 
         //左クリックされて、かつ　すでに設置されたオブジェクトが無いなら
-        if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
+        if (Input::IsMouseButtonDown(PLAYER_ID) && IsOverlapPosition() == false) {
 
-            //ひとまずプレイヤーは1人目だけだからZEROで
-            CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
+            //プレイヤーは一人の予定だから定数で
+            CreateObject(settingObject_.at(PLAYER_ID).hModel, settingObject_.at(PLAYER_ID).trans, PLAYER_ID);
             Audio::Play(hCreateSound_[SETTING]);
         }
 
-        //右クリックされたら（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
+        //右クリックされたら設置する（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
         if (Input::IsMouseButtonDown(1)) {
-            settingObject_.at(ZERO).trans.rotate_.y += 90;
-            if (settingObject_.at(ZERO).trans.rotate_.y >= 360) {
-                settingObject_.at(ZERO).trans.rotate_.y = ZERO;
+            settingObject_.at(PLAYER_ID).trans.rotate_.y += 90;
+            if (settingObject_.at(PLAYER_ID).trans.rotate_.y >= 360) {
+                settingObject_.at(PLAYER_ID).trans.rotate_.y = ZERO;
             }
         }
     }
@@ -470,7 +470,7 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     FBXPATTERN pattern = PATTERN_END;
 
     //モデル番号のFBXPATTERNを探す
-    for (int i = 0; i < modelData_.size(); i++) {
+    for (int i = ZERO; i < modelData_.size(); i++) {
         if (modelData_.at(i).hModel == hModel) {
             pattern = modelData_.at(i).modelPattern;
         }
@@ -480,19 +480,20 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     switch (pattern)
     {
     case AUTO_CANNON:
-        CreateInstance<AutoCannon>(hModel, trans, element, OBJECT_SIZE[pattern]);
+        AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
+        
         break;
 
     case CANNON:
-        CreateInstance<Cannon>(hModel, trans, element, OBJECT_SIZE[pattern]);
+        CreateInstance<Cannon>(hModel, trans, element);
         break;
 
     case NEEDLE:
-        CreateInstance<Needle>(hModel, trans, element, OBJECT_SIZE[pattern]);
+        CreateInstance<Needle>(hModel, trans, element);
         break;
 
     case ONEBROCK:
-        CreateInstance<OneBrock>(hModel, trans, element, OBJECT_SIZE[pattern]);
+        CreateInstance<OneBrock>(hModel, trans, element);
         break;
 
     case PATTERN_END:
@@ -709,8 +710,8 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
             if (data.hit) {
 
                 //回転の情報だけは残しておく
-                objTrans.rotate_ = settingObject_.at(ZERO).trans.rotate_;
-                settingObject_.at(ZERO).trans = objTrans;
+                objTrans.rotate_ = settingObject_.at(PLAYER_ID).trans.rotate_;
+                settingObject_.at(PLAYER_ID).trans = objTrans;
                 selecting_Object_ = ZERO;
                 return true;
             }
@@ -798,41 +799,42 @@ void CreateMode::AIMovingObject()
     }
 }
 
-template <class T>
-T* CreateMode::CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square)
-{
-    T* pObject = Instantiate<T>(this);
-    AddCreateObject(pObject);
-    pStage_->PushStageSource(pObject);
-
-    //回転行列を作り、四角形のオブジェクトのコストの位置を回転させる
-    XMMATRIX rotateX, rotateY;
-    rotateX = XMMatrixIdentity();
-    rotateY = XMMatrixRotationY(XMConvertToRadians(trans.rotate_.y));
-    XMMATRIX matRot = rotateX * rotateY;
-
-    //回転行列を適応
-    XMVECTOR vec = XMLoadFloat2(&square);
-    vec = XMVector2Transform(vec, rotateY);
-    XMStoreFloat2(&square, vec);
-
-    //コストをつける
-    pStage_->SetStageCost(trans.position_, pObject->GetStageCost(), square.x, square.y);
-
-    //AIが選んだオブジェクトなら真ん中からゆっくり動くように
-    if (ID >= startEnemyID_) {
-        Transform objTrans;
-        objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
-        objTrans.rotate_ = trans.rotate_;
-        pObject->SetMoveLastPos(trans.position_);
-        pObject->SetTransform(objTrans);
-    }
-    else {
-        pObject->SetMoveLastPos(trans.position_);
-        pObject->SetTransform(trans);
-    }
-
-    pObject->Leave();
-    pObject->SetHandle(hModel);
-    return pObject;
-}
+//大きさを変えられる用に挑戦する用
+//template <class T>
+//T* CreateMode::CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square)
+//{
+//    T* pObject = Instantiate<T>(this);
+//    AddCreateObject(pObject);
+//    pStage_->PushStageSource(pObject);
+//
+//    //回転行列を作り、四角形のオブジェクトのコストの位置を回転させる
+//    XMMATRIX rotateX, rotateY;
+//    rotateX = XMMatrixIdentity();
+//    rotateY = XMMatrixRotationY(XMConvertToRadians(trans.rotate_.y));
+//    XMMATRIX matRot = rotateX * rotateY;
+//
+//    //回転行列を適応
+//    XMVECTOR vec = XMLoadFloat2(&square);
+//    vec = XMVector2Transform(vec, rotateY);
+//    XMStoreFloat2(&square, vec);
+//
+//    //コストをつける
+//    pStage_->SetStageCost(trans.position_, pObject->GetStageCost(), square.x, square.y);
+//
+//    //AIが選んだオブジェクトなら真ん中からゆっくり動くように
+//    if (ID >= startEnemyID_) {
+//        Transform objTrans;
+//        objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+//        objTrans.rotate_ = trans.rotate_;
+//        pObject->SetMoveLastPos(trans.position_);
+//        pObject->SetTransform(objTrans);
+//    }
+//    else {
+//        pObject->SetMoveLastPos(trans.position_);
+//        pObject->SetTransform(trans);
+//    }
+//
+//    pObject->Leave();
+//    pObject->SetHandle(hModel);
+//    return pObject;
+//}

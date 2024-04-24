@@ -1,14 +1,15 @@
 #include "Bullet.h"
 #include "../../../Engine/Model.h"
 
-
 namespace {
 
 	const float BULLET_RANGE = 30.0f;
+	const int DEFAULT_ATTACK_POWER = 10;
+	const float DEFAULT_BULLET_SPEED = 0.4f;
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),attackPower_(10),bulletSpeed_(0.4f), collider_(nullptr)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),attackPower_(DEFAULT_ATTACK_POWER),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
 {
 }
 
@@ -19,7 +20,7 @@ Bullet::~Bullet()
 void Bullet::Initialize()
 {
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
-	assert(bulletModel_ >= 0);
+	assert(bulletModel_ >= ZERO);
 
 	//Initializeを呼び出してからSetSizeしてるから真ん中に出る謎の球体はでかい。つまり
 
@@ -35,7 +36,7 @@ void Bullet::Update()
 		KillMe();
 	}
 
-#if 0//前までの玉の回転の仕方とか
+#if 0//colliderクラスを改良したため、transformを変えたらそのまま反映してくれるようになった
 
 	//transform_.positionでコリジョンの動きで、bulletPosでモデルの動き
 	//collisionはrotateを考慮してないので、別々に作る必要がある
@@ -66,12 +67,6 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
-
-	//親の位置（大砲）に移動させて、移動させる。親のTransformから見てzに移動させてもモデル自体はそう動くけどcollisionはワールドでのz方向に行ってしまう
-	Transform bulletTrans;
-	bulletTrans.scale_ = transform_.scale_;
-	bulletTrans.position_ = Float3Add(transform_.position_,GetParent()->GetPosition());
-
 	Model::SetTransform(bulletModel_, transform_);
 	Model::Draw(bulletModel_);
 
@@ -91,10 +86,6 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 		KillMe();
 	}
 
-	//誰かに当たったら
-	if (targetType == COLLIDER_BODY) {
-		KillMe();
-	}
 }
 
 void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed)

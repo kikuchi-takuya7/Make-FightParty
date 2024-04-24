@@ -11,11 +11,11 @@ namespace {
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
-	const float BULLET_INTERVAL = 3;
+	const float BULLET_INTERVAL = 5;
 	const float BULLET_SIZE = 0.3f;
 
 	const int BULLET_ATTACK_POWER = 5;
-	const float BULLET_SPEED = 0.2f;
+	const float BULLET_SPEED = 0.1f;
 
 	const int SAME_SOUND = 3;
 }
@@ -64,7 +64,24 @@ void AutoCannon::ChildUpdate()
 		Audio::Play(hAudio_);
 	}
 
+	XMVECTOR vFront = { 0,0,1,0 };
+	vMove = XMVector3Normalize(vMove);
 
+	//ì‡êœÇ©ÇÁäpìxÇãÅÇﬂÇÈ
+	XMVECTOR vDot = XMVector3Dot(vFront, vMove);
+	float dot = XMVectorGetX(vDot);
+	float angle = acos(dot);
+
+	//äOêœÇ™-Ç…Ç»ÇÈäpìxÇ»ÇÁ
+	XMVECTOR vCross = XMVector3Cross(vFront, vMove);
+	if (XMVectorGetY(vCross) < ZERO) {
+
+		angle *= -1;
+	}
+
+	float degree = XMConvertToDegrees(angle);
+
+	pEnemy_->SetRotateY(degree);
 
 }
 
