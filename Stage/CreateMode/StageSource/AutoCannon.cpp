@@ -70,8 +70,10 @@ void AutoCannon::ChildUpdate()
 
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
-		Bullet* pBullet = Instantiate<Bullet>(this);
+		Bullet* pBullet = Instantiate<Bullet>(GetParent());
 		pBullet->SetScale(BULLET_SIZE);
+		pBullet->SetPosition(transform_.position_);
+		pBullet->SetRotate(transform_.rotate_);
 
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);

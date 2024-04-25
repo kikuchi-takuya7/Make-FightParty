@@ -11,6 +11,8 @@ SphereCollider::SphereCollider(XMFLOAT3 center, float size)
 	length_[VEC_X] = size;
 	type_ = COLLIDER_CIRCLE;
 
+	size_.x = size;
+
 	//リリース時は判定枠は表示しない
 #ifdef _DEBUG
 	//テスト表示用判定枠

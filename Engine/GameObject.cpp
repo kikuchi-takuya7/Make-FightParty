@@ -285,10 +285,6 @@ void GameObject::KillObjectSub(GameObject* obj)
 	obj->Release();
 }
 
-
-
-
-
 //コライダー（衝突判定）を追加する
 void GameObject::AddCollider(Collider* collider, ColliderAttackType type)
 {

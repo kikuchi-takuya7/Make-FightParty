@@ -243,7 +243,7 @@ float Collider::LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, 
 //各ベクトルを計算
 void Collider::Calclation()
 {
-	XMFLOAT3 rot = pGameObject_->GetRotate() + rotate_;
+	XMFLOAT3 rot = rotate_;
 
 	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
 	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
@@ -288,7 +288,7 @@ void Collider::SetSize(XMFLOAT3 size)
 void Collider::SetRotate(XMFLOAT3 rotate)
 {
 
-	XMFLOAT3 rot = pGameObject_->GetRotate() + rotate;
+	XMFLOAT3 rot = rotate;
 
 	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
 	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);

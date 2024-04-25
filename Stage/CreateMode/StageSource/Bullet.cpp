@@ -23,20 +23,22 @@ void Bullet::Initialize()
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
 	assert(bulletModel_ >= ZERO);
 
-	//Initializeを呼び出してからSetSizeしてるから真ん中に出る謎の球体はでかい。つまり
+	
 
 	transform_.rotate_.y = GetParent()->GetRotate().y;
 
 	SetScale(DEFAULT_BULLET_SIZE);
 
 	bulletTrans_ = transform_;
+
+	Transform trans = GetParent()->GetParent()->GetTransform();
 }
 
 void Bullet::Update()
 {
 
 	bulletTrans_.position_.z += bulletSpeed_;
-
+	transform_.position_.z += bulletSpeed_;
 	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
@@ -52,7 +54,7 @@ void Bullet::Draw()
 	//当たり判定もちゃんとbulletTransと同じようにする
 	//transform_ = bulletTrans_;
 
-	Model::SetTransform(bulletModel_, bulletTrans_);
+	Model::SetTransform(bulletModel_, transform_);
 	Model::Draw(bulletModel_);
 
 #ifdef _DEBUG
