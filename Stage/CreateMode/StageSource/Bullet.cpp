@@ -25,13 +25,16 @@ void Bullet::Initialize()
 
 	
 
-	transform_.rotate_.y = GetParent()->GetRotate().y;
+	
 
-	SetScale(DEFAULT_BULLET_SIZE);
+	//SetScale(DEFAULT_BULLET_SIZE);
 
-	bulletTrans_ = transform_;
+	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(GetParent()->GetRotate().y));
 
-	Transform trans = GetParent()->GetParent()->GetTransform();
+	XMMATRIX rot = GetParent()->FindChildObject("AutoCannon")->GetTransform().matRotate_;
+
+	transform_.matRotate_ = rot;
+
 }
 
 void Bullet::Update()
