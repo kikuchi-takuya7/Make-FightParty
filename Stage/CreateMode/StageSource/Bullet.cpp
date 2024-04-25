@@ -6,6 +6,7 @@ namespace {
 	const float BULLET_RANGE = 30.0f;
 	const int DEFAULT_ATTACK_POWER = 10;
 	const float DEFAULT_BULLET_SPEED = 0.4f;
+	const float DEFAULT_BULLET_SIZE = 0.3f;
 }
 
 Bullet::Bullet(GameObject* parent)
@@ -25,49 +26,33 @@ void Bullet::Initialize()
 	//Initializeを呼び出してからSetSizeしてるから真ん中に出る謎の球体はでかい。つまり
 
 	transform_.rotate_.y = GetParent()->GetRotate().y;
+
+	SetScale(DEFAULT_BULLET_SIZE);
+
+	bulletTrans_ = transform_;
 }
 
 void Bullet::Update()
 {
-	transform_.position_.z += bulletSpeed_;
+
+	bulletTrans_.position_.z += bulletSpeed_;
+
+	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
-	if (transform_.position_.z >= BULLET_RANGE) {
+	if (moveLen_ >= BULLET_RANGE) {
 		KillMe();
 	}
-
-#if 0//colliderクラスを改良したため、transformを変えたらそのまま反映してくれるようになった
-
-	//transform_.positionでコリジョンの動きで、bulletPosでモデルの動き
-	//collisionはrotateを考慮してないので、別々に作る必要がある
-
-	int rotate = GetParent()->GetRotate().y;
-
-	bulletPos_.z += bulletSpeed_;
-
-	if (rotate == 0) {
-		transform_.position_.z += bulletSpeed_;
-	}
-	if (rotate == 90) {
-		transform_.position_.x += bulletSpeed_;
-	}
-	if (rotate == 180) {
-		transform_.position_.z -= bulletSpeed_;
-	}
-	if (rotate == 270) {
-		transform_.position_.x -= bulletSpeed_;
-	}
-
-#else//別の方法
-
-
-#endif
 
 }
 
 void Bullet::Draw()
 {
-	Model::SetTransform(bulletModel_, transform_);
+	
+	//当たり判定もちゃんとbulletTransと同じようにする
+	//transform_ = bulletTrans_;
+
+	Model::SetTransform(bulletModel_, bulletTrans_);
 	Model::Draw(bulletModel_);
 
 #ifdef _DEBUG

@@ -46,10 +46,14 @@ private:
 	//球のスピード
 	float bulletSpeed_;
 
+	//発射された時の大砲の角度
+	float startRotateY_;
+
+	//砲台の判定から独立させるための変数
+	Transform bulletTrans_;
+
 	SphereCollider* collider_;
 
-	XMFLOAT3 bulletPos_;
 
-	
 
 };

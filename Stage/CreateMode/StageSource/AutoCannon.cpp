@@ -47,7 +47,7 @@ void AutoCannon::ChildInitialize()
 	//球を打つ間隔
 	timer_->SetLimit(BULLET_INTERVAL);
 
-	//設置したプレイヤー以外をランダムで狙うようにする。
+	//開始時は設置したプレイヤー以外をランダムで狙うようにする。
 	while (true)
 	{
 		target_ = rand() % MAX_PLAYER;
@@ -85,7 +85,7 @@ void AutoCannon::ChildUpdate()
 
 	//狙っている敵に大砲を回転させる
 
-#if 1
+#if 0
 
 	//今狙っている敵の座標を獲得
 	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
@@ -117,37 +117,39 @@ void AutoCannon::ChildUpdate()
 
 
 
-	//今狙っている敵の座標を獲得
-	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
-	XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
+	////今狙っている敵の座標を獲得
+	//XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
+	//XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
 
-	XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
+	//XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
 
-	XMVECTOR rotVec = XMVector3Normalize(myVec - targetVec);
+	//XMVECTOR rotVec = XMVector3Normalize(myVec - targetVec);
 
-	//前ベクトルを向いている方向に変換して、正規化
-	XMVECTOR vFront = { 0,0,1,0 };
-	vFront = XMVector3Normalize(XMVector3TransformCoord(vFront, XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y))));
+	////前ベクトルを向いている方向に変換して、正規化
+	//XMVECTOR vFront = { 0,0,1,0 };
+	//vFront = XMVector3Normalize(XMVector3TransformCoord(vFront, XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y))));
 
-	//内積から角度を求める
-	XMVECTOR vDot = XMVector3Dot(vFront, myVec);
-	float dot = XMVectorGetX(vDot);
-	float angle = acos(dot);
+	////内積から角度を求める
+	//XMVECTOR vDot = XMVector3Dot(vFront, myVec);
+	//float dot = XMVectorGetX(vDot);
+	//float angle = acos(dot);
 
-	////外積が-になる角度なら
-	//XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
-	//if (XMVectorGetY(vCross) < ZERO) {
+	//////外積が-になる角度なら
+	////XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
+	////if (XMVectorGetY(vCross) < ZERO) {
 
-	//	angle *= -1;
-	//}
+	////	angle *= -1;
+	////}
 
-	float degree = XMConvertToDegrees(angle);
+	//float degree = XMConvertToDegrees(angle);
 
-	transform_.rotate_.y += degree;
+	//transform_.rotate_.y += degree;
 
-	//SetRotateY(degree);
+	////SetRotateY(degree);
 
 #endif
+
+	transform_.rotate_.y += 1;
 }
 
 void AutoCannon::ChildDraw()
