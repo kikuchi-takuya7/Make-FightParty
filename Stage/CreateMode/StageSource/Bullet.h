@@ -30,7 +30,7 @@ public:
 
 	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed);
 
-	void SetStartRot(float rotY) { startRotateY_ = rotY; }
+	void SetStartRot(float rotY);
 	
 	int GetAttackPower() { return attackPower_; }
 
@@ -50,6 +50,8 @@ private:
 
 	//”­Ë‚³‚ê‚½‚Ì‘å–C‚ÌŠp“x
 	float startRotateY_;
+
+	XMVECTOR vec_;
 
 	//–C‘ä‚Ì”»’è‚©‚ç“Æ—§‚³‚¹‚é‚½‚ß‚Ì•Ï”
 	Transform bulletTrans_;

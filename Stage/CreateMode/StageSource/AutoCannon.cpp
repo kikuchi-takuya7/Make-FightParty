@@ -62,7 +62,7 @@ void AutoCannon::ChildInitialize()
 
 void AutoCannon::ChildUpdate()
 {
-
+	//一旦プレイヤーだけ狙わせる
 	target_ = 0;
 
 	if (pNavigationAI_->GetCaracter(target_)->GetStatus().dead == true) {
@@ -73,12 +73,11 @@ void AutoCannon::ChildUpdate()
 
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
-		Bullet* pBullet = Instantiate<Bullet>(this);
+		Bullet* pBullet = Instantiate<Bullet>(GetParent());
 		pBullet->SetScale(BULLET_SIZE);
-		//pBullet->SetPosition(transform_.position_);
-		//pBullet->SetStartRot(transform_.rotate_.y);
+		pBullet->SetPosition(transform_.position_);
+		pBullet->SetStartRot(transform_.rotate_.y);
 		//bulletの中のワールドのrotateを変える必要がある
-
 
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
@@ -91,8 +90,6 @@ void AutoCannon::ChildUpdate()
 
 
 	//狙っている敵に大砲を回転させる
-
-#if 1 //初めに上下左右どこか向いてる事を考慮したやつ
 
 	//今狙っている敵の座標を獲得
 	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
@@ -120,41 +117,8 @@ void AutoCannon::ChildUpdate()
 
 	SetRotateY(degree);
 
-	//transform_.rotate_.y += degree;
+	transform_.rotate_.y += degree;
 
-#else //デフォルトが前向いてる方法のやつ
-
-	//今狙っている敵の座標を獲得
-	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
-	XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
-
-	XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
-
-	XMVECTOR rotVec = XMVector3Normalize(myVec - targetVec);
-
-	//前ベクトルを向いている方向に変換して、正規化
-	XMVECTOR vFront = { 0,0,1,0 };
-	vFront = XMVector3Normalize(vFront);
-
-	//内積から角度を求める
-	XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
-	float dot = XMVectorGetX(vDot);
-	float angle = acos(dot);
-
-	//外積が-になる角度なら
-	XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
-	if (XMVectorGetY(vCross) < ZERO) {
-
-		angle *= -1;
-	}
-
-	float degree = XMConvertToDegrees(angle);
-
-	//transform_.rotate_.y += degree;
-
-	SetRotateY(degree);
-
-#endif
 
 	transform_.rotate_.y += 1;
 }

@@ -27,9 +27,10 @@ void Bullet::Initialize()
 
 	transform_.matRotate_ = XMMatrixIdentity();
 
-	startRotateY_ = GetParent()->GetRotate().y;
 
 	//AutoCannonを親とするとずっと親の回転の影響受けちゃうから、発射された時点でのワールド座標だけを使いたい.それかベクトルで平行移動させちゃう
+	
+	
 
 }
 
@@ -38,16 +39,17 @@ void Bullet::Update()
 	
 	//発射時の回転だけ覚えておいてベクトルでの移動->毎フレーム回転行列がかけられてグルグル回った
 
-	/*XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
-	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	XMMATRIX rotMat = XMMatrixRotationY(startRotateY_);
-	XMMATRIX mat = rotMat * moveMat;
-
-	XMVECTOR vec = XMVector3TransformCoord(myVec, mat);
-
-	transform_.position_ = VectorToFloat3(vec);*/
 	
-	transform_.position_.z += bulletSpeed_;
+	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	vec_ = XMVector3TransformCoord(vec_, moveMat);
+
+	transform_.position_ = VectorToFloat3(vec_);
+	
+	//transform_.position_.z += bulletSpeed_;
+
+
+
+	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
 	if (moveLen_ >= BULLET_RANGE) {
@@ -91,4 +93,15 @@ void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, in
 	bulletSpeed_ = speed;
 }
 
+void Bullet::SetStartRot(float rotY) 
+{
 
+	startRotateY_ = rotY;
+
+	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	XMMATRIX rotMat = XMMatrixRotationY(rotY);
+	XMMATRIX mat = moveMat * rotMat;
+
+	vec_ = XMVector3TransformCoord(myVec, mat);
+}
