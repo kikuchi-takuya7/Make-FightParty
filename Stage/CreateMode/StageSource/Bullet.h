@@ -29,6 +29,8 @@ public:
 	void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
 	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed);
+
+	void SetStartRot(float rotY) { startRotateY_ = rotY; }
 	
 	int GetAttackPower() { return attackPower_; }
 

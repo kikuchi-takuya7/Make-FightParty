@@ -5,6 +5,7 @@
 #include "../../../Engine/Audio.h"
 #include "../../../AI/MetaAI.h"
 #include "../../../AI/NavigationAI.h"
+#include "../../../VFXData/VFXData.h"
 #include "Bullet.h"
 
 //定数宣言
@@ -62,6 +63,8 @@ void AutoCannon::ChildInitialize()
 void AutoCannon::ChildUpdate()
 {
 
+	target_ = 0;
+
 	if (pNavigationAI_->GetCaracter(target_)->GetStatus().dead == true) {
 		target_ = pMetaAI_->Targeting(authorID_).ID;
 	}
@@ -70,9 +73,10 @@ void AutoCannon::ChildUpdate()
 
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
-		Bullet* pBullet = Instantiate<Bullet>(GetParent());
+		Bullet* pBullet = Instantiate<Bullet>(this);
 		pBullet->SetScale(BULLET_SIZE);
-		pBullet->SetPosition(transform_.position_);
+		//pBullet->SetPosition(transform_.position_);
+		//pBullet->SetStartRot(transform_.rotate_.y);
 		//bulletの中のワールドのrotateを変える必要がある
 
 
@@ -88,67 +92,67 @@ void AutoCannon::ChildUpdate()
 
 	//狙っている敵に大砲を回転させる
 
-#if 0
+#if 1 //初めに上下左右どこか向いてる事を考慮したやつ
 
 	//今狙っている敵の座標を獲得
 	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
 	XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
+	
+	//XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
+	//XMVECTOR rotVec = XMVector3Normalize(targetVec - myVec);
 
 	//前ベクトルを向いている方向に変換して、正規化
 	XMVECTOR vFront = { 0,0,1,0 };
-	vFront = XMVector3Normalize(XMVector3TransformCoord(vFront, XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y))));
 
 	//内積から角度を求める
 	XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
 	float dot = XMVectorGetX(vDot);
 	float angle = acos(dot);
 
-	////外積が-になる角度なら
-	//XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
-	//if (XMVectorGetY(vCross) < ZERO) {
+	//外積が-になる角度なら
+	XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
+	if (XMVectorGetY(vCross) < ZERO) {
 
-	//	angle *= -1;
-	//}
+		angle *= -1;
+	}
 
 	float degree = XMConvertToDegrees(angle);
 
-	//degree = fabs(degree);
-
-	transform_.rotate_.y += degree;
-
-#else 
-
-
-
-	////今狙っている敵の座標を獲得
-	//XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
-	//XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
-
-	//XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
-
-	//XMVECTOR rotVec = XMVector3Normalize(myVec - targetVec);
-
-	////前ベクトルを向いている方向に変換して、正規化
-	//XMVECTOR vFront = { 0,0,1,0 };
-	//vFront = XMVector3Normalize(XMVector3TransformCoord(vFront, XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y))));
-
-	////内積から角度を求める
-	//XMVECTOR vDot = XMVector3Dot(vFront, myVec);
-	//float dot = XMVectorGetX(vDot);
-	//float angle = acos(dot);
-
-	//////外積が-になる角度なら
-	////XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
-	////if (XMVectorGetY(vCross) < ZERO) {
-
-	////	angle *= -1;
-	////}
-
-	//float degree = XMConvertToDegrees(angle);
+	SetRotateY(degree);
 
 	//transform_.rotate_.y += degree;
 
-	////SetRotateY(degree);
+#else //デフォルトが前向いてる方法のやつ
+
+	//今狙っている敵の座標を獲得
+	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
+	XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
+
+	XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
+
+	XMVECTOR rotVec = XMVector3Normalize(myVec - targetVec);
+
+	//前ベクトルを向いている方向に変換して、正規化
+	XMVECTOR vFront = { 0,0,1,0 };
+	vFront = XMVector3Normalize(vFront);
+
+	//内積から角度を求める
+	XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
+	float dot = XMVectorGetX(vDot);
+	float angle = acos(dot);
+
+	//外積が-になる角度なら
+	XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
+	if (XMVectorGetY(vCross) < ZERO) {
+
+		angle *= -1;
+	}
+
+	float degree = XMConvertToDegrees(angle);
+
+	//transform_.rotate_.y += degree;
+
+	SetRotateY(degree);
 
 #endif
 
@@ -175,23 +179,29 @@ void AutoCannon::FiringEffect()
 {
 	EmitterData data;
 
-	data.textureFileName = "VFX/cloudA.png";
-	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
-	data.positionRnd = XMFLOAT3(0.1, 0, 0.1);
-	data.delay = 0;
-	data.number = 2;
-	data.lifeTime = 30;
-	data.direction = XMFLOAT3(0, 1, 0);
-	data.directionRnd = XMFLOAT3(0, 0, 0);
-	data.speed = 0.1f;
-	data.accel = 0.98;
-	data.speedRnd = 0.0;
-	data.size = XMFLOAT2(2, 2);
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.scale = XMFLOAT2(1.01, 1.01);
-	data.color = XMFLOAT4(1, 1, 1, 0.2);
-	data.deltaColor = XMFLOAT4(0, 0, 0, -0.002);
-	data.spin.z = 0.1;
-	data.rotateRnd.z = 180;
+	using namespace FiringEffect;
+
+	data.textureFileName = FILENAME;
+	data.position = transform_.position_;
+	data.positionRnd = POSITIONRND;
+	data.direction = DIRECTION;
+	data.directionRnd = DIRECTIONRND;
+	data.speed = SPEED;
+	data.speedRnd = SPEEDRND;
+	data.accel = FiringEffect::ACCEL;
+	data.gravity = GRAVITY;
+	data.color = COLOR;
+	data.deltaColor = DELTACOLOR;
+	data.rotate = ROTATE;
+	data.rotateRnd = ROTATERND;
+	data.spin = SPIN;
+	data.size = FiringEffect::SIZE;
+	data.sizeRnd = SIZERND;
+	data.scale = SCALE;
+	data.lifeTime = LIFETIME;
+	data.delay = DELAY;
+	data.number = NUMBER;
+	data.isBillBoard = ISBILLBOARD;
+
 	VFX::Start(data);
 }
