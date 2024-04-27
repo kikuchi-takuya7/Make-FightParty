@@ -4,13 +4,12 @@
 namespace {
 
 	const float BULLET_RANGE = 30.0f;
-	const int DEFAULT_ATTACK_POWER = 10;
 	const float DEFAULT_BULLET_SPEED = 0.4f;
 	const float DEFAULT_BULLET_SIZE = 0.3f;
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),attackPower_(DEFAULT_ATTACK_POWER),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
+	:StageSourceBase(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
 {
 }
 
@@ -18,14 +17,14 @@ Bullet::~Bullet()
 {
 }
 
-void Bullet::Initialize()
+void Bullet::ChildInitialize()
 {
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
 	assert(bulletModel_ >= ZERO);
 
 	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(GetParent()->GetRotate().y));
 
-	transform_.matRotate_ = XMMatrixIdentity();
+	//transform_.matRotate_ = XMMatrixIdentity();
 
 
 	//AutoCannonを親とするとずっと親の回転の影響受けちゃうから、発射された時点でのワールド座標だけを使いたい.それかベクトルで平行移動させちゃう
@@ -34,7 +33,7 @@ void Bullet::Initialize()
 
 }
 
-void Bullet::Update()
+void Bullet::ChildUpdate()
 {
 	
 	//発射時の回転だけ覚えておいてベクトルでの移動->毎フレーム回転行列がかけられてグルグル回った
@@ -58,7 +57,7 @@ void Bullet::Update()
 
 }
 
-void Bullet::Draw()
+void Bullet::ChildDraw()
 {
 	
 	//当たり判定もちゃんとbulletTransと同じようにする
@@ -72,7 +71,7 @@ void Bullet::Draw()
 #endif
 }
 
-void Bullet::Release()
+void Bullet::ChildRelease()
 {
 }
 
@@ -99,9 +98,8 @@ void Bullet::SetStartRot(float rotY)
 	startRotateY_ = rotY;
 
 	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
-	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
 	XMMATRIX rotMat = XMMatrixRotationY(rotY);
-	XMMATRIX mat = moveMat * rotMat;
+	XMMATRIX mat = rotMat;
 
 	vec_ = XMVector3TransformCoord(myVec, mat);
 }

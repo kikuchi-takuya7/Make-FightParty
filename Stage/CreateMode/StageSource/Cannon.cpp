@@ -31,7 +31,6 @@ Cannon::~Cannon()
 void Cannon::ChildInitialize()
 {
 
-	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
 	cost_ = COST;
 
 	AddCollider(pBoxCollision_, COLLIDER_BROCK);
@@ -56,7 +55,7 @@ void Cannon::ChildUpdate()
 		
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_OBJ_ATTACK, BULLET_ATTACK_POWER, BULLET_SPEED);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();

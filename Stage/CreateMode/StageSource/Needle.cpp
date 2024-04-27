@@ -19,7 +19,6 @@ Needle::~Needle()
 void Needle::ChildInitialize()
 {
 
-	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
 	cost_ = COST;
 
 	needlePower_ = NEEDLEPOWER;

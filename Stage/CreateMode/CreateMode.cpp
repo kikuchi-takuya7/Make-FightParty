@@ -16,6 +16,7 @@
 #include "StageSource/Cannon.h"
 #include "StageSource/Needle.h"
 #include "StageSource/AutoCannon.h"
+#include "StageSource/RotateBlade.h"
 
 
 //’è”éŒ¾
@@ -496,6 +497,10 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
 
     case ONEBROCK:
         CreateInstance<OneBrock>(hModel, trans, element);
+        break;
+
+    case ROTATE_BLADE:
+        CreateInstance<RotateBlade>(hModel, trans, element);
         break;
 
     case PATTERN_END:

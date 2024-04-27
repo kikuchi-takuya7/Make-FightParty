@@ -142,10 +142,10 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	if (pState_->pCharacterStateList_.at(KNOCKBACK) == pState_->characterState_)
 		return;
 
-	//球に当たった時の処理
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+	//オブジェクトからの攻撃に当たった時の処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBJ_ATTACK) {
 
-		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
+		HitDamage(static_cast<StageSourceBase*>(pTarget)->GetAttackPower());
 
 		SetTargetRotate(pTarget->GetRotate());
 

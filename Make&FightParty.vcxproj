@@ -190,6 +190,7 @@
     <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Needle.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\OneBrock.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\RotateBlade.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\StageSourceBase.cpp" />
     <ClCompile Include="Stage\Stage.cpp" />
     <ClCompile Include="UI\ChampionUI.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Needle.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\OneBrock.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\RotateBlade.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\StageSourceBase.h" />
     <ClInclude Include="Stage\Stage.h" />
     <ClInclude Include="UI\ChampionUI.h" />

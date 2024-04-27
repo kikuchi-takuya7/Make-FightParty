@@ -11,12 +11,13 @@ enum CREATESTATE {
 	NONE
 };
 
-//新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
+//新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する ※フォルダ内の順番と同じ順番になるように
 enum FBXPATTERN {
 	AUTO_CANNON,
 	CANNON,
 	NEEDLE,
 	ONEBROCK,
+	ROTATE_BLADE,
 	PATTERN_END
 };
 

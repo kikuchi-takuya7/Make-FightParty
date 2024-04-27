@@ -8,7 +8,7 @@ namespace {
 }
 
 StageSourceBase::StageSourceBase(GameObject* parent, std::string name)
-	:GameObject(parent,name), hModel_(-1), pBoxCollision_(nullptr)
+	:GameObject(parent,name), hModel_(-1),attackPower_(ZERO), pBoxCollision_(nullptr)
 {
 }
 
