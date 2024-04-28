@@ -9,6 +9,7 @@ struct Status {
     //試合に関係するステータス
     int hp;                 //HP
     int attackPower;        //敵を殴った時に与えるダメージ
+    float moveSpeed;        //そのキャラの移動速度
     bool dead;              //死んでいるかどうか。死んでたらtrue
 
     //スコアに関係するステータス
@@ -21,6 +22,7 @@ struct Status {
     Status() {
         hp = ZERO;
         attackPower = ZERO;
+        moveSpeed = ZERO;
         dead = false;
         winPoint = ZERO;
         killPoint = ZERO;
@@ -29,9 +31,10 @@ struct Status {
     }
 
     //引数付きコンストラクタ
-    Status(int h, int p, bool d, int win, int kill, int obj, std::string n) {
+    Status(int h, int p, float s, bool d, int win, int kill, int obj, std::string n) {
         hp = h;
         attackPower = p;
+        moveSpeed = s;
         dead = d;
         winPoint = win;
         killPoint = kill;
@@ -154,6 +157,7 @@ public:
     Status GetStatus() { return status_; }
     XMFLOAT3 GetStartPos() { return startPos_; }
     XMFLOAT3 GetTargetRot() { return targetRot_; }
+    
     void SetStatus(Status status) { status_ = status; }
     void SetStartPos(XMFLOAT3 pos) { startPos_ = pos; }
     void SetColliderRotate(XMFLOAT3 rotate) { pAttackCollision_->SetRotate(rotate); }

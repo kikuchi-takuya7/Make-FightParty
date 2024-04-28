@@ -66,7 +66,8 @@ public:
 	/// <summary>
 	/// NavigationAIに行くべき場所を聞き、移動する関数
 	/// </summary>
-	void MoveEnemy();
+	/// <param name="moveSpeed">CPUの移動速度</param>
+	void MoveEnemy(float moveSpeed);
 
 	/// <summary>
 	/// 攻撃するかどうかを指示する関数

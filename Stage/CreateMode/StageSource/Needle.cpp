@@ -23,7 +23,7 @@ void Needle::ChildInitialize()
 
 	needlePower_ = NEEDLEPOWER;
 
-	AddCollider(pBoxCollision_, COLLIDER_OBSTRYCTION);
+	AddCollider(pBoxCollision_, COLLIDER_NEEDLE);
 }
 
 void Needle::ChildUpdate()

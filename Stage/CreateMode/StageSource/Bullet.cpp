@@ -9,7 +9,7 @@ namespace {
 }
 
 Bullet::Bullet(GameObject* parent)
-	:StageSourceBase(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
 {
 }
 
@@ -17,37 +17,29 @@ Bullet::~Bullet()
 {
 }
 
-void Bullet::ChildInitialize()
+void Bullet::Initialize()
 {
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
 	assert(bulletModel_ >= ZERO);
 
-	XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(GetParent()->GetRotate().y));
+	transform_.rotate_.y = GetParent()->GetRotate().y;
 
-	//transform_.matRotate_ = XMMatrixIdentity();
-
-
-	//AutoCannonを親とするとずっと親の回転の影響受けちゃうから、発射された時点でのワールド座標だけを使いたい.それかベクトルで平行移動させちゃう
-	
-	
 
 }
 
-void Bullet::ChildUpdate()
+void Bullet::Update()
 {
 	
 	//発射時の回転だけ覚えておいてベクトルでの移動->毎フレーム回転行列がかけられてグルグル回った
-
-	
-	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	/*XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
 	vec_ = XMVector3TransformCoord(vec_, moveMat);
-
-	transform_.position_ = VectorToFloat3(vec_);
+	transform_.position_ = VectorToFloat3(vec_);*/
 	
-	//transform_.position_.z += bulletSpeed_;
 
 
+	//bulletTrans_.position_.z += bulletSpeed_;
 
+	transform_.position_.z += bulletSpeed_;
 	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
@@ -57,12 +49,8 @@ void Bullet::ChildUpdate()
 
 }
 
-void Bullet::ChildDraw()
+void Bullet::Draw()
 {
-	
-	//当たり判定もちゃんとbulletTransと同じようにする
-	//transform_ = bulletTrans_;
-
 	Model::SetTransform(bulletModel_, transform_);
 	Model::Draw(bulletModel_);
 
@@ -71,7 +59,7 @@ void Bullet::ChildDraw()
 #endif
 }
 
-void Bullet::ChildRelease()
+void Bullet::Release()
 {
 }
 
@@ -84,6 +72,13 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 
 }
 
+/// <summary>
+/// 大砲の情報をセット
+/// </summary>
+/// <param name="collider">球の当たり判定</param>
+/// <param name="type">コライダーのタイプ</param>
+/// <param name="attackPower">大砲の攻撃力</param>
+/// <param name="speed">球のスピード</param>
 void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed)
 {
 	collider_ = collider;
@@ -92,6 +87,10 @@ void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, in
 	bulletSpeed_ = speed;
 }
 
+/// <summary>
+/// 自動追従砲台用の情報をセット 未使用
+/// </summary>
+/// <param name="rotY"></param>
 void Bullet::SetStartRot(float rotY) 
 {
 

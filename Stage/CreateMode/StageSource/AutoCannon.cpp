@@ -119,7 +119,7 @@ void AutoCannon::ChildUpdate()
 
 	transform_.rotate_.y += degree;
 
-
+	
 	transform_.rotate_.y += 1;
 }
 

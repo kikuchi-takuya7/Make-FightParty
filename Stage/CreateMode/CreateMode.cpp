@@ -17,6 +17,7 @@
 #include "StageSource/Needle.h"
 #include "StageSource/AutoCannon.h"
 #include "StageSource/RotateBlade.h"
+#include "StageSource/Mud.h"
 
 
 //定数宣言
@@ -480,15 +481,19 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
     switch (pattern)
     {
-    case AUTO_CANNON: {
-        AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
-        pObject->SetNavigationAI(pNavigationAI_);
-        pObject->SetMetaAI(pMetaAI_);
-        break;
-    }
+    //case AUTO_CANNON: {
+    //    AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
+    //    pObject->SetNavigationAI(pNavigationAI_);
+    //    pObject->SetMetaAI(pMetaAI_);
+    //    break;
+    //}
 
     case CANNON:
         CreateInstance<Cannon>(hModel, trans, element);
+        break;
+
+    case MUD:
+        CreateInstance<Mud>(hModel, trans, element);
         break;
 
     case NEEDLE:

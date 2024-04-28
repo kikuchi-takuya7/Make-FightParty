@@ -47,7 +47,7 @@ void Enemy::ChildInitialize()
 void Enemy::ChildUpdate()
 {
 
-	pCharacterAI_->MoveEnemy();
+	pCharacterAI_->MoveEnemy(status_.moveSpeed);
 	pCharacterAI_->IsAttack();
 
 }
@@ -84,7 +84,7 @@ void Enemy::ChangeTarget(GameObject* pTarget)
 // CharavterAIに移動する場所を聞いて移動する関数
 void Enemy::MoveCharacter()
 {
-	pCharacterAI_->MoveEnemy();
+	pCharacterAI_->MoveEnemy(status_.moveSpeed);
 }
 
 // メタAIに現在のステータスを伝える関数

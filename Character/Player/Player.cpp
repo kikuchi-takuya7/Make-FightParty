@@ -18,13 +18,14 @@ namespace {
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 
-	const float PLAYER_SPEED = 0.2;
-
 	//移動できる最大の位置
 	const float MAX_MOVE_X = 29.0f;
 	const float MAX_MOVE_Z = 29.0f;
 	const float MIN_MOVE_X = ZERO;
 	const float MIN_MOVE_Z = ZERO;
+
+	//プレイヤーの移動速度
+	const float PLAYER_MOVE_SPEED = 0.2f;
 }
 
 //コンストラクタ
@@ -49,6 +50,8 @@ void Player::ChildInitialize()
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
+
+	//status_.moveSpeed = PLAYER_MOVE_SPEED;
 }
 
 //更新
@@ -134,8 +137,8 @@ void Player::MoveCharacter()
 	fMove = VectorToFloat3(vMove);
 
 	//速度調整
-	fMove.x *= PLAYER_SPEED;
-	fMove.z *= PLAYER_SPEED;
+	fMove.x *= status_.moveSpeed;
+	fMove.z *= status_.moveSpeed;
 
 	characterPos.x += fMove.x;
 	characterPos.z += fMove.z;

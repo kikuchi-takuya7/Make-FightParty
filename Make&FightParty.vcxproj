@@ -188,6 +188,7 @@
     <ClCompile Include="Stage\CreateMode\StageSource\AutoCannon.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Bullet.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Cannon.cpp" />
+    <ClCompile Include="Stage\CreateMode\StageSource\Mud.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\Needle.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\OneBrock.cpp" />
     <ClCompile Include="Stage\CreateMode\StageSource\RotateBlade.cpp" />
@@ -266,6 +267,7 @@
     <ClInclude Include="Stage\CreateMode\StageSource\AutoCannon.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Bullet.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Cannon.h" />
+    <ClInclude Include="Stage\CreateMode\StageSource\Mud.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\Needle.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\OneBrock.h" />
     <ClInclude Include="Stage\CreateMode\StageSource\RotateBlade.h" />

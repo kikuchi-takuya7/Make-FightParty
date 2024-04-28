@@ -290,6 +290,9 @@
     <ClCompile Include="Stage\CreateMode\StageSource\RotateBlade.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
+    <ClCompile Include="Stage\CreateMode\StageSource\Mud.cpp">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -518,6 +521,9 @@
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\RotateBlade.h">
+      <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\CreateMode\StageSource\Mud.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClInclude>
   </ItemGroup>

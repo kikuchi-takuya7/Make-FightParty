@@ -25,8 +25,6 @@ namespace {
 	//配列内の斜めを探索する位置
 	const int DIAGONAL_MOVE = 4;
 
-	const float CPU_SPEED = 0.1f;
-
 
 }
 
@@ -252,28 +250,6 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 				cost = DIAGONAL_COST;
 			}
 
-#if 0
-			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋mapのコスト分で今現在わかっている最短距離）でないなら。
-			if (dist.at(sz).at(sx) <= dist.at(nz).at(nx) + map.at(sz).at(sx) + cost) {
-				continue;
-			}
-
-			//最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
-			rest.at(sz).at(sx) = IntPair(nz, nx);
-
-			//目的地に着いたら
-			if (sz == target.first && sx == target.second) {
-
-				isBreak = true;
-				break;
-			}
-
-			//最短距離の更新
-			dist.at(sz).at(sx) = map.at(sz).at(sx) + cost + secondH;
-
-			//次の探索候補を入れておく.ヒューリスティック分を含めたコスト,場所
-			que.emplace(PIntP(dist.at(sz).at(sx), IntPair(sz, sx)));
-#else
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋map+ヒューリスティックのコスト分で今現在わかっている最短距離）でないなら。
 			if (dist.at(sz).at(sx) + secondH <= dist.at(nz).at(nx) + map.at(sz).at(sx) + nowH + cost) {
 				//今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
@@ -295,7 +271,6 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 			//次の探索候補を入れておく
 			que.emplace(PIntP(dist.at(sz).at(sx) + secondH, IntPair(sz, sx)));
-#endif
 			
 		}
 
@@ -306,7 +281,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
-	//残り小数点以下の時中途半端に止まるのでその分を補完する
+	//残りの距離が小数点以下の場合、中途半端に止まるのでその分を補完する
 	if (nextPos == ZERO_FLOAT3) {
 		return Float3Sub(targetPos, startPos) * 0.05f;
 	}
@@ -490,11 +465,7 @@ XMFLOAT3 NavigationAI::Path_Search(vector<vector<IntPair>> rest, IntPair start, 
 		fMove.z = 1.0f;
 	}
 
-	//向かう方向ベクトルを確認
-	XMVECTOR vMove = XMLoadFloat3(&fMove);
-	vMove = XMVector3Normalize(vMove);
-	fMove = VectorToFloat3(vMove);
-	fMove = fMove * CPU_SPEED;
+	
 
 	return fMove;
 

@@ -7,6 +7,8 @@
 #include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
+#include "../Stage/CreateMode/StageSource/Mud.h"
+#include "../Stage/CreateMode/StageSource/RotateBlade.h"
 #include "../UI/PlayerUI.h"
 #include "CharacterState/CharacterStateManager.h"
 #include "../VFXData/VFXData.h"
@@ -21,11 +23,13 @@ namespace {
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1.5, 0.5, 3.0);
 
 	const int PLAYER_MAX_NUM = 4;
+
+	const float DEFAULT_MOVE_SPEED = 0.12f;
 }
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, false, ZERO, ZERO, ZERO, "NONE")),
+	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, DEFAULT_MOVE_SPEED, false, ZERO, ZERO, ZERO, "NONE")),
 	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), hSoundEffect_{-1,-1}
 	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
@@ -89,6 +93,8 @@ void Character::Update()
 		ChildUpdate();
 	}
 
+	//泥を踏んだ時の移動速度を戻す用
+	status_.moveSpeed = DEFAULT_MOVE_SPEED;
 
 }
 
@@ -142,20 +148,33 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	if (pState_->pCharacterStateList_.at(KNOCKBACK) == pState_->characterState_)
 		return;
 
-	//オブジェクトからの攻撃に当たった時の処理
+	//球からの攻撃に当たった時の処理
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
+
+		HitDamage(static_cast<Bullet*>(pTarget)->GetBulletPower());
+		SetTargetRotate(pTarget->GetRotate());
+		pState_->ChangeState(KNOCKBACK);
+
+	}
+
+	//回転する刃からの攻撃に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBJ_ATTACK) {
 
-		HitDamage(static_cast<StageSourceBase*>(pTarget)->GetAttackPower());
-
+		HitDamage(static_cast<RotateBlade*>(pTarget)->GetAttackPower());
 		SetTargetRotate(pTarget->GetRotate());
-
 		pState_->ChangeState(KNOCKBACK);
 
 	}
 
 	//トゲに当たった時の処理
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBSTRYCTION) {
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_NEEDLE) {
 		HitDamage(static_cast<Needle*>(pTarget)->GetNeedlePower());
+	}
+
+	//泥に当たった時の処理 
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_MUD) {
+		float deceleration = static_cast<Mud*>(pTarget)->GetDeceleration();
+		status_.moveSpeed = DEFAULT_MOVE_SPEED * deceleration;
 	}
 
 	//攻撃に当たったときの処理

@@ -25,8 +25,10 @@ enum ColliderAttackType
 	COLLIDER_ATTACK,			//体での攻撃(殴るとか)
 	COLLIDER_WEAPON,			//武器での攻撃
 	COLLIDER_BROCK,				//ブロックのオブジェクト
-	COLLIDER_OBSTRYCTION,		//トゲ等のオブジェクト
-	COLLIDER_OBJ_ATTACK			//球での攻撃
+	COLLIDER_NEEDLE,			//トゲ
+	COLLIDER_MUD,				//泥
+	COLLIDER_BULLET,			//球での攻撃
+	COLLIDER_OBJ_ATTACK			//オブジェクトからの近接攻撃（回転する刃とか）
 };
 
 //3方向のベクトル

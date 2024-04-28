@@ -30,6 +30,7 @@ namespace {
 	//オブジェクトを上下左右に向きを変える用。90度に0～3をかけて360度回転させるようにする
 	const int OBJECT_ANGLE_CHOICES = 90;
 	const int OBJECT_ANGLE_PATTERN = 4;
+
 }
 
 CharacterAI::CharacterAI(GameObject* parent)
@@ -88,11 +89,19 @@ void CharacterAI::TellStatus()
 
 
 // NavigationAIに行くべき場所を聞き、移動する関数
-void CharacterAI::MoveEnemy()
+void CharacterAI::MoveEnemy(float moveSpeed)
 {
 
 	//NavigationAIに向かうべき方向を聞く
 	XMFLOAT3 fMove = pNavigationAI_->Astar(pEnemy_->GetObjectID(), target_.ID);
+
+	//向かう方向ベクトルを確認
+	XMVECTOR vMove = XMLoadFloat3(&fMove);
+	vMove = XMVector3Normalize(vMove);
+	fMove = VectorToFloat3(vMove);
+	fMove = fMove * moveSpeed;
+
+	
 
 	pEnemy_->SetPosition(Float3Add(pEnemy_->GetPosition(), fMove));
 
@@ -100,9 +109,7 @@ void CharacterAI::MoveEnemy()
 		pEnemy_->ChangeState(IDLE);
 	}
 
-	//向かう方向ベクトルを確認
-	XMVECTOR vMove = XMLoadFloat3(&fMove);
-	vMove = XMVector3Normalize(vMove);
+	//ベクトルが動いているかどうかを確認
 	float length = Length(vMove);
 
 	//動いているなら角度を求めて回転する
