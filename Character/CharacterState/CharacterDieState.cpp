@@ -3,7 +3,7 @@
 
 namespace {
 	const int DIE_START_FRAME = 250;
-	const int DIE_END_FRAME = 340 + 9999999;//死んだあとずっと止まっててもらう。if文を使わなくてもいいように
+	const int DIE_END_FRAME = 340 + 9999999;//死んだあとずっと止まっててもらう。if文を使わなくてもいいようにでかい値を入れておく
 
 	//アニメーションの1フレーム毎に進む速度
 	const int ANIMATION_SPEED = 1;

@@ -2,13 +2,13 @@
 
 namespace {
 	const XMFLOAT3 BOX_COLLISION_CENTER = XMFLOAT3(ZERO, 0.5f, ZERO);
-	const XMFLOAT3 BOX_COLLISION_SIZE = XMFLOAT3(1, 1, 1);
+	const XMFLOAT3 BOX_COLLISION_SIZE = XMFLOAT3(0.5, 0.5, 0.5);
 
 	const float MOVE_SPEED = 0.05f;
 }
 
 StageSourceBase::StageSourceBase(GameObject* parent, std::string name)
-	:GameObject(parent,name), hModel_(-1), pBoxCollision_(nullptr)
+	:GameObject(parent,name), hModel_(-1),attackPower_(ZERO), pBoxCollision_(nullptr)
 {
 }
 

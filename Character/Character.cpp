@@ -7,6 +7,8 @@
 #include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
+#include "../Stage/CreateMode/StageSource/Mud.h"
+#include "../Stage/CreateMode/StageSource/RotateBlade.h"
 #include "../UI/PlayerUI.h"
 #include "CharacterState/CharacterStateManager.h"
 #include "../VFXData/VFXData.h"
@@ -18,14 +20,16 @@ namespace {
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(0.9, 2, 0.9);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1.5, 0.5, 3);
+	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1.5, 0.5, 3.0);
 
 	const int PLAYER_MAX_NUM = 4;
+
+	const float DEFAULT_MOVE_SPEED = 0.12f;
 }
 
 //ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 Character::Character(GameObject* parent,std::string name)
-	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, false, ZERO, ZERO, ZERO, "NONE")),
+	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, DEFAULT_MOVE_SPEED, false, ZERO, ZERO, ZERO, "NONE")),
 	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), hSoundEffect_{-1,-1}
 	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
@@ -89,6 +93,8 @@ void Character::Update()
 		ChildUpdate();
 	}
 
+	//“D‚ğ“¥‚ñ‚¾‚ÌˆÚ“®‘¬“x‚ğ–ß‚·—p
+	status_.moveSpeed = DEFAULT_MOVE_SPEED;
 
 }
 
@@ -142,20 +148,33 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	if (pState_->pCharacterStateList_.at(KNOCKBACK) == pState_->characterState_)
 		return;
 
-	//‹…‚É“–‚½‚Á‚½‚Ìˆ—
+	//‹…‚©‚ç‚ÌUŒ‚‚É“–‚½‚Á‚½‚Ìˆ—
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
 
-		HitDamage(static_cast<Bullet*>(pTarget)->GetAttackPower());
-
+		HitDamage(static_cast<Bullet*>(pTarget)->GetBulletPower());
 		SetTargetRotate(pTarget->GetRotate());
+		pState_->ChangeState(KNOCKBACK);
 
+	}
+
+	//‰ñ“]‚·‚én‚©‚ç‚ÌUŒ‚‚É“–‚½‚Á‚½‚Ìˆ—
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBJ_ATTACK) {
+
+		HitDamage(static_cast<RotateBlade*>(pTarget)->GetAttackPower());
+		SetTargetRotate(pTarget->GetRotate());
 		pState_->ChangeState(KNOCKBACK);
 
 	}
 
 	//ƒgƒQ‚É“–‚½‚Á‚½‚Ìˆ—
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBSTRYCTION) {
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_NEEDLE) {
 		HitDamage(static_cast<Needle*>(pTarget)->GetNeedlePower());
+	}
+
+	//“D‚É“–‚½‚Á‚½‚Ìˆ— 
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_MUD) {
+		float deceleration = static_cast<Mud*>(pTarget)->GetDeceleration();
+		status_.moveSpeed = DEFAULT_MOVE_SPEED * deceleration;
 	}
 
 	//UŒ‚‚É“–‚½‚Á‚½‚Æ‚«‚Ìˆ—

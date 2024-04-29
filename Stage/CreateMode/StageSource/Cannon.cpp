@@ -12,10 +12,10 @@ namespace {
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
-	const float BULLET_INTERVAL = 3;
+	const float BULLET_INTERVAL = 3.0f;
 	const float BULLET_SIZE = 0.3f;
 
-	const int BULLET_ATTACK_POWER = 10;
+	const int BULLET_ATTACK_POWER = 20;
 	const float BULLET_SPEED = 0.4f;
 }
 
@@ -31,7 +31,6 @@ Cannon::~Cannon()
 void Cannon::ChildInitialize()
 {
 
-	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
 	cost_ = COST;
 
 	AddCollider(pBoxCollision_, COLLIDER_BROCK);
@@ -56,7 +55,7 @@ void Cannon::ChildUpdate()
 		
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_OBJ_ATTACK, BULLET_ATTACK_POWER, BULLET_SPEED);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();

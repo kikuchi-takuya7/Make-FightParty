@@ -11,11 +11,14 @@ enum CREATESTATE {
 	NONE
 };
 
-//新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する
+//新しいファイルを追加したら、こことCreateObjectに要素を手動で追加する ※フォルダ内の順番と同じ順番になるように
 enum FBXPATTERN {
+	//AUTO_CANNON,
 	CANNON,
+	MUD,
 	NEEDLE,
 	ONEBROCK,
+	ROTATE_BLADE,
 	PATTERN_END
 };
 
@@ -271,15 +274,27 @@ private:
 	int hBGM_;
 
 
+	//インスタンスを作成して色々するテンプレート(大きさを変えられる用にする実装を試す用)
+	/*template <class T>
+	T* CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square);*/
+
+
 	//インスタンスを作成して色々するテンプレート
 	template <class T>
 	T* CreateInstance(int hModel, Transform trans, int ID)
 	{
 		T* pObject = Instantiate<T>(this);
+
+		//作成したオブジェクトリストに追加
 		AddCreateObject(pObject);
+
+		//作成したオブジェクトに作成者のIDを追加
+		pObject->SetAuthorID(ID);
+
+		//ステージ情報を更新
 		pStage_->PushStageSource(pObject);
 		pStage_->SetStageCost(trans.position_, pObject->GetStageCost());
-		
+
 		//AIが選んだオブジェクトなら真ん中からゆっくり動くように
 		if (ID >= startEnemyID_) {
 			Transform objTrans;
@@ -288,7 +303,7 @@ private:
 			pObject->SetMoveLastPos(trans.position_);
 			pObject->SetTransform(objTrans);
 		}
-		else {
+		else {//プレイヤーなら即座に設置
 			pObject->SetMoveLastPos(trans.position_);
 			pObject->SetTransform(trans);
 		}
@@ -297,5 +312,6 @@ private:
 		pObject->SetHandle(hModel);
 		return pObject;
 	}
+	
 
 };

@@ -4,13 +4,14 @@
 
 //コンストラクタ（当たり判定の作成）
 //引数：center	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
-//引数：size	当たり判定のサイズ
+//引数：size	当たり判定のサイズ(半径)
 SphereCollider::SphereCollider(XMFLOAT3 center, float size)
 {
-	center_ = center;
-	size_ = XMFLOAT3(size, size, size);
-	rotate_ = XMFLOAT3(ZERO, ZERO, ZERO);
+	center_ = XMLoadFloat3(&center);
+	length_[VEC_X] = size;
 	type_ = COLLIDER_CIRCLE;
+
+	size_.x = size;
 
 	//リリース時は判定枠は表示しない
 #ifdef _DEBUG

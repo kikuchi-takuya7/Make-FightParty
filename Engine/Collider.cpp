@@ -23,22 +23,148 @@ Collider::~Collider()
 bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 {
 
-	//ワールド座標から見た座標で当たり判定する。ローカル座標でやっちゃだめ
-	XMFLOAT3 boxPosA = Float3Add(boxA->pGameObject_->GetWorldPosition(), boxA->CalclationCenter());
-	XMFLOAT3 boxPosB = Float3Add(boxB->pGameObject_->GetWorldPosition(), boxB->CalclationCenter());
+	// 各方向ベクトルの確保　標準化された方向ベクトル
+    //（N***:標準化方向ベクトル）
+	XMVECTOR NAe1 = boxA->GetDirect(VEC_X);
+	XMVECTOR NAe2 = boxA->GetDirect(VEC_Y);
+	XMVECTOR NAe3 = boxA->GetDirect(VEC_Z);
+	XMVECTOR NBe1 = boxB->GetDirect(VEC_X);
+	XMVECTOR NBe2 = boxB->GetDirect(VEC_Y);
+	XMVECTOR NBe3 = boxB->GetDirect(VEC_Z);
 
-	//XMFLOAT3 boxSizeA = Float3Add(boxA->pGameObject_->GetWorldPosition(), boxA->CalclationCenter());
+	//それに長さをかけて本来の長さに戻したベクトル
+	XMVECTOR Ae1 = NAe1 * boxA->GetLen(VEC_X);
+	XMVECTOR Ae2 = NAe2 * boxA->GetLen(VEC_Y);
+	XMVECTOR Ae3 = NAe3 * boxA->GetLen(VEC_Z);
+	XMVECTOR Be1 = NBe1 * boxB->GetLen(VEC_X);
+	XMVECTOR Be2 = NBe2 * boxB->GetLen(VEC_Y);
+	XMVECTOR Be3 = NBe3 * boxB->GetLen(VEC_Z);
+	
+	//二つの箱の中心点間の距離を求める準備
+	XMVECTOR aCenter = XMVector3TransformCoord(boxA->GetCenter(), boxA->pGameObject_->GetWorldMatrix());
+	XMVECTOR bCenter = XMVector3TransformCoord(boxB->GetCenter(), boxB->pGameObject_->GetWorldMatrix());
+	XMVECTOR Interval = aCenter - bCenter; 
+	
+	float tes1 = Length(XMVector3TransformCoord(boxA->GetCenter(), boxA->pGameObject_->GetWorldMatrix()));
+	float tes2 = Length(XMVector3TransformCoord(boxB->GetCenter(), boxB->pGameObject_->GetWorldMatrix()));
 
-	if ((boxPosA.x + boxA->size_.x / 2) > (boxPosB.x - boxB->size_.x / 2) &&
-		(boxPosA.x - boxA->size_.x / 2) < (boxPosB.x + boxB->size_.x / 2) &&
-		(boxPosA.y + boxA->size_.y / 2) > (boxPosB.y - boxB->size_.y / 2) &&
-		(boxPosA.y - boxA->size_.y / 2) < (boxPosB.y + boxB->size_.y / 2) &&
-		(boxPosA.z + boxA->size_.z / 2) > (boxPosB.z - boxB->size_.z / 2) &&
-		(boxPosA.z - boxA->size_.z / 2) < (boxPosB.z + boxB->size_.z / 2))
-	{
-		return true;
-	}
-	return false;
+	// 分離軸 : Ae1 箱Aの方向ベクトルと分離軸との内積を2つ足すと半径分の分離軸上の長さを求められて、それの合計がLより長いならぶつかってる可能性あり
+	float rA = Length(Ae1);
+	float rB = LenSegOnSeparateAxis(&NAe1, &Be1, &Be2, &Be3);
+	float L = fabs(Length(XMVector3Dot(Interval, NAe1)));
+	if (L > rA + rB)
+		return false; // 衝突していない
+
+	// 分離軸 : Ae2
+	rA = Length(Ae2);
+	rB = LenSegOnSeparateAxis(&NAe2, &Be1, &Be2, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, NAe2)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : Ae3
+	rA = Length(Ae3);
+	rB = LenSegOnSeparateAxis(&NAe3, &Be1, &Be2, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, NAe3)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : Be1
+	rA = LenSegOnSeparateAxis(&NBe1, &Ae1, &Ae2, &Ae3);
+	rB = Length(Be1);
+	L = fabs(Length(XMVector3Dot(Interval, NBe1)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : Be2
+	rA = LenSegOnSeparateAxis(&NBe2, &Ae1, &Ae2, &Ae3);
+	rB = Length(Be2);
+	L = fabs(Length(XMVector3Dot(Interval, NBe2)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : Be3
+	rA = LenSegOnSeparateAxis(&NBe3, &Ae1, &Ae2, &Ae3);
+	rB = Length(Be3);
+	L = fabs(Length(XMVector3Dot(Interval, NBe3)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C11
+	XMVECTOR Cross;
+	Cross = XMVector3Cross(NAe1, NBe1);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae2, &Ae3);
+	rB = LenSegOnSeparateAxis(&Cross, &Be2, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C12
+	Cross = XMVector3Cross(NAe1, NBe2);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae2, &Ae3);
+	rB = LenSegOnSeparateAxis(&Cross, &Be1, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C13
+	Cross = XMVector3Cross(NAe1, NBe3);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae2, &Ae3);
+	rB = LenSegOnSeparateAxis(&Cross, &Be1, &Be2);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C21
+	Cross = XMVector3Cross(NAe2, NBe1);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae1, &Ae3);
+	rB = LenSegOnSeparateAxis(&Cross, &Be2, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C22
+	Cross = XMVector3Cross(NAe2, NBe2);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae1, &Ae3);
+	rB = LenSegOnSeparateAxis(&Cross, &Be1, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C23
+	Cross = XMVector3Cross(NAe2, NBe3);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae1, &Ae3);
+	rB = LenSegOnSeparateAxis(&Cross, &Be1, &Be2);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C31
+	Cross = XMVector3Cross(NAe3, NBe1);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae1, &Ae2);
+	rB = LenSegOnSeparateAxis(&Cross, &Be2, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C32
+	Cross = XMVector3Cross(NAe3, NBe2);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae1, &Ae2);
+	rB = LenSegOnSeparateAxis(&Cross, &Be1, &Be3);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離軸 : C33
+	Cross = XMVector3Cross(NAe3, NBe3);
+	rA = LenSegOnSeparateAxis(&Cross, &Ae1, &Ae2);
+	rB = LenSegOnSeparateAxis(&Cross, &Be1, &Be2);
+	L = fabs(Length(XMVector3Dot(Interval, Cross)));
+	if (L > rA + rB)
+		return false;
+
+	// 分離平面が存在しないので「衝突している」
+	return true;
 }
 
 //箱型と球体の衝突判定
@@ -47,18 +173,31 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 //戻値：接触していればtrue
 bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 {
-	XMFLOAT3 circlePos = Float3Add(sphere->pGameObject_->GetWorldPosition(), sphere->CalclationCenter());
-	XMFLOAT3 boxPos = Float3Add(box->pGameObject_->GetWorldPosition(), box->CalclationCenter());
+	XMVECTOR vec = XMVectorZero();   // 最終的に長さを求めるベクトル
 
-
-
-	if (circlePos.x > boxPos.x - box->size_.x - sphere->size_.x &&
-		circlePos.x < boxPos.x + box->size_.x + sphere->size_.x &&
-		circlePos.y > boxPos.y - box->size_.y - sphere->size_.x &&
-		circlePos.y < boxPos.y + box->size_.y + sphere->size_.x &&
-		circlePos.z > boxPos.z - box->size_.z - sphere->size_.x &&
-		circlePos.z < boxPos.z + box->size_.z + sphere->size_.x )
+	// 各軸についてはみ出た部分のベクトルを算出
+	for (int i = ZERO; i < VEC_NUM; i++)
 	{
+		float L = box->GetLen(i);
+		if (L <= ZERO) continue;  // L=0は計算できない
+
+		//ワールド座標に変換
+		XMVECTOR sphereVec = XMVector3TransformCoord(sphere->GetCenter(), sphere->pGameObject_->GetWorldMatrix());
+		XMVECTOR boxVec = XMVector3TransformCoord(box->GetCenter(), box->pGameObject_->GetWorldMatrix());
+
+		//
+		float s = Length(XMVector3Dot((sphereVec - boxVec), box->GetDirect(i))) / L;
+
+		// sの値から、はみ出した部分があればそのベクトルを加算
+		s = fabs(s);
+		if (s > 1)
+			vec += (1 - s) * L * box->GetDirect(i);   // はみ出した部分のベクトル算出
+	}
+
+	float length = Length(vec);	// 長さを計算
+
+	//はみ出している部分の長さが玉の半径より小さいならぶつかってる
+	if (length <= sphere->GetLen(VEC_X)) {
 		return true;
 	}
 
@@ -69,17 +208,16 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 //引数：circleA	１つ目の球体判定
 //引数：circleB	２つ目の球体判定
 //戻値：接触していればtrue
-bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB)
+bool Collider::IsHitCircleVsCircle(SphereCollider* sphereA, SphereCollider* sphereB)
 {
-	XMFLOAT3 centerA = circleA->CalclationCenter();
-	XMFLOAT3 positionA = circleA->pGameObject_->GetWorldPosition();
-	XMFLOAT3 centerB = circleB->CalclationCenter();
-	XMFLOAT3 positionB = circleB->pGameObject_->GetWorldPosition();
+	XMFLOAT3 sphereAWPos = sphereA->pGameObject_->GetWorldPosition();
+	XMFLOAT3 sphereBWPos = sphereB->pGameObject_->GetWorldPosition();
+	XMFLOAT3 sphereAVec = VectorToFloat3(sphereA->GetCenter()) + sphereAWPos;
+	XMFLOAT3 sphereBVec = VectorToFloat3(sphereB->GetCenter()) + sphereBWPos;
 
-	XMVECTOR v = (XMLoadFloat3(&centerA) + XMLoadFloat3(&positionA))
-		- (XMLoadFloat3(&centerB) + XMLoadFloat3(&positionB));
 
-	if (XMVector3Length(v).m128_f32[0] <= circleA->size_.x + circleB->size_.x)
+	if (pow(sphereBWPos.x - sphereAWPos.x,2) + pow(sphereBWPos.y- sphereAWPos.y, 2) + pow(sphereBWPos.z - sphereAWPos.z, 2) 
+			<= sphereA->GetLen(VEC_X) + sphereB->GetLen(VEC_X))
 	{
 		return true;
 	}
@@ -87,43 +225,34 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circ
 	return false;
 }
 
-XMFLOAT3 Collider::CalclationCenter()
+// 分離軸に投影された軸成分から投影線分長を算出
+// 引数：分離軸となるベクトル
+// 引数：分離軸との角度を測る一つ目の方向ベクトル
+// 引数：二つ目の方向ベクトル
+// 引数：三つ目の方向ベクトル（必要なら）
+float Collider::LenSegOnSeparateAxis(XMVECTOR* Sep, XMVECTOR* e1, XMVECTOR* e2, XMVECTOR* e3)
 {
-
-	//回転行列
-	XMMATRIX rotateX, rotateY, rotateZ, rotMatrix;
-	rotateX = XMMatrixRotationX(XMConvertToRadians(rotate_.x));
-	rotateY = XMMatrixRotationY(XMConvertToRadians(rotate_.y));
-	rotateZ = XMMatrixRotationZ(XMConvertToRadians(rotate_.z));
-	rotMatrix = rotateZ * rotateX * rotateY;
-
-	//centerを回転させて返す
-	XMVECTOR centerVec = XMLoadFloat3(&center_);
-
-	centerVec = XMVector3TransformCoord(centerVec, rotMatrix);
-
-	return VectorToFloat3(centerVec);
+	// 3つの内積の絶対値の和で投影線分長を計算
+    // 分離軸Sepは標準化されていること
+	float r1 = fabs(Length(XMVector3Dot(*Sep, *e1)));
+	float r2 = fabs(Length(XMVector3Dot(*Sep, *e2)));
+	float r3 = e3 ? (fabs(Length(XMVector3Dot(*Sep, *e3)))) : 0;
+	return r1 + r2 + r3;
 }
 
-XMFLOAT3 Collider::CalclationSize()
+//各ベクトルを計算
+void Collider::Calclation()
 {
-	//球体だった場合しないように
-	if (type_ == COLLIDER_CIRCLE)
-		return size_;
+	XMFLOAT3 rot = rotate_;
 
-	//回転行列
-	XMMATRIX rotateX, rotateY, rotateZ, rotMatrix;
-	rotateX = XMMatrixRotationX(XMConvertToRadians(rotate_.x));
-	rotateY = XMMatrixRotationY(XMConvertToRadians(rotate_.y));
-	rotateZ = XMMatrixRotationZ(XMConvertToRadians(rotate_.z));
-	rotMatrix = rotateZ * rotateX * rotateY;
+	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
+	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x))));
+	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rot.y))));
+	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rot.z))));
 
-	//Sizeを回転させて返す
-	XMVECTOR sizeVec = XMLoadFloat3(&size_);
-
-	sizeVec = XMVector3TransformCoord(sizeVec, rotMatrix);
-
-	return VectorToFloat3(sizeVec);
 }
 
 //テスト表示用の枠を描画
@@ -131,13 +260,43 @@ XMFLOAT3 Collider::CalclationSize()
 void Collider::Draw(XMFLOAT3 position)
 {
 	Transform transform;
-	XMFLOAT3 center = CalclationCenter();
-	XMFLOAT3 size = CalclationSize();
-	//transform.rotate_ = rotate_;
-	transform.position_ = XMFLOAT3(position.x + center.x, position.y + center.y, position.z + center.z);
-	transform.scale_ = size;
-	
-	transform.Calclation();
+
+	transform.position_ = VectorToFloat3(XMVector3TransformCoord(center_, pGameObject_->GetWorldMatrix()));
+	transform.rotate_ = pGameObject_->GetRotate() + rotate_;
+	transform.scale_ = size_ ;
+
+	//transform.Calclation();
 	Model::SetTransform(hDebugModel_, transform);
 	Model::Draw(hDebugModel_);
+}
+
+void Collider::SetCenter(XMFLOAT3 center)
+{
+	center_ = XMLoadFloat3(&center);
+}
+
+void Collider::SetSize(XMFLOAT3 size)
+{
+	//各軸方向ベクトルの長さをsizeから確保
+	length_[VEC_X] = size.x ;
+	length_[VEC_Y] = size.y ;
+	length_[VEC_Z] = size.z ;
+
+	size_ = size ;
+}
+
+void Collider::SetRotate(XMFLOAT3 rotate)
+{
+
+	XMFLOAT3 rot = rotate;
+
+	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
+	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x)));
+	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rot.y)));
+	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	directionNormalVec_[VEC_Z] = XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rot.z)));
+
+	rotate_ = rotate;
 }

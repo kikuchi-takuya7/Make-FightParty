@@ -1,14 +1,15 @@
 #include "Bullet.h"
 #include "../../../Engine/Model.h"
 
-
 namespace {
 
 	const float BULLET_RANGE = 30.0f;
+	const float DEFAULT_BULLET_SPEED = 0.4f;
+	const float DEFAULT_BULLET_SIZE = 0.3f;
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),attackPower_(10),bulletSpeed_(0.4f), collider_(nullptr)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
 {
 }
 
@@ -19,15 +20,26 @@ Bullet::~Bullet()
 void Bullet::Initialize()
 {
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
-	assert(bulletModel_ >= 0);
-
-	//Initializeを呼び出してからSetSizeしてるから真ん中に出る謎の球体はでかい。つまり
+	assert(bulletModel_ >= ZERO);
 
 	transform_.rotate_.y = GetParent()->GetRotate().y;
+
+
 }
 
 void Bullet::Update()
 {
+	
+	//発射時の回転だけ覚えておいてベクトルでの移動->毎フレーム回転行列がかけられてグルグル回った
+	/*XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	vec_ = XMVector3TransformCoord(vec_, moveMat);
+	transform_.position_ = VectorToFloat3(vec_);*/
+	
+
+
+	//bulletTrans_.position_.z += bulletSpeed_;
+
+	transform_.position_.z += bulletSpeed_;
 	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
@@ -35,39 +47,11 @@ void Bullet::Update()
 		KillMe();
 	}
 
-	int rotate = GetParent()->GetRotate().y;
-
-
-	//transform_.positionでコリジョンの動きで、bulletPosでモデルの動き
-	//collisionはrotateを考慮してないので、別々に作る必要がある
-
-	bulletPos_.z += bulletSpeed_;
-
-	if (rotate == 0) {
-		transform_.position_.z += bulletSpeed_;
-	}
-	if (rotate == 90) {
-		transform_.position_.x += bulletSpeed_;
-	}
-	if (rotate == 180) {
-		transform_.position_.z -= bulletSpeed_;
-	}
-	if (rotate == 270) {
-		transform_.position_.x -= bulletSpeed_;
-	}
-
-
 }
 
 void Bullet::Draw()
 {
-
-	//親の位置（大砲）に移動させて、移動させる。親のTransformから見てzに移動させてもモデル自体はそう動くけどcollisionはワールドでのz方向に行ってしまう
-	Transform bulletTrans;
-	bulletTrans.scale_ = transform_.scale_;
-	bulletTrans.position_ = Float3Add(transform_.position_,GetParent()->GetPosition());
-
-	Model::SetTransform(bulletModel_, bulletTrans);
+	Model::SetTransform(bulletModel_, transform_);
 	Model::Draw(bulletModel_);
 
 #ifdef _DEBUG
@@ -86,12 +70,15 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 		KillMe();
 	}
 
-	//誰かに当たったら
-	if (targetType == COLLIDER_BODY) {
-		KillMe();
-	}
 }
 
+/// <summary>
+/// 大砲の情報をセット
+/// </summary>
+/// <param name="collider">球の当たり判定</param>
+/// <param name="type">コライダーのタイプ</param>
+/// <param name="attackPower">大砲の攻撃力</param>
+/// <param name="speed">球のスピード</param>
 void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed)
 {
 	collider_ = collider;
@@ -100,4 +87,18 @@ void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, in
 	bulletSpeed_ = speed;
 }
 
+/// <summary>
+/// 自動追従砲台用の情報をセット 未使用
+/// </summary>
+/// <param name="rotY"></param>
+void Bullet::SetStartRot(float rotY) 
+{
 
+	startRotateY_ = rotY;
+
+	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+	XMMATRIX rotMat = XMMatrixRotationY(rotY);
+	XMMATRIX mat = rotMat;
+
+	vec_ = XMVector3TransformCoord(myVec, mat);
+}

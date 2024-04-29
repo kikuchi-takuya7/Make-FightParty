@@ -42,9 +42,9 @@ void CharacterJumpState::HandleInput()
 		characterStateManager::characterState_->Enter(pCharacter_);
 	}*/
 
-	if (Input::IsKeyDown(DIK_F)) {
+	/*if (Input::IsKeyDown(DIK_F)) {
 		pCharacter_->ChangeState(ATTACK);
-	}
+	}*/
 }
 
 void CharacterJumpState::Enter()

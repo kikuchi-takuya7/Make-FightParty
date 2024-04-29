@@ -19,12 +19,11 @@ Needle::~Needle()
 void Needle::ChildInitialize()
 {
 
-	//モデルのロードはCreateModeで全部終わらせちゃってるから、ここではしなくていい？逆にここですべき？
 	cost_ = COST;
 
 	needlePower_ = NEEDLEPOWER;
 
-	AddCollider(pBoxCollision_, COLLIDER_OBSTRYCTION);
+	AddCollider(pBoxCollision_, COLLIDER_NEEDLE);
 }
 
 void Needle::ChildUpdate()

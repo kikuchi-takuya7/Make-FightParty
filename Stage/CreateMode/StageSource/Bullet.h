@@ -1,6 +1,6 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
-
+#include "StageSourceBase.h"
 
 /// <summary>
 /// Cannonクラス等が使う球のクラス。当たり判定の大きさ等はそれぞれの親クラスで指定してもらう
@@ -8,8 +8,8 @@
 class Bullet : public GameObject
 {
 public:
+
 	//コンストラクタ
-	//引数：parent  親オブジェクト（SceneManager）
 	Bullet(GameObject* parent);
 	~Bullet();
 
@@ -28,9 +28,24 @@ public:
 
 	void OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType) override;
 
+	/// <summary>
+	/// 大砲の情報をセット
+	/// </summary>
+	/// <param name="collider">球の当たり判定</param>
+	/// <param name="type">コライダーのタイプ</param>
+	/// <param name="attackPower">大砲の攻撃力</param>
+	/// <param name="speed">球のスピード</param>
 	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed);
-	
-	int GetAttackPower() { return attackPower_; }
+
+	/// <summary>
+	/// 自動追従砲台用の情報をセット 未使用
+	/// </summary>
+	/// <param name="rotY"></param>
+	void SetStartRot(float rotY);
+
+	//アクセス関数
+	int GetBulletPower() { return attackPower_; }
+
 
 private:
 
@@ -39,17 +54,23 @@ private:
 
 	//モデル番号
 	int bulletModel_;
-
-	//攻撃力
-	int attackPower_;
 	
 	//球のスピード
 	float bulletSpeed_;
 
+	//発射された時の大砲の角度
+	float startRotateY_;
+
+	//球の攻撃力
+	int attackPower_;
+
+	XMVECTOR vec_;
+
+	//砲台の判定から独立させるための変数
+	Transform bulletTrans_;
+
 	SphereCollider* collider_;
 
-	XMFLOAT3 bulletPos_;
 
-	
 
 };

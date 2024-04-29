@@ -15,10 +15,14 @@
 #include "StageSource/OneBrock.h"
 #include "StageSource/Cannon.h"
 #include "StageSource/Needle.h"
+#include "StageSource/AutoCannon.h"
+#include "StageSource/RotateBlade.h"
+#include "StageSource/Mud.h"
 
 
 //定数宣言
 namespace {
+    const int PLAYER_ID = 0;
     const int MAX_CHARACTER_NUM = 4;
     const int MAX_VIEW_OBJECT = 8;
     const float CAM_MOVE_RATE = 0.05f;
@@ -40,9 +44,12 @@ namespace {
     //初期化用
     const int INF = 999999;
 
-    //真ん中にオブジェクトを追加する
+    //真ん中にオブジェクトを追加する用の座標。縦二つで一つの座標となってる
     const int STAGE_ADDX[9] = { 14,15,15,15,16,15,15,13,17 };
     const int STAGE_ADDZ[9] = { 15,14,15,16,15,13,17,15,15 };
+
+    //オブジェクト毎の大きさ（xとzで何マス使っているか）
+    const XMFLOAT2 OBJECT_SIZE[PATTERN_END] = { XMFLOAT2(1,1),XMFLOAT2(1,1),XMFLOAT2(1,1),XMFLOAT2(1,1) };
 
     //CreateModeを表示する位置
     std::string TEXT_NAME = "CREATEMODE";
@@ -82,7 +89,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, ZERO);
+        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID);
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
@@ -369,18 +376,18 @@ void CreateMode::SettingUpdate()
     if (IsStageOverlapCursor(front, back)) {
 
         //左クリックされて、かつ　すでに設置されたオブジェクトが無いなら
-        if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
+        if (Input::IsMouseButtonDown(PLAYER_ID) && IsOverlapPosition() == false) {
 
-            //ひとまずプレイヤーは1人目だけだからZEROで
-            CreateObject(settingObject_.at(ZERO).hModel, settingObject_.at(ZERO).trans, ZERO);
+            //プレイヤーは一人の予定だから定数で
+            CreateObject(settingObject_.at(PLAYER_ID).hModel, settingObject_.at(PLAYER_ID).trans, PLAYER_ID);
             Audio::Play(hCreateSound_[SETTING]);
         }
 
-        //右クリックされたら（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
+        //右クリックされたら設置する（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
         if (Input::IsMouseButtonDown(1)) {
-            settingObject_.at(ZERO).trans.rotate_.y += 90;
-            if (settingObject_.at(ZERO).trans.rotate_.y >= 360) {
-                settingObject_.at(ZERO).trans.rotate_.y = ZERO;
+            settingObject_.at(PLAYER_ID).trans.rotate_.y += 90;
+            if (settingObject_.at(PLAYER_ID).trans.rotate_.y >= 360) {
+                settingObject_.at(PLAYER_ID).trans.rotate_.y = ZERO;
             }
         }
     }
@@ -465,7 +472,7 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     FBXPATTERN pattern = PATTERN_END;
 
     //モデル番号のFBXPATTERNを探す
-    for (int i = 0; i < modelData_.size(); i++) {
+    for (int i = ZERO; i < modelData_.size(); i++) {
         if (modelData_.at(i).hModel == hModel) {
             pattern = modelData_.at(i).modelPattern;
         }
@@ -474,8 +481,19 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
     switch (pattern)
     {
+    //case AUTO_CANNON: {
+    //    AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
+    //    pObject->SetNavigationAI(pNavigationAI_);
+    //    pObject->SetMetaAI(pMetaAI_);
+    //    break;
+    //}
+
     case CANNON:
         CreateInstance<Cannon>(hModel, trans, element);
+        break;
+
+    case MUD:
+        CreateInstance<Mud>(hModel, trans, element);
         break;
 
     case NEEDLE:
@@ -484,6 +502,10 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
 
     case ONEBROCK:
         CreateInstance<OneBrock>(hModel, trans, element);
+        break;
+
+    case ROTATE_BLADE:
+        CreateInstance<RotateBlade>(hModel, trans, element);
         break;
 
     case PATTERN_END:
@@ -700,8 +722,8 @@ bool CreateMode::IsStageOverlapCursor(XMVECTOR front, XMVECTOR back)
             if (data.hit) {
 
                 //回転の情報だけは残しておく
-                objTrans.rotate_ = settingObject_.at(ZERO).trans.rotate_;
-                settingObject_.at(ZERO).trans = objTrans;
+                objTrans.rotate_ = settingObject_.at(PLAYER_ID).trans.rotate_;
+                settingObject_.at(PLAYER_ID).trans = objTrans;
                 selecting_Object_ = ZERO;
                 return true;
             }
@@ -787,6 +809,44 @@ void CreateMode::AIMovingObject()
 
         CreateObject(settingObject_.at(i).hModel, settingObject_.at(i).trans, i);
     }
-
-
 }
+
+//大きさを変えられる用に挑戦する用
+//template <class T>
+//T* CreateMode::CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square)
+//{
+//    T* pObject = Instantiate<T>(this);
+//    AddCreateObject(pObject);
+//    pStage_->PushStageSource(pObject);
+//
+//    //回転行列を作り、四角形のオブジェクトのコストの位置を回転させる
+//    XMMATRIX rotateX, rotateY;
+//    rotateX = XMMatrixIdentity();
+//    rotateY = XMMatrixRotationY(XMConvertToRadians(trans.rotate_.y));
+//    XMMATRIX matRot = rotateX * rotateY;
+//
+//    //回転行列を適応
+//    XMVECTOR vec = XMLoadFloat2(&square);
+//    vec = XMVector2Transform(vec, rotateY);
+//    XMStoreFloat2(&square, vec);
+//
+//    //コストをつける
+//    pStage_->SetStageCost(trans.position_, pObject->GetStageCost(), square.x, square.y);
+//
+//    //AIが選んだオブジェクトなら真ん中からゆっくり動くように
+//    if (ID >= startEnemyID_) {
+//        Transform objTrans;
+//        objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
+//        objTrans.rotate_ = trans.rotate_;
+//        pObject->SetMoveLastPos(trans.position_);
+//        pObject->SetTransform(objTrans);
+//    }
+//    else {
+//        pObject->SetMoveLastPos(trans.position_);
+//        pObject->SetTransform(trans);
+//    }
+//
+//    pObject->Leave();
+//    pObject->SetHandle(hModel);
+//    return pObject;
+//}
