@@ -30,18 +30,31 @@ void Bullet::Initialize()
 void Bullet::Update()
 {
 	
+#if 0 //常に回転行列をかけてる方
+
 	//回転行列をかけ続けるとその大砲の座標を外周として座標0,0の所を中心にぐるぐる回った。
 	//最初だけベクトルに回転行列をかけると
 	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
 	XMMATRIX rotMat = XMMatrixRotationY(startRotateY_);
-	XMMATRIX mat = moveMat * (rotMat * GetWorldMatrix());
+	XMMATRIX mat = moveMat * rotMat;
 
 	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
 
 	myVec = XMVector3TransformCoord(myVec, mat);
 	transform_.position_ = VectorToFloat3(myVec);
 	
+#else //最初に回転行列をかけただけの方
 
+	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	XMMATRIX rotMat = XMMatrixRotationY(startRotateY_);
+	XMMATRIX mat = moveMat;
+
+	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+
+	vec_ = XMVector3TransformCoord(vec_, mat);
+	transform_.position_ = VectorToFloat3(vec_);
+
+#endif
 	
 
 	//bulletTrans_.position_.z += bulletSpeed_;
@@ -105,7 +118,7 @@ void Bullet::SetStartRot(float rotY)
 
 	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
 	XMMATRIX rotMat = XMMatrixRotationY(rotY);
-	XMMATRIX mat = rotMat;
+	XMMATRIX mat = rotMat * GetWorldMatrix();
 
 	vec_ = XMVector3TransformCoord(myVec, mat);
 }
