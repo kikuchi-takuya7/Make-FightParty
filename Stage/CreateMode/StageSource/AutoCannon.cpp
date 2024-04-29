@@ -81,7 +81,7 @@ void AutoCannon::ChildUpdate()
 
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_OBJ_ATTACK, BULLET_ATTACK_POWER, BULLET_SPEED);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();
@@ -91,33 +91,33 @@ void AutoCannon::ChildUpdate()
 
 	//狙っている敵に大砲を回転させる
 
-	//今狙っている敵の座標を獲得
-	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
-	XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
-	
-	//XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
-	//XMVECTOR rotVec = XMVector3Normalize(targetVec - myVec);
+	////今狙っている敵の座標を獲得
+	//XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
+	//XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
+	//
+	////XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
+	////XMVECTOR rotVec = XMVector3Normalize(targetVec - myVec);
 
-	//前ベクトルを向いている方向に変換して、正規化
-	XMVECTOR vFront = { 0,0,1,0 };
+	////前ベクトルを向いている方向に変換して、正規化
+	//XMVECTOR vFront = { 0,0,1,0 };
 
-	//内積から角度を求める
-	XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
-	float dot = XMVectorGetX(vDot);
-	float angle = acos(dot);
+	////内積から角度を求める
+	//XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
+	//float dot = XMVectorGetX(vDot);
+	//float angle = acos(dot);
 
-	//外積が-になる角度なら
-	XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
-	if (XMVectorGetY(vCross) < ZERO) {
+	////外積が-になる角度なら
+	//XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
+	//if (XMVectorGetY(vCross) < ZERO) {
 
-		angle *= -1;
-	}
+	//	angle *= -1;
+	//}
 
-	float degree = XMConvertToDegrees(angle);
+	//float degree = XMConvertToDegrees(angle);
 
-	SetRotateY(degree);
+	//SetRotateY(degree);
 
-	transform_.rotate_.y += degree;
+	//transform_.rotate_.y += degree;
 
 	
 	transform_.rotate_.y += 1;

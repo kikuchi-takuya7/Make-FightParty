@@ -9,7 +9,7 @@ namespace {
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED),startRotateY_(ZERO), collider_(nullptr)
 {
 }
 
@@ -30,16 +30,23 @@ void Bullet::Initialize()
 void Bullet::Update()
 {
 	
-	//発射時の回転だけ覚えておいてベクトルでの移動->毎フレーム回転行列がかけられてグルグル回った
-	/*XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	vec_ = XMVector3TransformCoord(vec_, moveMat);
-	transform_.position_ = VectorToFloat3(vec_);*/
+	//回転行列をかけ続けるとその大砲の座標を外周として座標0,0の所を中心にぐるぐる回った。
+	//最初だけベクトルに回転行列をかけると
+	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	XMMATRIX rotMat = XMMatrixRotationY(startRotateY_);
+	XMMATRIX mat = moveMat * (rotMat * GetWorldMatrix());
+
+	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+
+	myVec = XMVector3TransformCoord(myVec, mat);
+	transform_.position_ = VectorToFloat3(myVec);
 	
 
+	
 
 	//bulletTrans_.position_.z += bulletSpeed_;
 
-	transform_.position_.z += bulletSpeed_;
+	//transform_.position_.z += bulletSpeed_;
 	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
