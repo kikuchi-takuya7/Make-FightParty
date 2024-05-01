@@ -121,6 +121,9 @@ void AutoCannon::ChildUpdate()
 
 	
 	transform_.rotate_.y += 1;
+	if (transform_.rotate_.y >= 360) {
+		transform_.rotate_.y = 0;
+	}
 }
 
 void AutoCannon::ChildDraw()

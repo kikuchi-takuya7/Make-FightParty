@@ -48,7 +48,7 @@ void Bullet::Update()
 
 	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
-	XMMATRIX mat = moveMat;
+	XMMATRIX mat = moveMat; //ここにワールド行列をかけたら吹き飛んでいった
 	
 	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
 
@@ -109,20 +109,21 @@ void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, in
 }
 
 /// <summary>
-/// 自動追従砲台用の情報をセット 未使用
+/// 自動追従砲台用の情報をセット
 /// </summary>
 /// <param name="rotY"></param>
 void Bullet::SetStartRot(float rotY) 
 {
 
 	startRotateY_ = rotY;
+	float tes = XMConvertToRadians(rotY);
 
-	XMVECTOR myVec = XMVectorZero();
+	XMVECTOR myVec = XMVectorSet(ZERO, ZERO, 1, ZERO);//XMLoadFloat3(&transform_.position_) XMVector3Zero()
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(rotY));
 
 	//ここでワールド行列をかけるとワールドの原点から回転した座標からz方向にまっすぐ進むんじゃなくてローカルの原点から回転した座標からz方向にまっすぐすすんだ　
 	XMMATRIX mat = rotMat * GetWorldMatrix(); 
-	//普通ワールド行列かけると逆にワールドの原点から出るんじゃないの？志向が必要
+	//普通ワールド行列かけると逆にワールドの原点から出るんじゃないの？思考が必要
 
 
 	vec_ = XMVector3TransformCoord(myVec, mat);
