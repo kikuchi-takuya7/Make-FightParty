@@ -151,14 +151,15 @@ void CreateMode::Update()
     default:
         return;
     }
+
+    transform_;
+
 }
 
 
 //描画
 void CreateMode::Draw()
 {
-
-    
 
     //アップデート内でクリエイトモードとセットモードで切り替える
     switch (nowState_)
@@ -181,6 +182,8 @@ void CreateMode::Draw()
     default:
         return;
     }
+
+    transform_;
 }
 
 //開放

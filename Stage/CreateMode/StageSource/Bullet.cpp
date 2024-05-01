@@ -30,26 +30,26 @@ void Bullet::Initialize()
 void Bullet::Update()
 {
 	
-#if 1 //常に回転行列をかけてる方
+#if 0 //常に回転行列をかけてる方
 
 	//回転行列をかけ続けるとその大砲の座標を外周として座標0,0の所を中心にぐるぐる回った。
 	//最初だけベクトルに回転行列をかけると
 	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	XMMATRIX rotMat = XMMatrixRotationY(startRotateY_);
-	XMMATRIX mat = moveMat * (rotMat * GetWorldMatrix());
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
+	XMMATRIX mat = moveMat;
 
-	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+	XMVECTOR myVec = XMVectorZero();
 
 	myVec = XMVector3TransformCoord(myVec, mat);
-	vec_ = myVec + vec_;
-	transform_.position_ = VectorToFloat3(myVec);
+	vec_ = vec_ + myVec; //平行移動行列をかけたベクトルと大砲の座標で回転させたベクトルを足すと大砲の周りからz方向に真っすぐ飛んだ。つまりvec_の時点で座標周りを回転してる？
+	transform_.position_ = VectorToFloat3(vec_);
 	
 #else //最初に回転行列をかけただけの方
 
 	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	XMMATRIX rotMat = XMMatrixRotationY(startRotateY_);
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
 	XMMATRIX mat = moveMat;
-
+	
 	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
 
 	vec_ = XMVector3TransformCoord(vec_, mat);
@@ -117,9 +117,15 @@ void Bullet::SetStartRot(float rotY)
 
 	startRotateY_ = rotY;
 
-	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
-	XMMATRIX rotMat = XMMatrixRotationY(rotY);
-	XMMATRIX mat = rotMat * GetWorldMatrix(); //ここでワールド行列をかけるとワールドの原点から回転した座標からz方向にまっすぐ進むんじゃなくてローカルの原点から回転した座標からz座標にまっすぐすすんだ　
+	XMVECTOR myVec = XMVectorZero();
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(rotY));
+
+	//ここでワールド行列をかけるとワールドの原点から回転した座標からz方向にまっすぐ進むんじゃなくてローカルの原点から回転した座標からz方向にまっすぐすすんだ　
+	XMMATRIX mat = rotMat * GetWorldMatrix(); 
+	//普通ワールド行列かけると逆にワールドの原点から出るんじゃないの？志向が必要
+
 
 	vec_ = XMVector3TransformCoord(myVec, mat);
+	//transform_.rotate_ = VectorToFloat3(vec_);
+	int i = 0;
 }
