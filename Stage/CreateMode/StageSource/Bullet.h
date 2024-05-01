@@ -64,7 +64,8 @@ private:
 	//‹…‚ÌUŒ‚—Í
 	int attackPower_;
 
-	XMVECTOR vec_;
+	//‹…‚ª”­Ë‚·‚éŒü‚«‚ÌƒxƒNƒgƒ‹
+	XMVECTOR forwardVec_;
 
 	//–C‘ä‚Ì”»’è‚©‚ç“Æ—§‚³‚¹‚é‚½‚ß‚Ì•Ï”
 	Transform bulletTrans_;

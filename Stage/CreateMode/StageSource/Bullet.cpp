@@ -47,13 +47,16 @@ void Bullet::Update()
 #else //最初に回転行列をかけただけの方
 
 	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
+	//XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
 	XMMATRIX mat = moveMat; //ここにワールド行列をかけたら吹き飛んでいった
 	
-	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+	XMVECTOR myVec = XMVectorZero();
 
-	vec_ = XMVector3TransformCoord(vec_, mat);
-	transform_.position_ = VectorToFloat3(vec_);
+	//myVec = XMVector3TransformCoord(forwardVec_, mat);
+	
+	myVec = forwardVec_ + myVec;
+
+	transform_.position_ = VectorToFloat3(myVec);
 
 #endif
 	
@@ -118,15 +121,17 @@ void Bullet::SetStartRot(float rotY)
 	startRotateY_ = rotY;
 	float tes = XMConvertToRadians(rotY);
 
-	XMVECTOR myVec = XMVectorSet(ZERO, ZERO, 1, ZERO);//XMLoadFloat3(&transform_.position_) XMVector3Zero()
+	XMVECTOR myVec = XMVectorSet(ZERO, ZERO, 1, ZERO);//XMLoadFloat3(&transform_.position_) 
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(rotY));
 
 	//ここでワールド行列をかけるとワールドの原点から回転した座標からz方向にまっすぐ進むんじゃなくてローカルの原点から回転した座標からz方向にまっすぐすすんだ　
 	XMMATRIX mat = rotMat * GetWorldMatrix(); 
 	//普通ワールド行列かけると逆にワールドの原点から出るんじゃないの？思考が必要
 
+	//球が進む方向の単位ベクトルを取得
+	forwardVec_ = XMVector3Normalize(XMVector3TransformCoord(myVec, mat));
 
-	vec_ = XMVector3TransformCoord(myVec, mat);
-	//transform_.rotate_ = VectorToFloat3(vec_);
+
+
 	int i = 0;
 }
