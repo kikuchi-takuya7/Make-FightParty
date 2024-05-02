@@ -16,7 +16,7 @@ namespace {
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
-	const float BULLET_INTERVAL = 1;
+	const float BULLET_INTERVAL = 2.0f;
 	const float BULLET_SIZE = 0.3f;
 
 	const int BULLET_ATTACK_POWER = 5;
@@ -76,12 +76,10 @@ void AutoCannon::ChildUpdate()
 		Bullet* pBullet = Instantiate<Bullet>(GetParent());
 		pBullet->SetScale(BULLET_SIZE);
 		pBullet->SetPosition(transform_.position_);
-		pBullet->SetStartRot(transform_.rotate_.y);
-		//bulletの中のワールドのrotateを変える必要がある
 
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED, transform_.rotate_.y);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();

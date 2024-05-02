@@ -22,8 +22,6 @@ void Bullet::Initialize()
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
 	assert(bulletModel_ >= ZERO);
 
-	transform_.rotate_.y = GetParent()->GetRotate().y;
-
 
 }
 
@@ -46,13 +44,7 @@ void Bullet::Update()
 	
 #else //最初に回転行列をかけただけの方
 
-	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	//XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
-	XMMATRIX mat = moveMat; //ここにワールド行列をかけたら吹き飛んでいった
-	
-	XMVECTOR myVec = XMVectorZero();
-
-	//myVec = XMVector3TransformCoord(forwardVec_, mat);
+	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
 	
 	myVec = forwardVec_ + myVec;
 
@@ -103,35 +95,21 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 /// <param name="type">コライダーのタイプ</param>
 /// <param name="attackPower">大砲の攻撃力</param>
 /// <param name="speed">球のスピード</param>
-void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed)
+/// <param name="rotY">球を発射した時の大砲の角度</param>
+void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY)
 {
 	collider_ = collider;
 	AddCollider(collider_, type);
 	attackPower_ = attackPower;
 	bulletSpeed_ = speed;
-}
 
-/// <summary>
-/// 自動追従砲台用の情報をセット
-/// </summary>
-/// <param name="rotY"></param>
-void Bullet::SetStartRot(float rotY) 
-{
+	transform_.rotate_.y = rotY;
 
-	startRotateY_ = rotY;
-	float tes = XMConvertToRadians(rotY);
-
-	XMVECTOR myVec = XMVectorSet(ZERO, ZERO, 1, ZERO);//XMLoadFloat3(&transform_.position_) 
+	//前ベクトルから進む方向への単位ベクトルを計算
+	XMVECTOR myVec = XMVectorSet(ZERO, ZERO, 1, ZERO);
 	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(rotY));
 
-	//ここでワールド行列をかけるとワールドの原点から回転した座標からz方向にまっすぐ進むんじゃなくてローカルの原点から回転した座標からz方向にまっすぐすすんだ　
-	XMMATRIX mat = rotMat * GetWorldMatrix(); 
-	//普通ワールド行列かけると逆にワールドの原点から出るんじゃないの？思考が必要
-
-	//球が進む方向の単位ベクトルを取得
-	forwardVec_ = XMVector3Normalize(XMVector3TransformCoord(myVec, mat));
-
-
-
-	int i = 0;
+	//球が進む方向のベクトルを取得
+	forwardVec_ = XMVector3Normalize(XMVector3TransformCoord(myVec, rotMat));
+	forwardVec_ *= bulletSpeed_;
 }

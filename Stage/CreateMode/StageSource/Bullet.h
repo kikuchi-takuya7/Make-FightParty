@@ -35,13 +35,9 @@ public:
 	/// <param name="type">コライダーのタイプ</param>
 	/// <param name="attackPower">大砲の攻撃力</param>
 	/// <param name="speed">球のスピード</param>
-	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed);
+	/// <param name="rotY">球を発射した時のオブジェクトの角度</param>
+	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY);
 
-	/// <summary>
-	/// 自動追従砲台用の情報をセット 未使用
-	/// </summary>
-	/// <param name="rotY"></param>
-	void SetStartRot(float rotY);
 
 	//アクセス関数
 	int GetBulletPower() { return attackPower_; }
