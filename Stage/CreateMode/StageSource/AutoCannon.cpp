@@ -16,11 +16,11 @@ namespace {
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
-	const float BULLET_INTERVAL = 2.0f;
+	const float BULLET_INTERVAL = 4.0f;
 	const float BULLET_SIZE = 0.3f;
 
 	const int BULLET_ATTACK_POWER = 5;
-	const float BULLET_SPEED = 0.1f;
+	const float BULLET_SPEED = 0.05f;
 
 	const int SAME_SOUND = 3;
 }
@@ -62,8 +62,6 @@ void AutoCannon::ChildInitialize()
 
 void AutoCannon::ChildUpdate()
 {
-	//一旦プレイヤーだけ狙わせる
-	target_ = 0;
 
 	if (pNavigationAI_->GetCaracter(target_)->GetStatus().dead == true) {
 		target_ = pMetaAI_->Targeting(authorID_).ID;
@@ -89,39 +87,16 @@ void AutoCannon::ChildUpdate()
 
 	//狙っている敵に大砲を回転させる
 
-	////今狙っている敵の座標を獲得
-	//XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
-	//XMVECTOR targetVec = XMVector3Normalize(XMLoadFloat3(&targetPos));
-	//
-	////XMVECTOR myVec = XMVector3Normalize(XMLoadFloat3(&transform_.position_));
-	////XMVECTOR rotVec = XMVector3Normalize(targetVec - myVec);
+	//今狙っている敵の座標をatan2で獲得
+	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
+	targetPos = Float3Sub(targetPos,transform_.position_);
 
-	////前ベクトルを向いている方向に変換して、正規化
-	//XMVECTOR vFront = { 0,0,1,0 };
+	//xをzとして、yをzとする事で、transform.rotateの0度とx軸を合わせて角度をそのまま使える様に
+	float angle = atan2(targetPos.x,targetPos.z);
+	float degree = XMConvertToDegrees(angle);
 
-	////内積から角度を求める
-	//XMVECTOR vDot = XMVector3Dot(vFront, targetVec);
-	//float dot = XMVectorGetX(vDot);
-	//float angle = acos(dot);
+	SetRotateY(degree);
 
-	////外積が-になる角度なら
-	//XMVECTOR vCross = XMVector3Cross(vFront, targetVec);
-	//if (XMVectorGetY(vCross) < ZERO) {
-
-	//	angle *= -1;
-	//}
-
-	//float degree = XMConvertToDegrees(angle);
-
-	//SetRotateY(degree);
-
-	//transform_.rotate_.y += degree;
-
-	
-	transform_.rotate_.y += 1;
-	if (transform_.rotate_.y >= 360) {
-		transform_.rotate_.y = 0;
-	}
 }
 
 void AutoCannon::ChildDraw()
