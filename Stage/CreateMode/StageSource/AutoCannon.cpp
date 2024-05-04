@@ -16,7 +16,7 @@ namespace {
 
 	const XMFLOAT3 BULLET_COLLISION_CENTER = XMFLOAT3(ZERO, ZERO, ZERO);
 	const float BULLET_COLLISION_SIZE = 0.3f;
-	const float BULLET_INTERVAL = 4.0f;
+	const float BULLET_INTERVAL = 7.0f;
 	const float BULLET_SIZE = 0.3f;
 
 	const int BULLET_ATTACK_POWER = 5;
