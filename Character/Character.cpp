@@ -134,6 +134,11 @@ void Character::Release()
 // •Ê‚Ìcollider‚ÉÕ“Ë‚µ‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚éŠÖ”
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
+	//”»’è‚ğ‚µ‚È‚¢
+	if (IsEntered() == false) {
+		return;
+	}
+
 	//€‚ñ‚Å‚¢‚½‚ç”»’è‚µ‚È‚¢—l‚É
 	if (status_.dead) {
 		return;

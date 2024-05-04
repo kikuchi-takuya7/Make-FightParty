@@ -151,14 +151,15 @@ void CreateMode::Update()
     default:
         return;
     }
+
+    transform_;
+
 }
 
 
 //描画
 void CreateMode::Draw()
 {
-
-    
 
     //アップデート内でクリエイトモードとセットモードで切り替える
     switch (nowState_)
@@ -181,6 +182,8 @@ void CreateMode::Draw()
     default:
         return;
     }
+
+    transform_;
 }
 
 //開放
@@ -481,12 +484,12 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
     //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
     switch (pattern)
     {
-    //case AUTO_CANNON: {
-    //    AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
-    //    pObject->SetNavigationAI(pNavigationAI_);
-    //    pObject->SetMetaAI(pMetaAI_);
-    //    break;
-    //}
+    case AUTO_CANNON: {
+        AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
+        pObject->SetNavigationAI(pNavigationAI_);
+        pObject->SetMetaAI(pMetaAI_);
+        break;
+    }
 
     case CANNON:
         CreateInstance<Cannon>(hModel, trans, element);

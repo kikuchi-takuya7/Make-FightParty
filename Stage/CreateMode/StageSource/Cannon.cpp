@@ -50,12 +50,13 @@ void Cannon::ChildUpdate()
 
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
-		Bullet* pBullet = Instantiate<Bullet>(this);
+		Bullet* pBullet = Instantiate<Bullet>(GetParent());
 		pBullet->SetScale(BULLET_SIZE);
+		pBullet->SetPosition(transform_.position_);
 		
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_OBJ_ATTACK, BULLET_ATTACK_POWER, BULLET_SPEED);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED, transform_.rotate_.y);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();

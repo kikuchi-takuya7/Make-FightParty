@@ -9,7 +9,7 @@ namespace {
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED), collider_(nullptr)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED),startRotateY_(ZERO), collider_(nullptr)
 {
 }
 
@@ -22,24 +22,40 @@ void Bullet::Initialize()
 	bulletModel_ = Model::Load("Others/Bullet.fbx");
 	assert(bulletModel_ >= ZERO);
 
-	transform_.rotate_.y = GetParent()->GetRotate().y;
-
 
 }
 
 void Bullet::Update()
 {
 	
-	//発射時の回転だけ覚えておいてベクトルでの移動->毎フレーム回転行列がかけられてグルグル回った
-	/*XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	vec_ = XMVector3TransformCoord(vec_, moveMat);
-	transform_.position_ = VectorToFloat3(vec_);*/
-	
+#if 0 //常に回転行列をかけてる方
 
+	//回転行列をかけ続けるとその大砲の座標を外周として座標0,0の所を中心にぐるぐる回った。
+	//最初だけベクトルに回転行列をかけると
+	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
+	XMMATRIX mat = moveMat;
+
+	XMVECTOR myVec = XMVectorZero();
+
+	myVec = XMVector3TransformCoord(myVec, mat);
+	vec_ = vec_ + myVec; //平行移動行列をかけたベクトルと大砲の座標で回転させたベクトルを足すと大砲の周りからz方向に真っすぐ飛んだ。つまりvec_の時点で座標周りを回転してる？
+	transform_.position_ = VectorToFloat3(vec_);
+	
+#else //最初に回転行列をかけただけの方
+
+	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
+	
+	myVec = forwardVec_ + myVec;
+
+	transform_.position_ = VectorToFloat3(myVec);
+
+#endif
+	
 
 	//bulletTrans_.position_.z += bulletSpeed_;
 
-	transform_.position_.z += bulletSpeed_;
+	//transform_.position_.z += bulletSpeed_;
 	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
@@ -79,26 +95,21 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 /// <param name="type">コライダーのタイプ</param>
 /// <param name="attackPower">大砲の攻撃力</param>
 /// <param name="speed">球のスピード</param>
-void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed)
+/// <param name="rotY">球を発射した時の大砲の角度</param>
+void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY)
 {
 	collider_ = collider;
 	AddCollider(collider_, type);
 	attackPower_ = attackPower;
 	bulletSpeed_ = speed;
-}
 
-/// <summary>
-/// 自動追従砲台用の情報をセット 未使用
-/// </summary>
-/// <param name="rotY"></param>
-void Bullet::SetStartRot(float rotY) 
-{
+	transform_.rotate_.y = rotY;
 
-	startRotateY_ = rotY;
+	//前ベクトルから進む方向への単位ベクトルを計算
+	XMVECTOR myVec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(rotY));
 
-	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
-	XMMATRIX rotMat = XMMatrixRotationY(rotY);
-	XMMATRIX mat = rotMat;
-
-	vec_ = XMVector3TransformCoord(myVec, mat);
+	//球が進む方向のベクトルを取得
+	forwardVec_ = XMVector3Normalize(XMVector3TransformCoord(myVec, rotMat));
+	forwardVec_ *= bulletSpeed_;
 }
