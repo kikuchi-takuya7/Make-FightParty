@@ -28,9 +28,9 @@ public:
     //ŠJ•ú
     void ChildRelease() override;
 
-
     void OnCollision(GameObject* pTarget) override;
 
+    void SetObjCsv(CsvReader* csv, int csvPos) override;
 
     int GetNeedlePower() { return needlePower_;}
 

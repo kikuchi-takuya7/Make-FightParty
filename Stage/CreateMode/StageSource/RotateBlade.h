@@ -28,10 +28,12 @@ public:
     //ŠJ•ú
     void ChildRelease() override;
 
-
     void OnCollision(GameObject* pTarget) override;
+
+    void SetObjCsv(CsvReader* csv, int csvPos) override;
 
 private:
 
-
+    //‰ñ“]‘¬“x
+    float rotSpeed_;
 };

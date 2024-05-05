@@ -10,6 +10,7 @@
 #include "../../Engine/Timer.h"
 #include "../../Engine/Audio.h"
 #include "../../Engine/Text.h"
+#include "../../Engine/CsvReader.h"
 #include "../../AI/MetaAI.h"
 #include "../../AI/NavigationAI.h"
 #include "StageSource/OneBrock.h"
@@ -59,7 +60,7 @@ namespace {
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr),pText_(nullptr), pTimer_(Instantiate<Timer>(this)), hCreateSound_{-1,-1}, hBGM_(-1)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr),pText_(nullptr), pTimer_(Instantiate<Timer>(this)),pCsvData_(nullptr), hCreateSound_{-1,-1}, hBGM_(-1)
 {
 
 }
@@ -89,7 +90,7 @@ void CreateMode::Initialize()
         Transform trans;
         trans.position_.x = STAGE_ADDX[i];
         trans.position_.z = STAGE_ADDZ[i];
-        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID);
+        CreateInstance<OneBrock>(modelData_.at(ONEBROCK).hModel, trans, PLAYER_ID, ONEBROCK);
     }
 
     //MAX_VIEW_OBJECT分の要素を事前に取っておく
@@ -105,11 +106,17 @@ void CreateMode::Initialize()
         settingObject_.emplace_back(obj);
     }
 
+    //設置するオブジェクト毎の設定をCSVから獲得
+    pCsvData_ = new CsvReader;
+    pCsvData_->Load("CSV/Object_Option.csv");
+
+    //ステータス、タイマー等の初期化
     nowState_ = NONE;
     pText_ = new Text;
     pText_->Initialize();
-
     pTimer_->SetLimit(WAIT_TIME);
+
+
 
 
     //音声データのロード
@@ -481,34 +488,34 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
         }
     }
 
-    //それぞれのオブジェクトのインスタンスをクラス変数にvectorで持って、あーだこーだすればなんかもっと楽できそうじゃね？
+    //それぞれのインスタンスを生成
     switch (pattern)
     {
-    case AUTO_CANNON: {
-        AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element);
+    case AUTO_CANNON: {//AutoCannonは敵の情報を入手する必要があるためAIを追加
+        AutoCannon* pObject = CreateInstance<AutoCannon>(hModel, trans, element, pattern);
         pObject->SetNavigationAI(pNavigationAI_);
         pObject->SetMetaAI(pMetaAI_);
         break;
     }
 
     case CANNON:
-        CreateInstance<Cannon>(hModel, trans, element);
+        CreateInstance<Cannon>(hModel, trans, element, pattern);
         break;
 
     case MUD:
-        CreateInstance<Mud>(hModel, trans, element);
+        CreateInstance<Mud>(hModel, trans, element, pattern);
         break;
 
     case NEEDLE:
-        CreateInstance<Needle>(hModel, trans, element);
+        CreateInstance<Needle>(hModel, trans, element, pattern);
         break;
 
     case ONEBROCK:
-        CreateInstance<OneBrock>(hModel, trans, element);
+        CreateInstance<OneBrock>(hModel, trans, element, pattern);
         break;
 
     case ROTATE_BLADE:
-        CreateInstance<RotateBlade>(hModel, trans, element);
+        CreateInstance<RotateBlade>(hModel, trans, element, pattern);
         break;
 
     case PATTERN_END:

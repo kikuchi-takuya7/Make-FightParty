@@ -3,6 +3,7 @@
 #include "../../../Engine/Timer.h"
 #include "../../../Engine/VFX.h"
 #include "../../../Engine/Audio.h"
+#include "../../../Engine/CsvReader.h"
 #include "../../../VFXData/VFXData.h"
 #include "Bullet.h"
 
@@ -37,9 +38,6 @@ void Cannon::ChildInitialize()
 
 	hAudio_ = Audio::Load("Audio/SE/Cannon.wav", false,3);
 	Audio::Stop(hAudio_);
-
-	//球を打つ間隔
-	timer_->SetLimit(BULLET_INTERVAL);
 	
 }
 
@@ -51,12 +49,12 @@ void Cannon::ChildUpdate()
 	//内部タイマーが0になったら打ち、またリセットする
 	if (timer_->IsFinished()) {
 		Bullet* pBullet = Instantiate<Bullet>(GetParent());
-		pBullet->SetScale(BULLET_SIZE);
+		pBullet->SetScale(bulletData_.size_);
 		pBullet->SetPosition(transform_.position_);
-		
+
 		//球の当たり判定を作る
-		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, BULLET_COLLISION_SIZE);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, BULLET_ATTACK_POWER, BULLET_SPEED, transform_.rotate_.y);
+		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, bulletData_.size_);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, bulletData_.power_, bulletData_.speed_, transform_.rotate_.y);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();
@@ -79,6 +77,20 @@ void Cannon::OnCollision(GameObject* pTarget)
 {
 	
 
+}
+
+void Cannon::SetObjCsv(CsvReader* csv, int csvPos)
+{
+
+
+	//CSVの位置に応じて情報を獲得
+	bulletData_.power_ = csv->GetValueInt(csvPos, 1);
+	bulletData_.speed_ = csv->GetValueFloat(csvPos, 2);
+	bulletData_.interval_ = csv->GetValueFloat(csvPos, 3);
+	bulletData_.size_ = csv->GetValueFloat(csvPos, 4);
+
+	//球を打つ間隔
+	timer_->SetLimit(bulletData_.interval_);
 }
 
 void Cannon::FiringEffect()

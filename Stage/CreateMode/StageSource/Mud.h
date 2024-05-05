@@ -32,6 +32,9 @@ public:
     void OnCollision(GameObject* pTarget) override;
 
     //アクセス関数
+
+    void SetObjCsv(CsvReader* csv, int csvPos) override;
+
     float GetDeceleration() { return deceleration_Rate_; }
 
 private:

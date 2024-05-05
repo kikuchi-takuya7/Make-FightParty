@@ -7,7 +7,6 @@ class Timer;
 class MetaAI;
 class NavigationAI;
 
-
 /// <summary>
 /// 一定間隔で攻撃する砲台
 /// </summary>
@@ -38,6 +37,9 @@ public:
 
 
     //アクセス関数
+
+    void SetObjCsv(CsvReader* csv, int csvPos) override;
+
     void SetMetaAI(MetaAI* metaAI) { pMetaAI_ = metaAI; }
     void SetNavigationAI(NavigationAI* naviAI) { pNavigationAI_ = naviAI; }
 
@@ -56,5 +58,8 @@ private:
 
     //ターゲットの情報
     int target_;
+
+    //球の情報
+    BulletData bulletData_;
 
 };

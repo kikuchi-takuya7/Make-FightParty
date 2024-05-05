@@ -1,4 +1,5 @@
 #include "Mud.h"
+#include "../../../Engine/CsvReader.h"
 
 namespace {
 
@@ -43,4 +44,10 @@ void Mud::ChildRelease()
 
 void Mud::OnCollision(GameObject* pTarget)
 {
+}
+
+void Mud::SetObjCsv(CsvReader* csv, int csvPos)
+{
+	//CSV‚ÌˆÊ’u‚É‰ž‚¶‚Äî•ñ‚ðŠl“¾
+	deceleration_Rate_ = csv->GetValueFloat(csvPos, 6);
 }

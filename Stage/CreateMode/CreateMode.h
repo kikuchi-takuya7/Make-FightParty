@@ -79,6 +79,7 @@ class Stage;
 class StageSourceBase;
 class Timer;
 class Text;
+class CsvReader;
 
 /// <summary>
 /// オブジェクトをステージに追加するモード
@@ -267,6 +268,9 @@ private:
 	//時間を置くのに使う
 	Timer* pTimer_;
 
+	//生成するオブジェクトの情報を持ったCSV
+	CsvReader* pCsvData_;
+
 	//SEの音番号
 	int hCreateSound_[CREATESOUND_NUM];
 
@@ -281,15 +285,16 @@ private:
 
 	//インスタンスを作成して色々するテンプレート
 	template <class T>
-	T* CreateInstance(int hModel, Transform trans, int ID)
+	T* CreateInstance(int hModel, Transform trans, int ID, int csvPos)
 	{
 		T* pObject = Instantiate<T>(this);
 
 		//作成したオブジェクトリストに追加
 		AddCreateObject(pObject);
 
-		//作成したオブジェクトに作成者のIDを追加
+		//作成したオブジェクトに情報を追加
 		pObject->SetAuthorID(ID);
+		pObject->SetObjCsv(pCsvData_ ,csvPos + 1);//一番左側には説明を入れている為＋１
 
 		//ステージ情報を更新
 		pStage_->PushStageSource(pObject);

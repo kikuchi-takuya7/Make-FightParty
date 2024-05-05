@@ -1,6 +1,17 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
 
+//球の各種情報
+struct BulletData {
+
+    int power_;     //球の攻撃力
+    float speed_;   //球の速さ
+    float interval_;//球を出す頻度
+    float size_;    //球の大きさ
+
+};
+
+class CsvReader;
 
 //StageSourceの元となるクラス
 class StageSourceBase : public GameObject
@@ -76,6 +87,13 @@ public:
 
     ////////////////アクセス関数//////////////////
 
+    /// <summary>
+    /// CSVと情報が入ってる場所をセットする
+    /// </summary>
+    /// <param name="csv">情報が入っているCSVのポインタ</param>
+    /// <param name="csvPos">ほしい情報が入っている列</param>
+    virtual void SetObjCsv(CsvReader* csv, int csvPos) {};
+
     int GetHandle() { return hModel_; }
     int GetStageCost() { return cost_; }
     int GetAuthorID() { return authorID_; }
@@ -83,6 +101,7 @@ public:
     void SetHandle(int handle) { hModel_ = handle; }
     void SetMoveLastPos(XMFLOAT3 lastPos) { lastPos_ = lastPos; }
     void SetAuthorID(int ID) { authorID_ = ID; }
+    
     
 protected:
 

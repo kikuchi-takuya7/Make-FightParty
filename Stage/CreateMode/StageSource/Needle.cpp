@@ -1,4 +1,5 @@
 #include "Needle.h"
+#include "../../../Engine/CsvReader.h"
 
 namespace {
 
@@ -42,4 +43,9 @@ void Needle::ChildRelease()
 
 void Needle::OnCollision(GameObject* pTarget)
 {
+}
+
+void Needle::SetObjCsv(CsvReader* csv, int csvPos)
+{
+	needlePower_ = csv->GetValueInt(csvPos, 1);
 }

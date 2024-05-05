@@ -1,5 +1,6 @@
 #include "RotateBlade.h"
 #include "../../../Engine/BoxCollider.h"
+#include "../../../Engine/CsvReader.h"
 
 namespace {
 
@@ -20,7 +21,7 @@ namespace {
 }
 
 RotateBlade::RotateBlade(GameObject* parent)
-	:StageSourceBase(parent, "RotateBlade")
+	:StageSourceBase(parent, "RotateBlade"),rotSpeed_(ZERO)
 {
 }
 
@@ -34,6 +35,7 @@ void RotateBlade::ChildInitialize()
 	cost_ = COST;
 
 	attackPower_ = BLADE_POWER;
+	rotSpeed_ = ROT_SPEED;
 
 	AddCollider(pBoxCollision_, COLLIDER_BROCK);
 
@@ -44,7 +46,7 @@ void RotateBlade::ChildInitialize()
 
 void RotateBlade::ChildUpdate()
 {
-	transform_.rotate_.y += ROT_SPEED;
+	transform_.rotate_.y += rotSpeed_;
 }
 
 void RotateBlade::ChildDraw()
@@ -59,4 +61,10 @@ void RotateBlade::ChildRelease()
 
 void RotateBlade::OnCollision(GameObject* pTarget)
 {
+}
+
+void RotateBlade::SetObjCsv(CsvReader* csv, int csvPos)
+{
+	attackPower_ = csv->GetValueInt(csvPos, 1);
+	rotSpeed_ = csv->GetValueFloat(csvPos, 7);
 }
