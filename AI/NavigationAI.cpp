@@ -279,6 +279,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	}
 
+	//次に行く座標を計算
 	XMFLOAT3 nextPos = Path_Search(rest, start, target);
 
 	//残りの距離が小数点以下の場合、中途半端に止まるのでその分を補完する

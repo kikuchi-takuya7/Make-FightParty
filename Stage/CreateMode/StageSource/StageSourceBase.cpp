@@ -18,7 +18,7 @@ StageSourceBase::~StageSourceBase()
 
 void StageSourceBase::Initialize()
 {
-
+	//ブロック本体の当たり判定用
 	pBoxCollision_ = new BoxCollider(BOX_COLLISION_CENTER, BOX_COLLISION_SIZE, ZERO_FLOAT3);
 	
 	ChildInitialize();
@@ -26,7 +26,7 @@ void StageSourceBase::Initialize()
 
 void StageSourceBase::Update()
 {
-
+	//設定された位置まで移動させる
 	RateMovePosition(transform_.position_, lastPos_, MOVE_SPEED);
 
 	//更新処理をするかどうか

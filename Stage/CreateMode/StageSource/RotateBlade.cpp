@@ -34,6 +34,7 @@ void RotateBlade::ChildInitialize()
 
 	cost_ = COST;
 
+	//デフォルトの値で初期化
 	attackPower_ = BLADE_POWER;
 	rotSpeed_ = ROT_SPEED;
 
@@ -66,5 +67,5 @@ void RotateBlade::OnCollision(GameObject* pTarget)
 void RotateBlade::SetObjCsv(CsvReader* csv, int csvPos)
 {
 	attackPower_ = csv->GetValueInt(csvPos, 1);
-	rotSpeed_ = csv->GetValueFloat(csvPos, 7);
+	rotSpeed_ = csv->GetValueFloat(csvPos, 5);
 }

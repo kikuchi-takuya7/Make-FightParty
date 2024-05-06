@@ -140,6 +140,7 @@ void Player::MoveCharacter()
 	fMove.x *= status_.moveSpeed;
 	fMove.z *= status_.moveSpeed;
 
+	//移動させる
 	characterPos.x += fMove.x;
 	characterPos.z += fMove.z;
 
@@ -178,7 +179,7 @@ void Player::MoveCharacter()
 /// メタAIにステータスを伝える関数
 void Player::TellStatus()
 {
-
+	//自分のステータスをMetaAIに伝えて、勝者が決まってるかどうかを判別してもらう
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->ChangeStatus(GetObjectID(), GetStatus());
 	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->DecidedWinner();
 }

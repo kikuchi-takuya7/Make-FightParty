@@ -124,7 +124,7 @@ void AutoCannon::SetObjCsv(CsvReader* csv, int csvPos)
 
 	//‹…‚ð‘Å‚ÂŠÔŠu
 	timer_->SetLimit(bulletData_.interval_);
-}
+ }
 
 void AutoCannon::FiringEffect()
 {

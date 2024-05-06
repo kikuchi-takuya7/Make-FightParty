@@ -572,25 +572,50 @@ int MetaAI::VictoryPlayer()
 	int winner = -1;
 	int maxScore = ZERO;
 	bool sameScore = false;
+	vector<int> winnerID;//同点優勝が複数人いた場合
 
 
 	for (int i = ZERO; i < score_.size(); i++) {
 
 		//一位と点数が被っているか確認する
-		if (maxScore == score_.at(i)) {
+		if (maxScore == score_.at(i) && maxScore >= VICTORY_POINT) {
+
+			//被っていた場合同着だからsameScoreをtrueにする
 			sameScore = true;
+			winnerID.push_back(i);
 		}
 
 		//同時にボーダーにたどり着く可能性もあるため一番スコアの高い人を覚えておく
 		if (score_.at(i) >= VICTORY_POINT && maxScore < score_.at(i)) {
+			
+			//ここに来たら一番高いプレイヤーが更新されたって事だから更新する
+			winnerID.clear();
 			winner = i;
 			maxScore = score_.at(i);
 			sameScore = false;
+			winnerID.push_back(i);
 		}
 	}
 
 	if (sameScore) {
+		
+		//勝ち点が多い方のID
+		int ID = ZERO;
+
 		//同点だった場合勝ち数が多いほうが勝ち
+		for (int i = ZERO; i < winnerID.size(); i++) {
+			
+			//一番winPointが多い人のIDを覚えておく
+			int maxPoint = ZERO;
+			int tmp = characterStatusList_.at(winnerID.at(i)).winPoint;
+			if (maxPoint < tmp) {
+				maxPoint = tmp;
+				ID = i;
+			}
+		}
+		
+		//winnerを更新
+		winner = ID;
 	}
 
 	return winner;

@@ -237,6 +237,7 @@ void Character::ResetStatus()
 	//addcolliderしたら勝手に開放されるからね
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
+	//ステータスを初期化
 	status_.hp = CHARACTER_HP;
 	status_.dead = false;
 	status_.killPoint = ZERO;

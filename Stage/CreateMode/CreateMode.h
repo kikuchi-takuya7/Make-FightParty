@@ -22,6 +22,7 @@ enum FBXPATTERN {
 	PATTERN_END
 };
 
+//BGM一覧
 enum CreateSound {
 	SELECT,
 	SETTING,
@@ -54,7 +55,7 @@ struct SettingObjectInfo {
 	//Transform
 	Transform trans;
 
-	//移動し終わっているか
+	//移動している最中ならtrue
 	bool moved;
 
 	//コンストラクタ
@@ -106,8 +107,6 @@ public:
 	void Release() override;
 
 	////////////////////////メンバ関数/////////////////////////
-
-	
 
 	void ToSelectMode();	//セレクトモードに
 	void ToSettingMode();	//セッティングモードに
@@ -233,16 +232,16 @@ private:
 	//表示させているオブジェクトの一覧（モデル番号）
 	std::vector<int> viewObjectList_;
 
-	//viewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
+	//selectモードではviewObjectListのどこが選ばれたか,settingモードではどこのsettingオブジェクトが選ばれたか
 	int selecting_Object_;
 
-	//プレイヤーが設置するオブジェクト。{モデル番号,そのモデルのTransform}どのプレイヤーが選んでるかは要素番目で示している
+	//プレイヤーがselectモードで選んだオブジェクト。どのプレイヤーが選んでるかは要素番目で示している
 	std::vector<SettingObjectInfo> settingObject_;
 
 	//クリエイトモード時のランキング
 	std::vector<int> ranking_;
 
-	//次に選択するプレイヤーのID(rankingでビリから順番に選ばせる用)
+	//次に選択するプレイヤーのID(rankingでビリから順番に選ばせる時に使う)
 	int nextSelectCharacterID_;
 
 	//選択したオブジェクトが移動中か
@@ -262,7 +261,7 @@ private:
 	//敵の最初のID
 	int startEnemyID_;
 
-	//CreateModeを表示するテキスト
+	//CreateModeと表示するテキスト
 	Text* pText_;
 
 	//時間を置くのに使う

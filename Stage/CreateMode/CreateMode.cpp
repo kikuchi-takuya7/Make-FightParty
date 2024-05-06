@@ -33,6 +33,9 @@ namespace {
     //選択されたオブジェクトを表示する位置
     const XMFLOAT3 PLAYER_UI_POS[MAX_CHARACTER_NUM] = { XMFLOAT3(7,15,15),XMFLOAT3(12,15,15) ,XMFLOAT3(17,15,15) ,XMFLOAT3(22,15,15) };
 
+    //カーソルがあっているオブジェクトの大きさの値
+    const XMFLOAT3 SELECT_OBJ_SCALE = XMFLOAT3(1.2f,1.2f,1.2f);
+
     //カメラの位置
     const XMFLOAT3 SELECT_CAM_POS = XMFLOAT3(15, 20, ZERO);
     const XMFLOAT3 SELECT_CAM_TAR = XMFLOAT3(15, 20, 15);
@@ -122,6 +125,7 @@ void CreateMode::Initialize()
     //音声データのロード
     std::string str[CREATESOUND_NUM] = { "Sellect","Setting"};
 
+    //音声データをenum分ロード
     for (int i = ZERO; i < CREATESOUND_NUM; i++) {
 
         std::string dir = "Audio/SE/";
@@ -143,7 +147,7 @@ void CreateMode::Initialize()
 //更新
 void CreateMode::Update()
 {
-
+    //一試合終わると、セレクトモードに入りオブジェクトを選択し、セッティングモードでオブジェクトを設置する
     switch (nowState_)
     {
     case SELECT_MODE:
@@ -168,7 +172,7 @@ void CreateMode::Update()
 void CreateMode::Draw()
 {
 
-    //アップデート内でクリエイトモードとセットモードで切り替える
+    //クリエイトモードとセットモードで切り替える
     switch (nowState_)
     {
     case SELECT_MODE:
@@ -198,7 +202,7 @@ void CreateMode::Release()
 {
 }
 
-//セレクトモードに
+//セレクトモードにする
 void CreateMode::ToSelectMode()
 {
 
@@ -210,7 +214,7 @@ void CreateMode::ToSelectMode()
     //pNavigationAI_->AllEraseCollision();
 }
 
-//セッティングモードに
+//セッティングモードにする
 void CreateMode::ToSettingMode()
 {
     SettingInit();
@@ -269,14 +273,12 @@ std::vector<std::string> CreateMode::GetFilePath(const std::string& dir_name, co
 void CreateMode::SelectInit()
 {
 
+    //各メンバ変数の初期化
     rotateObjectValue_ = ZERO;
     selecting_Object_ = INF;
     nextSelectCharacterID_ = MAX_CHARACTER_NUM - 1;
-
     isObjectMoving_ = false;
-
     ranking_ = pMetaAI_->GetRanking();
-
     pTimer_->Reset();
 
     //前回のセッティングオブジェクトの情報をすべて初期化する
@@ -317,6 +319,7 @@ void CreateMode::SettingInit()
 //セレクトモード時の更新処理
 void CreateMode::SelectUpdate()
 {
+    //カメラ移動中なら更新しないように
     if (Camera::MoveCam(SELECT_CAM_POS, SELECT_CAM_TAR, CAM_MOVE_RATE) == false) {
         return;
     }
@@ -357,7 +360,7 @@ void CreateMode::SelectUpdate()
         return;
     }
 
-    //ここまで来たら一連の流れが終わってるのでタイマースタート
+    //ここまで来たら一連の流れが終わってるので少し待ってからセッティングモードに
     pTimer_->Start();
     if (pTimer_->IsFinished()) {
         ToSettingMode();
@@ -367,11 +370,12 @@ void CreateMode::SelectUpdate()
 //セッティングモード時の更新処理
 void CreateMode::SettingUpdate()
 {
+    //カメラ移動中なら更新しない
     if (Camera::MoveCam(SETTING_CAM_POS, SETTING_CAM_TAR, CAM_MOVE_RATE) == false) {
         return; 
     }
 
-    //移動する処理。
+    //プレイヤーが設置し終わったら、AIが選んだオブジェクトを移動させる処理
     if (settingObject_.at(ZERO).moved) {
         AIMovingObject();
         Audio::Play(hCreateSound_[SETTING]);
@@ -386,14 +390,14 @@ void CreateMode::SettingUpdate()
     if (IsStageOverlapCursor(front, back)) {
 
         //左クリックされて、かつ　すでに設置されたオブジェクトが無いなら
-        if (Input::IsMouseButtonDown(PLAYER_ID) && IsOverlapPosition() == false) {
+        if (Input::IsMouseButtonDown(ZERO) && IsOverlapPosition() == false) {
 
             //プレイヤーは一人の予定だから定数で
             CreateObject(settingObject_.at(PLAYER_ID).hModel, settingObject_.at(PLAYER_ID).trans, PLAYER_ID);
             Audio::Play(hCreateSound_[SETTING]);
         }
 
-        //右クリックされたら設置する（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
+        //右クリックされたら90度回転する（IsMouseButtonDownの引数に１を与えたら右クリックされたかどうかになる）
         if (Input::IsMouseButtonDown(1)) {
             settingObject_.at(PLAYER_ID).trans.rotate_.y += 90;
             if (settingObject_.at(PLAYER_ID).trans.rotate_.y >= 360) {
@@ -404,10 +408,11 @@ void CreateMode::SettingUpdate()
 
     //全てのオブジェクトを設置し終わったらゲームに戻る
     {
+        //全てのオブジェクトが設置され終わっているかを確認
         bool isAllCreate = true;
         for (int i = ZERO; i < settingObject_.size(); i++) {
 
-            //モデル番号が-1じゃないなら
+            //モデル番号が-1じゃないならfalse(このUpdata内だとhModelが全て設定されていて、設置し終わると-1になる)
             if (settingObject_.at(i).hModel != -1) {
                 isAllCreate = false;
             }
@@ -434,8 +439,9 @@ void CreateMode::SelectDraw()
         objTrans.position_ = OBJECT_POS[i];
         objTrans.rotate_.y = rotateObjectValue_;
 
+        //カーソルが合っている場合モデルを大きくする
         if (i == selecting_Object_) {
-            objTrans.scale_ = XMFLOAT3(1.2f, 1.2f, 1.2f);
+            objTrans.scale_ = SELECT_OBJ_SCALE;
         }
 
         Model::SetTransform(viewObjectList_.at(i), objTrans);
@@ -458,14 +464,14 @@ void CreateMode::SelectDraw()
             }
         }
 
-
-
+        //オブジェクトを一括回転
         settingObject_.at(i).trans.rotate_.y = rotateObjectValue_;
 
         Model::SetTransform(settingObject_.at(i).hModel, settingObject_.at(i).trans);
         Model::Draw(settingObject_.at(i).hModel);
     }
 
+    //オブジェクトを回転させる
     rotateObjectValue_++;
 
     //クリエイトモードだと言う事を表示
@@ -523,6 +529,7 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
         break;
     }
 
+    //移動中はtrue
     settingObject_.at(element).moved = true;
 
     //クリックしたらそのオブジェクトを消す（モデル番号を無くして処理しなくする）
@@ -533,7 +540,7 @@ void CreateMode::CreateObject(int hModel, Transform trans, int element)
 // 引数１：追加したいオブジェクトのポインタ
 void CreateMode::AddCreateObject(StageSourceBase* object)
 {
-    //後々のこと考えたらID割り振ったほうがいいか。後で爆弾とか実装する事考えたら
+    //後々のこと考えたらID割り振ったほうがいいかも。後で爆弾とか実装する事考えたら
     createObjectList_.emplace_back(object);
 }
 
@@ -565,6 +572,7 @@ void CreateMode::GetCursorRay(XMVECTOR& front, XMVECTOR& back)
     //びゅー変換
     XMMATRIX invView = XMMatrixInverse(nullptr, Camera::GetViewMatrix());
 
+    //前ベクトルと後ベクトルからレイの発射位置を計算
     XMFLOAT3 mousePosFront = Input::GetMousePosition();
     mousePosFront.z = 0.0;
     XMFLOAT3 mousePosBack = Input::GetMousePosition();
@@ -660,6 +668,7 @@ bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back)
             continue;
         }
 
+        //レイのデータ
         RayCastData data;
         XMStoreFloat3(&data.start, front);
         XMStoreFloat3(&data.dir, back - front);
@@ -674,7 +683,7 @@ bool CreateMode::IsSelectingOverlapCursor(XMVECTOR front, XMVECTOR back)
         //当たってたら即終了　
         if (data.hit) {
 
-            //
+            //当たったオブジェクトの番号をセレクティングオブジェクトで覚えておく
             selecting_Object_ = i;
             return true;
         }
@@ -766,6 +775,7 @@ bool CreateMode::IsOverlapPosition()
             continue;
         }
 
+        //既に設置されているオブジェクトと位置が被っているか
         if (settingObject_.at(i).trans == pos) {
             return true;
         }
@@ -817,6 +827,7 @@ void CreateMode::AIMovingObject()
 
         }
 
+        //他のオブジェクトと被ってない事が確認出来たら設置する
         CreateObject(settingObject_.at(i).hModel, settingObject_.at(i).trans, i);
     }
 }
