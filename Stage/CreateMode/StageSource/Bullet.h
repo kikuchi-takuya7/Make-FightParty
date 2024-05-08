@@ -2,6 +2,8 @@
 #include "../../../Engine/GameObject.h"
 #include "StageSourceBase.h"
 
+class StageSourceBase;
+
 /// <summary>
 /// Cannonクラス等が使う球のクラス。当たり判定の大きさ等はそれぞれの親クラスで指定してもらう
 /// </summary>
@@ -36,7 +38,8 @@ public:
 	/// <param name="attackPower">大砲の攻撃力</param>
 	/// <param name="speed">球のスピード</param>
 	/// <param name="rotY">球を発射した時のオブジェクトの角度</param>
-	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY);
+	/// <param name="cannon">この玉を生成した大砲のポインタ</param>
+	void SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY, StageSourceBase* cannon);
 
 
 	//アクセス関数
@@ -54,20 +57,13 @@ private:
 	//球のスピード
 	float bulletSpeed_;
 
-	//発射された時の大砲の角度
-	float startRotateY_;
-
 	//球の攻撃力
 	int attackPower_;
 
 	//球が発射する向きのベクトル
 	XMVECTOR forwardVec_;
 
-	//砲台の判定から独立させるための変数
-	Transform bulletTrans_;
-
-	SphereCollider* collider_;
-
-
+	//この玉を生成した親の大砲
+	StageSourceBase* pCannon_;
 
 };

@@ -9,7 +9,7 @@ namespace {
 }
 
 Bullet::Bullet(GameObject* parent)
-	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED),startRotateY_(ZERO), collider_(nullptr)
+	:GameObject(parent, "Bullet"), moveLen_(ZERO),bulletSpeed_(DEFAULT_BULLET_SPEED),pCannon_(nullptr)
 {
 }
 
@@ -27,35 +27,13 @@ void Bullet::Initialize()
 
 void Bullet::Update()
 {
-	
-#if 0 //常に回転行列をかけてる方
 
-	//回転行列をかけ続けるとその大砲の座標を外周として座標0,0の所を中心にぐるぐる回った。
-	//最初だけベクトルに回転行列をかけると
-	XMMATRIX moveMat = XMMatrixTranslation(ZERO, ZERO, bulletSpeed_);
-	XMMATRIX rotMat = XMMatrixRotationY(XMConvertToRadians(startRotateY_));
-	XMMATRIX mat = moveMat;
-
-	XMVECTOR myVec = XMVectorZero();
-
-	myVec = XMVector3TransformCoord(myVec, mat);
-	vec_ = vec_ + myVec; //平行移動行列をかけたベクトルと大砲の座標で回転させたベクトルを足すと大砲の周りからz方向に真っすぐ飛んだ。つまりvec_の時点で座標周りを回転してる？
-	transform_.position_ = VectorToFloat3(vec_);
-	
-#else //最初に回転行列をかけただけの方
-
+	//自分の位置から大砲の方向への前ベクトルを足す
 	XMVECTOR myVec = XMLoadFloat3(&transform_.position_);
-	
 	myVec = forwardVec_ + myVec;
-
 	transform_.position_ = VectorToFloat3(myVec);
-
-#endif
 	
-
-	//bulletTrans_.position_.z += bulletSpeed_;
-
-	//transform_.position_.z += bulletSpeed_;
+	//発射距離を保存
 	moveLen_ += bulletSpeed_;
 
 	//射程距離を超えたら
@@ -81,8 +59,8 @@ void Bullet::Release()
 
 void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
-	//ブロックに当たったら、それが自分でなければ
-	if (targetType == COLLIDER_BROCK && pTarget != this->GetParent()) {
+	//ブロックに当たったら、それが自分でなければ そもそもブロックと大砲の球が当たってくれてない。当たり判定の問題か
+	if (targetType == COLLIDER_BROCK && pTarget != pCannon_) {
 		KillMe();
 	}
 
@@ -96,13 +74,16 @@ void Bullet::OnCollision(GameObject* pTarget, ColliderAttackType myType, Collide
 /// <param name="attackPower">大砲の攻撃力</param>
 /// <param name="speed">球のスピード</param>
 /// <param name="rotY">球を発射した時の大砲の角度</param>
-void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY)
+/// <param name="cannon">この玉を生成した大砲のポインタ</param>
+void Bullet::SetBulletData(SphereCollider* collider, ColliderAttackType type, int attackPower, float speed, float rotY,StageSourceBase* cannon)
 {
-	collider_ = collider;
-	AddCollider(collider_, type);
+	//当たり判定を追加
+	AddCollider(collider, type);
+
+	//いろいろな情報をセット
 	attackPower_ = attackPower;
 	bulletSpeed_ = speed;
-
+	pCannon_ = cannon;
 	transform_.rotate_.y = rotY;
 
 	//前ベクトルから進む方向への単位ベクトルを計算

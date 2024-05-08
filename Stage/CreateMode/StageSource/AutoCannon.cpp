@@ -75,7 +75,7 @@ void AutoCannon::ChildUpdate()
 
 		//‹…‚Ì“–‚½‚è”»’è‚ðì‚é
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, bulletData_.size_);
-		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, bulletData_.power_, bulletData_.speed_, transform_.rotate_.y);
+		pBullet->SetBulletData(pBulletCollider, COLLIDER_BULLET, bulletData_.power_, bulletData_.speed_, transform_.rotate_.y, this);
 		timer_->Reset();
 		timer_->Start();
 		FiringEffect();
