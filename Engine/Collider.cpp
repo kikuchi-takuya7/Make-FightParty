@@ -44,16 +44,13 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 	XMVECTOR aCenter = XMVector3TransformCoord(boxA->GetCenter(), boxA->pGameObject_->GetWorldMatrix());
 	XMVECTOR bCenter = XMVector3TransformCoord(boxB->GetCenter(), boxB->pGameObject_->GetWorldMatrix());
 	XMVECTOR Interval = aCenter - bCenter; 
-	
-	float tes1 = Length(XMVector3TransformCoord(boxA->GetCenter(), boxA->pGameObject_->GetWorldMatrix()));
-	float tes2 = Length(XMVector3TransformCoord(boxB->GetCenter(), boxB->pGameObject_->GetWorldMatrix()));
 
 	// 分離軸 : Ae1 箱Aの方向ベクトルと分離軸との内積を2つ足すと半径分の分離軸上の長さを求められて、それの合計がLより長いならぶつかってる可能性あり
 	float rA = Length(Ae1);
 	float rB = LenSegOnSeparateAxis(&NAe1, &Be1, &Be2, &Be3);
 	float L = fabs(Length(XMVector3Dot(Interval, NAe1)));
 	if (L > rA + rB)
-		return false; // 衝突していない
+		return false; // 分離軸があるので衝突していない
 
 	// 分離軸 : Ae2
 	rA = Length(Ae2);
