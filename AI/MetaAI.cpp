@@ -462,33 +462,6 @@ void MetaAI::GameCameraSet()
 // ゲームカメラを動かす関数
 void MetaAI::GameCameraMove()
 {
-
-#if 0 //一番遠い敵との間を注視点にしたやつ
-
-	//一番遠いキャラのIDとプレイヤーのIDの位置の真ん中に注視点を置く
-	int farthestID = pNavigationAI_->Farthest(PLAYER_ID);
-
-	//既に勝者が決まっていたら動かさない
-	if (farthestID == -1) {
-		return;
-	}
-
-	XMFLOAT3 farPos = pNavigationAI_->GetCaracter(farthestID)->GetPosition();
-	XMFLOAT3 myPos = pNavigationAI_->GetCaracter(PLAYER_ID)->GetPosition();
-
-	//真ん中の注視点を求める
-	XMFLOAT3 camTar = Float3Add(farPos, myPos) / 2;
-
-	//座標は線分の半径分遠くすればいい感じか.camTarとの距離をキャラの距離分ぐらい離してみよう。x座標とy座標だけ動かさない感じ？
-	XMFLOAT3 camPos = camTar;
-	camPos.z = MAIN_GAME_CAM_POS.z;
-	camPos.y = MAIN_GAME_CAM_POS.y;
-
-	//float dis = pNavigationAI_->Distance(farthestID, PLAYER_ID);
-	
-	Camera::MoveCam(camPos, camTar, GAME_CAM_RATE);
-
-#else //4体の真ん中を注視点にしようとしてるやつ
 	
 	//ID順にキャラクターの座標
 	vector<XMFLOAT3> playerPos;
@@ -544,8 +517,6 @@ void MetaAI::GameCameraMove()
 
 	/*Camera::SetPosition(camPos);
 	Camera::SetTarget(centerPoint);*/
-
-#endif
 
 }
 
