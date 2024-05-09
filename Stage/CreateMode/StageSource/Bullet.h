@@ -41,6 +41,8 @@ public:
 
 	//アクセス関数
 	int GetBulletPower() { return attackPower_; }
+	int GetAuthorID() { return authorID_; }
+	void SetAuthorID(int id) { authorID_ = id; }
 
 
 private:

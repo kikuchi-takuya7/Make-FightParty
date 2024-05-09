@@ -51,6 +51,7 @@ void Cannon::ChildUpdate()
 		Bullet* pBullet = Instantiate<Bullet>(GetParent());
 		pBullet->SetScale(bulletData_.size_);
 		pBullet->SetPosition(transform_.position_);
+		pBullet->SetAuthorID(authorID_);
 
 		//‹…‚Ì“–‚½‚è”»’è‚ğì‚é
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, bulletData_.size_);
