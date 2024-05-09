@@ -10,6 +10,7 @@
 #include "../Stage/CreateMode/StageSource/Mud.h"
 #include "../Stage/CreateMode/StageSource/RotateBlade.h"
 #include "../UI/PlayerUI.h"
+#include "../AI/MetaAI.h"
 #include "CharacterState/CharacterStateManager.h"
 #include "../VFXData/VFXData.h"
 
@@ -135,19 +136,16 @@ void Character::Release()
 void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, ColliderAttackType targetType)
 {
 	//判定をしない
-	if (IsEntered() == false) {
+	if (IsEntered() == false)
 		return;
-	}
-
+	
 	//死んでいたら判定しない様に
-	if (status_.dead) {
+	if (status_.dead)
 		return;
-	}
-
+	
 	//壁にぶつかったら前にいた座標に戻す
-	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK) {
+	if (myType == COLLIDER_BODY && targetType == COLLIDER_BROCK)
 		SetPosition(prevPos_);
-	}
 
 	//ノックバック中は当たり判定を無くす
 	if (pState_->pCharacterStateList_.at(KNOCKBACK) == pState_->characterState_)
@@ -156,16 +154,41 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	//球からの攻撃に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
 
-		HitDamage(static_cast<Bullet*>(pTarget)->GetBulletPower());
+		//その攻撃でやられたら、相手のトラップキルポイントを増やす
+		if (HitDamage(static_cast<Bullet*>(pTarget)->GetBulletPower())) {
+
+			//メタAIのインスタンスを探して、メタAIからそのトラップを作ったキャラクターのステータスをもらう
+			MetaAI* AI = ((MetaAI*)GetParent()->FindChildObject("MetaAI"));
+			int ID = static_cast<Bullet*>(pTarget)->GetAuthorID();
+			Status status = AI->GetCharacterStatus(ID);
+			status.trapKillPoint++;
+
+			//トラップキルポイントを増やして変更させる
+			AI->ChangeStatus(ID, status);
+			DieEffect();
+		}
+
 		SetTargetRotate(pTarget->GetRotate());
 		pState_->ChangeState(KNOCKBACK);
-
 	}
 
 	//回転する刃からの攻撃に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBJ_ATTACK) {
 
-		HitDamage(static_cast<RotateBlade*>(pTarget)->GetAttackPower());
+		//その攻撃でやられたら、相手のトラップキルポイントを増やす
+		if (HitDamage(static_cast<RotateBlade*>(pTarget)->GetAttackPower())) {
+
+			//メタAIのインスタンスを探して、メタAIからそのトラップを作ったキャラクターのステータスをもらう
+			MetaAI* AI = ((MetaAI*)GetParent()->FindChildObject("MetaAI"));
+			int ID = static_cast<RotateBlade*>(pTarget)->GetAuthorID();
+			Status status = AI->GetCharacterStatus(ID);
+			status.trapKillPoint++;
+
+			//トラップキルポイントを増やして変更させる
+			AI->ChangeStatus(ID, status);
+			DieEffect();
+		}
+
 		SetTargetRotate(pTarget->GetRotate());
 		pState_->ChangeState(KNOCKBACK);
 
@@ -173,7 +196,20 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 
 	//トゲに当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_NEEDLE) {
-		HitDamage(static_cast<Needle*>(pTarget)->GetNeedlePower());
+		
+		//その攻撃でやられたら、相手のトラップキルポイントを増やす
+		if (HitDamage(static_cast<Needle*>(pTarget)->GetAttackPower())) {
+
+			//メタAIのインスタンスを探して、メタAIからそのトラップを作ったキャラクターのステータスをもらう
+			MetaAI* AI = ((MetaAI*)GetParent()->FindChildObject("MetaAI"));
+			int ID = static_cast<Needle*>(pTarget)->GetAuthorID();
+			Status status = AI->GetCharacterStatus(ID);
+			status.trapKillPoint++;
+
+			//トラップキルポイントを増やして変更させる
+			AI->ChangeStatus(ID, status);
+			DieEffect();
+		}
 	}
 
 	//泥に当たった時の処理 
@@ -182,7 +218,7 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 		status_.moveSpeed = DEFAULT_MOVE_SPEED * deceleration;
 	}
 
-	//攻撃に当たったときの処理
+	//敵の攻撃に当たったときの処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_ATTACK)
 	{
 		//敵の方向に向きなおす

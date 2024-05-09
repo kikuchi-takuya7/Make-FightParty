@@ -32,10 +32,6 @@ public:
 
     void SetObjCsv(CsvReader* csv, int csvPos) override;
 
-    int GetNeedlePower() { return needlePower_;}
-
 private:
-
-    int needlePower_;
 
 };

@@ -60,6 +60,9 @@ private:
 	//球の攻撃力
 	int attackPower_;
 
+	//このオブジェクトを生成したプレイヤーのID
+	int authorID_;
+
 	//球が発射する向きのベクトル
 	XMVECTOR forwardVec_;
 

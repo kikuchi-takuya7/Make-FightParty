@@ -61,6 +61,7 @@ void AutoCannon::ChildInitialize()
 void AutoCannon::ChildUpdate()
 {
 
+	//‘_‚Á‚Ä‚¢‚é“G‚ªŽ€‚ñ‚Å‚¢‚½‚çƒ^[ƒQƒbƒg‚ð•Ï‚¦‚é
 	if (pNavigationAI_->GetCaracter(target_)->GetStatus().dead == true) {
 		target_ = pMetaAI_->Targeting(authorID_).ID;
 	}

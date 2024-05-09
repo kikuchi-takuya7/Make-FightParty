@@ -22,7 +22,7 @@ void Needle::ChildInitialize()
 
 	cost_ = COST;
 
-	needlePower_ = NEEDLEPOWER;
+	attackPower_ = NEEDLEPOWER;
 
 	AddCollider(pBoxCollision_, COLLIDER_NEEDLE);
 }
@@ -47,5 +47,5 @@ void Needle::OnCollision(GameObject* pTarget)
 
 void Needle::SetObjCsv(CsvReader* csv, int csvPos)
 {
-	needlePower_ = csv->GetValueInt(csvPos, 1);
+	attackPower_ = csv->GetValueInt(csvPos, 1);
 }
