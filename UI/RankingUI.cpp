@@ -7,8 +7,9 @@
 namespace {
 
 	const XMFLOAT3 PAPER_SIZE = { 0.8f, 0.6f, 1 };
-
 	const int MAX_PLAYER = 4;
+
+	//ゲージが開始する初期位置、そこから4プレイヤー分の座標差
 	const XMFLOAT3 FIRST_GAUGE_POS = { 266.5f,170,ZERO };
 	const float GAUGE_Y_DIFF = 150;
 	const int VICTORY_POINT = 100;

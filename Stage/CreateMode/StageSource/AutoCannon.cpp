@@ -61,6 +61,7 @@ void AutoCannon::ChildInitialize()
 void AutoCannon::ChildUpdate()
 {
 
+	//狙っている敵が死んでいたらターゲットを変える
 	if (pNavigationAI_->GetCaracter(target_)->GetStatus().dead == true) {
 		target_ = pMetaAI_->Targeting(authorID_).ID;
 	}
@@ -72,6 +73,7 @@ void AutoCannon::ChildUpdate()
 		Bullet* pBullet = Instantiate<Bullet>(GetParent());
 		pBullet->SetScale(bulletData_.size_);
 		pBullet->SetPosition(transform_.position_);
+		pBullet->SetAuthorID(authorID_);
 
 		//球の当たり判定を作る
 		SphereCollider* pBulletCollider = new SphereCollider(BULLET_COLLISION_CENTER, bulletData_.size_);
