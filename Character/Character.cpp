@@ -347,7 +347,7 @@ void Character::SetCharacterName(std::string name)
 void Character::HitEffect()
 {
 
-	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationSmallStart(1.0f);
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationSmallStart(0.3f);
 
 	using namespace HitEffect;
 
@@ -382,7 +382,7 @@ void Character::HitEffect()
 void Character::DieEffect()
 {
 	
-	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationBigStart(1.5f);
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationBigStart(1.0f);
 
 	using namespace DieEffect;
 

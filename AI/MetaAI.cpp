@@ -45,8 +45,8 @@ namespace {
 	const int VICTORY_POINT = 80;
 
 	//カメラを振動させる時の差分
-	const float VIBRATION_DIFF_SMALL = 1;
-	const XMFLOAT3 VIBRATION_DIFF_BIG = XMFLOAT3(2.0f, 2.0f, ZERO);
+	const float VIBRATION_DIFF_SMALL = 0.2f;
+	const XMFLOAT3 VIBRATION_DIFF_BIG = XMFLOAT3(1.0f, 1.0f, ZERO);
 	const float VIBRATION_RATE = 1;
 	
 
@@ -217,40 +217,56 @@ int MetaAI::SelectObject(vector<int> model)
 // カメラを振動させる関数（小）
 void MetaAI::CameraVibrationSmall()
 {
-	XMFLOAT3 pos = Camera::GetPosition();
-	XMFLOAT3 tar = Camera::GetTarget();
-	
-	float probability = rand() % 100 / 100;
+	//振動開始時のカメラの位置
+	XMFLOAT3 pos = vibrationInfo_.startPos;
+	XMFLOAT3 tar = vibrationInfo_.startTar;
 
-	//半分の確率で下方向にも
-	if (rand() % 2 == 1) {
-		probability = -probability;
+	//徐々に振動が小さくなるようにする
+	float pro = (float)vibrationInfo_.pVibrationTimer->GetNowFlame() / (float)vibrationInfo_.pVibrationTimer->GetStartFlame();
+
+	//上下交互に振動する様に
+	if (vibrationInfo_.pVibrationTimer->GetNowFlame() % 2 == 1) {
+		pro = -pro;
 	}
 
-	float diff = VIBRATION_DIFF_SMALL * probability;
+	float diff = VIBRATION_DIFF_SMALL * pro;
 
 	pos.y += diff;
 	tar.y += diff;
 
-	Camera::MoveCam(pos, tar, VIBRATION_RATE);
+	Camera::SetPosition(pos);
+	Camera::SetTarget(tar);
 }
 
 // カメラを振動させる関数（大）
 void MetaAI::CameraVibrationBig()
 {
-	XMFLOAT3 pos = Camera::GetPosition();
-	XMFLOAT3 tar = Camera::GetTarget();
+	//振動開始時のカメラの位置
+	XMFLOAT3 pos = vibrationInfo_.startPos;
+	XMFLOAT3 tar = vibrationInfo_.startTar;
 
-	float probability = rand() % 100 / 100;
+	//徐々に振動が小さくなるようにする
+	float pro = (float)vibrationInfo_.pVibrationTimer->GetNowFlame() / (float)vibrationInfo_.pVibrationTimer->GetStartFlame();
 
-	//半分の確率で下方向にも
+	//上下左右にランダムに動かす
 	if (rand() % 2 == 1) {
-		probability = -probability;
+		pro = -pro;
 	}
 
-	XMFLOAT3 diff = VIBRATION_DIFF_BIG * probability;
+	XMFLOAT3 diff = VIBRATION_DIFF_BIG;
+	diff.x = VIBRATION_DIFF_BIG.x * pro;
 
-	Camera::MoveCam(Float3Add(pos, diff), Float3Add(tar, diff), VIBRATION_RATE);
+	//上下左右にランダムに動かす
+	if (rand() % 2 == 1) {
+		pro = -pro;
+	}
+
+	diff.y = VIBRATION_DIFF_BIG.y * pro;
+
+
+
+	Camera::SetPosition(Float3Add(pos, diff));
+	Camera::SetTarget(Float3Add(tar, diff));
 }
 
 void MetaAI::VibrationSmallStart(float time)
@@ -258,13 +274,19 @@ void MetaAI::VibrationSmallStart(float time)
 	vibrationInfo_.pVibrationTimer->SetLimit(time);
 	vibrationInfo_.pVibrationTimer->Start();
 	vibrationInfo_.vibrationSmall = true;
+	vibrationInfo_.vibrationBig = false;
+	vibrationInfo_.startPos = Camera::GetPosition();
+	vibrationInfo_.startTar = Camera::GetTarget();
 }
 
 void MetaAI::VibrationBigStart(float time)
 {
 	vibrationInfo_.pVibrationTimer->SetLimit(time);
 	vibrationInfo_.pVibrationTimer->Start();
+	vibrationInfo_.vibrationSmall = false;
 	vibrationInfo_.vibrationBig = true;
+	vibrationInfo_.startPos = Camera::GetPosition();
+	vibrationInfo_.startTar = Camera::GetTarget();
 }
 
 // 勝敗が決まっていたらクリエイトモードへ移行する関数

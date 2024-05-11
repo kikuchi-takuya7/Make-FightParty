@@ -43,9 +43,17 @@ struct VibrationInfo {
 	//振動大
 	bool vibrationBig;
 
+	//振動を始める直前のカメラ座標を覚えておく
+	XMFLOAT3 startPos;
+	XMFLOAT3 startTar;
+
+	//初期化用コンストラクタ
 	VibrationInfo() {
+		pVibrationTimer = nullptr;
 		vibrationSmall = false;
 		vibrationBig = false;
+		startPos = ZERO_FLOAT3;
+		startTar = ZERO_FLOAT3;
 	}
 
 };
