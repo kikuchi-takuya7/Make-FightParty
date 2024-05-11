@@ -1,5 +1,6 @@
 #include "CharacterKnockBackState.h"
 #include "../../../Engine/Input.h"
+#include "../../../AI/MetaAI.h"
 #include "../Character.h"
 
 namespace {
@@ -28,20 +29,12 @@ void CharacterKnockBackState::Update()
 
 	flame_++;
 
-	//敵の向いている方向が欲しい.できればEnterの時点で飛ばされる座標を取っておいて、そこに着いたら動けるって感じにしたい。緩急付けて
-
 	//プレイヤーの現在の位置をベクトル型に変換
 	XMFLOAT3 playerPos = pCharacter_->GetPosition();
 
 	pCharacter_->RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
 
 	pCharacter_->SetPosition(playerPos);
-
-	/*if (characterPos == lastPoint_) {
-		pCharacter_->ChangeState(character_IDLE);
-		pCharacter_->ChangeKnockBack(false);
-	}*/
-
 
 	int nowFrame = Model::GetAnimFrame(hCharacterModel_);
 

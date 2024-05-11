@@ -212,8 +212,8 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* sphereA, SphereCollider* sphe
 {
 	XMFLOAT3 sphereAWPos = sphereA->pGameObject_->GetWorldPosition();
 	XMFLOAT3 sphereBWPos = sphereB->pGameObject_->GetWorldPosition();
-	XMFLOAT3 sphereAVec = VectorToFloat3(sphereA->GetCenter()) + sphereAWPos;
-	XMFLOAT3 sphereBVec = VectorToFloat3(sphereB->GetCenter()) + sphereBWPos;
+	XMFLOAT3 sphereAVec = Float3Add(VectorToFloat3(sphereA->GetCenter()), sphereAWPos);
+	XMFLOAT3 sphereBVec = Float3Add(VectorToFloat3(sphereB->GetCenter()), sphereBWPos);
 
 
 	if (pow(sphereBWPos.x - sphereAWPos.x,2) + pow(sphereBWPos.y- sphereAWPos.y, 2) + pow(sphereBWPos.z - sphereAWPos.z, 2) 
@@ -262,7 +262,7 @@ void Collider::Draw(XMFLOAT3 position)
 	Transform transform;
 
 	transform.position_ = VectorToFloat3(XMVector3TransformCoord(center_, pGameObject_->GetWorldMatrix()));
-	transform.rotate_ = pGameObject_->GetRotate() + rotate_;
+	transform.rotate_ = Float3Add(pGameObject_->GetRotate(), rotate_);
 	transform.scale_ = size_ ;
 
 	//transform.Calclation();

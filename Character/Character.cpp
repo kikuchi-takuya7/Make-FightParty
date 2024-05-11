@@ -154,6 +154,9 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 	//球からの攻撃に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_BULLET) {
 
+		SetTargetRotate(pTarget->GetRotate());
+		pState_->ChangeState(KNOCKBACK);
+
 		//その攻撃でやられたら、相手のトラップキルポイントを増やす
 		if (HitDamage(static_cast<Bullet*>(pTarget)->GetBulletPower())) {
 
@@ -167,13 +170,18 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 			AI->ChangeStatus(ID, status);
 			DieEffect();
 		}
+		else {
+			HitEffect();
+		}
 
-		SetTargetRotate(pTarget->GetRotate());
-		pState_->ChangeState(KNOCKBACK);
+		
 	}
 
 	//回転する刃からの攻撃に当たった時の処理
 	if (myType == COLLIDER_BODY && targetType == COLLIDER_OBJ_ATTACK) {
+
+		SetTargetRotate(pTarget->GetRotate());
+		pState_->ChangeState(KNOCKBACK);
 
 		//その攻撃でやられたら、相手のトラップキルポイントを増やす
 		if (HitDamage(static_cast<RotateBlade*>(pTarget)->GetAttackPower())) {
@@ -188,9 +196,11 @@ void Character::OnCollision(GameObject* pTarget, ColliderAttackType myType, Coll
 			AI->ChangeStatus(ID, status);
 			DieEffect();
 		}
+		else {
+			HitEffect();
+		}
 
-		SetTargetRotate(pTarget->GetRotate());
-		pState_->ChangeState(KNOCKBACK);
+		
 
 	}
 
@@ -336,6 +346,9 @@ void Character::SetCharacterName(std::string name)
 //攻撃を食らった時のエフェクト
 void Character::HitEffect()
 {
+
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationSmallStart(1.0f);
+
 	using namespace HitEffect;
 
 	//火の粉
@@ -368,6 +381,8 @@ void Character::HitEffect()
 //死んだ時にでるエフェクト
 void Character::DieEffect()
 {
+	
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationBigStart(1.5f);
 
 	using namespace DieEffect;
 
