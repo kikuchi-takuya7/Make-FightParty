@@ -4,6 +4,7 @@
 #include "../Engine/Global.h"
 #include "../Engine/Audio.h"
 #include "../Engine/VFX.h"
+#include "../Engine/CsvReader.h"
 #include "../Stage/CreateMode/StageSource/Bullet.h"
 #include "../Stage/CreateMode/StageSource/Needle.h"
 #include "../Stage/CreateMode/StageSource/StageSourceBase.h"
@@ -16,22 +17,31 @@
 
 //基礎ステータス等
 namespace {
+
+	//デフォルトのステータス値
 	const int CHARACTER_HP = 100;
 	const int CHARACTER_ATTACK_POWER = 25;
+	const float DEFAULT_MOVE_SPEED = 0.12f;
+
+	//当たり判定の情報
 	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
 	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(0.9, 2, 0.9);
 	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
 	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1.5, 0.5, 3.0);
 
+	//最大人数
 	const int PLAYER_MAX_NUM = 4;
 
-	const float DEFAULT_MOVE_SPEED = 0.12f;
+	//VFXのエフェクトを出す差分（y座標）
+	const float FIRE_EFFECT_DIFF = 1.5f;
+
+	
 }
 
 //コンストラクタ
 Character::Character(GameObject* parent,std::string name)
 	:GameObject(parent, name), hModel_(-1),status_(Status(CHARACTER_HP, CHARACTER_ATTACK_POWER, DEFAULT_MOVE_SPEED, false, ZERO, ZERO, ZERO, "NONE")),
-	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), hSoundEffect_{-1,-1}
+	pState_(nullptr), pBodyCollision_(nullptr), pAttackCollision_(nullptr), startPos_(ZERO_FLOAT3), hSoundEffect_{-1,-1},maxHP_(CHARACTER_HP),moveSpeed_(DEFAULT_MOVE_SPEED),vibration_Small_(ZERO),vibration_Big_(ZERO)
 	,pPlayerUI_(Instantiate<PlayerUI>(this))
 {
 }
@@ -44,6 +54,7 @@ Character::~Character()
 //初期化
 void Character::Initialize()
 {
+	//当たり判定を生成
 	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, ZERO_FLOAT3);
 
@@ -52,10 +63,25 @@ void Character::Initialize()
 	hModel_ = Model::Load(fileName);
 	assert(hModel_ >= ZERO);
 
+	//外部ファイルからキャラの情報を入手
+	CsvReader csv;
+	csv.Load("CSV/Character_Option.csv");
+	maxHP_ = csv.GetValueInt(1, 0);
+	status_.attackPower = csv.GetValueInt(1, 1);
+	moveSpeed_ = csv.GetValueFloat(1, 2);
+	status_.hp = maxHP_;
+	status_.moveSpeed = moveSpeed_;
+
+	//外部ファイルから画面振動の長さを入手
+	CsvReader vibCsv;
+	vibCsv.Load("CSV/Vibration_Option.csv");
+	vibration_Small_ = vibCsv.GetValueFloat(1, 0);
+	vibration_Big_ = vibCsv.GetValueFloat(1, 1);
+
+	//stateを生成
 	pState_ = new CharacterStateManager(this, hModel_);
 
-	pPlayerUI_->SetMaxHp(status_.hp, status_.hp);
-
+	pPlayerUI_->SetMaxHp(status_.hp, maxHP_);
 
 	//音声データのロード
 	std::string str[SE_NUM] = { "Damage","Dead", };
@@ -95,7 +121,7 @@ void Character::Update()
 	}
 
 	//泥を踏んだ時の移動速度を戻す用
-	status_.moveSpeed = DEFAULT_MOVE_SPEED;
+	status_.moveSpeed = moveSpeed_;
 
 }
 
@@ -284,12 +310,12 @@ void Character::ResetStatus()
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
 
 	//ステータスを初期化
-	status_.hp = CHARACTER_HP;
+	status_.hp = maxHP_;
 	status_.dead = false;
 	status_.killPoint = ZERO;
 	status_.trapKillPoint = ZERO;
 
-	pPlayerUI_->SetMaxHp(status_.hp, CHARACTER_HP);
+	pPlayerUI_->SetMaxHp(status_.hp, maxHP_);
 
 	TellStatus();
 
@@ -347,14 +373,14 @@ void Character::SetCharacterName(std::string name)
 void Character::HitEffect()
 {
 
-	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationSmallStart(0.3f);
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationSmallStart(vibration_Small_);
 
 	using namespace HitEffect;
 
 	//火の粉
 	EmitterData data;
 	data.textureFileName = FILENAME;
-	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
+	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + FIRE_EFFECT_DIFF, transform_.position_.z);
 	data.positionRnd = POSITIONRND;
 	data.direction = targetRot_;
 	data.directionRnd = DIRECTIONRND;
@@ -382,7 +408,7 @@ void Character::HitEffect()
 void Character::DieEffect()
 {
 	
-	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationBigStart(1.0f);
+	((MetaAI*)GetParent()->FindChildObject("MetaAI"))->VibrationBigStart(vibration_Big_);
 
 	using namespace DieEffect;
 
@@ -393,7 +419,7 @@ void Character::DieEffect()
 		using namespace Explosion;
 
 		data.textureFileName = FILENAME;
-		data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + 1.5f, transform_.position_.z);
+		data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y + FIRE_EFFECT_DIFF, transform_.position_.z);
 		data.positionRnd = POSITIONRND;
 		data.direction = targetRot_;
 		data.directionRnd = DIRECTIONRND;
