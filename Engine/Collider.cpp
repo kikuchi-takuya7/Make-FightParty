@@ -44,9 +44,6 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 	XMVECTOR aCenter = XMVector3TransformCoord(boxA->GetCenter(), boxA->pGameObject_->GetWorldMatrix());
 	XMVECTOR bCenter = XMVector3TransformCoord(boxB->GetCenter(), boxB->pGameObject_->GetWorldMatrix());
 	XMVECTOR Interval = aCenter - bCenter; 
-	
-	float tes1 = Length(XMVector3TransformCoord(boxA->GetCenter(), boxA->pGameObject_->GetWorldMatrix()));
-	float tes2 = Length(XMVector3TransformCoord(boxB->GetCenter(), boxB->pGameObject_->GetWorldMatrix()));
 
 	// 分離軸 : Ae1 箱Aの方向ベクトルと分離軸との内積を2つ足すと半径分の分離軸上の長さを求められて、それの合計がLより長いならぶつかってる可能性あり
 	float rA = Length(Ae1);
@@ -247,10 +244,13 @@ void Collider::Calclation()
 
 	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
 	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
+	//vec = vec + center_;
 	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x))));
 	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	//vec = vec + center_;
 	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rot.y))));
 	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	//vec = vec + center_;
 	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rot.z))));
 
 }
@@ -262,6 +262,7 @@ void Collider::Draw(XMFLOAT3 position)
 	Transform transform;
 
 	transform.position_ = VectorToFloat3(XMVector3TransformCoord(center_, pGameObject_->GetWorldMatrix()));
+	//transform.position_ = VectorToFloat3(XMVector3TransformCoord(XMVectorSet(0,0,0,0), pGameObject_->GetWorldMatrix()));
 	transform.rotate_ = Float3Add(pGameObject_->GetRotate(), rotate_);
 	transform.scale_ = size_ ;
 

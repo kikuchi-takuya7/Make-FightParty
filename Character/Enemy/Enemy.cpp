@@ -9,10 +9,8 @@
 
 //’è”
 namespace {
-	const int ENEMY_HP = 100;
-	const int ENEMY_ATTACK_POWER = 20;
 
-	//‰£‚Á‚Ä‚«‚½‘ŠŽè‚É‘_‚¢‚ð•Ï‚¦‚éŠm—¦
+	//‰£‚Á‚Ä‚«‚½‘ŠŽè‚É‘_‚¢‚ð•Ï‚¦‚éŠm—¦(%)
 	const int COUNTER_PROBABILITY = 50;
 }
 
