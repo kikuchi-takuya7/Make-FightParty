@@ -11,12 +11,6 @@
 
 //定数
 namespace {
-	const int PLAYER_HP = 100;
-	const int PLAYER_ATTACK_POWER = 20;
-	const XMFLOAT3 BODY_COLLISION_CENTER = XMFLOAT3(ZERO, 1, ZERO);
-	const XMFLOAT3 BODY_COLLISION_SIZE = XMFLOAT3(1, 2, 1);
-	const XMFLOAT3 ATTACK_COLLISION_CENTER = XMFLOAT3(ZERO, 1, 1);
-	const XMFLOAT3 ATTACK_COLLISION_SIZE = XMFLOAT3(1, 0.5, 2);
 
 	//移動できる最大の位置
 	const float MAX_MOVE_X = 29.0f;
@@ -24,8 +18,7 @@ namespace {
 	const float MIN_MOVE_X = ZERO;
 	const float MIN_MOVE_Z = ZERO;
 
-	//プレイヤーの移動速度
-	const float PLAYER_MOVE_SPEED = 0.2f;
+	
 }
 
 //コンストラクタ
@@ -47,11 +40,7 @@ void Player::ChildInitialize()
 	SetPosition(startPos_);
 
 	//addcolliderしたら勝手に開放される
-	pBodyCollision_ = new BoxCollider(BODY_COLLISION_CENTER, BODY_COLLISION_SIZE, ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
-
-
-	//status_.moveSpeed = PLAYER_MOVE_SPEED;
 }
 
 //更新

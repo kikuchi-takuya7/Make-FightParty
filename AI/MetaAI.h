@@ -31,6 +31,33 @@ class Timer;
 class Text;
 struct TargetInfo;
 
+//振動の時間等を管理する
+struct VibrationInfo {
+
+	//振動をする時間
+	Timer* pVibrationTimer;
+
+	//振動小
+	bool vibrationSmall;
+
+	//振動大
+	bool vibrationBig;
+
+	//振動を始める直前のカメラ座標を覚えておく
+	XMFLOAT3 startPos;
+	XMFLOAT3 startTar;
+
+	//初期化用コンストラクタ
+	VibrationInfo() {
+		pVibrationTimer = nullptr;
+		vibrationSmall = false;
+		vibrationBig = false;
+		startPos = ZERO_FLOAT3;
+		startTar = ZERO_FLOAT3;
+	}
+
+};
+
 /// <summary>
 /// ゲームの進行、アイテムの選出等を管理するAI
 /// </summary>
@@ -75,7 +102,20 @@ public:
 	/// <param name="model">表示されているオブジェクト一覧</param>
 	/// <returns>どのオブジェクトを選んだか</returns>
 	int SelectObject(vector<int> model);
-	
+
+	/// <summary>
+	/// カメラを小さく振動（主に被弾時）
+	/// </summary>
+	void CameraVibrationSmall();
+
+	/// <summary>
+	/// カメラを大きく振動（主に死亡時）
+	/// </summary>
+	void CameraVibrationBig();
+
+	void VibrationSmallStart(float time);
+
+	void VibrationBigStart(float time);
 
 	/////////ゲームの流れを管理する関数////////////////
 
@@ -181,6 +221,8 @@ private:
 	//試合が終わったらtrue
 	bool endGame_;
 
+	//画面振動の情報
+	VibrationInfo vibrationInfo_;
 
 	////////////////////UI/////////////////////
 
@@ -192,7 +234,6 @@ private:
 	//metaAIが今何をしているかを表示する為のテキスト
 	Text* pText_;
 	NOWMODE mode_;
-	
 
 	//ゲームBGM
 	int hAudio_;

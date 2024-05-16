@@ -78,20 +78,6 @@ static XMFLOAT3 VectorToFloat3(XMVECTOR v)
 ////////////////オペレーター////////////////////////////消すかも
 
 
-static XMFLOAT3 operator + (const XMFLOAT3& v1, const XMVECTOR& v2) {
-
-	XMVECTOR pv = XMLoadFloat3(&v1);
-	pv += v2;
-	XMFLOAT3 out;
-	XMStoreFloat3(&out, pv);
-	return out;
-}
-
-static XMFLOAT3 operator + (const XMFLOAT3& f1, const XMFLOAT3& f2) {
-
-	return XMFLOAT3(f1.x + f2.x, f1.y + f2.y, f1.z + f2.z);
-}
-
 static XMVECTOR operator -(const XMFLOAT3& p1, const XMFLOAT3& p2) {
 	XMVECTOR p1v = XMLoadFloat3(&p1);
 	XMVECTOR p2v = XMLoadFloat3(&p2);
@@ -103,6 +89,16 @@ static XMVECTOR operator -(const XMFLOAT3& p1, const XMVECTOR& p2) {
 	return p1v - p2;
 }
 
+static XMFLOAT3 operator +(const XMFLOAT3& f1, const float& f2) {
+
+	return XMFLOAT3(f1.x + f2, f1.y + f2, f1.z + f2);
+}
+
+static XMFLOAT3 operator -(const XMFLOAT3& f1, const float& f2) {
+
+	return XMFLOAT3(f1.x - f2, f1.y - f2, f1.z - f2);
+}
+
 static XMFLOAT3 operator /(const XMFLOAT3& f1, const float& f2) {
 	
 	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
@@ -112,11 +108,6 @@ static XMFLOAT3 operator *(const XMFLOAT3& f1, const float& f2) {
 
 	return XMFLOAT3(f1.x * f2, f1.y * f2, f1.z * f2);
 }
-
-//static XMFLOAT3 operator /=(const XMFLOAT3& f1, const float& f2) {
-//
-//	return XMFLOAT3(f1.x / f2, f1.y / f2, f1.z / f2);
-//}
 
 static bool operator ==(const XMFLOAT3& f1, const XMFLOAT3& f2) {
 

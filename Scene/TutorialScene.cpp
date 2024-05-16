@@ -17,7 +17,6 @@ TutorialScene::TutorialScene(GameObject* parent)
 //‰Šú‰»
 void TutorialScene::Initialize()
 {
-
 	tutorialImage_ = Image::Load("Image/TutorialUI/Tutorial.png");
 	Transform imageTrans = transform_;
 	imageTrans.scale_ = IMAGE_SIZE;

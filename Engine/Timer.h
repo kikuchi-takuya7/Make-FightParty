@@ -43,6 +43,7 @@ public:
 	/////////////アクセス関数///////////////////
 
 	int GetNowFlame() { return flame_; }
+	int GetStartFlame() { return startFlame_; }
 
 private:
 	

@@ -205,4 +205,13 @@ private:
     //攻撃を食らった時に回転するのに使う
     XMFLOAT3 targetRot_;
 
+    //最大HP
+    int maxHP_;
+
+    //速度初期化用
+    float moveSpeed_;
+
+    //画面振動の長さ
+    float vibration_Small_;
+    float vibration_Big_;
 };

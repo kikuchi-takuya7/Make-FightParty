@@ -35,9 +35,6 @@ namespace {
 	const XMFLOAT3 RANKING_CAM_POS = XMFLOAT3(15, 40, 0);
 	const XMFLOAT3 RANKING_CAM_TAR = XMFLOAT3(15, 35, 15);
 	const float RANKING_CAM_RATE = 0.1f;
-	
-	//カメラの角度°（未使用）
-	const int CAM_ANGLE = 45;
 
 	//各シーン推移の際の待機時間
 	const float WAIT_WINNER_TIME = 3.0f;
@@ -46,6 +43,12 @@ namespace {
 	//スコア関係
 	const int SCORE[GAUGE_NUM] = { 20,10,5 };
 	const int VICTORY_POINT = 80;
+
+	//カメラを振動させる時の差分
+	const float VIBRATION_DIFF_SMALL = 0.2f;
+	const XMFLOAT3 VIBRATION_DIFF_BIG = XMFLOAT3(1.0f, 1.0f, ZERO);
+	const float VIBRATION_RATE = 1;
+	
 
 	//プレイヤーの最大人数
 	const int PLAYER_MAX_NUM = 4;
@@ -78,13 +81,17 @@ void MetaAI::Initialize()
 		score_.emplace_back(ZERO);
 	}
 
+	//待機用タイマーの初期化
 	pWaitTimer_->StopDraw();
 	pWaitTimer_->Stop();
 	pWaitTimer_->SetLimit(WAIT_WINNER_TIME);
 
+	//画面振動用のタイマーを初期化
+	vibrationInfo_.pVibrationTimer = Instantiate<Timer>(this);
+
+	//UIを諸々初期化
 	pRankingUI_->AllChildLeave();
 	pRankingUI_->AllChildVisible();
-
 	pWinnerUI_->Visible();
 	
 	hAudio_ = Audio::Load("Audio/FightBGM.wav", true);
@@ -205,6 +212,81 @@ int MetaAI::SelectObject(vector<int> model)
 {
 	//今はとりあえずランダムで返す
 	return model.at(rand() % model.size());
+}
+
+// カメラを振動させる関数（小）
+void MetaAI::CameraVibrationSmall()
+{
+	//振動開始時のカメラの位置
+	XMFLOAT3 pos = vibrationInfo_.startPos;
+	XMFLOAT3 tar = vibrationInfo_.startTar;
+
+	//徐々に振動が小さくなるようにする
+	float pro = (float)vibrationInfo_.pVibrationTimer->GetNowFlame() / (float)vibrationInfo_.pVibrationTimer->GetStartFlame();
+
+	//上下交互に振動する様に
+	if (vibrationInfo_.pVibrationTimer->GetNowFlame() % 2 == 1) {
+		pro = -pro;
+	}
+
+	float diff = VIBRATION_DIFF_SMALL * pro;
+
+	pos.y += diff;
+	tar.y += diff;
+
+	Camera::SetPosition(pos);
+	Camera::SetTarget(tar);
+}
+
+// カメラを振動させる関数（大）
+void MetaAI::CameraVibrationBig()
+{
+	//振動開始時のカメラの位置
+	XMFLOAT3 pos = vibrationInfo_.startPos;
+	XMFLOAT3 tar = vibrationInfo_.startTar;
+
+	//徐々に振動が小さくなるようにする
+	float pro = (float)vibrationInfo_.pVibrationTimer->GetNowFlame() / (float)vibrationInfo_.pVibrationTimer->GetStartFlame();
+
+	//上下左右にランダムに動かす
+	if (rand() % 2 == 1) {
+		pro = -pro;
+	}
+
+	XMFLOAT3 diff = VIBRATION_DIFF_BIG;
+	diff.x = VIBRATION_DIFF_BIG.x * pro;
+
+	//上下左右にランダムに動かす
+	if (rand() % 2 == 1) {
+		pro = -pro;
+	}
+
+	diff.y = VIBRATION_DIFF_BIG.y * pro;
+
+
+
+	Camera::SetPosition(Float3Add(pos, diff));
+	Camera::SetTarget(Float3Add(tar, diff));
+}
+
+void MetaAI::VibrationSmallStart(float time)
+{
+	vibrationInfo_.pVibrationTimer->SetLimit(time);
+	vibrationInfo_.pVibrationTimer->Start();
+	vibrationInfo_.vibrationSmall = true;
+	vibrationInfo_.vibrationBig = false;
+	vibrationInfo_.startPos = Camera::GetPosition();
+	vibrationInfo_.startTar = Camera::GetTarget();
+}
+
+void MetaAI::VibrationBigStart(float time)
+{
+	vibrationInfo_.pVibrationTimer->SetLimit(time);
+	vibrationInfo_.pVibrationTimer->Start();
+	vibrationInfo_.vibrationSmall = false;
+	vibrationInfo_.vibrationBig = true;
+	vibrationInfo_.startPos = Camera::GetPosition();
+	vibrationInfo_.startTar = Camera::GetTarget();
 }
 
 // 勝敗が決まっていたらクリエイトモードへ移行する関数
@@ -357,6 +439,22 @@ void MetaAI::UsuallyUpdate()
 	if (pCountDown_->IsFinished()) {
 		pNavigationAI_->AllStartUpdate();
 		pCountDown_->Reset();
+	}
+
+	//振動させる許可があるなら画面振動させる
+	if (vibrationInfo_.pVibrationTimer->IsFinished() == false) {
+		
+		//大きい振動
+		if (vibrationInfo_.vibrationBig) {
+			CameraVibrationBig();
+		}
+		else if (vibrationInfo_.vibrationSmall) {//小さい振動
+			CameraVibrationSmall();
+		}
+	}
+	else {
+		vibrationInfo_.vibrationBig = false;
+		vibrationInfo_.vibrationSmall = false;
 	}
 
 	//カメラを動かす

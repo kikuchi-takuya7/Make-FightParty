@@ -1,8 +1,6 @@
 #include "KillScore.h"
 #include "../../Engine/Image.h"
 
-
-
 KillScore::KillScore(GameObject* parent)
 	: GaugeBase(parent, "KillScore"), hPict_(-1)
 {
@@ -14,7 +12,7 @@ KillScore::~KillScore()
 
 void KillScore::ChildInitialize()
 {
-	hPict_ = Image::Load("Image/RankingUI/KillGauge2.png");
+	hPict_ = Image::Load("Image/RankingUI/KillGauge.png");
 	assert(hPict_ >= 0);
 
 }
