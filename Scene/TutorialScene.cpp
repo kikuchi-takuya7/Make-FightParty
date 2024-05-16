@@ -3,111 +3,84 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Input.h"
 #include "../Engine/Text.h"
+#include "../Engine/Camera.h"
 #include "../Character/Player/Player.h"
 #include "../Stage/Stage.h"
-#include "../Stage/CreateMode/CreateMode.h"
-#include "../AI/CharacterAI.h"
-#include "../AI/MetaAI.h"
-#include "../AI/NavigationAI.h"
+#include "../Stage/CreateMode/StageSource/OneBrock.h"
+#include "../Stage/CreateMode/StageSource/Cannon.h"
+#include "../Stage/CreateMode/StageSource/Needle.h"
+#include "../Stage/CreateMode/StageSource/AutoCannon.h"
+#include "../Stage/CreateMode/StageSource/RotateBlade.h"
+#include "../Stage/CreateMode/StageSource/Mud.h"
 
 namespace {
-	XMFLOAT3 IMAGE_SIZE = { 1.25,1.28,1.25 };
+
+	//画像のサイズ
+	const XMFLOAT3 IMAGE_SIZE = XMFLOAT3(1.25, 1.28, 1.25);
+	
+	//プレイヤーの初期位置
+	const XMFLOAT3 START_POS = XMFLOAT3(1, ZERO, 1);
+	
+	//オブジェクトの位置
+	const XMFLOAT3 OBJECT_POS = XMFLOAT3(5, ZERO, 10);
+
+	//カメラ
+	const XMFLOAT3 MAIN_GAME_CAM_POS = XMFLOAT3(15, 10, -15);		//敵が近くにいるときのカメラ座標
+	const XMFLOAT3 MAIN_GAME_CAM_TAR = XMFLOAT3(15, 0, 15);
+
 }
 
 //コンストラクタ
 TutorialScene::TutorialScene(GameObject* parent)
-	: GameObject(parent, "TutorialScene"),tutorialImage_(-1)
+	: GameObject(parent, "TutorialScene"), hBackGround_(-1)
 {
 }
 
 //初期化
 void TutorialScene::Initialize()
 {
-
-	tutorialImage_ = Image::Load("Image/TutorialUI/Tutorial.png");
-	Transform imageTrans = transform_;
-	imageTrans.scale_ = IMAGE_SIZE;
-	Image::SetTransform(tutorialImage_,imageTrans);
-
-	pNavigationAI_->SetStage(pStage_);
-	pMetaAI_->SetNavigationAI(pNavigationAI_);
-
-	//クリエイトモードに色々セットする
-	CreateModeInit();
-
-	int objectID = ZERO;
-	Player* pPlayer[PLAYER_NUM];
-
-	//プレイヤーをプレイ人数分用意する
-	for (int i = ZERO; i < PLAYER_NUM; i++) {
-
-		pPlayer[i] = CreateCharacter<Player>(objectID, " Player");
-		objectID++;
-	}
-
-
-	//敵の最初のIDを覚えて後で使う
-	pCreateMode_->SetStartEnemyID(objectID);
-	Enemy* pEnemy[ENEMY_NUM];
-
-	//各種AIを用意してセットする
-	for (int i = ZERO; i < ENEMY_NUM; i++) {
-
-		pEnemy[i] = CreateCharacter<Enemy>(objectID, "     CP");
-		objectID++;
-	}
-
-	//外部ファイルからAIの情報を入手
-	CsvReader csv;
-	bool isLoad = csv.Load("CSV/AI_Option.csv");
-
-	//AI毎の攻撃する射程、攻撃する確率、増加率、クールダウンを入手
-	vector<float> attackRange;
-	vector<int> attackProbability;
-	vector<int> addProbability;
-	vector<float> attackCoolDown;
-
-	for (int i = ZERO; i < ENEMY_NUM; i++) {
-
-		//csvでのy座標の位置が、一番上（0）には種類や説明等が書かれている為1増やす
-		attackRange.push_back(csv.GetValueFloat(CSV_RANGE_POS, i + 1));
-		attackProbability.push_back(csv.GetValueInt(CSV_PROBABILITY_POS, i + 1));
-		addProbability.push_back(csv.GetValueInt(CSV_ADDPRO_POS, i + 1));
-		attackCoolDown.push_back(csv.GetValueFloat(CSV_COOLDOWN_POS, i + 1));
-	}
-
-	//characterのステータスを全部プッシュしてからメタAIに情報を与えてターゲット等を決めて全員の中からちゃんと狙うように
-	for (int i = ZERO; i < ENEMY_NUM; i++) {
-
-		CreateCharaAI(pEnemy[i], attackRange.at(i), attackProbability.at(i), addProbability.at(i), attackCoolDown.at(i));
-	}
-
-	pMetaAI_->ResetGame();
-
 	//背景をロード
-	hPict_ = Image::Load("Image/BackGround/BackGround.png");
-	assert(hPict_ >= ZERO);
+	hBackGround_ = Image::Load("Image/BackGround/BackGround.png");
+	assert(hBackGround_ >= ZERO);
 
 	Transform trans = transform_;
 	trans.scale_ = XMFLOAT3(5, 5, 5);
-	Image::SetTransform(hPict_, trans);
+	Image::SetTransform(hBackGround_, trans);
+
+	//ステージを生成
+	Stage* pStage = Instantiate<Stage>(this);
+
+	//プレイヤーを生成（UI等は無し）
+	Player* character = NoInitInstantiate<Player>(this);
+	character->SetObjectID(ZERO);
+	character->Initialize();
+	character->SetPosition(START_POS);
+	character->SetStartPos(START_POS);
+	character->Enter();
+	character->Invisible();
+
+	
+	CreateObject();
+
+	Camera::SetPosition(MAIN_GAME_CAM_POS);
+	Camera::SetTarget(MAIN_GAME_CAM_TAR);
 }
 
 //更新
 void TutorialScene::Update()
 {
 
-	if (Input::IsKeyDown(DIK_SPACE)) {
+	/*if (Input::IsKeyDown(DIK_SPACE)) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_MAINGAME);
-	}
+	}*/
 
 }
 
 //描画
 void TutorialScene::Draw()
 {
-	Image::Draw(tutorialImage_);
+	Image::Draw(hBackGround_);
 }
 
 //開放
@@ -119,4 +92,10 @@ void TutorialScene::Release()
 
 void TutorialScene::Imgui_Window()
 {
+}
+
+void TutorialScene::CreateObject()
+{
+
+
 }

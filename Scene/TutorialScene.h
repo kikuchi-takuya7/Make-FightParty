@@ -24,5 +24,12 @@ public:
 	void Imgui_Window() override;
 
 private:
-	int tutorialImage_;
+
+	/// <summary>
+	/// チュートリアル用のオブジェクトを生成する関数
+	/// </summary>
+	void CreateObject();
+
+	//背景画像
+	int hBackGround_;
 };

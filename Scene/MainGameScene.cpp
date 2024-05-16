@@ -25,6 +25,9 @@ namespace {
 	const XMFLOAT3 PLAYERUI_FIRST_POS = XMFLOAT3(185.0f, 650.0f, ZERO);
 	const float UI_DIFF = 275.0f;
 
+	//背景画像のサイズ
+	const XMFLOAT3 BACKGROUND_SIZE = XMFLOAT3(5, 5, 5);
+
 	//csv内の攻撃射程、攻撃確率がある位置（x座標のみ）
 	const int CSV_RANGE_POS = 1;
 	const int CSV_PROBABILITY_POS = 2;
@@ -44,8 +47,6 @@ MainGameScene::MainGameScene(GameObject* parent)
 void MainGameScene::Initialize()
 {
 
-	
-
 	pNavigationAI_->SetStage(pStage_);
 	pMetaAI_->SetNavigationAI(pNavigationAI_);
 	
@@ -61,7 +62,6 @@ void MainGameScene::Initialize()
 		pPlayer[i] = CreateCharacter<Player>(objectID, " Player");
 		objectID++;
 	}
-
 
 	//敵の最初のIDを覚えて後で使う
 	pCreateMode_->SetStartEnemyID(objectID);
@@ -106,11 +106,8 @@ void MainGameScene::Initialize()
 	assert(hPict_ >= ZERO);
 
 	Transform trans = transform_;
-	trans.scale_ = XMFLOAT3(5, 5, 5);
+	trans.scale_ = BACKGROUND_SIZE;
 	Image::SetTransform(hPict_, trans);
-
-
-	
 
 }
 
