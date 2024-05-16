@@ -244,15 +244,20 @@ void Collider::Calclation()
 
 	//rotateから各軸の単位ベクトルを取得(X,Y,Z)
 	XMVECTOR vec = XMVectorSet(1, ZERO, ZERO, ZERO);
-	//vec = vec + center_;
-	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x))));
-	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
-	//vec = vec + center_;
-	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationY(XMConvertToRadians(rot.y))));
-	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
-	//vec = vec + center_;
-	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationZ(XMConvertToRadians(rot.z))));
+	//center_分を考慮させる
+	XMMATRIX mat = XMMatrixRotationX(XMConvertToRadians(rot.x)) * XMMatrixTranslation(XMVectorGetX(center_), ZERO, ZERO);
+	directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, mat));
 
+	vec = XMVectorSet(ZERO, 1, ZERO, ZERO);
+	mat = XMMatrixRotationY(XMConvertToRadians(rot.y)) * XMMatrixTranslation(ZERO, XMVectorGetY(center_), ZERO);
+	directionNormalVec_[VEC_Y] = XMVector3Normalize(XMVector3TransformCoord(vec, mat));
+	
+	vec = XMVectorSet(ZERO, ZERO, 1, ZERO);
+	mat = XMMatrixRotationZ(XMConvertToRadians(rot.z)) * XMMatrixTranslation(ZERO, ZERO, XMVectorGetZ(center_));
+	directionNormalVec_[VEC_Z] = XMVector3Normalize(XMVector3TransformCoord(vec, mat));
+
+	//前にやってた方法でもなぜかcenterが考慮されてた。centerは一度も使ってないはずなのになぜ
+	//directionNormalVec_[VEC_X] = XMVector3Normalize(XMVector3TransformCoord(vec, XMMatrixRotationX(XMConvertToRadians(rot.x))));
 }
 
 //テスト表示用の枠を描画
