@@ -263,7 +263,7 @@ void Collider::Draw(XMFLOAT3 position)
 
 	transform.position_ = VectorToFloat3(XMVector3TransformCoord(center_, pGameObject_->GetWorldMatrix()));
 	transform.rotate_ = Float3Add(pGameObject_->GetRotate(), rotate_);
-	transform.scale_ = size_ ;
+	transform.scale_ = size_;
 
 	//transform.Calclation();
 	Model::SetTransform(hDebugModel_, transform);

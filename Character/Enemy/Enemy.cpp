@@ -31,16 +31,10 @@ Enemy::~Enemy()
 //初期化
 void Enemy::ChildInitialize()
 {
-
 	//開始地点に移動する
 	SetPosition(startPos_);
 
-	//pBodyCollision_ = new BoxCollider(XMFLOAT3(ZERO, 1, ZERO), XMFLOAT3(1, 2, 1), ZERO_FLOAT3);
 	AddCollider(pBodyCollision_, ColliderAttackType::COLLIDER_BODY);
-
-	//pAttackCollision_ = new BoxCollider(ATTACK_COLLISION_CENTER, ATTACK_COLLISION_SIZE, XMFLOAT3(0, 180, 0));
-	//AddCollider(pAttackCollision_, ColliderAttackType::COLLIDER_ATTACK);
-
 }
 
 //更新
