@@ -11,8 +11,6 @@
 
 //定数
 namespace {
-	const int PLAYER_HP = 100;
-	const int PLAYER_ATTACK_POWER = 20;
 
 	//移動できる最大の位置
 	const float MAX_MOVE_X = 29.0f;
@@ -20,8 +18,7 @@ namespace {
 	const float MIN_MOVE_X = ZERO;
 	const float MIN_MOVE_Z = ZERO;
 
-	//プレイヤーの移動速度
-	const float PLAYER_MOVE_SPEED = 0.2f;
+	
 }
 
 //コンストラクタ

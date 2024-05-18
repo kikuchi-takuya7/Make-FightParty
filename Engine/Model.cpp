@@ -29,7 +29,9 @@ namespace Model
 					pData->pFbx = _datas[i]->pFbx;
 					isExist = true;
 
-					//一番下まで行くと新しくpush_backされちゃうからここで止めた
+					//一番下まで行くと新しくpush_backされちゃうからここで止めた。なので複数の同じモデルを動かしたいときはsetTransformをこまめに
+					//ここでreturnすると複数で同じモデルのアニメーションを再生したとき、アニメーションが早くなる可能性がある？かも
+					//元はbreak;
 					return i;
 				}
 			}
