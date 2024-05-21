@@ -29,13 +29,12 @@ PlayerUI::~PlayerUI()
 void PlayerUI::Initialize()
 {
 
-	hPict_ = Image::Load("Image/PlayerUI/PlayerUI2.png");
+	hPict_ = Image::Load("Image/PlayerUI/PlayerUI.png");
 
 	playerUITrans_.scale_ = PLAYERUI_SIZE;
 
 	pHpGauge_ = Instantiate<HpGaugeUI>(this);
 	pHpGauge_ ->SetScale(GAUGE_SIZE);
-	//pHpGauge_ ->SetGauge(100, 100);
 
 	pText_ = new Text;
 	pText_->Initialize();

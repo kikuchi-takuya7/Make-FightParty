@@ -30,7 +30,7 @@ void OneBrock::ChildUpdate()
 void OneBrock::ChildDraw()
 {
 	Model::SetTransform(hModel_, transform_);
-	//Model::Draw(hModel_);
+	Model::Draw(hModel_);
 }
 
 void OneBrock::ChildRelease()
