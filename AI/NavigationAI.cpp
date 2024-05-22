@@ -15,17 +15,17 @@ namespace {
 	const int WALL = -1;
 
 	//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-	/*const int moveZ[8] = {  1, 1,-1,-1, ZERO, ZERO,    1,   -1 };
-	const int moveX[8] = {	1,-1, 1,-1,    1,   -1, ZERO, ZERO };*/
-
-	//上下左右に移動（探索）するための配列
 	const int moveZ[8] = { ZERO,ZERO,	1,	-1, 1, 1,-1,-1 };
 	const int moveX[8] = {    1,  -1,ZERO,ZERO, 1,-1, 1,-1 };
 
 	//配列内の斜めを探索する位置
 	const int DIAGONAL_MOVE = 4;
 
+	//最大プレイヤー数
+	const int PLAYER_NUM = 4;
 
+	//小数点以下の距離を補完するレート
+	const float COMP_RATE = 0.05f;
 }
 
 NavigationAI::NavigationAI(GameObject* parent)
@@ -51,7 +51,7 @@ Transform NavigationAI::MoveSelectObject(int ID)
 {
 
 	//最大のプレイ人数は4人で、そこから敵の合計数を引いた数が、敵の最初のIDとなるため、それ以下のIDはプレイヤーになる
-	int minEnemyID = 4 - pCharacterAIList_.size();
+	int minEnemyID = PLAYER_NUM - pCharacterAIList_.size();
 
 	//IDから最小の敵IDを引いて照らし合わせる
 	return pCharacterAIList_.at(ID - minEnemyID)->MoveSelectObject();
@@ -284,7 +284,7 @@ XMFLOAT3 NavigationAI::Astar(int myID, int targetID)
 
 	//残りの距離が小数点以下の場合、中途半端に止まるのでその分を補完する
 	if (nextPos == ZERO_FLOAT3) {
-		return Float3Sub(targetPos, startPos) * 0.05f;
+		return Float3Sub(targetPos, startPos) * COMP_RATE;
 	}
 	
 	return nextPos;

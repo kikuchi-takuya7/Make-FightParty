@@ -152,7 +152,7 @@ void MainGameScene::CreateModeInit()
 
 void MainGameScene::CreateCharaAI(Enemy* enemy, float attackRange, int attackProbability, int addPro, float coolDown)
 {
-	CharacterAI* charaAI = NoInitInstantiate<CharacterAI>(this);
+	CharacterAI* charaAI = Instantiate<CharacterAI>(this);
 	charaAI->SetEnemy(enemy);
 	charaAI->SetNavigationAI(pNavigationAI_);
 	charaAI->SetMetaAI(pMetaAI_);
@@ -160,7 +160,6 @@ void MainGameScene::CreateCharaAI(Enemy* enemy, float attackRange, int attackPro
 	charaAI->SetAttackProbability(attackProbability);
 	charaAI->SetAttackAddPro(addPro);
 	charaAI->SetAttackCoolDown(coolDown);
-	charaAI->Initialize();
 
 	pNavigationAI_->PushCharacterAI(charaAI);
 

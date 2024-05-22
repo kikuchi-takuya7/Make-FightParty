@@ -644,8 +644,8 @@ void MetaAI::GameCameraMove()
 	Camera::SetTarget(centerPoint);*/
 
 #endif
-
 }
+
 
 // —DŸÒ‚Ì•û‚ÉƒJƒƒ‰‚ğŒü‚¯‚éŠÖ”
 void MetaAI::MoveChampionCam()
