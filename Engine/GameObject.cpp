@@ -44,12 +44,6 @@ bool GameObject::RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float mo
 	if (moveRate_ < 1.0f) {
 		moveRate_ += moveRate;
 
-		// 変な数字で止まらないように(GetRateValue内に移動させた)
-		/*if (moveRate_ > 1.0f)
-			moveRate_ = 1.0f;*/
-
-		//ターゲットとポジションが同じだとエラー起きるから注意
-
 		position.x = GetRateValue(position.x, lastPos.x, moveRate_);
 		position.y = GetRateValue(position.y, lastPos.y, moveRate_);
 		position.z = GetRateValue(position.z, lastPos.z, moveRate_);

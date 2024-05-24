@@ -66,6 +66,9 @@
     <Filter Include="VFXData">
       <UniqueIdentifier>{8d94a987-e96a-441c-a925-97a5dce00cc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01Engine\Utility">
+      <UniqueIdentifier>{01b46d6a-5175-4c9a-bbaf-7fc7988c6c04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -525,6 +528,9 @@
     </ClInclude>
     <ClInclude Include="Stage\CreateMode\StageSource\Mud.h">
       <Filter>Stage\CreateMode\StageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\EasingFunction.h">
+      <Filter>01Engine\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

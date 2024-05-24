@@ -250,6 +250,7 @@
     <ClInclude Include="Engine\json-develop\include\nlohmann\json.hpp" />
     <ClInclude Include="Engine\Model.h" />
     <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\Utility\EasingFunction.h" />
     <ClInclude Include="Engine\VFX.h" />
     <ClInclude Include="Engine\RootObject.h" />
     <ClInclude Include="Engine\SceneManager.h" />
