@@ -12,6 +12,7 @@
 #include "Input.h"
 #include "Audio.h"
 #include "VFX.h"
+#include "Utility/LinearInterpolation.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_win32.h"
 #include "Imgui/imgui_impl_dx11.h"
@@ -135,6 +136,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 				//入力（キーボード、マウス、コントローラー）情報を更新
 				Input::Update();
+
+				//線形補完用の値の更新
+				LinearInterpolation::Update();
 
 				//全オブジェクトの更新処理
 				//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる

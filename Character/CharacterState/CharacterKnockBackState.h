@@ -36,7 +36,7 @@ public:
 private:
 
 	//時間（フレーム単位）
-	int flame_;
+	int frame_;
 
 	//緩急を付けるレート
 	float knockBackRate_;
