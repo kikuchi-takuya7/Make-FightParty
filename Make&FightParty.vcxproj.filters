@@ -296,7 +296,7 @@
     <ClCompile Include="Stage\CreateMode\StageSource\Mud.cpp">
       <Filter>Stage\CreateMode\StageSource</Filter>
     </ClCompile>
-    <ClCompile Include="LinearInterpolation.cpp">
+    <ClCompile Include="Engine\Utility\RateFrame.cpp">
       <Filter>01Engine\Utility</Filter>
     </ClCompile>
   </ItemGroup>
@@ -535,7 +535,10 @@
     <ClInclude Include="Engine\Utility\EasingFunction.h">
       <Filter>01Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="LinearInterpolation.h">
+    <ClInclude Include="Engine\Utility\LinearInterpolate.h">
+      <Filter>01Engine\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\RateFrame.h">
       <Filter>01Engine\Utility</Filter>
     </ClInclude>
   </ItemGroup>
