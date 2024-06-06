@@ -1,50 +1,55 @@
 #include "RateFrame.h"
+#include "../GameObject.h"
 
-namespace RateFrame {
+RateFrame::RateFrame(GameObject* parent)
+	:GameObject(parent, "RateFrame"),rate_(0),frame_(0),isUpdate_(false)
+{
+}
+
+RateFrame::~RateFrame()
+{
+}
+
+void RateFrame::Initialize()
+{
+}
+
+void RateFrame::Update()
+{
 	
-	map<string, RateData> data;
+	//更新するかどうかを聞く
+	if (isUpdate_) {
+		frame_ += rate_;
 
-	void SetData(string s, float rate, bool isUpdate)
-	{
-		data.insert(std::make_pair(s, RateData(rate, isUpdate)));
-	}
-
-	void SetFlag(string s, bool isUpdate)
-	{
-		data.at(s).isUpdate = isUpdate;
-	}
-
-	float GetNowFrame(string s)
-	{
-		return data.at(s).frame;
-	}
-
-	void Update()
-	{
-		//mapの全てを更新
-		for (auto it = data.begin(); it != data.end(); it++) {
-
-			//更新するかどうかを聞く
-			if (it->second.isUpdate) {
-				it->second.frame += it->second.rate;
-
-				//1以上なら1に戻す
-				if (it->second.frame > 1.0f) {
-					it->second.frame = 1.0f;
-				}
-			}
+		//1以上なら1に戻す
+		if (frame_ > 1.0f) {
+			frame_ = 1.0f;
 		}
 	}
-
-	void Release(string s)
-	{
-		data.erase(s);
-	}
-
-	void Release()
-	{
-		data.clear();
-	}
 	
+}
+
+void RateFrame::Release()
+{
+}
+	
+void RateFrame::SetData(float rate, bool isUpdate)
+{
+	rate_ = rate;
+	isUpdate_ = isUpdate;
+}
+
+void RateFrame::SetRate(float rate)
+{
+}
+
+void RateFrame::SetFlag(bool isUpdate)
+{
+	isUpdate_ = isUpdate;
+}
+
+float RateFrame::GetNowFrame()
+{
+	return frame_;
 }
 
