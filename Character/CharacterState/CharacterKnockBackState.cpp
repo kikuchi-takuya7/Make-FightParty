@@ -32,7 +32,7 @@ void CharacterKnockBackState::Update()
 	//プレイヤーの現在の位置をベクトル型に変換
 	XMFLOAT3 playerPos = pCharacter_->GetPosition();
 
-	pCharacter_->RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
+	playerPos = pCharacter_->RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
 
 	pCharacter_->SetPosition(playerPos);
 

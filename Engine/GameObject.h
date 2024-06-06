@@ -93,25 +93,6 @@ public:
 	/// <param name="fileName">ロードするファイルの名前</param>
 	void Load_Transform_File(HANDLE hFile, LPCSTR fileName);
 
-	
-	/// <summary>
-	/// 滑らかに移動させる為の関数
-	/// </summary>
-	/// <param name="position">動かしたいオブジェクトの座標</param>
-	/// <param name="lastPos">最終的なポジション</param>
-	/// <param name="moveRate">どのぐらい滑らかに移動させるか(最大1.0f)</param>
-	/// <returns>移動し終わったらtrue</returns>
-	bool RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float moveRate);
-
-	/// <summary>
-	/// 二つの値の間の位置をレートによって決める関数
-	/// </summary>
-	/// <param name="begin">初めの値</param>
-	/// <param name="end">最後の値</param>
-	/// <param name="rate">0～1.0の間(1以上の値は1に戻す)</param>
-	/// <returns>レートに応じた位置</returns>
-	float GetRateValue(float begin, float end, float rate);
-
 	//各フラグの制御
 	bool IsDead();				// 削除するかどうか
 	void KillMe();				// 自分を削除する

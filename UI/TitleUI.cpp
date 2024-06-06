@@ -64,7 +64,11 @@ void TitleUI::Update()
 			pos.y = SpriteToFloatY(pos.y);
 			pos.x = SpriteToFloatX(pos.x);
 
-			if (RateMovePosition(titlePos_[i], pos, MOVE_RATE)) {
+			//滑らかに移動させる
+			titlePos_[i] = RateMovePosition(titlePos_[i], pos, MOVE_RATE);
+
+			//移動し終わったら、移動し終わったフラグを立てる
+			if (titlePos_[i] == pos) {
 				moved_[i] = true;
 			}
 

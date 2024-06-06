@@ -458,7 +458,11 @@ void CreateMode::SelectDraw()
 
         //移動し終わってないオブジェクトを滑らかに動かす
         if (settingObject_.at(i).moved == false) {
-            if (RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE)) {
+            
+            settingObject_.at(i).trans.position_ = RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE);
+
+            //移動し終わったら移動し終わったフラグを立てる
+            if (settingObject_.at(i).trans.position_ == PLAYER_UI_POS[i]) {
                 settingObject_.at(i).moved = true;
                 isObjectMoving_ = false;
             }

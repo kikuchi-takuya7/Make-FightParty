@@ -9,6 +9,8 @@
 #include "../Engine/VFX.h"
 #include "../Engine/Audio.h"
 #include "../Engine/Text.h"
+#include "../Engine/Utility/LinearInterpolate.h"
+#include "../Engine/Utility/RateFrame.h"
 #include "../UI/CountDownUI.h"
 #include "../UI/RankingUI.h"
 #include "../UI/GaugeUI/RankingGaugeUI.h"
@@ -657,7 +659,7 @@ void MetaAI::MoveChampionCam()
 
 	//—DŸŽÒ‚à‡‚í‚¹‚Ä‘O‚ÉŒü‚©‚¹‚éˆ×A180“x(‰æ–Ê‚Ì^³–Ê)‚É‰ñ“]‚³‚¹‚é
 	XMFLOAT3 rot = pChampion->GetRotate();
-	RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
+	rot = LinearInterpolate::RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
 	pChampion->SetRotateY(rot.y);
 
 	Camera::MoveCam(camPos, camTar, CHAMPION_CAM_RATE);

@@ -27,7 +27,7 @@ void StageSourceBase::Initialize()
 void StageSourceBase::Update()
 {
 	//İ’è‚³‚ê‚½ˆÊ’u‚Ü‚ÅˆÚ“®‚³‚¹‚é
-	RateMovePosition(transform_.position_, lastPos_, MOVE_SPEED);
+	transform_.position_ = RateMovePosition(transform_.position_, lastPos_, MOVE_SPEED);
 
 	//XVˆ—‚ğ‚·‚é‚©‚Ç‚¤‚©
 	if (IsEntered()) {

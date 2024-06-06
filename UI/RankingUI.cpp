@@ -71,7 +71,7 @@ void RankingUI::Draw()
 		return;
 	}
 
-	RateMovePosition(transform_.position_, ZERO_FLOAT3, MOVE_RATE);
+	transform_.position_ = RateMovePosition(transform_.position_, ZERO_FLOAT3, MOVE_RATE);
 
 	SetScale(PAPER_SIZE);
 

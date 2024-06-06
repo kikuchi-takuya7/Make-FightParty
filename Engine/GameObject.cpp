@@ -38,37 +38,6 @@ GameObject::~GameObject()
 	colliderList_.clear();
 }
 
-bool GameObject::RateMovePosition(XMFLOAT3& position, XMFLOAT3 lastPos, float moveRate)
-{
-	//レートでぬるぬる動くように
-	if (moveRate_ < 1.0f) {
-		moveRate_ += moveRate;
-
-		position.x = GetRateValue(position.x, lastPos.x, moveRate_);
-		position.y = GetRateValue(position.y, lastPos.y, moveRate_);
-		position.z = GetRateValue(position.z, lastPos.z, moveRate_);
-
-	}
-
-	//目標地点に着いたら、変数を初期化しておしまい
-	if (lastPos == position) {
-		moveRate_ = ZERO;
-		return true;
-	}
-
-	return false;
-}
-
-
-float GameObject::GetRateValue(float begin, float end, float rate)
-{
-	//1以上なら1に戻す
-	if (rate > 1.0f) {
-		rate = 1.0f;
-	}
-	return (end - begin) * rate + begin;
-}
-
 // 削除するかどうか
 bool GameObject::IsDead()
 {
