@@ -12,6 +12,7 @@ struct BulletData {
 };
 
 class CsvReader;
+class RateFrame;
 
 //StageSource‚ÌŒ³‚Æ‚È‚éƒNƒ‰ƒX
 class StageSourceBase : public GameObject
@@ -110,6 +111,8 @@ protected:
 private:
 
     XMFLOAT3 lastPos_;
+
+    RateFrame* rate_;
 
 
 };

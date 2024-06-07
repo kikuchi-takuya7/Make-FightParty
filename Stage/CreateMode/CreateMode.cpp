@@ -11,6 +11,8 @@
 #include "../../Engine/Audio.h"
 #include "../../Engine/Text.h"
 #include "../../Engine/CsvReader.h"
+#include "../../Engine/Utility/LinearInterpolate.h"
+#include "../../Engine/Utility/RateFrame.h"
 #include "../../AI/MetaAI.h"
 #include "../../AI/NavigationAI.h"
 #include "StageSource/OneBrock.h"
@@ -63,7 +65,7 @@ namespace {
 
 //コンストラクタ
 CreateMode::CreateMode(GameObject* parent)
-    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr),pText_(nullptr), pTimer_(Instantiate<Timer>(this)),pCsvData_(nullptr), hCreateSound_{-1,-1}, hBGM_(-1)
+    : GameObject(parent, "CreateMode"), pMetaAI_(nullptr),pStage_(nullptr),pText_(new Text), pTimer_(Instantiate<Timer>(this)),pCsvData_(new CsvReader),rate_(Instantiate<RateFrame>(this)), hCreateSound_{-1,-1}, hBGM_(-1)
 {
 
 }
@@ -110,16 +112,13 @@ void CreateMode::Initialize()
     }
 
     //設置するオブジェクト毎の設定をCSVから獲得
-    pCsvData_ = new CsvReader;
     pCsvData_->Load("CSV/Object_Option.csv");
 
     //ステータス、タイマー等の初期化
     nowState_ = NONE;
-    pText_ = new Text;
     pText_->Initialize();
     pTimer_->SetLimit(WAIT_TIME);
-
-
+    rate_->SetData(OBJ_MOVE_RATE, false);
 
 
     //音声データのロード
@@ -459,12 +458,14 @@ void CreateMode::SelectDraw()
         //移動し終わってないオブジェクトを滑らかに動かす
         if (settingObject_.at(i).moved == false) {
             
-            settingObject_.at(i).trans.position_ = RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i], OBJ_MOVE_RATE);
+            settingObject_.at(i).trans.position_ = LinearInterpolate::RateMovePosition(settingObject_.at(i).trans.position_, PLAYER_UI_POS[i],rate_->GetNowFrame());
 
             //移動し終わったら移動し終わったフラグを立てる
             if (settingObject_.at(i).trans.position_ == PLAYER_UI_POS[i]) {
                 settingObject_.at(i).moved = true;
                 isObjectMoving_ = false;
+                rate_->Reset();
+                rate_->SetFlag(false);
             }
         }
 
@@ -639,6 +640,8 @@ void CreateMode::AISelectObject(int ID)
     //選択する
     SelectObject(ID);
 
+    
+
 
 }
 
@@ -656,6 +659,9 @@ void CreateMode::SelectObject(int ID)
 
     //選択された位置のオブジェクトは消す
     viewObjectList_.at(selecting_Object_) = -1;
+
+    //オブジェクトを動かす許可を出す（レートの値が変動するようにする）
+    rate_->SetFlag(true);
 
 }
 
@@ -835,43 +841,3 @@ void CreateMode::AIMovingObject()
         CreateObject(settingObject_.at(i).hModel, settingObject_.at(i).trans, i);
     }
 }
-
-//大きさを変えられる用に挑戦する用
-//template <class T>
-//T* CreateMode::CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square)
-//{
-//    T* pObject = Instantiate<T>(this);
-//    AddCreateObject(pObject);
-//    pStage_->PushStageSource(pObject);
-//
-//    //回転行列を作り、四角形のオブジェクトのコストの位置を回転させる
-//    XMMATRIX rotateX, rotateY;
-//    rotateX = XMMatrixIdentity();
-//    rotateY = XMMatrixRotationY(XMConvertToRadians(trans.rotate_.y));
-//    XMMATRIX matRot = rotateX * rotateY;
-//
-//    //回転行列を適応
-//    XMVECTOR vec = XMLoadFloat2(&square);
-//    vec = XMVector2Transform(vec, rotateY);
-//    XMStoreFloat2(&square, vec);
-//
-//    //コストをつける
-//    pStage_->SetStageCost(trans.position_, pObject->GetStageCost(), square.x, square.y);
-//
-//    //AIが選んだオブジェクトなら真ん中からゆっくり動くように
-//    if (ID >= startEnemyID_) {
-//        Transform objTrans;
-//        objTrans.position_ = XMFLOAT3(15.0f, ZERO, 15.0f);
-//        objTrans.rotate_ = trans.rotate_;
-//        pObject->SetMoveLastPos(trans.position_);
-//        pObject->SetTransform(objTrans);
-//    }
-//    else {
-//        pObject->SetMoveLastPos(trans.position_);
-//        pObject->SetTransform(trans);
-//    }
-//
-//    pObject->Leave();
-//    pObject->SetHandle(hModel);
-//    return pObject;
-//}

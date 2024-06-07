@@ -1,5 +1,7 @@
 #include "CharacterKnockBackState.h"
 #include "../../../Engine/Input.h"
+#include "../../../Engine/Utility/LinearInterpolate.h"
+#include "../../../Engine/Utility/RateFrame.h"
 #include "../../../AI/MetaAI.h"
 #include "../Character.h"
 
@@ -32,7 +34,7 @@ void CharacterKnockBackState::Update()
 	//プレイヤーの現在の位置をベクトル型に変換
 	XMFLOAT3 playerPos = pCharacter_->GetPosition();
 
-	playerPos = pCharacter_->RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
+	playerPos = LinearInterpolate::RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
 
 	pCharacter_->SetPosition(playerPos);
 

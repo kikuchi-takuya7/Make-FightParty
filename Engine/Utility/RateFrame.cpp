@@ -29,8 +29,17 @@ void RateFrame::Update()
 	
 }
 
+void RateFrame::Draw()
+{
+}
+
 void RateFrame::Release()
 {
+}
+
+void RateFrame::Reset()
+{
+	frame_ = 0.0f;
 }
 	
 void RateFrame::SetData(float rate, bool isUpdate)

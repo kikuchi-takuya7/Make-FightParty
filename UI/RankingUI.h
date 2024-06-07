@@ -6,6 +6,7 @@
 class RankingGaugeUI;
 class Text;
 enum SCOREGAUGELIST;
+class RateFrame;
 
 /// <summary>
 /// ˆê‡‚ÌŸÒ‚ªŒˆ‚Ü‚Á‚½Œã‚Éo‚éƒ‰ƒ“ƒLƒ“ƒO‚ÌUI
@@ -65,4 +66,6 @@ private:
     std::vector<RankingGaugeUI*> pGaugeList_;
 
     Text* pText_;
+
+    RateFrame* rate_;
 };

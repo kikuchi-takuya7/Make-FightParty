@@ -81,6 +81,7 @@ class StageSourceBase;
 class Timer;
 class Text;
 class CsvReader;
+class RateFrame;
 
 /// <summary>
 /// オブジェクトをステージに追加するモード
@@ -267,6 +268,9 @@ private:
 	//時間を置くのに使う
 	Timer* pTimer_;
 
+	//０～１の値を管理する
+	RateFrame* rate_;
+
 	//生成するオブジェクトの情報を持ったCSV
 	CsvReader* pCsvData_;
 
@@ -275,11 +279,6 @@ private:
 
 	//BGM
 	int hBGM_;
-
-
-	//インスタンスを作成して色々するテンプレート(大きさを変えられる用にする実装を試す用)
-	/*template <class T>
-	T* CreateInstance(int hModel, Transform trans, int ID, XMFLOAT2 square);*/
 
 
 	//インスタンスを作成して色々するテンプレート

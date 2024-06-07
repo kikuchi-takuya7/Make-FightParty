@@ -2,6 +2,7 @@
 #include <cmath>
 #include <DirectXMath.h>
 #include <vector>
+#include "../../Engine/GameObject.h"
 
 using std::string;
 
@@ -28,10 +29,19 @@ public:
 	void Update() override;
 
 	/// <summary>
+	/// 描画処理
+	/// </summary>
+	void Draw() override;
+
+	/// <summary>
 	/// 解放処理
 	/// </summary>
 	void Release() override;
 
+	/// <summary>
+	/// レートをリセットする
+	/// </summary>
+	void Reset();
 
 
 	///////////////////////アクセス関数///////////////////////

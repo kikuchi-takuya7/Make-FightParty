@@ -2,6 +2,8 @@
 #include "GaugeUI/RankingGaugeUI.h"
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
+#include "../Engine/Utility/LinearInterpolate.h"
+#include "../Engine/Utility/RateFrame.h"
 #include <assert.h>
 
 namespace {
@@ -25,7 +27,7 @@ namespace {
 
 //コンストラクタ
 RankingUI::RankingUI(GameObject* parent)
-	: GameObject(parent, "RankingUI"),hPict_(-1),pText_(nullptr)
+	: GameObject(parent, "RankingUI"),hPict_(-1),pText_(nullptr),rate_(Instantiate<RateFrame>(this))
 {
 }
 
@@ -50,11 +52,12 @@ void RankingUI::Initialize()
 
 	transform_.position_ = START_POS;
 
-	//誰が勝ったか、誰のオブジェクトが敵をキルしたか、誰かをキルしたか、相打ちならどうするか
-
 
 	pText_ = new Text;
 	pText_->Initialize();
+
+	rate_->SetData(MOVE_RATE, false);
+
 }
 
 //更新
@@ -71,7 +74,7 @@ void RankingUI::Draw()
 		return;
 	}
 
-	transform_.position_ = RateMovePosition(transform_.position_, ZERO_FLOAT3, MOVE_RATE);
+	transform_.position_ = LinearInterpolate::RateMovePosition(transform_.position_, ZERO_FLOAT3, rate_->GetNowFrame());
 
 	SetScale(PAPER_SIZE);
 

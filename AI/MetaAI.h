@@ -30,6 +30,7 @@ class ChampionUI;
 class Timer;
 class Text;
 struct TargetInfo;
+class RateFrame;
 
 //振動の時間等を管理する
 struct VibrationInfo {
@@ -208,6 +209,9 @@ private:
 
 	//一定時間止めるためのタイマー
 	Timer* pWaitTimer_;
+
+	//線形補間をする時に使うレート
+	RateFrame* rate_;
 
 	//現在1位の人のIDを覚えておく(同率一位の可能性もあるため、後の処理を楽にするためvectorに)
 	vector<int> No1CharaID_;

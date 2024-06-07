@@ -1,6 +1,8 @@
 #include "TitleUI.h"
 #include "../Engine/Image.h"
 #include "../Engine/Text.h"
+#include "../Engine/Utility/LinearInterpolate.h"
+#include "../Engine/Utility/RateFrame.h"
 
 //定数宣言
 namespace {
@@ -15,7 +17,7 @@ namespace {
 
 //コンストラクタ
 TitleUI::TitleUI(GameObject* parent)
-	:GameObject(parent, "TitleUI"), hPict_{-1,-1,-1}, moved_{ false,false,false }, hBackGround_(-1)
+	:GameObject(parent, "TitleUI"), hPict_{-1,-1,-1}, moved_{ false,false,false }, hBackGround_(-1), rate_(Instantiate<RateFrame>(this))
 {
 }
 
@@ -50,6 +52,8 @@ void TitleUI::Initialize()
 
 	pText_ = new Text;
 	pText_->Initialize();
+	rate_->SetData(MOVE_RATE, true);
+
 }
 
 //更新
@@ -65,11 +69,12 @@ void TitleUI::Update()
 			pos.x = SpriteToFloatX(pos.x);
 
 			//滑らかに移動させる
-			titlePos_[i] = RateMovePosition(titlePos_[i], pos, MOVE_RATE);
+			titlePos_[i] = LinearInterpolate::RateMovePosition(titlePos_[i], pos, rate_->GetNowFrame());
 
 			//移動し終わったら、移動し終わったフラグを立てる
 			if (titlePos_[i] == pos) {
 				moved_[i] = true;
+				rate_->Reset();
 			}
 
 			break;

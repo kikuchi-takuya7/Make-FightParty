@@ -10,6 +10,8 @@ enum PLAYERNUMBER {
     PLAYER_NUM
 };
 
+
+
 /// <summary>
 /// ’N‚ªŸ‚Á‚½‚©‚ğ•\¦‚·‚éUI
 /// </summary>
@@ -53,4 +55,7 @@ private:
     int hAudio_;
 
     bool isSound_;
+
+
+    
 };

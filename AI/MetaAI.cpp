@@ -65,7 +65,7 @@ namespace {
 
 MetaAI::MetaAI(GameObject* parent)
 	:AI(parent, "MetaAI"), pNavigationAI_(nullptr), No1CharaID_(ZERO),ranking_(ZERO),characterStatusList_(ZERO),
-	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)), pCountDown_(Instantiate<CountDownUI>(this)),pRankingUI_(Instantiate<RankingUI>(this)),
+	endGame_(false),pWaitTimer_(Instantiate<Timer>(this)),rate_(Instantiate<RateFrame>(this)), pCountDown_(Instantiate<CountDownUI>(this)), pRankingUI_(Instantiate<RankingUI>(this)),
 	pWinnerUI_(Instantiate<WinnerUI>(this)),pChampionUI_(nullptr),pText_(new Text)
 {
 }
@@ -87,6 +87,9 @@ void MetaAI::Initialize()
 	pWaitTimer_->StopDraw();
 	pWaitTimer_->Stop();
 	pWaitTimer_->SetLimit(WAIT_WINNER_TIME);
+
+	//レートの初期化
+	//rate_->SetData()
 
 	//画面振動用のタイマーを初期化
 	vibrationInfo_.pVibrationTimer = Instantiate<Timer>(this);
@@ -638,7 +641,7 @@ void MetaAI::GameCameraMove()
 	float rate = dis / maxDis;
 
 	XMFLOAT3 camPos = XMFLOAT3(centerPoint.x,
-		GetRateValue(MIN_GAME_CAM_POS.y, MAX_GAME_CAM_POS.y, rate), GetRateValue(MIN_GAME_CAM_POS.z, MAX_GAME_CAM_POS.z, rate));
+		LinearInterpolate::GetRateValue(MIN_GAME_CAM_POS.y, MAX_GAME_CAM_POS.y, rate), LinearInterpolate::GetRateValue(MIN_GAME_CAM_POS.z, MAX_GAME_CAM_POS.z, rate));
 
 	Camera::MoveCam(camPos, centerPoint, GAME_CAM_RATE);
 
@@ -659,7 +662,6 @@ void MetaAI::MoveChampionCam()
 
 	//優勝者も合わせて前に向かせる為、180度(画面の真正面)に回転させる
 	XMFLOAT3 rot = pChampion->GetRotate();
-	rot = LinearInterpolate::RateMovePosition(rot, XMFLOAT3(rot.x, 180, rot.z), CHAMPION_CAM_RATE);
 	pChampion->SetRotateY(rot.y);
 
 	Camera::MoveCam(camPos, camTar, CHAMPION_CAM_RATE);

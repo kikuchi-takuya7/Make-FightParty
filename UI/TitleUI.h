@@ -11,6 +11,7 @@ enum IMAGE {
 };
 
 class Text;
+class RateFrame;
 
 /// <summary>
 /// タイトルのロゴを管理するクラス
@@ -50,6 +51,9 @@ private:
 
     //テキストのインスタンス
     Text* pText_;
+
+    //線形補間のレート値
+    RateFrame* rate_;
 
     //背景画像番号
     int hBackGround_;
