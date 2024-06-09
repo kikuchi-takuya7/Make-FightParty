@@ -299,6 +299,9 @@
     <ClCompile Include="Engine\Utility\RateFrame.cpp">
       <Filter>01Engine\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\LinearInterpolate.cpp">
+      <Filter>01Engine\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">

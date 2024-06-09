@@ -1,6 +1,8 @@
 #pragma once
 #include "CharacterState.h"
 
+class RateFrame;
+
 /// <summary>
 /// プレイヤーが攻撃を食らっている状態
 /// </summary>
@@ -34,9 +36,6 @@ public:
 	void Leave() override;
 
 private:
-
-	//時間（フレーム単位）
-	int frame_;
 
 	//緩急を付けるレート
 	float knockBackRate_;

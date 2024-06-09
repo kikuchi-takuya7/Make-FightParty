@@ -23,7 +23,7 @@ void StageSourceBase::Initialize()
 	//ブロック本体の当たり判定用
 	pBoxCollision_ = new BoxCollider(BOX_COLLISION_CENTER, BOX_COLLISION_SIZE, ZERO_FLOAT3);
 	
-	rate_->SetData(MOVE_SPEED, true);
+	rate_->SetData(MOVE_SPEED, true, ACCELERATION);
 
 	ChildInitialize();
 }

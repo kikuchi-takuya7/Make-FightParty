@@ -2,7 +2,7 @@
 #include "../GameObject.h"
 
 RateFrame::RateFrame(GameObject* parent)
-	:GameObject(parent, "RateFrame"),rate_(0),frame_(0),isUpdate_(false)
+	:GameObject(parent, "RateFrame"),rate_(0),startRate_(0), frame_(0), isUpdate_(false), type_(CONSTANT)
 {
 }
 
@@ -17,14 +17,29 @@ void RateFrame::Initialize()
 void RateFrame::Update()
 {
 	
-	//XV‚·‚é‚©‚Ç‚¤‚©‚ð•·‚­
-	if (isUpdate_) {
-		frame_ += rate_;
+	if (isUpdate_ == false)
+		return;
 
-		//1ˆÈã‚È‚ç1‚É–ß‚·
-		if (frame_ > 1.0f) {
-			frame_ = 1.0f;
-		}
+	switch (type_)
+	{
+	case CONSTANT://“™‘¬
+		
+		frame_ += rate_;
+		break;
+
+	case ACCELERATION://‰Á‘¬
+
+		rate_ += rate_;
+		frame_ = rate_;
+		break;
+
+	default:
+		break;
+	}
+
+	//1ˆÈã‚È‚ç1‚É–ß‚·
+	if (frame_ > 1.0f) {
+		frame_ = 1.0f;
 	}
 	
 }
@@ -40,16 +55,22 @@ void RateFrame::Release()
 void RateFrame::Reset()
 {
 	frame_ = 0.0f;
+	rate_ = startRate_;
 }
 	
-void RateFrame::SetData(float rate, bool isUpdate)
+void RateFrame::SetData(float rate, bool isUpdate, ADDTYPE type)
 {
+	startRate_ = rate;
 	rate_ = rate;
 	isUpdate_ = isUpdate;
+	type_ = type;
+	frame_ = 0.0f;
+
 }
 
 void RateFrame::SetRate(float rate)
 {
+	rate_ = rate;
 }
 
 void RateFrame::SetFlag(bool isUpdate)

@@ -56,7 +56,7 @@ void RankingUI::Initialize()
 	pText_ = new Text;
 	pText_->Initialize();
 
-	rate_->SetData(MOVE_RATE, false);
+	rate_->SetData(MOVE_RATE, false,CONSTANT);
 
 }
 
@@ -71,8 +71,11 @@ void RankingUI::Draw()
 {
 
 	if (IsVisibled()) {
+		rate_->SetFlag(false);
+		rate_->Reset();
 		return;
 	}
+	rate_->SetFlag(true);
 
 	transform_.position_ = LinearInterpolate::RateMovePosition(transform_.position_, ZERO_FLOAT3, rate_->GetNowFrame());
 

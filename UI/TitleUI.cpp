@@ -52,7 +52,7 @@ void TitleUI::Initialize()
 
 	pText_ = new Text;
 	pText_->Initialize();
-	rate_->SetData(MOVE_RATE, true);
+	rate_->SetData(MOVE_RATE, true, CONSTANT);
 
 }
 

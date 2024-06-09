@@ -29,8 +29,6 @@ CharacterKnockBackState::CharacterKnockBackState(Character* character, int model
 void CharacterKnockBackState::Update()
 {
 
-	frame_++;
-
 	//プレイヤーの現在の位置をベクトル型に変換
 	XMFLOAT3 playerPos = pCharacter_->GetPosition();
 
@@ -54,7 +52,6 @@ void CharacterKnockBackState::HandleInput()
 
 void CharacterKnockBackState::Enter()
 {
-	frame_ = ZERO;
 	//色々初期化
 	knockBackRate_ = ZERO;
 

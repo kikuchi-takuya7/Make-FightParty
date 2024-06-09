@@ -118,7 +118,7 @@ void CreateMode::Initialize()
     nowState_ = NONE;
     pText_->Initialize();
     pTimer_->SetLimit(WAIT_TIME);
-    rate_->SetData(OBJ_MOVE_RATE, false);
+    rate_->SetData(OBJ_MOVE_RATE, false, CONSTANT);
 
 
     //音声データのロード
