@@ -662,7 +662,7 @@ void MetaAI::MoveChampionCam()
 
 	//—DŸŽÒ‚à‡‚í‚¹‚Ä‘O‚ÉŒü‚©‚¹‚éˆ×A180“x(‰æ–Ê‚Ì^³–Ê)‚É‰ñ“]‚³‚¹‚é
 	XMFLOAT3 rot = pChampion->GetRotate();
-	pChampion->SetRotateY(rot.y);
+	pChampion->SetRotateY(180);
 
 	Camera::MoveCam(camPos, camTar, CHAMPION_CAM_RATE);
 }
