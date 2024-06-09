@@ -29,10 +29,16 @@ CharacterKnockBackState::CharacterKnockBackState(Character* character, int model
 void CharacterKnockBackState::Update()
 {
 
+	//RateFrameが使えないので自分でレートを管理
+	knockBackRate_ += KNOCKBACK_SPEED;
+	if (knockBackRate_ > 1.0f) {
+		knockBackRate_ = 1.0f;
+	}
+
 	//プレイヤーの現在の位置をベクトル型に変換
 	XMFLOAT3 playerPos = pCharacter_->GetPosition();
 
-	playerPos = LinearInterpolate::RateMovePosition(playerPos, lastPoint_, KNOCKBACK_SPEED);
+	playerPos = LinearInterpolate::RateMovePosition(playerPos, lastPoint_, knockBackRate_);
 
 	pCharacter_->SetPosition(playerPos);
 

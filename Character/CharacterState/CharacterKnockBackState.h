@@ -44,6 +44,6 @@ private:
 	XMFLOAT3 lastPoint_;
 
 	//線形補間に使うレート値
-	RateFrame* rate_;
+	//RateFrame* rate_;
 };
 
