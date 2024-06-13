@@ -91,7 +91,7 @@ void AutoCannon::ChildUpdate()
 	XMFLOAT3 targetPos = pNavigationAI_->GetCaracter(target_)->GetPosition();
 	targetPos = Float3Sub(targetPos,transform_.position_);
 
-	//xをzとして、yをzとする事で、transform.rotateの0度とx軸を合わせて角度をそのまま使える様に
+	//xをzとして、yをxとする事で、transform.rotateの0度とx軸を合わせて角度をそのまま使える様に
 	float angle = atan2(targetPos.x,targetPos.z);
 	float degree = XMConvertToDegrees(angle);
 
