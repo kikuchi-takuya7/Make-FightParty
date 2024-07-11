@@ -55,8 +55,6 @@ Transform NavigationAI::MoveSelectObject(int ID)
 
 	//ID‚©‚çÅ¬‚Ì“GID‚ðˆø‚¢‚ÄÆ‚ç‚µ‡‚í‚¹‚é
 	return pCharacterAIList_.at(ID - minEnemyID)->MoveSelectObject();
-	
-
 }
 
 
